@@ -1,0 +1,484 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Futtertrog API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "summary": "Sign in",
+                "description": "Login by email, password",
+                "operationId": "login",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "title": "LoginRequest",
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "PassWord12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "LoginResponse",
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "LoginValidationResponse",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": [
+                                                            "The email field is required.",
+                                                            "The email must be a valid email address."
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Default"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "summary": "Logout",
+                "description": "Logout user",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Returns when user is not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not authorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order_possibilities": {
+            "get": {
+                "summary": "Meals for given date",
+                "description": "Shows the meals for the current or given date",
+                "operationId": "meals.index",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meals list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Meals",
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Meal"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "get": {
+                "summary": "List of orders",
+                "description": "List of orders for today and upcoming days",
+                "operationId": "order_items.index",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderItem"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/place_order": {
+            "post": {
+                "summary": "Place order",
+                "description": "Order a given meal for a given date",
+                "operationId": "order_items.store",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date",
+                                    "meal_id"
+                                ],
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2020-02-02"
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "minimum": "1",
+                                        "example": "1"
+                                    },
+                                    "meal_id": {
+                                        "$ref": "#/components/schemas/id"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Meal"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Error": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "id": {
+                "type": "integer",
+                "example": "1"
+            },
+            "Pagination": {
+                "properties": {
+                    "current_page": {
+                        "type": "integer"
+                    },
+                    "first_page_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "from": {
+                        "type": "integer"
+                    },
+                    "last_page": {
+                        "type": "integer"
+                    },
+                    "last_page_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "next_page_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "path": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "per_page": {
+                        "type": "integer"
+                    },
+                    "prev_page_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "to": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Meal": {
+                "required": [
+                    "title",
+                    "description",
+                    "price",
+                    "date"
+                ],
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "variant_title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "variants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Meal"
+                        },
+                        "nullable": true
+                    },
+                    "parent": {
+                        "$ref": "#/components/schemas/Meal"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderItem": {
+                "required": [
+                    "title",
+                    "description",
+                    "price"
+                ],
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "order_id": {
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "meal": {
+                        "$ref": "#/components/schemas/Meal"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "quantity": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderItems": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/OrderItem"
+                }
+            },
+            "User": {
+                "required": [
+                    "password",
+                    "email",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "email": {
+                        "description": "User unique email address",
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "api_token": {
+                        "type": "string",
+                        "readOnly": "true"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "Default": {
+                "description": "System error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "Empty": {
+                "description": "Empty response",
+                "content": {
+                    "application/json": {
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "page_in_query": {
+                "name": "page",
+                "in": "query",
+                "schema": {
+                    "type": "integer",
+                    "minimum": "1"
+                }
+            },
+            "per_page_in_query": {
+                "name": "per_page",
+                "in": "query",
+                "schema": {
+                    "type": "integer",
+                    "minimum": "1"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "scheme": "bearer",
+                "description": "A simple apiKey authentication",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
+}

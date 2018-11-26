@@ -1,0 +1,5 @@
+{
+  "Order meal for :date": "Order meal for <span class=\"text-primary\">:date</span>",
+  "Your orders for :date": "Your orders for <span class=\"text-primary\">:date</span>:",
+  "There are :count order possibilities for :date": "There are <strong>:count</strong> order possibilities for <span class=\"text-primary\">:date</span>"
+}
