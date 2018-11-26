@@ -1,0 +1,50 @@
+services:
+  app:
+    image: thecodingmachine/php:8.3-v4-apache
+    expose:
+      - 80
+    volumes:
+      - ./:/var/www/html
+      - ./storage/code-coverage:/opt/phpstorm-coverage
+    depends_on:
+      db:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    environment:
+      APACHE_DOCUMENT_ROOT: public/
+
+      PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite bcmath xdebug"
+
+      #      PHP_INI_MEMORY_LIMIT: 100M
+
+      STARTUP_COMMAND_1: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      STARTUP_COMMAND_2: composer install
+      STARTUP_COMMAND_3: php artisan migrate --force
+
+      CRON_SCHEDULE: "* * * * *"
+      CRON_COMMAND: php artisan schedule:run
+
+  db:
+    image: docker.io/bitnami/mariadb:11.5
+    environment:
+      MARIADB_ROOT_PASSWORD: futtertrog
+      MARIADB_DATABASE: futtertrog
+      MARIADB_USER: futtertrog
+      MARIADB_PASSWORD: futtertrog
+    volumes:
+      - db:/bitnami/mariadb
+    healthcheck:
+      test: [ 'CMD', '/opt/bitnami/scripts/mariadb/healthcheck.sh' ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    expose:
+      - 1025 # smtp
+      - 8025 # webUI
+
+volumes:
+  db:
