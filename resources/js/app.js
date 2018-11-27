@@ -27,10 +27,10 @@ Vue.component('date-picker', DatePicker);
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-// Vue.component('example-component', require('./components/ExampleComponent.vue'));
+ Vue.component('meal-index', require('./components/MealIndex.vue'));
 
-const files = require.context('./', true, /\.vue$/i);
-files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)));
+//const files = require.context('./', true, /\.vue$/i);
+//files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)));
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
