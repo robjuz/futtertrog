@@ -37,7 +37,7 @@
                                 <div class="card text-white bg-danger">
 
                                     <div class="card-body">
-                                        Du hast keine essen für heute
+                                        Du hast kein Essen für heute
                                         <font-awesome-icon size="2x" icon="sad-tear"></font-awesome-icon>
                                     </div>
                                 </div>
