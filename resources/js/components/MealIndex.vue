@@ -2,7 +2,12 @@
     <div class="row">
         <div class="col-md-4">
 
-            <date-picker inline v-model="date"/>
+            <div class="position-sticky" style="top: 5px;">
+                <date-picker
+                        v-model="date"
+                        inline
+                />
+            </div>
 
         </div>
 
@@ -68,7 +73,7 @@
     },
     methods: {
 
-      canDelete(meal) {
+      canDelete (meal) {
         return user.is_admin;
       },
 
@@ -76,11 +81,11 @@
         return moment(meal.date).isAfter(moment.now(), 'day');
       },
 
-      canUpdate(meal) {
+      canUpdate (meal) {
         return user.is_admin;
       },
 
-      async deleteMeal(meal) {
+      async deleteMeal (meal) {
         try {
           await axios.delete('/meals/' + meal.id);
           this.meals = this.meals.filter(item => item.id !== meal.id);
@@ -92,9 +97,7 @@
           }
         }
 
-
       },
-
 
       fetchData () {
         axios.get('/meals', {

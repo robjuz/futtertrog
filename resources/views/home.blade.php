@@ -5,11 +5,17 @@
         <div class="row justify-content-center">
 
             <div class="col-md-6">
-                <div class="text-center">
-                    <a href="{{ route('meals.index') }}" class="btn btn-primary btn-lg" title="Essen bestellen">
-                        Essen bestellen
-                    </a>
+
+                <div class="card">
+                    <h2 class="card-header">Dein Guthaben</h2>
+
+                    <div class="card-body">
+                        <span class="h2 {{ auth()->user()->balance > 0 ? 'text-success' : 'text-danger' }}">
+                        {{ number_format(auth()->user()->balance, 2, ',','.') }} €
+                        </span>
+                    </div>
                 </div>
+
             </div>
 
             <div class="col-md-6">
@@ -39,6 +45,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

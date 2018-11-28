@@ -24,7 +24,7 @@
     <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}" title=" Mein Futtertrog">
-               Mein Futtertrog
+                Mein Futtertrog
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -35,13 +35,37 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav mr-auto">
+                    @auth()
+                    <li class="nav-item">
+                        <a href="{{ route('meals.index') }}" class="nav-link" title="Essen Bestellen">
+                            Essen Bestellen
+                        </a>
+                    </li>
+                    @endauth
+                    <li class="nav-item">
+                        @can('create', \App\Meal::class)
+                            <a href="{{ route('meals.create') }}" class="nav-link" title="Essen Anlege">
+                                Essen Anlegen
+                            </a>
+
+                        @endcan
+                    </li>
                     <li class="nav-item">
                         @can('list', \App\Order::class)
                             <a class="nav-link" href="{{ route('orders.index') }}" title="Bestellungen">
-                                Bestellungen
+                                Bestellungen verwalten
                             </a>
                         @endcan
                     </li>
+
+                    @can('list', \App\User::class)
+                        <li class="nav-item">
+                            <a href="{{ route('meals.index') }}" class="nav-link" title="Essen Bestellen">
+                                Benutzer verwalten
+                            </a>
+                        </li>
+                    @endcan
+
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -105,7 +129,7 @@
 </div>
 
 <script>
-    window.user = {!! json_encode(auth()->user()) !!};
+  window.user = {!! json_encode(auth()->user()) !!};
 </script>
 </body>
 </html>

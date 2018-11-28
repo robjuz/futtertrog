@@ -10,6 +10,8 @@
     "require": {
         "php": "^7.1.3",
         "fideloper/proxy": "^4.0",
+        "imangazaliev/didom": "^1.13",
+        "ixudra/curl": "^6.16",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0"
     },

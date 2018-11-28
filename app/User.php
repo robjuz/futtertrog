@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Meal::class);
     }
+
+    public function getBalanceAttribute()
+    {
+        return $this->deposits()->sum('value') - $this->meals()->sum('price');
+    }
 }
