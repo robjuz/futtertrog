@@ -40,4 +40,10 @@ return [
         ],
     ],
 
+    'holzke' => [
+        'login' => env('HOLZKE_LOGIN'),
+        'password' => env('HOLZKE_PASSWORD'),
+        'schedule' => env('HOLZKE_SCHEDULE')
+    ]
+
 ];

@@ -43,18 +43,15 @@ class Holzke extends Command
         //Login
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-login.html')
             ->withData([
-                'kdnr' => '101846',
-                'passwort' => 'hwessen24',
+                'kdnr' => config('services.holzke.login'),
+                'passwort' => config('services.holzke.password'),
                 'is_send' => 'login'
             ])
             ->setCookieJar(storage_path('holtzke_cookie.txt'))
             ->post();
 
         //get data
-
         $date = today();
-
-
         do {
 
             $response = Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
@@ -73,7 +70,7 @@ class Holzke extends Command
                 preg_match('/\((\S*)/', $title, $priceMatch);
 
 
-                Meal::updateOrCreate([
+                Meal::firstOrCreate([
                     'title' => $titleMatch[0],
                     'date' => $date
                 ], [
