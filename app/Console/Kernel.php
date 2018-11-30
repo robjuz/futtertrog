@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('import:holzke')
+            ->fridays()->at('10:00');
     }
 
     /**
