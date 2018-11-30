@@ -24,8 +24,9 @@ class MealController extends Controller
             return $meals;
         }
 
+        $orders = $request->user()->meals;
 
-        return view('meal.index', compact('meals'));
+        return view('meal.index', compact('meals', 'orders'));
     }
 
     /**

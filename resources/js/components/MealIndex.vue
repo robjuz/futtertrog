@@ -1,68 +1,22 @@
-<template>
-    <div class="row">
-        <div class="col-md-4">
-
-            <div class="position-sticky" style="top: 5px;">
-                <date-picker
-                        v-model="date"
-                        inline
-                />
-            </div>
-
-        </div>
-
-        <div class="col-md-8">
-            <div v-for="meal in meals" class="border-top border-bottom py-3">
-                <a :href="'/meals/' + meal.id + '/edit'" v-if="canUpdate(meal)" class="btn btn-link text-info pl-0">
-                    Bearbeiten
-                </a>
-                <button
-                        v-if="canDelete(meal)"
-                        class="btn btn-link text-danger"
-                        @click="deleteMeal(meal)"
-                >
-                    Löschen
-                </button>
-                <h3 class="d-flex justify-content-between">
-                    {{ meal.title }}
-                    <small> {{ meal.price.toLocaleString('de-DE') }} €</small>
-                </h3>
-
-                <p> {{ meal.description }}</p>
-
-                <template v-if="canOrder(meal)">
-                    <button
-                            v-if="userMeals.find(item => item.id === meal.id)"
-                            class="btn btn-danger"
-                            @click="toggleOrder(meal)"
-                    >
-                        Abbestellen
-                    </button>
-
-                    <button
-                            v-else
-                            class="btn btn-outline-secondary"
-                            @click="toggleOrder(meal)"
-                    >
-                        Bestellen
-                    </button>
-                </template>
-            </div>
-        </div>
-    </div>
-
-</template>
 <script>
 
   import moment from 'moment';
+  import de from 'vuejs-datepicker/dist/locale/translations/de'
 
   export default {
     name: 'MealIndex',
+    props: {
+      orders: {
+        type: Array,
+        required: true,
+      },
+    },
     data () {
       return {
+        de,
         date: moment.now(),
         meals: [],
-        userMeals: [],
+        ordersLocal: this.orders,
       };
     },
     created () {
@@ -70,6 +24,7 @@
     },
     watch: {
       'date': 'fetchData',
+      orders(newValue) { this.ordersLocal = newValue;}
     },
     methods: {
 
@@ -96,35 +51,23 @@
             alert(response.data.message);
           }
         }
-
       },
 
-      fetchData () {
-        axios.get('/meals', {
+      async fetchData () {
+        this.meals = await axios.get('/meals', {
           params: {
             date: moment(this.date).format('YYYY-M-D'),
           },
-        }).then(({data}) => {
-          this.meals = data;
-        });
-
-        axios.get('/user_meals', {
-          params: {
-            date: moment(this.date).format('YYYY-M-D'),
-          },
-        }).then(({data}) => {
-          this.userMeals = data;
-        });
-
+        }).then(({data}) => data);
       },
 
       toggleOrder (meal) {
         axios.post('/user_meal/' + meal.id);
 
-        if (this.userMeals.find(item => item.id === meal.id)) {
-          this.userMeals = this.userMeals.filter(item => item.id !== meal.id);
+        if (this.ordersLocal.find(item => item.id === meal.id)) {
+          this.ordersLocal = this.ordersLocal.filter(item => item.id !== meal.id);
         } else {
-          this.userMeals.push(meal);
+          this.ordersLocal.push(meal);
         }
       },
     },
@@ -133,6 +76,6 @@
 
 <style>
     .vdp-datepicker__calendar {
-        margin: auto;
+        width: 100%;
     }
 </style>

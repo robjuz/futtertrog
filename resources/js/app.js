@@ -28,6 +28,7 @@ Vue.component('date-picker', DatePicker);
  */
 
  Vue.component('meal-index', require('./components/MealIndex.vue'));
+ Vue.component('running-dog', require('./components/RunningDog.vue'));
 
 //const files = require.context('./', true, /\.vue$/i);
 //files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)));

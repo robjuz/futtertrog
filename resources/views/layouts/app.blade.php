@@ -21,46 +21,49 @@
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
-        <div class="container">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary sticky-top flex-column">
+        <div class="container flex-wrap">
             <a class="navbar-brand" href="{{ url('/') }}" title=" Mein Futtertrog">
                 Mein Futtertrog
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="{{ __('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <running-dog class="w-100 order-1"></running-dog>
+
+            <div class="collapse navbar-collapse order-1 order-md-0" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav mr-auto">
                     @auth()
-                    <li class="nav-item">
-                        <a href="{{ route('meals.index') }}" class="nav-link" title="Essen Bestellen">
-                            Essen Bestellen
-                        </a>
-                    </li>
+                        <li class="nav-item {{ request()->routeIs('meals.index') ? 'active' : '' }}">
+                            <a href="{{ route('meals.index') }}" class="nav-link">
+                                Essen Bestellen
+                            </a>
+                        </li>
                     @endauth
-                    <li class="nav-item">
+                    <li class="nav-item {{ request()->routeIs('meals.create') ? 'active' : '' }}">
                         @can('create', \App\Meal::class)
-                            <a href="{{ route('meals.create') }}" class="nav-link" title="Essen Anlege">
+                            <a href="{{ route('meals.create') }}" class="nav-link">
                                 Essen Anlegen
                             </a>
 
                         @endcan
                     </li>
-                    <li class="nav-item">
-                        @can('list', \App\Order::class)
-                            <a class="nav-link" href="{{ route('orders.index') }}" title="Bestellungen">
+                    @can('list', \App\Order::class)
+                        <li class="nav-item {{ request()->routeIs('orders.index') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route('orders.index') }}">
                                 Bestellungen verwalten
                             </a>
-                        @endcan
-                    </li>
+                        </li>
+                    @endcan
 
                     @can('list', \App\User::class)
-                        <li class="nav-item">
-                            <a href="{{ route('meals.index') }}" class="nav-link" title="Essen Bestellen">
+                        <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
+                            <a href="{{ route('users.index') }}" class="nav-link" title="Essen Bestellen">
                                 Benutzer verwalten
                             </a>
                         </li>
@@ -110,7 +113,7 @@
         </div>
     </nav>
 
-    <main class="py-4">
+    <main class="py-3">
 
         @if($errors->count())
             <div class="container">

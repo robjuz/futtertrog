@@ -17,8 +17,11 @@ use \Illuminate\Support\Facades\Auth;
 Route::get('/', 'HomeController');
 
 
-Route::resource('meals','MealController');
-Route::resource('orders','OrderController');
+Route::resources([
+    'meals' => 'MealController',
+    'orders' => 'OrderController',
+    'users' => 'UserController'
+]);
 
 
 Route::post('user_meal/{meal}', 'UserOrderController@toggle')->name('user_meal');
