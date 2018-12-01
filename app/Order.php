@@ -9,6 +9,8 @@ class Order extends Model
 
     protected $guarded = [];
 
+    protected $dates = ['date'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -16,6 +18,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Meal::class)
             ->as('order_details')
-            ->withPivot('quantity');
+            ->withPivot('quantity')
+            ->wherePivot('quantity', '>', 0);
     }
 }

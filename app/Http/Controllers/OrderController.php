@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Meal;
 use App\Order;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
@@ -14,7 +17,10 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with('meals')->get();
+        $orders = Order::with('meals')
+            ->whereHas('meals')
+            ->whereDate('date', '>=', today())
+            ->get();
 
         return view('order.index', compact('orders'));
     }
@@ -32,29 +38,57 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'date' => 'required|date',
+            'status' => 'required|string|max:30',
+            'meals' => [
+                'sometimes',
+                'array',
+                Rule::in(Meal::pluck('id'))
+            ]
+        ]);
+
+        /** @var Order $order */
+        $order = Order::create($request->only(['date', 'status']));
+        $order->meals()->attach($request->only('meals'));
+
+        if ($request->wantsJson()) {
+            return response($order, Response::HTTP_CREATED);
+        }
+
+        return redirect()->route('orders.index')->with('message', __('Success'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Order  $order
+     * @param Request $request
+     * @param  \App\Order $order
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show(Order $order)
+    public function show(Request $request, Order $order)
     {
-        //
+        $this->authorize('view', $order);
+
+        $order->load('meals.users');
+
+        if ($request->wantsJson()) {
+            return response($order);
+        }
+
+        return view('order.show', compact('order'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Order  $order
+     * @param  \App\Order $order
      * @return \Illuminate\Http\Response
      */
     public function edit(Order $order)
@@ -65,23 +99,44 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Order  $order
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Order $order
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Order $order)
     {
-        //
+        $order->update(
+            $request->validate([
+                'status' => 'sometimes|string|max:30'
+            ])
+        );
+
+        if ($request->wantsJson()) {
+            return response($order, Response::HTTP_OK);
+        }
+
+        return back()->with('message', __('Success'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param  \App\Order $order
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
+     * @throws \Exception
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Order $order)
+    public function destroy(Request $request, Order $order)
     {
-        //
+        $this->authorize('delete', $order);
+
+        $order->delete();
+
+        if ($request->wantsJson()) {
+            return response(null, Response::HTTP_NO_CONTENT);
+        }
+
+        return redirect()->route('orders.index');
     }
 }

@@ -16,7 +16,9 @@
             <tbody>
             @foreach($orders as $order)
                 <tr class="row-padding">
-                    <th rowspan="{{ $order->meals->count() + 1 }}">{{ $order->date }}</th>
+                    <th rowspan="{{ $order->meals->count() + 1 }}">
+                        <a href="{{ route('orders.show', $order) }}">{{ $order->date }}</a>
+                    </th>
                     <td rowspan="{{ $order->meals->count() + 1 }}">{{ $order->status }}</td>
                 </tr>
 
