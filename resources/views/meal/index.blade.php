@@ -4,7 +4,7 @@
 
     <div class="container-fluid">
 
-        <h2>Essen bestellen</h2>
+        <h2 class="py-3">Essen bestellen</h2>
 
         <meal-index inline-template :orders="{{ json_encode($orders) }}">
 
@@ -43,7 +43,7 @@
                                 <template v-if="canOrder(meal)">
                                     <button
                                             v-if="ordersLocal.find(item => item.id === meal.id)"
-                                            class="btn btn-danger btn-sm"
+                                            class="btn btn-outline-danger btn-sm"
                                             @click="toggleOrder(meal)"
                                     >
                                         Abbestellen
@@ -51,7 +51,7 @@
 
                                     <button
                                             v-else
-                                            class="btn btn-outline-secondary btn-sm"
+                                            class="btn btn-outline-primary btn-sm"
                                             @click="toggleOrder(meal)"
                                     >
                                         Bestellen

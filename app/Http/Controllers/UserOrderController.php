@@ -6,7 +6,7 @@ use App\Meal;
 use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserOrderController extends Controller
 {
@@ -21,19 +21,22 @@ class UserOrderController extends Controller
 
     public function toggle(Request $request, Meal $meal)
     {
-        $request->user()->meals()->toggle($meal);
+        DB::transaction(function () use ($request, $meal) {
+            $request->user()->meals()->toggle($meal);
 
+            /** @var Order $order */
+            $order = Order::firstOrCreate(['date' => $meal->date]);
 
-        /** @var Order $order */
-        $order = Order::firstOrCreate([
-            'date' => $meal->date
-        ]);
+            if ($quantity = $meal->users()->count()) {
 
-        $order->meals()->syncWithoutDetaching($meal);
-
-        $order->meals()->updateExistingPivot($meal, [
-            'quantity' => $meal->users()->count()
-        ]);
+                $order->meals()->syncWithoutDetaching($meal);
+                $order->meals()->updateExistingPivot($meal, [
+                    'quantity' => $meal->users()->count()
+                ]);
+            } else {
+                $order->meals()->detach($meal);
+            }
+        });
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);

@@ -18,7 +18,6 @@ class Order extends Model
     {
         return $this->belongsToMany(Meal::class)
             ->as('order_details')
-            ->withPivot('quantity')
-            ->wherePivot('quantity', '>', 0);
+            ->withPivot('quantity');
     }
 }

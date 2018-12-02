@@ -1,44 +1,70 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <form action="{{ route('meals.store') }}" method="post">
-            {{ csrf_field() }}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">{{ __('New Meal') }}</div>
 
-            <legend>Neues Essen</legend>
+                <div class="card-body">
+                    <form action="{{ route('meals.store') }}" method="post">
+                        @csrf
+                        <div class="form-row">
 
-            <div class="form-row">
-                
-                <div class="form-group col-4">
-                    <label for="title">Titel</label>
-                    <input type="text"
-                           name="title" id="title" class="form-control" required>
+                            <div class="form-group col-4">
+                                <label for="title">{{__('Title')}}</label>
+                                <input type="text"
+                                       name="title" id="title" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}" required>
+
+                                @if ($errors->has('title'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('title') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group col-4">
+                                <label for="date">{{__('Date')}}</label>
+                                <input type="date"
+                                       name="date" id="date" class="form-control{{ $errors->has('date') ? ' is-invalid' : '' }}" required>
+
+                                @if ($errors->has('date'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('date') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group col-4">
+                                <label for="price">{{__('Price')}}</label>
+                                <input type="number"
+                                       name="price" id="price" class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}" required min="0" step="0.01">
+
+                                @if ($errors->has('price'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('price') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">{{__('Description')}}</label>
+                            <textarea name="description" id="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" required></textarea>
+
+                            @if ($errors->has('description'))
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('description') }}</strong>
+                                    </span>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary" name="saveAndNew" value="Speichern und neu">
+                            <input type="submit" class="btn btn-secondary" value="Speichern">
+                        </div>
+
+                    </form>
                 </div>
-                
-                <div class="form-group col-4">
-                    <label for="date">Datum</label>
-                    <input type="date"
-                           name="date" id="date" class="form-control" required>
-                </div>
-                
-                <div class="form-group col-4">
-                    <label for="price">Preis</label>
-                    <input type="number"
-                           name="price" id="price" class="form-control" required min="0" step="0.01">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="description">Beschreibung</label>
-                <textarea name="description" id="description" class="form-control" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary" name="saveAndNew" value="Speichern und neu">
-                <input type="submit" class="btn btn-secondary" value="Speichern">
-            </div>
-
-        </form>
-    </div>
 
 @endsection()

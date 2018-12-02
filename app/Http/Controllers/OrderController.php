@@ -17,9 +17,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with('meals')
-            ->whereHas('meals')
+        $orders = Order::with('meals.users')
             ->whereDate('date', '>=', today())
+            ->orderBy('date')
             ->get();
 
         return view('order.index', compact('orders'));

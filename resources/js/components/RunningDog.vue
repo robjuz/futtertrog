@@ -1,5 +1,5 @@
 <template>
-    <div class="progress bg-primary text-white">
+    <div class="progress">
         <div class="progress-icons d-flex align-items-center">
             <font-awesome-icon icon="dog" size="3x" fixed-width class="progress-dog"/>
             <font-awesome-icon icon="bone" size="2x" fixed-width class="progress-bone ml-3"/>

@@ -7,17 +7,18 @@
 
         <table class="table">
             <thead>
-            <th>Datum</th>
-            <th>Status</th>
-            <th>Titel</th>
-            <th>Menge</th>
+            <th>{{__('Date')}}</th>
+            <th>{{__('Status')}}</th>
+            <th>{{__('Title')}}</th>
+            <th>{{__('Quantity')}}</th>
+            <th>{{__('Ordered by')}}</th>
 
             </thead>
             <tbody>
             @foreach($orders as $order)
                 <tr class="row-padding">
                     <th rowspan="{{ $order->meals->count() + 1 }}">
-                        <a href="{{ route('orders.show', $order) }}">{{ $order->date }}</a>
+                        {{ $order->date->toDateString() }}
                     </th>
                     <td rowspan="{{ $order->meals->count() + 1 }}">{{ $order->status }}</td>
                 </tr>
@@ -26,6 +27,7 @@
                     <tr class="{{ $loop->first ? 'row-padding' : '' }}">
                         <td>{{ $meal->title }}</td>
                         <td>{{ $meal->order_details->quantity }}</td>
+                        <td>{{ implode(', ', $meal->users->pluck('name')->toArray()) }}</td>
                     </tr>
                 @empty
 

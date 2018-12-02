@@ -26,7 +26,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <running-dog class="w-100 order-1"></running-dog>
+            <running-dog class="w-100 order-1 bg-dark text-white"></running-dog>
 
             <div class="collapse navbar-collapse order-1 order-md-0" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->

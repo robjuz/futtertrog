@@ -14,9 +14,15 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('layouts.app');
+        $users = User::all();
+
+        if ($request->wantsJson()) {
+            return $users;
+        }
+
+        return view('user.index', compact('users'));
     }
 
     /**
@@ -59,10 +65,18 @@ class UserController extends Controller
      *
      * @param  \App\User $user
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
-        return $user;
+        $this->authorize('view', $user);
+
+        if ($request->wantsJson()) {
+            return response($user);
+
+        }
+        return view('user.show', compact('user'));
+
     }
 
     /**

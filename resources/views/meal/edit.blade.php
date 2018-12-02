@@ -52,7 +52,7 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" class="btn btn-secondary" value="Speichern">
+                <button type="submit" class="btn btn-primary text-white">{{ __('Save') }}</button>
             </div>
 
         </form>
