@@ -3,6 +3,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import DatePicker from 'vuejs-datepicker';
+import BootstrapVue from 'bootstrap-vue'
 
 library.add(fas);
 library.add(far);
@@ -16,6 +17,8 @@ library.add(far);
 require('./bootstrap');
 
 window.Vue = require('vue');
+
+Vue.use(BootstrapVue);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('date-picker', DatePicker);

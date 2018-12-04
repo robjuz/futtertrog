@@ -1,7 +1,7 @@
 <script>
 
   import moment from 'moment';
-  import de from 'vuejs-datepicker/dist/locale/translations/de'
+  import de from 'vuejs-datepicker/dist/locale/translations/de';
 
   export default {
     name: 'MealIndex',
@@ -24,7 +24,7 @@
     },
     watch: {
       'date': 'fetchData',
-      orders(newValue) { this.ordersLocal = newValue;}
+      orders (newValue) { this.ordersLocal = newValue;},
     },
     methods: {
 
@@ -74,8 +74,28 @@
   };
 </script>
 
-<style>
+<style lang="scss">
     .vdp-datepicker__calendar {
         width: 100%;
+    }
+
+    .meal-select-button-wrapper {
+        button:first-child {
+            display: none;
+        }
+
+        button:last-child {
+            display: block;
+        }
+    }
+
+    .meal-select-button-wrapper:hover {
+        button:first-child {
+            display: block;
+        }
+
+        button:last-child {
+            display: none;
+        }
     }
 </style>

@@ -11,13 +11,20 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+
+    <!-- MYSZA STYLES -->
+    <style>
+            body {
+                background-color: bluec;
+            }
+    </style>
 </head>
 <body>
-<div id="app">
+<div id="app" v-cloak>
     <nav class="navbar navbar-expand-md navbar-dark bg-primary sticky-top flex-column">
         <div class="container flex-wrap">
-            <a class="navbar-brand" href="{{ url('/') }}" title=" Mein Futtertrog">
-                Mein Futtertrog
+            <a class="navbar-brand" href="{{ url('/') }}" title="{{ config('app.name') }}">
+               {{ config('app.name') }}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent"

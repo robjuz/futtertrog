@@ -4,27 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Deposit;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DepositController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response($request->user()->deposits()->get());
     }
 
     /**
@@ -35,7 +27,16 @@ class DepositController extends Controller
      */
     public function store(Request $request)
     {
-        //
+           $deposit =  Deposit::create($request->validate([
+                'user_id' => 'required',
+                'value' => 'required|numeric'
+            ]));
+
+            if ($request->wantsJson()) {
+                return response($deposit, Response::HTTP_CREATED);
+            }
+
+            return back()->with('message', __('Success'));
     }
 
     /**
