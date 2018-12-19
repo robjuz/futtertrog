@@ -23,6 +23,8 @@ Route::resources([
     'users' => 'UserController'
 ]);
 
+Route::resource('deposits', 'DepositController')->only(['index', 'store']);
+
 
 Route::post('user_meal/{meal}', 'UserOrderController@toggle')->name('user_meal');
 Route::get('user_meals', 'UserOrderController@index')->name('user_meals');

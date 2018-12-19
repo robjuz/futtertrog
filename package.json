@@ -26,5 +26,8 @@
         "popper.js": "^1.14.6",
         "vue": "^2.5.17",
         "vuejs-datepicker": "^1.5.4"
+    },
+    "dependencies": {
+        "bootstrap-vue": "^2.0.0-rc.11"
     }
 }

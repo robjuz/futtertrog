@@ -5,34 +5,12 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-vue/dist/bootstrap-vue.css';
 
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-}
+[v-cloak] {display: none}
 
 .row-padding {
   th, td {
     padding-top: 1.5rem;
-  }
-}
-
-.meal-select-button-wrapper {
-  button:first-child {
-    display: none;
-  }
-
-  button:last-child {
-    display: block;
-  }
-}
-
-.meal-select-button-wrapper:hover {
-  button:first-child {
-    display: block;
-  }
-
-  button:last-child {
-    display: none;
   }
 }

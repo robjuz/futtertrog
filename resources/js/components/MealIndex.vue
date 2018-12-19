@@ -1,7 +1,7 @@
 <script>
 
   import moment from 'moment';
-  import de from 'vuejs-datepicker/dist/locale/translations/de'
+  import de from 'vuejs-datepicker/dist/locale/translations/de';
 
   export default {
     name: 'MealIndex',
@@ -10,6 +10,10 @@
         type: Array,
         required: true,
       },
+        initialMessage: {
+          type: Object,
+            default: function() {return {}}
+        }
     },
     data () {
       return {
@@ -17,6 +21,8 @@
         date: moment.now(),
         meals: [],
         ordersLocal: this.orders,
+          moment: moment,
+          messages: []
       };
     },
     created () {
@@ -24,7 +30,7 @@
     },
     watch: {
       'date': 'fetchData',
-      orders(newValue) { this.ordersLocal = newValue;}
+      orders (newValue) { this.ordersLocal = newValue;},
     },
     methods: {
 
@@ -53,12 +59,16 @@
         }
       },
 
-      async fetchData () {
-        this.meals = await axios.get('/meals', {
+      fetchData () {
+         axios.get('/meals', {
           params: {
             date: moment(this.date).format('YYYY-M-D'),
           },
-        }).then(({data}) => data);
+        }).then(({data}) => {
+            this.meals = data.meals;
+            this.messages = data.messages;
+            console.log(this.messages);
+        });
       },
 
       toggleOrder (meal) {
@@ -74,8 +84,28 @@
   };
 </script>
 
-<style>
+<style lang="scss">
     .vdp-datepicker__calendar {
         width: 100%;
+    }
+
+    .meal-select-button-wrapper {
+        button:first-child {
+            display: none;
+        }
+
+        button:last-child {
+            display: block;
+        }
+    }
+
+    .meal-select-button-wrapper:hover {
+        button:first-child {
+            display: block;
+        }
+
+        button:last-child {
+            display: none;
+        }
     }
 </style>
