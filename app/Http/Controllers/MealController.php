@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Meal;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 
 class MealController extends Controller
 {
@@ -16,12 +17,36 @@ class MealController extends Controller
      */
     public function index(Request $request)
     {
+        $requestedDate  =  $request->query('date', today());
+
         $meals = Meal::orderBy('date')
-            ->whereDate('date', $request->query('date', today()))
+            ->whereDate('date',$requestedDate)
             ->get();
 
+        $messages = [];
+
+        if (Carbon::parse($requestedDate)->isWeekend()) {
+            $messages[] = [
+                'type' => 'success',
+                'text' => 'Wochenende!'
+            ];
+        } else if (!Carbon::parse($requestedDate)->greaterThan(today())) {
+            $messages[] = [
+                'type' => 'danger',
+                'text' => 'Keine Bestellmöglichkeit für diesen Tag.'
+            ];
+        } else if (!$meals->count()) {
+            $messages[] = [
+                'type' => 'warning',
+                'text' => 'Es gibt noch keine Bestellmöglichkeiten für diesen Tag. Probieren Sie morgen.'
+            ];
+        }
+
         if ($request->wantsJson()) {
-            return $meals;
+            return [
+                'meals' => $meals,
+                'messages' => $messages
+            ];
         }
 
         $orders = $request->user()->meals;

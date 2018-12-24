@@ -15,6 +15,10 @@ class HomeController extends Controller
 
         $meals = auth()->user()->meals()->whereDate('date', today())->get();
 
-        return view('home', compact('meals'));
+        $futureMeals = auth()->user()->meals()->whereDate('date', '>', today())->limit(5)->get();
+
+        $count = auth()->user()->meals()->whereDate('date', '>', today())->count();
+
+        return view('home', compact('meals', 'futureMeals', 'count'));
     }
 }

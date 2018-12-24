@@ -34,11 +34,32 @@ $green:   #28a745 !default;
 $teal:    #20c997 !default;
 $cyan:    #17a2b8 !default;
 
-$primary:       $blue !default;
-$secondary:     #73EE05 !default;
-$success:       $green !default;
-$info:          $cyan !default;
-$warning:       $yellow !default;
-$danger:        $red !default;
-$light:         $gray-100 !default;
-$dark:          $gray-800 !default;
+$primary:         $blue !default;
+$primary-dark:    darken($primary, 7.5%) !default;
+$primary-darker:  #01569E !default;
+$primary-darkest: #00345E !default;
+$secondary:       #73EE05 !default;
+$success:         $green !default;
+$info:            $cyan !default;
+$warning:         $yellow !default;
+$danger:          $red !default;
+$light:           $gray-100 !default;
+$dark:            $gray-800 !default;
+
+$headings-color: $primary-darkest;
+
+$enable-rounded:            false !default;
+
+$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-lg:                ($font-size-base * 1.25) !default;
+$font-size-sm:                ($font-size-base * .85) !default;
+
+$navbar-dark-color:                 rgba($white, .5) !default;
+$navbar-dark-hover-color:           $primary-darker;
+
+$card-cap-bg: #f7f7f7;
+
+
+$custom-control-gutter:                 2rem !default;
+$custom-control-indicator-size:         1.5rem !default;
+//$custom-control-indicator-focus-box-shadow: none !default;;

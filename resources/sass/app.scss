@@ -9,8 +9,74 @@
 
 [v-cloak] {display: none}
 
+* {
+  outline: none !important;
+}
+
 .row-padding {
   th, td {
     padding-top: 1.5rem;
   }
+}
+
+.alert-danger,
+.alert-success,
+.alert-warning {
+  background-color: $white;
+  border-width: 0;
+  border-left-width: 3px;
+  margin-top: 1em;
+}
+
+/**** HEADER ****/
+.sticky-top {
+  background-image: linear-gradient(to bottom right, $primary-dark, $primary);
+  border-bottom: 3px solid $primary-darker;
+  box-shadow: 0 0 10px 5px $gray-400;
+}
+
+.navbar-brand {
+  display: inline-block;
+  font-size: 2em;
+  transition: 0.3s;
+}
+
+.navbar-brand::first-letter {
+  font-size: 1.4em;
+}
+
+/**** CARD ****/
+.card {
+  box-shadow: 0 0 10px 5px $gray-200;
+}
+
+.card .card {
+  border: none;
+  box-shadow: none;
+}
+
+.card-header {
+  border-bottom: 2px solid #3C86C4;
+  color: $primary-darkest;
+  font-size: 17px;
+}
+
+.card.bg-danger {
+  background: transparent !important;
+  border: none;
+  border-left: 3px solid $danger;
+}
+
+/**** CALENDAR ****/
+.vdp-datepicker__calendar header > span {
+  background: $primary-darker;
+  color: $white;
+}
+
+.vdp-datepicker__calendar header > span:hover {
+  background-color: $primary-darkest !important;
+}
+
+.vdp-datepicker__calendar .cell.day-header {
+  color: #3C86C4;
 }

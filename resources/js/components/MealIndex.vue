@@ -10,6 +10,10 @@
         type: Array,
         required: true,
       },
+        initialMessage: {
+          type: Object,
+            default: function() {return {}}
+        }
     },
     data () {
       return {
@@ -17,6 +21,8 @@
         date: moment.now(),
         meals: [],
         ordersLocal: this.orders,
+          moment: moment,
+          messages: []
       };
     },
     created () {
@@ -53,12 +59,16 @@
         }
       },
 
-      async fetchData () {
-        this.meals = await axios.get('/meals', {
+      fetchData () {
+         axios.get('/meals', {
           params: {
             date: moment(this.date).format('YYYY-M-D'),
           },
-        }).then(({data}) => data);
+        }).then(({data}) => {
+            this.meals = data.meals;
+            this.messages = data.messages;
+            console.log(this.messages);
+        });
       },
 
       toggleOrder (meal) {

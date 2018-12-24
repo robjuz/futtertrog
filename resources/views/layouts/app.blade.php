@@ -11,19 +11,12 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
-
-    <!-- MYSZA STYLES -->
-    <style>
-            body {
-                background-color: bluec;
-            }
-    </style>
 </head>
 <body>
 <div id="app" v-cloak>
     <nav class="navbar navbar-expand-md navbar-dark bg-primary sticky-top flex-column">
         <div class="container flex-wrap">
-            <a class="navbar-brand" href="{{ url('/') }}" title="{{ config('app.name') }}">
+            <a class="navbar-brand text-uppercase" href="{{ url('/') }}" title="{{ config('app.name') }}">
                {{ config('app.name') }}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -33,7 +26,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <running-dog class="w-100 order-1 bg-dark text-white"></running-dog>
+            <running-dog class="w-100 order-1 bg-transparent text-white"></running-dog>
 
             <div class="collapse navbar-collapse order-1 order-md-0" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
