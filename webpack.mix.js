@@ -1,6 +1,4 @@
 const mix = require('laravel-mix');
-const CompressionPlugin = require('compression-webpack-plugin');
-require('laravel-mix-auto-extract');
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -12,19 +10,6 @@ require('laravel-mix-auto-extract');
  |
  */
 
-mix.webpackConfig({
-  plugins: [
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: /\.js$|\.css$|\.html$|\.svg$/,
-      threshold: 10240,
-      minRatio: 0.8
-    })
-  ],
-});
-
-mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css')
-    .version()
-    .autoExtract();
+mix.sass('resources/sass/app.scss', 'public/css')
+  .copyDirectory('node_modules/@fortawesome/fontawesome-free/webfonts', 'public/fonts')
+  .version();

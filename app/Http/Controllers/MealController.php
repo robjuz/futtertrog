@@ -17,7 +17,7 @@ class MealController extends Controller
      */
     public function index(Request $request)
     {
-        $requestedDate  =  $request->query('date', today());
+        $requestedDate  =  Carbon::parse($request->query('date', today()));
 
         $meals = Meal::orderBy('date')
             ->whereDate('date',$requestedDate)
@@ -51,7 +51,7 @@ class MealController extends Controller
 
         $orders = $request->user()->meals;
 
-        return view('meal.index', compact('meals', 'orders'));
+        return view('meal.index', compact('meals', 'orders', 'requestedDate', 'messages'));
     }
 
     /**

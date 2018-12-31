@@ -107,7 +107,7 @@ class OrderController extends Controller
     {
         $order->update(
             $request->validate([
-                'status' => 'sometimes|string|max:30'
+                'status' => ['sometimes','string', Rule::in(Order::$statuses)]
             ])
         );
 

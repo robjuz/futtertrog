@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
 
-        <h2>Bestellung {{ $order->date->format('d F Y') }}</h2>
+        <h2>{{ __('Order') }} {{ $order->date->format('d F Y') }}</h2>
 
         @foreach($order->meals as $meal)
             <div class="row">
@@ -13,7 +13,7 @@
                         <div class="card-body">
                             <p class="card-text">{{ $meal->description }}</p>
                         </div>
-                        <h4 class="card-header">Wurde bestellt von:</h4>
+                        <h4 class="card-header">{{ __('Was ordered by:') }}</h4>
                         <ul class="list-group list-group-flush">
                             @foreach($meal->users as $user)
                                 <li class="list-group-item">{{ $user->name }}</li>

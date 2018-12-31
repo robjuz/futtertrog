@@ -69,15 +69,12 @@ class Holzke extends Command
                 preg_match('/^[\w\s]*/mu', $title, $titleMatch);
                 preg_match('/\((\S*)/', $title, $priceMatch);
 
-
-                Meal::firstOrCreate([
-                    'title' => $titleMatch[0],
+                Meal::updateOrCreate([
+                    'title' => trim($titleMatch[0]),
                     'date' => $date
                 ], [
-                    'title' => $titleMatch[0],
-                    'description' => $meal->find('.cBody')[0]->removeChildren()[0]->text(),
-                    'price' => floatval($priceMatch[1]),
-                    'date' => $date
+                    'description' => trim($meal->find('.cBody')[0]->removeChildren()[0]->text()),
+                    'price' => floatval(str_replace(',', '.', $priceMatch[1])),
                 ]);
             }
 

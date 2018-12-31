@@ -1,13 +1,32 @@
-
-
 // Variables
 @import 'variables';
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-@import '~bootstrap-vue/dist/bootstrap-vue.css';
 
-[v-cloak] {display: none}
+// Font Awesome
+@import '~@fortawesome/fontawesome-free/scss/brands.scss';
+@import '~@fortawesome/fontawesome-free/scss/regular.scss';
+@import '~@fortawesome/fontawesome-free/scss/solid.scss';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
+
+// Custom
+@import 'header';
+@import 'calendar';
+
+//html, body {
+//  height: 100%;
+//}
+//
+//body {
+//  display: flex;
+//  flex-direction: column;
+//  justify-content: space-between;
+//}
+//
+//main {
+//  margin-bottom: auto;
+//}
 
 * {
   outline: none !important;
@@ -28,22 +47,6 @@
   margin-top: 1em;
 }
 
-/**** HEADER ****/
-.sticky-top {
-  background-image: linear-gradient(to bottom right, $primary-dark, $primary);
-  border-bottom: 3px solid $primary-darker;
-  box-shadow: 0 0 10px 5px $gray-400;
-}
-
-.navbar-brand {
-  display: inline-block;
-  font-size: 2em;
-  transition: 0.3s;
-}
-
-.navbar-brand::first-letter {
-  font-size: 1.4em;
-}
 
 /**** CARD ****/
 .card {

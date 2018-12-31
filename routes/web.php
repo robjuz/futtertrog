@@ -1,7 +1,7 @@
 <?php
 
-use \Illuminate\Support\Facades\Route;
-use \Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,17 +14,20 @@ use \Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', 'HomeController');
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+Auth::routes();
 
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', 'HomeController');
 
-Route::resources([
-    'meals' => 'MealController',
-    'orders' => 'OrderController',
-    'users' => 'UserController'
-]);
+    Route::resources([
+        'meals' => 'MealController',
+        'orders' => 'OrderController',
+        'users' => 'UserController'
+    ]);
 
-Route::resource('deposits', 'DepositController')->only(['index', 'store']);
+    Route::resource('deposits', 'DepositController')->only(['index', 'store']);
 
-
-Route::post('user_meal/{meal}', 'UserOrderController@toggle')->name('user_meal');
-Route::get('user_meals', 'UserOrderController@index')->name('user_meals');
+    Route::post('user_meal/{meal}', 'UserOrderController@toggle')->name('user_meal');
+    Route::get('user_meals', 'UserOrderController@index')->name('user_meals');
+});

@@ -30,6 +30,14 @@ class Order extends Model
 
     protected $dates = ['date'];
 
+    const STATUS_OPEN = 'open';
+    const STATUS_ORDERED = 'ordered';
+
+    public static $statuses = [
+        self::STATUS_OPEN,
+        self::STATUS_ORDERED
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

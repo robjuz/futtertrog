@@ -12,14 +12,16 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
     public function index(Request $request)
     {
         $users = User::all();
 
         if ($request->wantsJson()) {
-            return $users;
+            return response()->json($users);
         }
 
         return view('user.index', compact('users'));
@@ -28,7 +30,7 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
@@ -42,7 +44,7 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
@@ -57,14 +59,19 @@ class UserController extends Controller
             ])
         );
 
+        if ($request->wantsJson()) {
+            return response()->json($user);
+        }
+
         return redirect()->route('users.edit', $user);
     }
 
     /**
      * Display the specified resource.
      *
+     * @param Request $request
      * @param  \App\User $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Request $request, User $user)
@@ -72,7 +79,7 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         if ($request->wantsJson()) {
-            return response($user);
+            return response()->json($user);
 
         }
         return view('user.show', compact('user'));
@@ -82,12 +89,20 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param Request $request
      * @param  \App\User $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(User $user)
+    public function edit(Request $request, User $user)
     {
-        return view('layouts.app');
+        $this->authorize('edit', $user);
+
+        if ($request->wantsJson()) {
+            return response()->json($user);
+        }
+
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -95,7 +110,7 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \App\User $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, User $user)
@@ -109,23 +124,32 @@ class UserController extends Controller
             ])
         );
 
+        if ($request->wantsJson()) {
+            return response()->json($user);
+        }
+
         return back()->with('message', __('Success'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param  \App\User $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|Response
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         $this->authorize('delete', $user);
 
         $user->delete();
 
-        return redirect()->route('users.index', Response::HTTP_NO_CONTENT);
+        if ($request->wantsJson()) {
+            return response(null, Response::HTTP_NO_CONTENT);
+        }
+
+        return redirect()->route('users.index');
     }
 }
