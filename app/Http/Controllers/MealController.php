@@ -14,9 +14,12 @@ class MealController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request)
     {
+        $this->authorize('list', Meal::class);
+
         $requestedDate  =  Carbon::parse($request->query('date', today()));
 
         $meals = Meal::orderBy('date')
@@ -58,9 +61,12 @@ class MealController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
     {
+        $this->authorize('create', Meal::class);
+
         return view('meal.create');
     }
 
@@ -69,9 +75,12 @@ class MealController extends Controller
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Meal::class);
+
         Meal::create($request->validate([
             'date' => 'required|date',
             'title' => 'required|string|max:255',
@@ -91,9 +100,12 @@ class MealController extends Controller
      *
      * @param  \App\Meal $meal
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Meal $meal)
     {
+        $this->authorize('view', $meal);
+
         return view('meal.show', compact('meal'));
     }
 
@@ -102,9 +114,12 @@ class MealController extends Controller
      *
      * @param  \App\Meal $meal
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Meal $meal)
     {
+        $this->authorize('update', $meal);
+
         return view('meal.edit', compact('meal'));
     }
 
@@ -114,9 +129,12 @@ class MealController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @param  \App\Meal $meal
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Meal $meal)
     {
+        $this->authorize('update', $meal);
+
         $meal->update(
             $request->validate([
                 'date' => 'required|date',
@@ -135,10 +153,12 @@ class MealController extends Controller
      * @param Request $request
      * @param  \App\Meal $meal
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Exception
      */
     public function destroy(Request $request, Meal $meal)
     {
+        $this->authorize('delete', $meal);
 
         if ($meal->users()->count()) {
 
