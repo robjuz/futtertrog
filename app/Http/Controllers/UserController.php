@@ -80,9 +80,15 @@ class UserController extends Controller
 
         if ($request->wantsJson()) {
             return response()->json($user);
-
         }
-        return view('user.show', compact('user'));
+
+        $meals = $user->meals()->orderBy('date')->paginate(5, ['*'], 'meals_page');
+        $meals->appends('deposits_page', $request->deposits_page);
+
+        $deposits = $user->deposits()->paginate(5, ['*'], 'deposits_page');
+        $deposits->appends('meals_page', $request->meals_page);
+
+        return view('user.show', compact('user', 'meals', 'deposits'));
 
     }
 
