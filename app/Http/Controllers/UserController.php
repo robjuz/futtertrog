@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -43,21 +45,15 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param UserStoreRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
         $this->authorize('create', User::class);
 
-        $user = User::create(
-            $request->validate([
-                'email' => ['email', Rule::unique('users')],
-                'is_admin' => 'boolean',
-                'password' => 'min:6'
-            ])
-        );
+        $user = User::create($request->validated());
 
         if ($request->wantsJson()) {
             return response()->json($user);
@@ -114,21 +110,16 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param UserUpdateRequest $request
      * @param  \App\User $user
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request, User $user)
     {
         $this->authorize('update', $user);
 
-        $user->update(
-            $request->validate([
-                'email' => ['email', Rule::unique('users')->ignoreModel($user)],
-                'is_admin' => 'boolean'
-            ])
-        );
+        $user->update($request->validated());
 
         if ($request->wantsJson()) {
             return response()->json($user);
