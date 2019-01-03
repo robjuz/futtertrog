@@ -21,8 +21,8 @@
                         <div class="row">
                             <div class="col-sm-3">{{__('Balance')}}</div>
                             <div class="col-sm-9">
-                                <span class="{{ auth()->user()->balance > 0 ? 'text-success' : 'text-danger' }}">
-                                    {{ number_format(auth()->user()->balance, 2, ',','.') }} €
+                                <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
+                                    {{ number_format($user->balance, 2, ',','.') }} €
                                 </span>
                             </div>
                         </div>
