@@ -7,6 +7,30 @@
                 {{ __('Order index') }}
             </div>
             <div class="card-body">
+                <div class="py3-">
+                    <form action="{{ route('orders.index') }}" method="get">
+                        <div class="form-row align-items-end">
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label for="from">{{ __('From') }}</label>
+                                    <input type="date" class="form-control" name="from" id="from" value="{{ $from }}">
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label for="to">{{ __('To') }}</label>
+                                    <input type="date" class="form-control" name="to" id="to" value="{{ $to }}">
+                                </div>
+                            </div>
+                            <div class="col-md-auto">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-secondary">{{ __('Search') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
                 @if($orders)
                     <div class="container-fluid">
                         <div class="row py-3 border-top">

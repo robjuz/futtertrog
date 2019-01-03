@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Meal;
 use App\Order;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
@@ -15,14 +16,24 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $orders = Order::with('meals.users')
-            ->whereDate('date', '>=', today())
+            ->when($request->has('from') AND !empty($request->from), function (Builder $query) use ($request) {
+                $query->whereDate('date', '>=', $request->from);
+            }, function(Builder $query) {
+                $query->whereDate('date', '>=', today());
+            })
+            ->when($request->has('to') AND !empty($request->to), function (Builder $query) use ($request) {
+                $query->whereDate('date', '<=', $request->to);
+            })
             ->orderBy('date')
             ->get();
 
-        return view('order.index', compact('orders'));
+        $from = $request->from;
+        $to = $request->to;
+
+        return view('order.index', compact('orders', 'from', 'to'));
     }
 
     /**
