@@ -18,7 +18,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach ($user->meals()->orderBy('date')->get() as $meal)
+                            @foreach ($meals as $meal)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $meal->date->format('d F Y') }}</td>
@@ -29,6 +29,7 @@
 
                             </tbody>
                         </table>
+                        {{ $meals->links() }}
                     </div>
                 </div>
 
@@ -46,7 +47,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach ($user->deposits as $deposit)
+                            @foreach ($deposits as $deposit)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>
@@ -61,6 +62,7 @@
 
                             </tbody>
                         </table>
+                        {{ $deposits->links() }}
                     </div>
                 </div>
             </div>
