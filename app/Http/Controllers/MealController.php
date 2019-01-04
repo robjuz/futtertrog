@@ -20,10 +20,10 @@ class MealController extends Controller
     {
         $this->authorize('list', Meal::class);
 
-        $requestedDate  =  Carbon::parse($request->query('date', today()));
+        $requestedDate = Carbon::parse($request->query('date', today()));
 
         $meals = Meal::orderBy('date')
-            ->whereDate('date',$requestedDate)
+            ->whereDate('date', $requestedDate)
             ->get();
 
         $messages = [];
@@ -33,16 +33,20 @@ class MealController extends Controller
                 'type' => 'success',
                 'text' => 'Wochenende!'
             ];
-        } else if (!Carbon::parse($requestedDate)->greaterThan(today())) {
-            $messages[] = [
-                'type' => 'danger',
-                'text' => 'Keine Bestellmöglichkeit für diesen Tag.'
-            ];
-        } else if (!$meals->count()) {
-            $messages[] = [
-                'type' => 'warning',
-                'text' => 'Es gibt noch keine Bestellmöglichkeiten für diesen Tag. Probieren Sie morgen.'
-            ];
+        } else {
+            if (!Carbon::parse($requestedDate)->greaterThan(today())) {
+                $messages[] = [
+                    'type' => 'danger',
+                    'text' => 'Keine Bestellmöglichkeit für diesen Tag.'
+                ];
+            } else {
+                if (!$meals->count()) {
+                    $messages[] = [
+                        'type' => 'warning',
+                        'text' => 'Es gibt noch keine Bestellmöglichkeiten für diesen Tag. Probieren Sie morgen.'
+                    ];
+                }
+            }
         }
 
         if ($request->wantsJson()) {
@@ -52,7 +56,7 @@ class MealController extends Controller
             ];
         }
 
-        $orders = $request->user()->meals;
+        $orders = $request->user()->meals()->whereDate('date', $requestedDate)->get();
 
         return view('meal.index', compact('meals', 'orders', 'requestedDate', 'messages'));
     }
@@ -163,7 +167,8 @@ class MealController extends Controller
         if ($meal->users()->count()) {
 
             if ($request->wantsJson()) {
-                abort(Response::HTTP_FORBIDDEN, 'Dieses Menu wurde bereits bestellt! Bitte erst alle Bestellungen löschen.');
+                abort(Response::HTTP_FORBIDDEN,
+                    'Dieses Menu wurde bereits bestellt! Bitte erst alle Bestellungen löschen.');
             }
 
             return back()->withErrors([
