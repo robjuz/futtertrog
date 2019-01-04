@@ -14,24 +14,21 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
+        $from = $request->from ?: today()->format('Y-m-d');
+        $to = $request->to;
+
         $orders = Order::with('meals.users')
-            ->when($request->has('from') AND !empty($request->from), function (Builder $query) use ($request) {
-                $query->whereDate('date', '>=', $request->from);
-            }, function(Builder $query) {
-                $query->whereDate('date', '>=', today());
-            })
-            ->when($request->has('to') AND !empty($request->to), function (Builder $query) use ($request) {
+            ->whereDate('date', '>=', $from)
+            ->when(!empty($to), function (Builder $query) use ($request) {
                 $query->whereDate('date', '<=', $request->to);
             })
             ->orderBy('date')
             ->get();
-
-        $from = $request->from;
-        $to = $request->to;
 
         return view('order.index', compact('orders', 'from', 'to'));
     }

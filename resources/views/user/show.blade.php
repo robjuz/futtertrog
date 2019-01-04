@@ -4,67 +4,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                <div class="card mb-3">
-                    <div class="card-header">{{ __('Order history') }} </div>
-
-                    <div class="card-body">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">{{ __('Date') }}</th>
-                                <th scope="col">{{ __('Title') }}</th>
-                                <th scope="col">{{ __('Price') }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach ($meals as $meal)
-                                <tr>
-                                    <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>{{ $meal->date->format('d F Y') }}</td>
-                                    <td>{{ $meal->title }}</td>
-                                    <td>{{ number_format($meal->price, 2, ',','.') }} €</td>
-                                </tr>
-                            @endforeach
-
-                            </tbody>
-                        </table>
-                        {{ $meals->links() }}
-                    </div>
+                <div class="mb-3">
+                    @include('order_history')
                 </div>
 
-                <div class="card">
-                    <div class="card-header">{{ __('Deposit history') }} </div>
-
-                    <div class="card-body">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">{{ __('Value') }}</th>
-                                <th scope="col">{{ __('Created at') }}</th>
-                                <th scope="col">{{ __('Comment') }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach ($deposits as $deposit)
-                                <tr>
-                                    <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>
-                                        <span class="{{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
-                                            {{ number_format($deposit->value, 2, ',','.') }} €
-                                        </span>
-                                    </td>
-                                    <td>{{ $deposit->created_at }}</td>
-                                    <td>{{ $deposit->comment }}</td>
-                                </tr>
-                            @endforeach
-
-                            </tbody>
-                        </table>
-                        {{ $deposits->links() }}
-                    </div>
-                </div>
+                @include('deposit_history')
             </div>
             <div class="col-md-8 col-lg-6">
 

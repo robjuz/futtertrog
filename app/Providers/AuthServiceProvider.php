@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Meal;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
