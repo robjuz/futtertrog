@@ -30,4 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('user_meal/{meal}', 'UserOrderController@toggle')->name('user_meal');
     Route::get('user_meals', 'UserOrderController@index')->name('user_meals');
+
 });
+
+Route::post('toggle_dog', 'ToggleDogController')->name('toggle_dog');

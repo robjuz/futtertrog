@@ -10,7 +10,7 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-primary sticky-top flex-column">
+<nav class="navbar navbar-expand-md navbar-dark bg-primary flex-column">
     <div class="container flex-wrap">
         <a class="navbar-brand text-uppercase" href="{{ url('/') }}" title="{{ config('app.name') }}">
             {{ config('app.name') }}
@@ -19,12 +19,14 @@
         <input type="checkbox" id="nav-toggler" class="d-none"/>
         <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
 
-        <div class="running-dog">
-            <div class="running-icons">
-                <i class="fas fa-dog fa-3x fa-fw running-dog-icon"></i>
-                <i class="fas fa-bone fa-2x fa-fw running-bone-icon"></i>
+        @if(Cookie::get('show_dog', true))
+            <div class="running-dog">
+                <div class="running-icons">
+                    <i class="fas fa-dog fa-3x fa-fw running-dog-icon"></i>
+                    <i class="fas fa-bone fa-2x fa-fw running-bone-icon"></i>
+                </div>
             </div>
-        </div>
+        @endif
 
 
         <div class="collapse navbar-collapse order-1 order-md-0">
@@ -109,8 +111,23 @@
 
 </main>
 
-<footer class="text-center py-3">
-    Copyright &copy; {{ config('app.name') }} {{ now()->format('Y') }}
+<footer class="d-md-flex justify-content-between py-3">
+    <div></div>
+    <div>
+        Copyright &copy; robjuz & Kasia {{ now()->format('Y') }}
+    </div>
+    <div>
+        <form action="{{ route('toggle_dog') }}" method="post">
+            <button type="submit" class="btn btn-link">
+                @csrf
+                @if (Cookie::get('show_dog', true))
+                    Hide dog
+                @else
+                    Show dog
+                @endif
+            </button>
+        </form>
+    </div>
 </footer>
 
 </body>
