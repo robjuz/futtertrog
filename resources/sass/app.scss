@@ -66,20 +66,7 @@
 
 .card.bg-danger {
   background: transparent !important;
+  color: $danger;
   border: none;
   border-left: 3px solid $danger;
-}
-
-/**** CALENDAR ****/
-.vdp-datepicker__calendar header > span {
-  background: $primary-darker;
-  color: $white;
-}
-
-.vdp-datepicker__calendar header > span:hover {
-  background-color: $primary-darkest !important;
-}
-
-.vdp-datepicker__calendar .cell.day-header {
-  color: #3C86C4;
 }
