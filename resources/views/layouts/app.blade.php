@@ -90,18 +90,6 @@
 
 <main class="py-3">
 
-    @if($errors->count())
-        <div class="container">
-            <div class="alert alert-danger" role="alert">
-                @foreach($errors->all() as $error)
-                    <div class="my-3">
-                        <strong>{{ $error }}</strong>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
-
     @yield('content')
 
 </main>
