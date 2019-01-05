@@ -16,11 +16,8 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         {{ $user->name }}
 
-                        <a href="{{ route('users.edit', $user) }}"
-                           title="{{ __('Edit user', ['name' => $user->name]) }}"
-                           aria-label="{{ __('Edit user', ['name' => $user->name]) }}"
-                        >
-                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        <a href="{{ route('users.edit', $user) }}">
+                            {{ __('Edit') }}
                         </a>
                     </div>
 

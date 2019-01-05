@@ -1,5 +1,5 @@
 /**** HEADER ****/
-body > nav {
+.sticky-top {
   background-image: linear-gradient(to bottom right, $primary-dark, $primary);
   border-bottom: 3px solid $primary-darker;
   box-shadow: 0 0 10px 5px $gray-400;
@@ -35,6 +35,10 @@ body > nav {
 
     animation: run 12s linear infinite,
     flip-horizontal 12s linear infinite;
+
+    path {
+      fill: $white;
+    }
   }
 
   .running-dog-icon {

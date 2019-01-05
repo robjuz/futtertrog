@@ -20,12 +20,7 @@
         <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
 
         @if(Cookie::get('show_dog', true))
-            <div class="running-dog">
-                <div class="running-icons">
-                    <i class="fas fa-dog fa-3x fa-fw running-dog-icon"></i>
-                    <i class="fas fa-bone fa-2x fa-fw running-bone-icon"></i>
-                </div>
-            </div>
+            @include('running_dog')
         @endif
 
 

@@ -1,4 +1,18 @@
 const mix = require('laravel-mix');
+
+mix.options({
+  purifyCss: {
+    purifyOptions: {
+      purifyCss: true,
+      whitelist: [
+        'pagination',
+        'page-item',
+        'page-link'
+      ]
+    }
+  }
+});
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -10,6 +24,4 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.sass('resources/sass/app.scss', 'public/css')
-  .copyDirectory('node_modules/@fortawesome/fontawesome-free/webfonts', 'public/fonts')
-  .version();
+mix.sass('resources/sass/app.scss', 'public/css').version();
