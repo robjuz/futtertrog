@@ -8,7 +8,7 @@
                     <div class="card-header">{{ __('New User') }}</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('users.create') }}">
+                        <form method="POST" action="{{ route('users.store') }}">
                             @csrf
 
                             <div class="form-group">
@@ -51,6 +51,22 @@
                                 <label for="password-confirm" class="col-form-label-sm">{{ __('Confirm Password') }}</label>
 
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                            </div>
+
+                            <div class="form-group pt-2">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="hidden" name="is_admin" value="0">
+                                    <input type="checkbox"
+                                           class="custom-control-input"
+                                           name="is_admin"
+                                           id="is_admin"
+                                           {{ old('is_admin') ? 'checked' : '' }}
+                                           value="1"
+                                    >
+                                    <label class="custom-control-label" for="is_admin">
+                                        {{ __('Is admin') }}
+                                    </label>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>
