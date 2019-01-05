@@ -7,7 +7,8 @@ mix.options({
       whitelist: [
         'pagination',
         'page-item',
-        'page-link'
+        'page-link',
+        'alert-warning'
       ]
     }
   }
