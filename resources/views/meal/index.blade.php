@@ -28,13 +28,14 @@
                     </div>
 
                     <div class="row no-gutters weekdays">
-                        <div class="col weekday">{{ __('Mo') }}</div>
-                        <div class="col weekday">{{ __('Tu') }}</div>
-                        <div class="col weekday">{{ __('We') }}</div>
-                        <div class="col weekday">{{ __('Th') }}</div>
-                        <div class="col weekday">{{ __('Fr') }}</div>
-                        <div class="col weekday">{{ __('Sa') }}</div>
-                        <div class="col weekday">{{ __('Su') }}</div>
+                        <div class="col weekday">{{ __('calendar.WN') }}</div>
+                        <div class="col weekday">{{ __('calendar.Mo') }}</div>
+                        <div class="col weekday">{{ __('calendar.Tu') }}</div>
+                        <div class="col weekday">{{ __('calendar.We') }}</div>
+                        <div class="col weekday">{{ __('calendar.Th') }}</div>
+                        <div class="col weekday">{{ __('calendar.Fr') }}</div>
+                        <div class="col weekday">{{ __('calendar.Sa') }}</div>
+                        <div class="col weekday">{{ __('calendar.Su') }}</div>
                     </div>
                     @php
                         $date = \Illuminate\Support\Carbon::parse($requestedDate)->startOfMonth();
@@ -42,8 +43,10 @@
                     @endphp
 
                     <div class="row no-gutters days">
+
                         {{-- First day of isn't monday, add empty preceding column(s)--}}
                         @if ($date->format('N') != 1)
+                            <div class="col day">{{ $date->weekOfYear }}</div>
                             @for($i = 1; $i < $date->format('N'); $i++)
                                 <div class="col day"></div>
                             @endfor
@@ -52,6 +55,7 @@
                         @for($i = 1; $i <= $daysInMonth; $i++)
                             @if ($date->format('N') == 1)
                                 <div class="w-100"></div>
+                                <div class="col day">{{ $date->weekOfYear }}</div>
                             @endif
                             <div class="col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }}">
                                 <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
