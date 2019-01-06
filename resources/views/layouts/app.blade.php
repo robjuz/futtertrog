@@ -19,7 +19,7 @@
         <input type="checkbox" id="nav-toggler" class="d-none"/>
         <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
 
-        @if(Cookie::get('show_dog', true))
+        @if(auth()->guest() OR auth()->user()->settings['show_dog'] ?? true)
             @include('running_dog')
         @endif
 
@@ -94,23 +94,8 @@
 
 </main>
 
-<footer class="d-md-flex justify-content-between py-3">
-    <div></div>
-    <div>
+<footer class="text-center py-3">
         Copyright &copy; robjuz & Kasia {{ now()->format('Y') }}
-    </div>
-    <div>
-        <form action="{{ route('toggle_dog') }}" method="post">
-            <button type="submit" class="btn btn-link">
-                @csrf
-                @if (Cookie::get('show_dog', true))
-                    Hide dog
-                @else
-                    Show dog
-                @endif
-            </button>
-        </form>
-    </div>
 </footer>
 
 </body>
