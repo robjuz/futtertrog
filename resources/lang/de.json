@@ -83,10 +83,11 @@
   "Comment": "Kommentar",
   "User index": "Benutzerübersicht",
   "Order history" : "Bestellhistorie",
-
+  "Settings": "Einstellungen",
   "This is a friendly reminder." : "Dies ist eine freundliche Erinnerung.",
   "You have ordered no food for today!": "Du hast kein Essen für heute bestellt!",
   "Will be sent at 10 o'clock.": "Wird um 10 Uhr verschickt.",
   "No order for today notification": "Benachrichtigungen: Kein essen für heute",
   "Show dog": "Maskottchen im Header anzeigen"
+
 }

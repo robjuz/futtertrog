@@ -78,6 +78,11 @@
                     </li>
                 @else
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('settings.index') }}" title="{{ __('Settings')  }}">
+                            {{ __('Settings') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('logout') }}" title="{{ __('Logout')  }}">
                             {{ __('Logout') }}
                         </a>
