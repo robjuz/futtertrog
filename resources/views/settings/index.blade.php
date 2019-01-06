@@ -18,7 +18,7 @@
                                            class="custom-control-input"
                                            name="show_dog"
                                            id="show_dog"
-                                           {{ old('show_dog', $settings['show_dog']) ? 'checked' : '' }}
+                                           {{ old('show_dog', $settings['show_dog'] ?? true) ? 'checked' : '' }}
                                            value="1"
                                     >
                                     <label class="custom-control-label" for="show_dog">
