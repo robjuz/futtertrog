@@ -59,6 +59,26 @@
                                 </div>
                             </div>
 
+                            <div class="form-group pb-2">
+                                <div class="custom-control custom-checkbox mb-3">
+                                    <input type="hidden" name="noOrderForNextDayNotification" value="0">
+                                    <input type="checkbox"
+                                           class="custom-control-input"
+                                           name="noOrderForNextDayNotification"
+                                           id="noOrderForNextDayNotification"
+                                           {{ old('noOrderForNextDayNotification', $settings['noOrderForNextDayNotification'] ?? false) ? 'checked' : '' }}
+                                           value="1"
+                                           aria-describedby="noOrderForNextDayNotificationHelp"
+                                    >
+                                    <label class="custom-control-label" for="noOrderNotification">
+                                        {{ __('No order for next day notification') }}
+                                    </label>
+                                    <small id="noOrderForNextDayNotificationHelp" class="form-text text-muted">
+                                        {{ __("Will be sent at 10 o'clock.") }}
+                                    </small>
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
                         </form>
                     </div>

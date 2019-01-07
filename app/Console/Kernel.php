@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Notifications\NoOrderForToday;
+use App\Notifications\NoOrder;
 use App\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -36,7 +36,11 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             $this->noOrderForTodayNotification();
-        })->dailyAt('10:00');
+        })->weekdays()->at('10:00');
+
+        $schedule->call(function () {
+            $this->noOrderForNextDayNotification();
+        })->weekdays()->at('10:00');
     }
 
     /**
@@ -60,6 +64,19 @@ class Kernel extends ConsoleKernel
             })
             ->get();
 
-        Notification::send($users, new NoOrderForToday());
+        Notification::send($users, new NoOrder(today()));
+    }
+
+    protected function noOrderForNextDayNotification()
+    {
+        $nextDay = today()->addWeekday();
+        $users = User::query()
+            ->where('settings->noOrderForNextDayNotification', '1')
+            ->whereDoesntHave('meals', function ($q) use ($nextDay) {
+                return $q->whereDate('date', $nextDay);
+            })
+            ->get();
+
+        Notification::send($users, new NoOrder($nextDay));
     }
 }

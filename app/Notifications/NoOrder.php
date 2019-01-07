@@ -6,19 +6,25 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Carbon;
 
-class NoOrderForToday extends Notification
+class NoOrder extends Notification
 {
     use Queueable;
+    /**
+     * @var Carbon|null
+     */
+    private $date;
 
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param Carbon $date
      */
-    public function __construct()
+    public function __construct(Carbon $date)
     {
         //
+        $this->date = $date;
     }
 
     /**
@@ -40,9 +46,11 @@ class NoOrderForToday extends Notification
      */
     public function toMail($notifiable)
     {
+        $day = $this->date->isToday() ? __('today') : $this->date->localeDayOfWeek;
         return (new MailMessage)
+            ->subject(__('No order for', ['day' => $day]))
                     ->line(__('This is a friendly reminder.'))
-                    ->line(__('You have ordered no food for today!'));
+                    ->line(__('You have ordered no food for', ['day' => $day]));
     }
 
     /**

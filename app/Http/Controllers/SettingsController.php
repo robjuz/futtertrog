@@ -34,6 +34,7 @@ class SettingsController extends Controller
         $settings = $request->validate([
             'show_dog' => ['required', 'boolean'],
             'noOrderNotification' => ['required', 'boolean'],
+            'noOrderForNextDayNotification' => ['required', 'boolean'],
         ]);
 
         $user = $request->user();
