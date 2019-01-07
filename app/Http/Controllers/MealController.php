@@ -20,7 +20,7 @@ class MealController extends Controller
     {
         $this->authorize('list', Meal::class);
 
-        $requestedDate = Carbon::parse($request->query('date', today()));
+        $requestedDate = Carbon::parse($request->query('date', today()->addWeekday()));
 
         $meals = Meal::orderBy('date')
             ->whereDate('date', $requestedDate)
