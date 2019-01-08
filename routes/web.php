@@ -20,13 +20,11 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'HomeController');
 
-    Route::resources([
-        'meals' => 'MealController',
-        'orders' => 'OrderController',
-        'users' => 'UserController'
-    ]);
+    Route::resource('meals' ,'MealController');
+    Route::resource('orders', 'OrderController');
+    Route::resource('users' ,'UserController');
 
-    Route::resource('deposits', 'DepositController')->only(['index', 'store']);
+    Route::resource('deposits', 'DepositController')->only(['index', 'store', 'destroy']);
     Route::resource('settings', 'SettingsController')->only(['index', 'store']);
 
     Route::post('user_meal/{meal}', 'UserOrderController@toggle')->name('user_meal');

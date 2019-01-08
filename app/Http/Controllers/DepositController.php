@@ -13,74 +13,51 @@ class DepositController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request)
     {
+        $this->authorize('list', Deposit::class);
+
         return response($request->user()->deposits()->get());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
     {
-           $deposit =  Deposit::create($request->validate([
-                'user_id' => 'required',
-                'value' => 'required|numeric'
-            ]));
+        $this->authorize('create', Deposit::class);
 
-            if ($request->wantsJson()) {
-                return response($deposit, Response::HTTP_CREATED);
-            }
+        $deposit = Deposit::create($request->validate([
+            'user_id' => 'required',
+            'value' => 'required|numeric'
+        ]));
 
-            return back()->with('message', __('Success'));
-    }
+        if ($request->wantsJson()) {
+            return response($deposit, Response::HTTP_CREATED);
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Deposit  $deposit
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Deposit $deposit)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Deposit  $deposit
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Deposit $deposit)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Deposit  $deposit
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Deposit $deposit)
-    {
-        //
+        return back()->with('message', __('Success'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Deposit  $deposit
+     * @param  \App\Deposit $deposit
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Exception
      */
     public function destroy(Deposit $deposit)
     {
-        //
+        $this->authorize('delete', $deposit);
+        $deposit->delete();
+
+        return back();
     }
 }
