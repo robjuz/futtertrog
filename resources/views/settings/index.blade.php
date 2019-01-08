@@ -40,7 +40,7 @@
                             </div>
 
                             <div class="form-group pb-2">
-                                <div class="custom-control custom-checkbox mb-3">
+                                <div class="custom-control custom-checkbox">
                                     <input type="hidden" name="noOrderNotification" value="0">
                                     <input type="checkbox"
                                            class="custom-control-input"
@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="form-group pb-2">
-                                <div class="custom-control custom-checkbox mb-3">
+                                <div class="custom-control custom-checkbox">
                                     <input type="hidden" name="noOrderForNextDayNotification" value="0">
                                     <input type="checkbox"
                                            class="custom-control-input"
