@@ -70,7 +70,7 @@
                                            value="1"
                                            aria-describedby="noOrderForNextDayNotificationHelp"
                                     >
-                                    <label class="custom-control-label" for="noOrderNotification">
+                                    <label class="custom-control-label" for="noOrderForNextDayNotification">
                                         {{ __('No order for next day notification') }}
                                     </label>
                                     <small id="noOrderForNextDayNotificationHelp" class="form-text text-muted">
