@@ -20,8 +20,7 @@ class HomeController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $balance = $user->balance
-        ;
+        $balance = $user->balance;
         $todayMeals = $user->meals()->whereDate('date', today())->get();
 
         $meals = $user->meals()->latest()->paginate(5, ['*'], 'meals_page');

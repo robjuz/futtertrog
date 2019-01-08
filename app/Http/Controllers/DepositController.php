@@ -8,19 +8,6 @@ use Illuminate\Http\Response;
 
 class DepositController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function index(Request $request)
-    {
-        $this->authorize('list', Deposit::class);
-
-        return response($request->user()->deposits()->get());
-    }
 
     /**
      * Store a newly created resource in storage.
