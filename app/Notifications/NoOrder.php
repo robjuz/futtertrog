@@ -50,7 +50,7 @@ class NoOrder extends Notification
         return (new MailMessage)
             ->subject(__('No order for', ['day' => $day]))
                     ->line(__('This is a friendly reminder.'))
-                    ->line(__('You have ordered no food for', ['day' => $day]));
+                    ->line(__('You have ordered no food for!', ['day' => $day]));
     }
 
     /**
