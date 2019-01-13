@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\User;
-use App\Order;
+use App\Meal;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MealPolicy
@@ -17,19 +17,19 @@ class MealPolicy
     }
 
     /**
-     * Determine whether the user can view the order.
+     * Determine whether the user can view the meal.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\Meal  $meal
      * @return mixed
      */
-    public function view(User $user, Order $order)
+    public function view(User $user, Meal $meal)
     {
         //
     }
 
     /**
-     * Determine whether the user can create orders.
+     * Determine whether the user can create meals.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -40,49 +40,49 @@ class MealPolicy
     }
 
     /**
-     * Determine whether the user can update the order.
+     * Determine whether the user can update the meal.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\Meal  $meal
      * @return mixed
      */
-    public function update(User $user, Order $order)
+    public function update(User $user, Meal $meal)
     {
         //
     }
 
     /**
-     * Determine whether the user can delete the order.
+     * Determine whether the user can delete the meal.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\Meal  $meal
      * @return mixed
      */
-    public function delete(User $user, Order $order)
+    public function delete(User $user, Meal $meal)
     {
         //
     }
 
     /**
-     * Determine whether the user can restore the order.
+     * Determine whether the user can restore the meal.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\Meal  $meal
      * @return mixed
      */
-    public function restore(User $user, Order $order)
+    public function restore(User $user, Meal $meal)
     {
         //
     }
 
     /**
-     * Determine whether the user can permanently delete the order.
+     * Determine whether the user can permanently delete the meal.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\Meal  $meal
      * @return mixed
      */
-    public function forceDelete(User $user, Order $order)
+    public function forceDelete(User $user, Meal $meal)
     {
         //
     }
