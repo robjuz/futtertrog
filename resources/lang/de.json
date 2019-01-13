@@ -91,6 +91,11 @@
   "No order for next day notification" : "Benachrichtigungen: Kein Essen für nächsten Tag",
   "Show dog": "Maskottchen im Header anzeigen",
   "today": "heute",
-  "No order for": "Keine Bestellung für :day"
+  "No order for": "Keine Bestellung für :day",
+  "includes": "Darf beinhalten",
+  "excludes": "Darf nicht beinhalten",
+  "Comma-separated values": "Komma als Trenzeichen",
+  "General": "Allgemein",
+  "Ingredients" : "Zutaten"
 
 }

@@ -88,6 +88,34 @@
                     </div>
                 @endforeach
 
+                <form action="{{ route('meals.index') }}" method="GET">
+                    <div class="form-row align-items-end">
+                        <div class="form-group col">
+                            <label for="includes">{{  __('includes') }}</label>
+                            <input type="text"
+                                   name="includes"
+                                   id="includes"
+                                   class="form-control"
+                                   value="{{ $includes }}"
+                            >
+                        </div>
+
+                        <div class="form-group col">
+                            <label for="excludes">{{  __('excludes') }}</label>
+                            <input type="text"
+                                   name="excludes"
+                                   id="excludes"
+                                   class="form-control"
+                                   value="{{ $excludes }}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-secondary">{{ __('Go') }}</button>
+                        </div>
+                    </div>
+                </form>
+
                 @foreach($meals as $meal)
 
                     <div class="border-top border-bottom py-3">

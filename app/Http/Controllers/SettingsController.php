@@ -35,6 +35,8 @@ class SettingsController extends Controller
             'show_dog' => ['required', 'boolean'],
             'noOrderNotification' => ['required', 'boolean'],
             'noOrderForNextDayNotification' => ['required', 'boolean'],
+            'includes' => ['nullable', 'string'],
+            'excludes' => ['nullable', 'string']
         ]);
 
         $user = $request->user();

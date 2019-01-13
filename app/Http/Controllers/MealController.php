@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Meal;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MealController extends Controller
 {
@@ -22,9 +24,30 @@ class MealController extends Controller
 
         $requestedDate = Carbon::parse($request->query('date', today()->addWeekday()));
 
+        $settings = $request->user()->settings ?? [];
+
+        $includes = $request->query('includes', $settings['includes'] ?? null);
+        $excludes = $request->query('excludes', $settings['excludes'] ?? null);
+
         $meals = Meal::orderBy('date')
             ->whereDate('date', $requestedDate)
-            ->get();
+            ->when(!empty($includes), function (Builder $query) use ($includes) {
+                $includes = array_map('trim', explode(',', $includes));
+
+                $query->where(function (Builder $query) use ($includes) {
+                    foreach ($includes as $include) {
+                        $query->orWhere('description', 'like', '%' . $include .  '%');
+                    }
+                });
+            })
+            ->when(!empty($excludes), function (Builder $query) use ($excludes) {
+                $excludes = array_map('trim', explode(',', $excludes));
+
+                foreach ($excludes as $exclude) {
+                    $query->where('description', 'not like', '%' . $exclude .  '%');
+                }
+            })->get();
+
 
         $messages = [];
 
@@ -58,7 +81,7 @@ class MealController extends Controller
 
         $orders = $request->user()->meals()->whereDate('date', $requestedDate)->get();
 
-        return view('meal.index', compact('meals', 'orders', 'requestedDate', 'messages'));
+        return view('meal.index', compact('meals', 'orders', 'requestedDate', 'messages', 'includes', 'excludes'));
     }
 
     /**
