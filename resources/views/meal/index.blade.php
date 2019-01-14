@@ -112,6 +112,7 @@
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-secondary">{{ __('Go') }}</button>
+                            <input type="submit" class="btn btn-dark" name="reset" value="{{ __('Reset') }}">
                         </div>
                     </div>
                 </form>

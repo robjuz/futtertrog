@@ -26,8 +26,8 @@ class MealController extends Controller
 
         $settings = $request->user()->settings ?? [];
 
-        $includes = $request->query('includes', $settings['includes'] ?? null);
-        $excludes = $request->query('excludes', $settings['excludes'] ?? null);
+        $includes = $request->has('reset') ? $settings['includes'] ?? null : $request->query('includes');
+        $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
 
         $meals = Meal::orderBy('date')
             ->whereDate('date', $requestedDate)
