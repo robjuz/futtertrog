@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Meal;
 use App\Order;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -21,8 +22,15 @@ class UserOrderController extends Controller
 
     public function toggle(Request $request, Meal $meal)
     {
-        DB::transaction(function () use ($request, $meal) {
-            $request->user()->meals()->toggle($meal);
+        /** @var User $user */
+        $user = $request->user();
+
+        DB::transaction(function () use ($user, $meal) {
+            $changes = $user->meals()->toggle($meal, false);
+
+            foreach ($changes['attached'] as $attached) {
+                $user->meals()->updateExistingPivot($attached, ['created_at' => now()]);
+            }
 
             /** @var Order $order */
             $order = Order::firstOrCreate(['date' => $meal->date]);
