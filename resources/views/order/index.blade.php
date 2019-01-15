@@ -75,12 +75,11 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-1  offset-6 text-center"><strong>{{ __('Sum') }}</strong></div>
-                                <div class="col-1 text-center"><strong>{{ $sum }}</strong></div>
-                            </div>
-
                         @endforeach
+                        <div class="row">
+                            <div class="col-1  offset-6 text-center"><strong>{{ __('Sum') }}</strong></div>
+                            <div class="col-1 text-center"><strong>{{ $sum }}</strong></div>
+                        </div>
                         @else
                             {{ __('No orders') }}
                         @endif
