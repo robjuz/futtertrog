@@ -44,14 +44,14 @@
                         @foreach($orders as $order)
                             <div class="row pb-3 border-top align-items-center">
                                 <div class="col-2">
-                                    {{ $order->date->format('d F Y') }}
+                                    {{ $order->date->format(__('futtertrog.d.m.Y')) }}
                                 </div>
                                 <div class="col-2">
                                     {{ __('futtertrog.status.' . $order->status) }}
                                 </div>
                                 <div class="col-6">
                                     @foreach($order->meals as $meal)
-                                        <div class="row py-3 border-bottom">
+                                        <div class="row py-3 {{ $loop->last ? '' : ' border-bottom' }}">
                                             <div class="col-4">{{ $meal->title }}</div>
                                             <div class="col-2 text-center">{{ $meal->order_details->quantity }}</div>
                                             <div class="col-2 text-center text-nowrap">{{ number_format($meal->price, 2, ',','.') }} €</div>
