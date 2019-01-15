@@ -23,6 +23,7 @@ class OrderController extends Controller
         $to = $request->to;
 
         $orders = Order::with('meals.users')
+            ->whereHas('meals')
             ->whereDate('date', '>=', $from)
             ->when(!empty($to), function (Builder $query) use ($request) {
                 $query->whereDate('date', '<=', $request->to);
@@ -30,7 +31,13 @@ class OrderController extends Controller
             ->orderBy('date')
             ->get();
 
-        return view('order.index', compact('orders', 'from', 'to'));
+        $sum = $orders->sum(function($order) {
+            return $order->meals->sum(function($meal) {
+                return $meal->price * $meal->order_details->quantity;
+            });
+        });
+
+        return view('order.index', compact('orders', 'from', 'to', 'sum'));
     }
 
     /**

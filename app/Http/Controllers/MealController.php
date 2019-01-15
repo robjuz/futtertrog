@@ -79,7 +79,10 @@ class MealController extends Controller
             ];
         }
 
-        $orders = $request->user()->meals()->whereDate('date', $requestedDate)->get();
+        $orders = $request->user()->meals()
+            ->whereYear('date', $requestedDate->year)
+            ->whereMonth('date', $requestedDate->month)
+            ->get();
 
         return view('meal.index', compact('meals', 'orders', 'requestedDate', 'messages', 'includes', 'excludes'));
     }

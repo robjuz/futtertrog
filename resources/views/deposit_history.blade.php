@@ -19,7 +19,7 @@
                 <tr>
                     <th scope="row">{{ $loop->iteration }}</th>
                     <td>
-                        <span class="{{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
+                        <span class="text-nowrap {{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
                             {{ number_format($deposit->value, 2, ',','.') }} €
                         </span>
                     </td>

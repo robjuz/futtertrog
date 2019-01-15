@@ -57,7 +57,7 @@
                                 <div class="w-100"></div>
                                 <div class="col day">{{ $date->weekOfYear }}</div>
                             @endif
-                            <div class="col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }}">
+                            <div class="col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->where('date', $date)->count() ? ' has-orders' : '' }}">
                                 <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
                                     {{ $date->day }}
                                 </a>
@@ -89,6 +89,9 @@
                 @endforeach
 
                 <form action="{{ route('meals.index') }}" method="GET">
+
+                    <input type="hidden" name="date" value="{{ $requestedDate->format('Y-m-d') }}">
+
                     <div class="form-row align-items-end">
                         <div class="form-group col">
                             <label for="includes">{{  __('includes') }}</label>

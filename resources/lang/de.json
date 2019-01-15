@@ -96,6 +96,7 @@
   "excludes": "Darf nicht beinhalten",
   "Comma-separated values": "Komma als Trenzeichen",
   "General": "Allgemein",
-  "Ingredients" : "Zutaten"
+  "Ingredients" : "Zutaten",
+  "Sum" : "Summe"
 
 }

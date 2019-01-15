@@ -23,7 +23,7 @@ class HomeController extends Controller
         $balance = $user->balance;
         $todayMeals = $user->meals()->whereDate('date', today())->get();
 
-        $meals = $user->meals()->latest()->paginate(5, ['*'], 'meals_page');
+        $meals = $user->meals()->orderBy('meal_user.created_at', 'desc')->paginate(5, ['*'], 'meals_page');
         $meals->appends('deposits_page', $request->deposits_page);
         $meals->appends('future_meals_page', $request->future_meals_page);
 
