@@ -54,7 +54,7 @@
                                         <div class="row py-3 border-bottom">
                                             <div class="col-4">{{ $meal->title }}</div>
                                             <div class="col-2 text-center">{{ $meal->order_details->quantity }}</div>
-                                            <div class="col-2 text-center">{{ $meal->price }}</div>
+                                            <div class="col-2 text-center text-nowrap">{{ number_format($meal->price, 2, ',','.') }} €</div>
                                             <div class="col-3">{{ implode(', ', $meal->users->pluck('name')->toArray()) }}</div>
                                         </div>
                                     @endforeach
@@ -78,7 +78,7 @@
                         @endforeach
                         <div class="row">
                             <div class="col-1  offset-6 text-center"><strong>{{ __('Sum') }}</strong></div>
-                            <div class="col-1 text-center"><strong>{{ $sum }}</strong></div>
+                            <div class="col-1 text-center text-nowrap"><strong>{{ number_format($sum, 2, ',','.') }} €</strong></div>
                         </div>
                         @else
                             {{ __('No orders') }}

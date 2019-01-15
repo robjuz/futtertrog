@@ -57,7 +57,7 @@
                                 <div class="w-100"></div>
                                 <div class="col day">{{ $date->weekOfYear }}</div>
                             @endif
-                            <div class="col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }}">
+                            <div class="col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->where('date', $date)->count() ? ' has-orders' : '' }}">
                                 <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
                                     {{ $date->day }}
                                 </a>

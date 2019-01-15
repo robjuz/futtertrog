@@ -78,7 +78,7 @@ class UserController extends Controller
             return response()->json($user);
         }
 
-        $meals = $user->meals()->orderBy('date')->paginate(5, ['*'], 'meals_page');
+        $meals = $user->meals()->latest()->paginate(5, ['*'], 'meals_page');
         $meals->appends('deposits_page', $request->deposits_page);
 
         $deposits = $user->deposits()->paginate(5, ['*'], 'deposits_page');

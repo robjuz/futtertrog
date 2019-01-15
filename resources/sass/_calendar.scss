@@ -1,68 +1,77 @@
 #calendar {
-  position: sticky;
-  top: 1rem;
-  box-shadow: 0 0 10px 5px $gray-200;
+    position: sticky;
+    top: 1rem;
+    box-shadow: 0 0 10px 5px $gray-200;
 
-  .month {
-    padding: 35px 25px;
-    width: 100%;
-    background: $primary;
-    text-align: center;
-
-    a {
-      color: $white;
-    }
-  }
-
-  .month ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .month ul li {
-    color: white;
-    font-size: 20px;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-  }
-
-  .month .prev {
-    float: left;
-    padding-top: 10px;
-  }
-
-  .month .next {
-    float: right;
-    padding-top: 10px;
-  }
-
-  .weekdays {
-    background-color: $primary-darkest;
-    justify-content: space-around;
-
-    .weekday {
-      text-align: center;
-      color: $white;
-    }
-  }
-
-  .days {
-    background: $white;
-
-    .day {
-      text-align: center;
-
-      &.active {
-        background: $green;
-        border-radius: 50%;
+    .month {
+        padding: 35px 25px;
+        width: 100%;
+        background: $primary;
+        text-align: center;
 
         a {
-          color: $white;
+            color: $white;
         }
-      }
-
     }
-  }
+
+    .month ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .month ul li {
+        color: white;
+        font-size: 20px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+    }
+
+    .month .prev {
+        float: left;
+        padding-top: 10px;
+    }
+
+    .month .next {
+        float: right;
+        padding-top: 10px;
+    }
+
+    .weekdays {
+        background-color: $primary-darkest;
+        justify-content: space-around;
+
+        .weekday {
+            text-align: center;
+            color: $white;
+        }
+    }
+
+    .days {
+        background: $white;
+
+        .day {
+            text-align: center;
+
+            &.has-orders {
+                background-color: $success;
+
+                a {
+                    color: white !important;
+                }
+            }
+
+
+            &.active {
+                background: $primary;
+                border-radius: 50%;
+
+                a {
+                    color: $white;
+                }
+            }
+
+        }
+    }
 
 }
