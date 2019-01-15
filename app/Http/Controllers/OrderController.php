@@ -32,7 +32,9 @@ class OrderController extends Controller
             ->get();
 
         $sum = $orders->sum(function($order) {
-            return $order->meals->sum('price');
+            return $order->meals->sum(function($meal) {
+                return $meal->price * $meal->order_details->quantity;
+            });
         });
 
         return view('order.index', compact('orders', 'from', 'to', 'sum'));
