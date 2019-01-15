@@ -23,6 +23,7 @@ class OrderController extends Controller
         $to = $request->to;
 
         $orders = Order::with('meals.users')
+            ->whereHas('meals')
             ->whereDate('date', '>=', $from)
             ->when(!empty($to), function (Builder $query) use ($request) {
                 $query->whereDate('date', '<=', $request->to);
