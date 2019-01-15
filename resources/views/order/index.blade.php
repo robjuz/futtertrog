@@ -37,7 +37,8 @@
                             <div class="col-2"><strong>{{__('Date')}}</strong></div>
                             <div class="col-2"><strong>{{__('Status')}}</strong></div>
                             <div class="col-2"><strong>{{__('Title')}}</strong></div>
-                            <div class="col-2 text-center"><strong>{{__('Quantity')}}</strong></div>
+                            <div class="col-1 text-center"><strong>{{__('Quantity')}}</strong></div>
+                            <div class="col-1 text-center"><strong>{{__('Price')}}</strong></div>
                             <div class="col-2"><strong>{{__('Ordered by')}}</strong></div>
                         </div>
                         @foreach($orders as $order)
@@ -52,8 +53,9 @@
                                     @foreach($order->meals as $meal)
                                         <div class="row py-3 border-bottom">
                                             <div class="col-4">{{ $meal->title }}</div>
-                                            <div class="col-4 text-center">{{ $meal->order_details->quantity }}</div>
-                                            <div class="col-4">{{ implode(', ', $meal->users->pluck('name')->toArray()) }}</div>
+                                            <div class="col-2 text-center">{{ $meal->order_details->quantity }}</div>
+                                            <div class="col-2 text-center">{{ $meal->price }}</div>
+                                            <div class="col-3">{{ implode(', ', $meal->users->pluck('name')->toArray()) }}</div>
                                         </div>
                                     @endforeach
                                 </div>
@@ -72,6 +74,10 @@
                                         @endcan
                                     @endif
                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-1  offset-6 text-center"><strong>{{ __('Sum') }}</strong></div>
+                                <div class="col-1 text-center"><strong>{{ $sum }}</strong></div>
                             </div>
 
                         @endforeach

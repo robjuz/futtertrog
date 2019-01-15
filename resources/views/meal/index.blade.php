@@ -89,6 +89,9 @@
                 @endforeach
 
                 <form action="{{ route('meals.index') }}" method="GET">
+
+                    <input type="hidden" name="date" value="{{ $requestedDate->format('Y-m-d') }}">
+
                     <div class="form-row align-items-end">
                         <div class="form-group col">
                             <label for="includes">{{  __('includes') }}</label>

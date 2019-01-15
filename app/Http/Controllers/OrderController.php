@@ -30,7 +30,11 @@ class OrderController extends Controller
             ->orderBy('date')
             ->get();
 
-        return view('order.index', compact('orders', 'from', 'to'));
+        $sum = $orders->sum(function($order) {
+            return $order->meals->sum('price');
+        });
+
+        return view('order.index', compact('orders', 'from', 'to', 'sum'));
     }
 
     /**

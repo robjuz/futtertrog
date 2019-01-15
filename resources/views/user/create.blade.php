@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
                 <div class="card">
-                    <div class="card-header">{{ __('New User') }}</div>
+                    <div class="card-header">{{ __('New user') }}</div>
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('users.store') }}">
