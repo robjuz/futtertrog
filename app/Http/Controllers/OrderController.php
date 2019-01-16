@@ -31,9 +31,11 @@ class OrderController extends Controller
             ->orderBy('date')
             ->get();
 
-        $sum = $orders->sum(function($order) {
-            return $order->meals->sum(function($meal) {
-                return $meal->price * $meal->users->sum('quantity');
+        $sum = $orders->sum(function ($order) {
+            return $order->meals->sum(function ($meal) {
+                return $meal->price * $meal->users->sum(function ($user) {
+                    return $user->pivot->quantity;
+                });
             });
         });
 
@@ -122,7 +124,7 @@ class OrderController extends Controller
     {
         $order->update(
             $request->validate([
-                'status' => ['sometimes','string', Rule::in(Order::$statuses)]
+                'status' => ['sometimes', 'string', Rule::in(Order::$statuses)]
             ])
         );
 
