@@ -33,7 +33,7 @@ class OrderController extends Controller
 
         $sum = $orders->sum(function($order) {
             return $order->meals->sum(function($meal) {
-                return $meal->price * $meal->order_details->quantity;
+                return $meal->price * $meal->users->sum('quantity');
             });
         });
 

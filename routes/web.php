@@ -27,7 +27,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('deposits', 'DepositController')->only(['store', 'destroy']);
     Route::resource('settings', 'SettingsController')->only(['index', 'store']);
 
-    Route::post('user_meal/{meal}', 'UserOrderController@toggle')->name('user_meal');
-    Route::get('user_meals', 'UserOrderController@index')->name('user_meals');
+    Route::post('user_meals/{meal}', 'UserOrderController@store')->name('user_meals.store');
+    Route::delete('user_meals/{meal}', 'UserOrderController@destroy')->name('user_meals.destroy');
+    Route::get('user_meals', 'UserOrderController@index')->name('user_meals.index');
 
 });

@@ -43,8 +43,6 @@ class Order extends Model
      */
     public function meals()
     {
-        return $this->belongsToMany(Meal::class)
-            ->as('order_details')
-            ->withPivot('quantity');
+        return $this->belongsToMany(Meal::class);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Meal;
+use App\Order;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
@@ -40,6 +41,14 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('order', function (User $user, Meal $meal) {
+            return $meal->date > today();
+        });
+
+        Gate::define('disorder', function (User $user, Meal $meal) {
+            if ($meal->order AND $meal->order->status === Order::STATUS_ORDERED) {
+                return false;
+            }
+
             return $meal->date > today();
         });
     }

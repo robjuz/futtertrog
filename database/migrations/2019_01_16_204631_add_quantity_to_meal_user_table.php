@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMealOrderTable extends Migration
+class AddQuantityToMealUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateMealOrderTable extends Migration
      */
     public function up()
     {
-        Schema::create('meal_order', function (Blueprint $table) {
-            $table->unsignedInteger('meal_id');
-            $table->unsignedInteger('order_id');
-
-            $table->primary(['meal_id', 'order_id']);
+        Schema::table('meal_user', function (Blueprint $table) {
+            $table->unsignedTinyInteger('quantity')->default(1);
         });
     }
 
@@ -28,6 +25,8 @@ class CreateMealOrderTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meal_order');
+        Schema::table('meal_user', function (Blueprint $table) {
+            $table->dropColumn('quantity');
+        });
     }
 }

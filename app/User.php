@@ -72,9 +72,12 @@ class User extends Authenticatable
         return $this->hasMany(Deposit::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function meals()
     {
-        return $this->belongsToMany(Meal::class);
+        return $this->belongsToMany(Meal::class)->withPivot('quantity');
     }
 
     public function getBalanceAttribute()

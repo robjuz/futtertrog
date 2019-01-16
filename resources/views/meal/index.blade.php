@@ -139,24 +139,35 @@
 
                         <h4 class="d-flex justify-content-between">
                             {{ $meal->title }}
-                            <div>
+                            <div class="d-flex align-items-center justify-content-end">
                                 <small>{{ number_format($meal->price, 2, ',', '.') }} €</small>
 
-                                @can('order', $meal)
-                                    <form action="{{ route('user_meal', $meal) }}" method="post" class="d-inline-block">
-                                        @csrf
-
-                                        @if($orders->contains($meal))
+                                @if($orders->contains($meal))
+                                    @can('order', $meal)
+                                        <form action="{{ route('user_meals.destroy', $meal) }}" method="post" class="ml-3">
+                                            @csrf
+                                            @method('delete')
                                             <button type="submit" class="btn btn-outline-danger btn-sm">
                                                 {{ __('Delete order') }}
                                             </button>
-                                        @else
-                                            <button type="submit" class="btn btn-outline-primary btn-sm">
-                                                {{ __('Place order') }}
-                                            </button>
-                                        @endif
+                                        </form>
+                                    @endcan
+
+                                @else
+                                    <form action="{{ route('user_meals.store', $meal) }}" method="post" class="d-flex ml-3 flex-shrink-1">
+                                        @csrf
+                                        <input type="number"
+                                               class="form-control"
+                                               name="quantity"
+                                               min="1"
+                                               value="1"
+                                               style="width: 80px;"
+                                        >
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                                            {{ __('Place order') }}
+                                        </button>
                                     </form>
-                                @endcan
+                                @endif
                             </div>
                         </h4>
 

@@ -15,7 +15,6 @@ class CreateMealsTable extends Migration
     {
         Schema::create('meals', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('order_id')->nullable()->index();
             $table->date('date');
             $table->string('title');
             $table->text('description');

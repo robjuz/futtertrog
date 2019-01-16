@@ -38,13 +38,11 @@ class Meal extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot('quantity');
     }
 
-    public function order()
+    public function orders()
     {
-        return $this->belongsToMany(Order::class)
-            ->as('order_details')
-            ->withPivot(['quantity']);
+        return $this->belongsToMany(Order::class);
     }
 }

@@ -20,31 +20,39 @@ class UserOrderController extends Controller
             ->get();
     }
 
-    public function toggle(Request $request, Meal $meal)
+    public function store(Request $request, Meal $meal)
     {
         /** @var User $user */
         $user = $request->user();
 
-        DB::transaction(function () use ($user, $meal) {
-            $changes = $user->meals()->toggle($meal, false);
+        $quantity = $request->input('quantity') ?? 1;
 
-            foreach ($changes['attached'] as $attached) {
-                $user->meals()->updateExistingPivot($attached, ['created_at' => now()]);
-            }
+        DB::transaction(function () use ($user, $meal, $quantity) {
+            $user->meals()->attach($meal,  ['quantity' => $quantity, 'created_at' => now()]);
 
             /** @var Order $order */
-            $order = Order::firstOrCreate(['date' => $meal->date]);
+            $order = Order::firstOrCreate([
+                'date' => $meal->date,
+                'status' => Order::STATUS_OPEN
+            ]);
 
-            if ($quantity = $meal->users()->count()) {
-
-                $order->meals()->syncWithoutDetaching($meal);
-                $order->meals()->updateExistingPivot($meal, [
-                    'quantity' => $meal->users()->count()
-                ]);
-            } else {
-                $order->meals()->detach($meal);
+            if ($order->wasRecentlyCreated) {
+                $order->meals()->attach($meal);
             }
         });
+
+        if ($request->wantsJson()) {
+            return response(null, Response::HTTP_NO_CONTENT);
+        }
+
+        return back();
+    }
+
+    public function destroy(Request $request, Meal $meal)
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $user->meals()->detach($meal);
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
