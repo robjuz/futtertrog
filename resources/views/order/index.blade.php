@@ -55,7 +55,11 @@
                                             <div class="col-4">{{ $meal->title }}</div>
                                             <div class="col-2 text-center">{{ $meal->order_details->quantity }}</div>
                                             <div class="col-2 text-center text-nowrap">{{ number_format($meal->price, 2, ',','.') }} €</div>
-                                            <div class="col-3">{{ implode(', ', $meal->users->pluck('name')->toArray()) }}</div>
+                                            <div class="col-3">
+                                                @foreach($meal->users as $user)
+                                                    <a href="{{ route('users.show', $user) }}" class="d-block">{{ $user->name }}</a>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>
