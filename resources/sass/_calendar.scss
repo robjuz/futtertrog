@@ -52,6 +52,14 @@
 
         .day {
             text-align: center;
+            line-height: 1;
+            padding-bottom: 1rem;
+            padding-top: 1rem;
+
+            a {
+                padding: 0.5rem;
+                margin: -0.5rem;
+            }
 
             &.has-orders {
                 background-color: $success;
@@ -63,15 +71,19 @@
 
 
             &.active {
-                background: $primary;
-                border-radius: 50%;
 
                 a {
+                    background-color: $info;
+                    border-radius: 50%;
                     color: $white;
                 }
             }
 
         }
+    }
+
+    .top-right {
+        color: $danger;
     }
 
 }

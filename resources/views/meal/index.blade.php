@@ -6,8 +6,8 @@
 
         <h2 class="py-3">{{ __('Order meal') }}</h2>
 
-        <div class="row">
-            <div class="col-md-4">
+        <div class="row justify-content-center">
+            <div class="col-md-auto">
 
                 <div id="calendar">
                     <div class="month">
@@ -57,10 +57,13 @@
                                 <div class="w-100"></div>
                                 <div class="col day">{{ $date->weekOfYear }}</div>
                             @endif
-                            <div class="col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->where('date', $date)->count() ? ' has-orders' : '' }}">
+                            <div class="position-relative col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->where('date', $date)->count() ? ' has-orders' : '' }}">
                                 <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
                                     {{ $date->day }}
                                 </a>
+                                @if($count = $orders->where('date', $date)->sum(function($order) { return $order->pivot->quantity;}))
+                                    <div class="position-absolute top-right">{{ $count }}</div>
+                                @endif
 
                             </div>
                             @php
@@ -80,7 +83,7 @@
                 </div>
             </div>
 
-            <div class="col-md-8 col-lg-6">
+            <div class="col">
 
                 @foreach($messages as $message)
                     <div class="alert alert-{{$message['type']}}" role="alert">
@@ -148,7 +151,7 @@
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="btn btn-outline-danger btn-sm">
-                                                {{ __('Delete order') }}
+                                               ( {{ $orders->firstWhere('id', $meal->id)->pivot->quantity }} ) {{ __('Delete order') }}
                                             </button>
                                         </form>
                                     @endcan
