@@ -57,7 +57,7 @@
                                             <div class="col-2 text-center text-nowrap">{{ number_format($meal->price, 2, ',','.') }} €</div>
                                             <div class="col-3">
                                                 @foreach($meal->users as $user)
-                                                    <div>
+                                                    <div class="text-nowrap">
                                                         <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a> ( {{ $user->pivot->quantity }} )
                                                     </div>
                                                 @endforeach
