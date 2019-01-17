@@ -97,6 +97,9 @@
   "Comma-separated values": "Komma als Trenzeichen",
   "General": "Allgemein",
   "Ingredients" : "Zutaten",
-  "Sum" : "Summe"
+  "Sum" : "Summe",
+  "Order reopened" : "Bestellung wurde geändert",
+  "The order for :date was reopened": "Die Bestellung für :date wurde geändert",
+  "Click here for more details" : "Klick hier um mehr zu erfahren"
 
 }

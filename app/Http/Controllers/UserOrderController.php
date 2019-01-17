@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderReopened;
 use App\Meal;
 use App\Order;
 use App\User;
@@ -36,6 +37,14 @@ class UserOrderController extends Controller
             ]);
 
             $order->meals()->syncWithoutDetaching($meal);
+
+            if ($order->status === Order::STATUS_ORDERED) {
+                $order->update([
+                    'status' => Order::STATUS_OPEN
+                ]);
+
+                event(new OrderReopened($order));
+            }
         });
 
         if ($request->wantsJson()) {
