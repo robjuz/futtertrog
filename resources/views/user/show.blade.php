@@ -53,6 +53,18 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <label for="comment" class="col-form-label-sm">{{ __('Comment') }}</label>
+                                <div>
+                                    <textarea class="form-control" name="comment" id="comment"></textarea>
+                                    @if ($errors->has('value'))
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('comment') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
                         </form>
                     </div>

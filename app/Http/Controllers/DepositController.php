@@ -22,7 +22,8 @@ class DepositController extends Controller
 
         $deposit = Deposit::create($request->validate([
             'user_id' => 'required',
-            'value' => 'required|numeric'
+            'value' => 'required|numeric',
+            'comment' => 'nullable|string'
         ]));
 
         if ($request->wantsJson()) {
