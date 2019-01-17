@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name') }}</title>
 
     {{--<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
     {{--<link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
@@ -103,7 +103,7 @@
 </main>
 
 <footer class="text-center py-3">
-        Copyright &copy; robjuz & Kasia {{ now()->format('Y') }}
+    © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 </footer>
 
 </body>
