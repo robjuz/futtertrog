@@ -32,13 +32,10 @@ class UserOrderController extends Controller
 
             /** @var Order $order */
             $order = Order::firstOrCreate([
-                'date' => $meal->date,
-                'status' => Order::STATUS_OPEN
+                'date' => $meal->date
             ]);
 
-            if ($order->wasRecentlyCreated) {
-                $order->meals()->attach($meal);
-            }
+            $order->meals()->syncWithoutDetaching($meal);
         });
 
         if ($request->wantsJson()) {
