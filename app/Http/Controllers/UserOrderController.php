@@ -58,7 +58,22 @@ class UserOrderController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        $user->meals()->detach($meal);
+        DB::transaction(function () use ($user, $meal) {
+            $user->meals()->detach($meal);
+
+            /** @var Order $order */
+            $order = Order::firstOrCreate([
+                'date' => $meal->date
+            ]);
+
+            $order->meals()->detach($meal);
+
+            $order->update([
+                'status' => Order::STATUS_OPEN
+            ]);
+
+            event(new OrderReopened($order));
+        });
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
