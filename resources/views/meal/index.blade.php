@@ -58,9 +58,13 @@
                                 <div class="col day">{{ $date->weekOfYear }}</div>
                             @endif
                             <div class="position-relative col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->where('date', $date)->count() ? ' has-orders' : '' }}">
+                                @if ($meals->where('date', $date)->count())
                                 <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
                                     {{ $date->day }}
                                 </a>
+                                @else
+                                    {{ $date->day }}
+                                @endif
                                 @if($count = $orders->where('date', $date)->sum(function($order) { return $order->pivot->quantity;}))
                                     <div class="position-absolute top-right">{{ $count }}</div>
                                 @endif
@@ -123,7 +127,7 @@
                     </div>
                 </form>
 
-                @foreach($meals as $meal)
+                @foreach($meals->where('date', $requestedDate) as $meal)
 
                     <div class="border-top border-bottom py-3">
                         @can('update', $meal)

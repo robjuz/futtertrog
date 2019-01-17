@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class MealController extends Controller
 {
@@ -29,14 +28,15 @@ class MealController extends Controller
         $includes = $request->has('reset') ? $settings['includes'] ?? null : $request->query('includes');
         $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
 
-        $meals = Meal::orderBy('date')
-            ->whereDate('date', $requestedDate)
+        $meals = Meal::query()
+            ->whereYear('date', $requestedDate->year)
+            ->whereMonth('date', $requestedDate->month)
             ->when(!empty($includes), function (Builder $query) use ($includes) {
                 $includes = array_map('trim', explode(',', $includes));
 
                 $query->where(function (Builder $query) use ($includes) {
                     foreach ($includes as $include) {
-                        $query->orWhere('description', 'like', '%' . $include .  '%');
+                        $query->orWhere('description', 'like', '%' . $include . '%');
                     }
                 });
             })
@@ -44,7 +44,7 @@ class MealController extends Controller
                 $excludes = array_map('trim', explode(',', $excludes));
 
                 foreach ($excludes as $exclude) {
-                    $query->where('description', 'not like', '%' . $exclude .  '%');
+                    $query->where('description', 'not like', '%' . $exclude . '%');
                 }
             })->get();
 
@@ -83,6 +83,7 @@ class MealController extends Controller
             ->whereYear('date', $requestedDate->year)
             ->whereMonth('date', $requestedDate->month)
             ->get();
+
 
         return view('meal.index', compact('meals', 'orders', 'requestedDate', 'messages', 'includes', 'excludes'));
     }
