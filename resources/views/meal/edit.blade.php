@@ -84,7 +84,6 @@
                                 <textarea name="description"
                                           id="description"
                                           class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}"
-                                          required
                                 >{{ old('description', $meal->description) }}</textarea>
 
                                 @if ($errors->has('description'))

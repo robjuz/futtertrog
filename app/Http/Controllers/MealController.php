@@ -114,7 +114,7 @@ class MealController extends Controller
         Meal::create($request->validate([
             'date' => 'required|date',
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'price' => 'required|numeric|min:0'
         ]));
 
@@ -167,10 +167,10 @@ class MealController extends Controller
 
         $meal->update(
             $request->validate([
-                'date' => 'required|date',
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'price' => 'required|numeric|min:0'
+                'date' => 'sometimes|date',
+                'title' => 'sometimes|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'sometimes|numeric|min:0'
             ])
         );
 
