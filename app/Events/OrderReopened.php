@@ -2,7 +2,9 @@
 
 namespace App\Events;
 
+use App\Meal;
 use App\Order;
+use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -18,16 +20,28 @@ class OrderReopened
      * @var Order
      */
     public $order;
+    /**
+     * @var User
+     */
+    public $user;
+    /**
+     * @var Meal
+     */
+    public $meal;
 
     /**
      * Create a new event instance.
      *
      * @param Order $order
+     * @param User $user
+     * @param Meal $meal
      */
-    public function __construct(Order $order)
+    public function __construct(Order $order, User $user, Meal $meal)
     {
 
         $this->order = $order;
+        $this->user = $user;
+        $this->meal = $meal;
     }
 
     /**

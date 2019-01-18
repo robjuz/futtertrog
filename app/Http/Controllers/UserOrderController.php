@@ -43,7 +43,7 @@ class UserOrderController extends Controller
                     'status' => Order::STATUS_OPEN
                 ]);
 
-                event(new OrderReopened($order));
+                event(new OrderReopened($order, $user, $meal));
             }
         });
 
@@ -68,11 +68,14 @@ class UserOrderController extends Controller
 
             $order->meals()->detach($meal);
 
-            $order->update([
-                'status' => Order::STATUS_OPEN
-            ]);
+            if ($order->status === Order::STATUS_ORDERED) {
+                $order->update([
+                    'status' => Order::STATUS_OPEN
+                ]);
 
-            event(new OrderReopened($order));
+                event(new OrderReopened($order, $user, $meal));
+            }
+
         });
 
         if ($request->wantsJson()) {
