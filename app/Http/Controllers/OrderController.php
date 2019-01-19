@@ -21,13 +21,13 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $from = Carbon::parse($request->query('from', today()));
-        $to = $request->has('to') ? Carbon::parse($request->to) : null;
+        $to = $request->has('to') && !empty($request->to) ? Carbon::parse($request->to) : null;
 
         $orders = Order::with('meals.users')
             ->whereHas('meals')
-            ->whereDate('date', '>=', $from)
-            ->when(!empty($to), function (Builder $query) use ($request) {
-                $query->whereDate('date', '<=', $request->to);
+            ->whereDate('date', '>=', $from->toDateString())
+            ->when(!empty($to), function (Builder $query) use ($to) {
+                $query->whereDate('date', '<=', $to->toDateString());
             })
             ->orderBy('date')
             ->get();
