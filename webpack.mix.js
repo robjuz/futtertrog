@@ -1,19 +1,19 @@
 const mix = require('laravel-mix');
 
 if (mix.inProduction()) {
-  mix.options({
-    purifyCss: {
-      purifyOptions: {
-        purifyCss: true,
-        whitelist: [
-          'pagination',
-          'page-item',
-          'page-link',
-          'alert-warning',
-        ],
-      },
-    },
-  });
+  // mix.options({
+  //   purifyCss: {
+  //     purifyOptions: {
+  //       purifyCss: true,
+  //       whitelist: [
+  //         'pagination',
+  //         'page-item',
+  //         'page-link',
+  //         'alert-warning',
+  //       ],
+  //     },
+  //   },
+  // });
   mix.version();
 }
 
@@ -39,3 +39,4 @@ mix.combine([
   'public/css/app.css'
 ], 'public/css/all.css');
 mix.js('resources/js/app.js', 'public/js');
+// mix.minify('public/js/app.js');
