@@ -7,6 +7,10 @@
 // Font Awesome
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
 
+// jQuery UI
+@import '~jquery-ui/themes/base/theme.css';
+@import '~jquery-ui/themes/base/datepicker.css';
+
 // Custom
 @import 'header';
 @import 'calendar';

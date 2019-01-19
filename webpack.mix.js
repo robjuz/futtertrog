@@ -1,18 +1,21 @@
 const mix = require('laravel-mix');
 
-mix.options({
-  purifyCss: {
-    purifyOptions: {
-      purifyCss: true,
-      whitelist: [
-        'pagination',
-        'page-item',
-        'page-link',
-        'alert-warning'
-      ]
+if (mix.inProduction()) {
+  mix.options({
+    purifyCss: {
+      purifyOptions: {
+        purifyCss: true,
+        whitelist: [
+          'pagination',
+          'page-item',
+          'page-link',
+          'alert-warning'
+        ]
+      }
     }
-  }
-});
+  });
+mix.version();
+}
 
 /*
  |--------------------------------------------------------------------------
@@ -25,4 +28,5 @@ mix.options({
  |
  */
 
-mix.sass('resources/sass/app.scss', 'public/css').version();
+mix.sass('resources/sass/app.scss', 'public/css');
+mix.js('resources/js/app.js', 'public/js');

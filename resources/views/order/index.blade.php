@@ -13,13 +13,15 @@
                             <div class="col-md">
                                 <div class="form-group">
                                     <label for="from">{{ __('From') }}</label>
-                                    <input type="date" class="form-control" name="from" id="from" value="{{ $from }}">
+                                    <input type="date" class="form-control" id="from" value="{{ $from->toDateString() }}">
+                                    <input type="hidden" name="from" id="from_raw" value="{{ $from->toDateString() }}">
                                 </div>
                             </div>
                             <div class="col-md">
                                 <div class="form-group">
                                     <label for="to">{{ __('To') }}</label>
-                                    <input type="date" class="form-control" name="to" id="to" value="{{ $to }}">
+                                    <input type="date" class="form-control" id="to" value="{{ $to ? $to->toDateString() : '' }}">
+                                    <input type="hidden" name="to" id="to_raw" value="{{ $to ? $to->toDateString() : '' }}">
                                 </div>
                             </div>
                             <div class="col-md-auto">

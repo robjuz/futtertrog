@@ -106,5 +106,6 @@
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 </footer>
 
+<script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>

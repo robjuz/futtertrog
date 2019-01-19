@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Meal;
 use App\Order;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,8 +20,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $from = $request->from ?: today()->format('Y-m-d');
-        $to = $request->to;
+        $from = Carbon::parse($request->query('from', today()));
+        $to = $request->has('to') ? Carbon::parse($request->to) : null;
 
         $orders = Order::with('meals.users')
             ->whereHas('meals')
