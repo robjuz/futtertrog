@@ -33,7 +33,8 @@ class UserOrderController extends Controller
 
             /** @var Order $order */
             $order = Order::firstOrCreate([
-                'date' => $meal->date
+                'date' => $meal->date,
+                'provider' => $meal->provider
             ]);
 
             $order->meals()->syncWithoutDetaching($meal);
@@ -63,7 +64,8 @@ class UserOrderController extends Controller
 
             /** @var Order $order */
             $order = Order::firstOrCreate([
-                'date' => $meal->date
+                'date' => $meal->date,
+                'provider' => $meal->provider
             ]);
 
             $order->meals()->detach($meal);

@@ -41,17 +41,11 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('order', function (User $user, Meal $meal) {
-            return true;
-            return $meal->date > today();
+            return $meal->oderable_until > now();
         });
 
         Gate::define('disorder', function (User $user, Meal $meal) {
-            return true;
-            if ($meal->order AND $meal->order->status === Order::STATUS_ORDERED) {
-                return false;
-            }
-
-            return $meal->date > today();
+            return $meal->oderable_until > now();
         });
     }
 }

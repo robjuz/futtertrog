@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 
 class MealController extends Controller
 {
@@ -116,7 +117,9 @@ class MealController extends Controller
             'date' => 'required|date',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0'
+            'price' => 'required|numeric|min:0',
+            'orderable_until' => 'required|date|after:date',
+            'provider' => ['required', Rule::in(Meal::$providers)]
         ]));
 
         if ($request->has('saveAndNew')) {
@@ -171,7 +174,9 @@ class MealController extends Controller
                 'date' => 'sometimes|date',
                 'title' => 'sometimes|string|max:255',
                 'description' => 'nullable|string',
-                'price' => 'sometimes|numeric|min:0'
+                'price' => 'sometimes|numeric|min:0',
+                'orderable_until' => 'sometimes|date|after:date',
+                'provider' => ['sometimes', Rule::in(Meal::$providers)]
             ])
         );
 

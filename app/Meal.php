@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Meal
@@ -32,9 +33,17 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Meal extends Model
 {
-    protected $fillable = ['title', 'description', 'date', 'price'];
+    const PROVIDER_HOLZKE = 'Holzke';
+    const PROVIDER_PARADIES_PIZZA = 'Paradies Pizza';
 
-    protected $dates = ['date'];
+    public static $providers = [
+      self::PROVIDER_HOLZKE,
+      self::PROVIDER_PARADIES_PIZZA
+    ];
+
+    protected $guarded = [];
+
+    protected $dates = ['date', 'orderable_until'];
 
     public function users()
     {
@@ -44,5 +53,12 @@ class Meal extends Model
     public function orders()
     {
         return $this->belongsToMany(Order::class);
+    }
+
+    public function setOrderableUntilAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['orderable_until'] = Carbon::createFromFormat('Y-m-d\TH:i', $value);
+        }
     }
 }
