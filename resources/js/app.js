@@ -1,4 +1,3 @@
-window.jQuery = window.$ = require('jquery');
 require('jquery-ui/ui/widgets/datepicker');
 require('jquery-ui/ui/i18n/datepicker-de');
 
@@ -11,13 +10,9 @@ $('input[type=date]').each(function () {
   }
 
   $(this).datepicker(
-    {
+    Object.assign({}, {
       altField: '#' + this.id + '_raw',
       altFormat: 'yy-mm-dd'
-    }
-    // Object.assign({}, {
-    //   altField: 'from_alt',
-    //   altFormat: "DD, d MM, yy"
-    // }, $.datepicker.regional[ lang ])
+    }, $.datepicker.regional[ lang ])
   );
 });

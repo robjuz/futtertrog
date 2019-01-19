@@ -10,7 +10,7 @@
     {{--<link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
 
     <!-- Styles -->
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/all.css') }}" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-primary flex-column">

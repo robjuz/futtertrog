@@ -9,12 +9,12 @@ if (mix.inProduction()) {
           'pagination',
           'page-item',
           'page-link',
-          'alert-warning'
-        ]
-      }
-    }
+          'alert-warning',
+        ],
+      },
+    },
   });
-mix.version();
+  mix.version();
 }
 
 /*
@@ -28,5 +28,14 @@ mix.version();
  |
  */
 
-mix.sass('resources/sass/app.scss', 'public/css');
+mix.autoload({
+  jquery: ['$', 'window.jQuery'],
+});
+
+mix.sass('resources/sass/app.scss', 'css');
+mix.combine([
+  './node_modules/jquery-ui/themes/base/theme.css',
+  './node_modules/jquery-ui/themes/base/datepicker.css',
+  'public/css/app.css'
+], 'public/css/all.css');
 mix.js('resources/js/app.js', 'public/js');
