@@ -16,3 +16,21 @@ $('input[type=date]').each(function () {
     }, $.datepicker.regional[ lang ])
   );
 });
+
+window.order = function(e, type) {
+  let form = $(e.target);
+
+ form.find(':submit').attr('disabled', true).find('.spinner-border').toggleClass('d-none');
+
+  $.ajax({
+    type,
+    url: form.attr('action'),
+    data: form.serialize(),
+    success: function(data)
+    {
+      form.closest('.meal-container').html(data);
+    }
+  });
+
+  e.preventDefault();
+};

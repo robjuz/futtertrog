@@ -47,8 +47,16 @@ class UserOrderController extends Controller
             }
         });
 
-        if ($request->wantsJson()) {
-            return response(null, Response::HTTP_NO_CONTENT);
+        if ($request->ajax()) {
+            if ($request->wantsJson()) {
+                return response(null, Response::HTTP_NO_CONTENT);
+            }
+
+            $orders = $user->meals()
+                ->whereDate('date', $meal->date)
+                ->get();
+
+            return view('meal.meal', compact('meal', 'orders'));
         }
 
         return back();
@@ -78,9 +86,18 @@ class UserOrderController extends Controller
 
         });
 
-        if ($request->wantsJson()) {
-            return response(null, Response::HTTP_NO_CONTENT);
+        if ($request->ajax()) {
+            if ($request->wantsJson()) {
+                return response(null, Response::HTTP_NO_CONTENT);
+            }
+
+            $orders = $user->meals()
+                ->whereDate('date', $meal->date)
+                ->get();
+
+            return view('meal.meal', compact('meal', 'orders'));
         }
+
 
         return back();
     }
