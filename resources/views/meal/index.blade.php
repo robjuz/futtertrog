@@ -7,7 +7,7 @@
         <h2 class="py-3">{{ __('Order meal') }} für <span class="text-primary">{{ $requestedDate->format('d.m.Y') }}</span> </h2>
 
         <div class="row justify-content-center">
-            <div class="col-md-auto">
+            <div class="col-md-6 col-lg-5 col-xl-4">
 
                 <div id="calendar">
                     <div class="month">
