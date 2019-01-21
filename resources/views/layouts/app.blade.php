@@ -10,7 +10,7 @@
     {{--<link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
 
     <!-- Styles -->
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/all.css') }}" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-primary flex-column">
@@ -98,6 +98,14 @@
 
 <main class="py-3">
 
+    @if (session('success'))
+        <div class="container">
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
     @yield('content')
 
 </main>
@@ -106,5 +114,6 @@
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 </footer>
 
+<script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>

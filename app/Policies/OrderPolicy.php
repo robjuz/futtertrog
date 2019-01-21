@@ -13,7 +13,7 @@ class OrderPolicy
 
     public function list(User $user)
     {
-        return $user->is_admin;
+        //
     }
 
     /**

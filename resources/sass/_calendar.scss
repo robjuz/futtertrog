@@ -4,7 +4,7 @@
     box-shadow: 0 0 10px 5px $gray-200;
 
     .month {
-        padding: 35px 25px;
+        padding: 25px;
         width: 100%;
         background: $primary;
         text-align: center;
@@ -29,12 +29,10 @@
 
     .month .prev {
         float: left;
-        padding-top: 10px;
     }
 
     .month .next {
         float: right;
-        padding-top: 10px;
     }
 
     .weekdays {
@@ -42,8 +40,20 @@
         justify-content: space-around;
 
         .weekday {
-            text-align: center;
             color: $white;
+            line-height: 2.25em;
+            text-align: center;
+        }
+
+        .week-of-year {
+            align-items: center;
+            background-color: darken($primary-darkest, 5%);
+            color: $gray-400;
+            display: flex;
+            flex-grow: unset;
+            font-size: 0.85em;
+            justify-content: center;
+            min-width: 4.5em;
         }
     }
 
@@ -53,29 +63,71 @@
         .day {
             text-align: center;
             line-height: 1;
-            padding-bottom: 1rem;
-            padding-top: 1rem;
+            padding: 1px;
 
-            a {
-                padding: 0.5rem;
-                margin: -0.5rem;
+            &.week-of-year {
+                align-items: center;
+                background-color: $gray-300;
+                color: $gray-700;
+                display: flex;
+                flex-grow: unset;
+                font-size: 0.85em;
+                justify-content: center;
+                min-width: 4.5em;
+            }
+
+            .inner {
+                align-items: center;
+                border: 1px solid transparent;
+                display: flex;
+                height: 3.5em;
+                justify-content: center;
+                margin: 0;
+                padding: 0;
+
+                .a {
+                    color: $gray-900;
+                }
             }
 
             &.has-orders {
-                background-color: $success;
 
-                a {
-                    color: white !important;
+                .inner {
+                    border-color: lighten($success, 6%);
+                    position: relative;
+                    width: 100%;
+
+                    a {
+                        padding: 0.5em 1em;
+                    }
+
+                    .food-container {
+                        bottom: 3px;
+                        height: 1em;
+                        position: absolute;
+                        right: 1px;
+                        text-align: right;
+
+                        svg {
+                            color: $primary-darkest;
+                            height: 100%;
+                            margin-left: -2px;
+                            width: auto;
+                        }
+                    }
                 }
             }
 
 
             &.active {
 
-                a {
-                    background-color: $info;
-                    border-radius: 50%;
+                .inner {
+                    background-color: $primary;
                     color: $white;
+
+                    a, svg {
+                        color: inherit;
+                    }
                 }
             }
 

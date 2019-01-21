@@ -3,24 +3,25 @@
 @section('content')
     <div class="container">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between">
                 {{ __('Order index') }}
+                <a href="{{ route('user_meals.create') }}" class="btn btn-link"> {{ __('Create order') }}</a>
             </div>
             <div class="card-body">
-                <form action="{{ route('orders.index') }}" method="get">
-                    <div class="form-row align-items-end">
-                        <div class="col-md">
-                            <div class="form-group">
-                                <label for="from">{{ __('From') }}</label>
-                                <input type="date" class="form-control" name="from" id="from" value="{{ $from }}">
-                            </div>
-                        </div>
-                        <div class="col-md">
-                            <div class="form-group">
-                                <label for="to">{{ __('To') }}</label>
-                                <input type="date" class="form-control" name="to" id="to" value="{{ $to }}">
-                            </div>
-                        </div>
+                  <form action="{{ route('orders.index') }}" method="get">
+                      <div class="form-row align-items-end">
+                          <div class="col-md">
+                              <div class="form-group">
+                                  <label for="from">{{ __('From') }}</label>
+                                  <input type="date" class="form-control" name="from" id="from" value="{{ $from->toDateString() }}">
+                              </div>
+                          </div>
+                          <div class="col-md">
+                              <div class="form-group">
+                                  <label for="to">{{ __('To') }}</label>
+                                  <input type="date" class="form-control" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
+                              </div>
+                          </div>
                         <div class="col-md-auto">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-secondary">{{ __('Search') }}</button>

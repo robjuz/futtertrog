@@ -78,8 +78,8 @@
                                     </label>
 
                                     <input type="date"
-                                           name="date"
                                            id="date"
+                                           name="date"
                                            class="form-control{{ $errors->has('date') ? ' is-invalid' : '' }}"
                                            required
                                            value="{{ old('date') }}"

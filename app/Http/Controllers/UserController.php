@@ -20,6 +20,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('list', User::class);
+
         $users = User::all();
 
         if ($request->wantsJson()) {
@@ -98,7 +100,7 @@ class UserController extends Controller
      */
     public function edit(Request $request, User $user)
     {
-        $this->authorize('edit', $user);
+        $this->authorize('update', $user);
 
         if ($request->wantsJson()) {
             return response()->json($user);

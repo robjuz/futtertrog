@@ -1,18 +1,63 @@
 /**** HEADER ****/
-.sticky-top {
+.navbar-dark {
   background-image: linear-gradient(to bottom right, $primary-dark, $primary);
   border-bottom: 3px solid $primary-darker;
   box-shadow: 0 0 10px 5px $gray-400;
 }
 
-.navbar-brand {
+/** FUTTERTROG **/
+.navbar-dark .navbar-brand {
   display: inline-block;
   font-size: 2em;
+  padding-bottom: 0.7em;
   transition: 0.3s;
+
+  &::first-letter {
+    font-size: 1.4em;
+  }
+
+  &:hover {
+    color: #bde1ff;
+  }
 }
 
-.navbar-brand::first-letter {
-  font-size: 1.4em;
+/** LINKS LEFT **/
+.navbar-dark .navbar-collapse ul:first-child .nav-link {
+  color: $white;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  position: relative;
+  text-transform: uppercase;
+
+  &::before {
+    border-bottom: 2px solid #c5e0f5;
+    bottom: 0;
+    content: "";
+    left: 50%;
+    position: absolute;
+    right: 50%;
+    transition-duration: 0.25s;
+  }
+
+  &:hover, &:focus {
+    color: #c5e0f5;
+
+    &::before {
+      left: -0.5em;
+      right: -0.5em;
+    }
+  }
+}
+
+/** LINKS RIGHT **/
+.navbar-dark .navbar-collapse ul:last-child .nav-link {
+  color:  #c5e0f5;
+
+  &:hover, &:focus {
+    color: #c5e0f5;
+    text-decoration: underline;
+  }
+
 }
 
 /**** RUNNING DOG ****/

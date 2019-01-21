@@ -1,21 +1,24 @@
 const mix = require('laravel-mix');
 
 if (mix.inProduction()) {
-  mix.options({
-    purifyCss: {
-      purifyOptions: {
-        purifyCss: true,
-        whitelist: [
-          'pagination',
-          'page-item',
-          'page-link',
-          'alert-warning'
-        ]
-      }
-    }
-  });
+  mix.version();
+
+  // mix.options({
+  //   purifyCss: {
+  //     purifyOptions: {
+  //       purifyCss: true,
+  //       whitelist: [
+  //         'pagination',
+  //         'page-item',
+  //         'page-link',
+  //         'alert-warning',
+  //       ],
+  //     },
+  //   },
+  // });
   mix.version();
 }
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -27,4 +30,15 @@ if (mix.inProduction()) {
  |
  */
 
-mix.sass('resources/sass/app.scss', 'public/css');
+
+mix.js('resources/js/app.js', 'public/js');
+mix.autoload({
+  jquery: ['$', 'window.jQuery'],
+});
+
+mix.sass('resources/sass/app.scss', 'css');
+mix.combine([
+  './node_modules/jquery-ui/themes/base/theme.css',
+  './node_modules/jquery-ui/themes/base/datepicker.css',
+  'public/css/app.css'
+], 'public/css/all.css');

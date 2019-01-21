@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
 
         if (config('services.holzke.schedule')) {
-            $schedule->command('import:holzke')->fridays()->at('10:00');
+            $schedule->command('import:holzke')->dailyAt('10:00');
         }
 
         $schedule->call(function () {

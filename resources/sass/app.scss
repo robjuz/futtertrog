@@ -7,27 +7,13 @@
 // Font Awesome
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
 
+// jQuery UI
+@import '~jquery-ui/themes/base/theme.css';
+@import '~jquery-ui/themes/base/datepicker.css';
+
 // Custom
 @import 'header';
 @import 'calendar';
-
-//html, body {
-//  height: 100%;
-//}
-//
-//body {
-//  display: flex;
-//  flex-direction: column;
-//  justify-content: space-between;
-//}
-//
-//main {
-//  margin-bottom: auto;
-//}
-
-* {
-  outline: none !important;
-}
 
 .row-padding {
   th, td {
@@ -71,4 +57,24 @@
   color: $danger;
   border: none;
   border-left: 3px solid $danger;
+}
+
+/** MISCELLANEOUS **/
+
+.table thead th {
+  border-top: none;
+}
+
+h4 {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+h4 .btn-sm {
+  height: 42px;
+  width: 225px;
+}
+
+h4 input {
+  height: 42px !important;
 }
