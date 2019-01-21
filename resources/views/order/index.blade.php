@@ -7,83 +7,76 @@
                 {{ __('Order index') }}
             </div>
             <div class="card-body">
-                <div class="py3-">
-                    <form action="{{ route('orders.index') }}" method="get">
-                        <div class="form-row align-items-end">
-                            <div class="col-md">
-                                <div class="form-group">
-                                    <label for="from">{{ __('From') }}</label>
-                                    <input type="date" class="form-control" name="from" id="from" value="{{ $from }}">
-                                </div>
+                <form action="{{ route('orders.index') }}" method="get">
+                    <div class="form-row align-items-end">
+                        <div class="col-md">
+                            <div class="form-group">
+                                <label for="from">{{ __('From') }}</label>
+                                <input type="date" class="form-control" name="from" id="from" value="{{ $from }}">
                             </div>
-                            <div class="col-md">
-                                <div class="form-group">
-                                    <label for="to">{{ __('To') }}</label>
-                                    <input type="date" class="form-control" name="to" id="to" value="{{ $to }}">
-                                </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="form-group">
+                                <label for="to">{{ __('To') }}</label>
+                                <input type="date" class="form-control" name="to" id="to" value="{{ $to }}">
                             </div>
-                            <div class="col-md-auto">
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-secondary">{{ __('Search') }}</button>
+                        </div>
+                        <div class="col-md-auto">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-secondary">{{ __('Search') }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                @if($orders)
+                    <div class="container-fluid">
+                        <div class="row py-3">
+                            <div class="col-2 text-center"><strong>{{__('Date')}}</strong></div>
+                            <div class="col-2 text-center"><strong>{{__('Status')}}</strong></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="col-4 text-center"><strong>{{__('Title')}}</strong></div>
+                                    <div class="col-2 text-center"><strong>{{__('Quantity')}}</strong></div>
+                                    <div class="col-2 text-center"><strong>{{__('Price')}}</strong></div>
+                                    <div class="col-4"><strong>{{__('Ordered by')}}</strong></div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-
-                @if($orders)
-                    <div class="container-fluid p-0">
                         @foreach($orders as $order)
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between">
-                                    <div>
-                                        {{ $order->date->format(__('futtertrog.d.m.Y')) }}
-                                    </div>
-                                    <div>
-                                        {{ $order->provider }}
-                                    </div>
-                                    <div class="text-right">
-                                        {{ __('futtertrog.status.' . $order->status) }}
-                                        @if ($order->status === \App\Order::STATUS_OPEN)
-                                            @can('update', $order)
-                                                <form action="{{ route('orders.update', $order) }}" method="POST">
-                                                    @method('put')
-                                                    @csrf
-                                                    <input type="hidden" name="status"
-                                                           value="{{ \App\Order::STATUS_ORDERED }}">
-                                                    <button type="submit" class="btn btn-link p-0">
-                                                        {{ __('Mark as ordered') }}
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        @endif
-                                    </div>
+                            <div class="row border-top border-primary align-items-center">
+                                <div class="col-2 text-center">
+                                    {{ $order->date->format(__('futtertrog.d.m.Y')) }}<br>
+                                    {{ $order->provider }}
                                 </div>
-                                <div class="card-body">
-                                    <div class="card-title font-weight-bold">
-                                        <div class="row">
-                                            <div class="col">{{ __('Title') }}</div>
-                                            <div class="col-1 text-center">{{ __('Quantity') }}</div>
-                                            <div class="col-1 text-center text-nowrap">{{ __('Price') }}</div>
-                                            <div class="col-3">{{ __('Ordered by') }}</div>
-                                        </div>
-                                    </div>
+                                <div class="col-2 text-center">
+                                    {{ __('futtertrog.status.' . $order->status) }}
 
+                                    @if ($order->status === \App\Order::STATUS_OPEN)
+                                        @can('update', $order)
+                                            <form action="{{ route('orders.update', $order) }}" method="POST">
+                                                @method('put')
+                                                @csrf
+                                                <input type="hidden" name="status"
+                                                       value="{{ \App\Order::STATUS_ORDERED }}">
+                                                <button type="submit" class="btn btn-link p-0">
+                                                    {{ __('Mark as ordered') }}
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    @endif
+                                </div>
+                                <div class="col-8">
                                     @foreach($order->meals as $meal)
-                                        <div class="row py-3 border-top">
-                                            <div class="col">
-                                                <strong>
-                                                    {{ $meal->title }}
-                                                </strong>
-                                                <p> {{ $meal->description }}</p>
-                                            </div>
-                                            <div class="col-1 text-center">{{ $meal->users->sum('pivot.quantity') }}</div>
-                                            <div class="col-1 text-center text-nowrap">{{ number_format($meal->price, 2, ',','.') }}
+                                        <div class="row py-3 align-items-center {{ $loop->last ? '' : ' border-bottom' }}">
+                                            <div class="col-4 text-center">{{ $meal->title }}</div>
+                                            <div class="col-2 text-center">{{ $meal->users()->sum('quantity') }}</div>
+                                            <div class="col-2 text-center text-nowrap">{{ number_format($meal->price, 2, ',','.') }}
                                                 €
                                             </div>
-                                            <div class="col-3">
+                                            <div class="col-4">
                                                 @foreach($meal->users as $user)
-                                                    <div class="text-nowrap">
+                                                    <div>
                                                         <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
                                                         ( {{ $user->pivot->quantity }} )
                                                     </div>
@@ -91,22 +84,13 @@
                                             </div>
                                         </div>
                                     @endforeach
-
-                                    <div class="row flex-row-reverse border-top pt-3">
-                                        <div class="col-3"></div>
-                                        <div class="font-weight-bold col-1 text-center text-nowrap">
-                                            {{ number_format($order->meals->sum('price'), 2, ',','.') }} €
-                                        </div>
-                                        <div class="font-weight-bold col-1 text-center">
-                                            {{ $order->meals->sum(function($meal) { return $meal->users->sum('pivot.quantity'); }) }}
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
                         @endforeach
-                        <div class="text-right bg-primary p-3 text-white">
-                            <strong>{{ __('Sum') }} {{ number_format($sum, 2, ',','.') }} €</strong>
+                        <div class="row">
+                            <div class="col-1  offset-6 text-center"><strong>{{ __('Sum') }}</strong></div>
+                            <div class="col-1 text-center text-nowrap"><strong>{{ number_format($sum, 2, ',','.') }}
+                                    €</strong></div>
                         </div>
                         @else
                             {{ __('No orders') }}
