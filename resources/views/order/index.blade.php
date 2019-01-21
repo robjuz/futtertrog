@@ -8,20 +8,20 @@
                 <a href="{{ route('user_meals.create') }}" class="btn btn-link"> {{ __('Create order') }}</a>
             </div>
             <div class="card-body">
-                  <form action="{{ route('orders.index') }}" method="get">
-                      <div class="form-row align-items-end">
-                          <div class="col-md">
-                              <div class="form-group">
-                                  <label for="from">{{ __('From') }}</label>
-                                  <input type="date" class="form-control" name="from" id="from" value="{{ $from->toDateString() }}">
-                              </div>
-                          </div>
-                          <div class="col-md">
-                              <div class="form-group">
-                                  <label for="to">{{ __('To') }}</label>
-                                  <input type="date" class="form-control" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
-                              </div>
-                          </div>
+                <form action="{{ route('orders.index') }}" method="get">
+                    <div class="form-row align-items-end">
+                        <div class="col-md">
+                            <div class="form-group">
+                                <label for="from">{{ __('From') }}</label>
+                                <input type="date" class="form-control" name="from" id="from" value="{{ $from->toDateString() }}">
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="form-group">
+                                <label for="to">{{ __('To') }}</label>
+                                <input type="date" class="form-control" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
+                            </div>
+                        </div>
                         <div class="col-md-auto">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-secondary">{{ __('Search') }}</button>
@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         @foreach($orders as $order)
-                            <div class="row border-top border-primary align-items-center">
+                            <div class="row border-top py-3 align-items-center">
                                 <div class="col-2 text-center">
                                     {{ $order->date->format(__('futtertrog.d.m.Y')) }}<br>
                                     {{ $order->provider }}
