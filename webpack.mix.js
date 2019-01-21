@@ -1,6 +1,8 @@
 const mix = require('laravel-mix');
 
 if (mix.inProduction()) {
+  mix.version();
+
   // mix.options({
   //   purifyCss: {
   //     purifyOptions: {
@@ -28,6 +30,8 @@ if (mix.inProduction()) {
  |
  */
 
+
+mix.js('resources/js/app.js', 'public/js');
 mix.autoload({
   jquery: ['$', 'window.jQuery'],
 });
@@ -38,5 +42,3 @@ mix.combine([
   './node_modules/jquery-ui/themes/base/datepicker.css',
   'public/css/app.css'
 ], 'public/css/all.css');
-mix.js('resources/js/app.js', 'public/js');
-// mix.minify('public/js/app.js');

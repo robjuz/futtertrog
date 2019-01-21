@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Meal;
 use DiDom\Document;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 
 class Holzke extends Command
@@ -52,6 +53,10 @@ class Holzke extends Command
 
         //get data
         $date = today();
+        if ($date->isWeekend()) {
+            $date->addWeekday();
+        }
+
         do {
 
             $response = Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
@@ -75,6 +80,8 @@ class Holzke extends Command
                 ], [
                     'description' => trim($meal->find('.cBody')[0]->removeChildren()[0]->text()),
                     'price' => floatval(str_replace(',', '.', $priceMatch[1])),
+                    'orderable_until' => $date->setTime('7', '30'),
+                    'provider' => Meal::PROVIDER_HOLZKE
                 ]);
             }
 

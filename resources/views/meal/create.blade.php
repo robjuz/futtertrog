@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
+            <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">{{ __('New meal') }}</div>
 
@@ -12,7 +12,7 @@
                             @csrf
 
                             <div class="form-row">
-                                <div class="form-group col-12 col-md-4">
+                                <div class="form-group col-12 col-md-6">
                                     <label for="title" class="col-form-label-sm">
                                         {{__('Title')}}
                                     </label>
@@ -20,7 +20,7 @@
                                     <input type="text"
                                            name="title"
                                            id="title"
-                                           class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}"
+                                           class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}"
                                            required
                                            value="{{ old('title') }}"
                                     >
@@ -28,6 +28,46 @@
                                     @if ($errors->has('title'))
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $errors->first('title') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-12 col-md-6">
+                                    <label for="price" class="col-form-label-sm">
+                                        {{ __('Price') }}
+                                    </label>
+
+                                    <input type="number"
+                                           name="price"
+                                           id="price"
+                                           class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
+                                           required
+                                           min="0"
+                                           step="0.01"
+                                           value="{{ old('price') }}"
+                                    >
+
+                                    @if ($errors->has('price'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('price') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-12 col-md-4">
+                                    <label for="provider" class="col-form-label-sm">{{ __('Provider') }}</label>
+
+                                    <select class="custom-select {{ $errors->has('provider') ? ' is-invalid' : '' }}"
+                                            name="provider"
+                                            id="provider"
+                                    >
+                                        <option value="{{ \App\Meal::PROVIDER_HOLZKE }}" {{ old('provider') == \App\Meal::PROVIDER_HOLZKE ? ' selected' : '' }}>{{ \App\Meal::PROVIDER_HOLZKE }}</option>
+                                        <option value="{{ \App\Meal::PROVIDER_PARADIES_PIZZA }}" {{ old('provider') == \App\Meal::PROVIDER_PARADIES_PIZZA ? ' selected' : '' }}>{{ \App\Meal::PROVIDER_PARADIES_PIZZA }}</option>
+                                    </select>
+
+                                    @if ($errors->has('provider'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('provider') }}</strong>
                                         </span>
                                     @endif
                                 </div>
@@ -53,26 +93,26 @@
                                 </div>
 
                                 <div class="form-group col-12 col-md-4">
-                                    <label for="price" class="col-form-label-sm">
-                                        {{ __('Price') }}
+                                    <label for="orderable_until" class="col-form-label-sm">
+                                        {{ __('Orderable until') }}
                                     </label>
 
-                                    <input type="number"
-                                           name="price"
-                                           id="price"
-                                           class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
+                                    <input type="datetime-local"
+                                           name="orderable_until"
+                                           id="orderable_until"
+                                           class="form-control{{ $errors->has('orderable_until') ? ' is-invalid' : '' }}"
                                            required
-                                           min="0"
-                                           step="0.01"
-                                           value="{{ old('price') }}"
+                                           value="{{ old('orderable_until') }}"
                                     >
 
-                                    @if ($errors->has('price'))
+                                    @if ($errors->has('orderable_until'))
                                         <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('price') }}</strong>
+                                            <strong>{{ $errors->first('orderable_until') }}</strong>
                                         </span>
                                     @endif
                                 </div>
+
+
                             </div>
 
                             <div class="form-group">

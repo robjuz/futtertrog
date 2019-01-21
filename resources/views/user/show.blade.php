@@ -2,6 +2,8 @@
 
 @section('content')
     <div class="container">
+        <h2 class="py-3"> {{ $user->name }}</h2>
+
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
                 <div class="mb-3">
