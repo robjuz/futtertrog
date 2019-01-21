@@ -57,7 +57,12 @@ class Meal extends Model
 
     public function setOrderableUntilAttribute($value)
     {
-        if ($value) {
+        if (!$value) {
+            return;
+        }
+        if ($value instanceof Carbon) {
+            $this->attributes['orderable_until'] = $value;
+        } else {
             $this->attributes['orderable_until'] = Carbon::createFromFormat('Y-m-d\TH:i', $value);
         }
     }
