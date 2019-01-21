@@ -8,6 +8,7 @@ use App\Order;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class UserOrderController extends Controller
@@ -21,15 +22,37 @@ class UserOrderController extends Controller
             ->get();
     }
 
-    public function store(Request $request, Meal $meal)
+    public function create(Request $request)
     {
-        /** @var User $user */
-        $user = $request->user();
+        if ($date =  $request->query('date')) {
+            $date = Carbon::parse($date);
+            $meals = Meal::whereDate('date', $date)->get();
+            $users = User::all();
+            return view('user_order.create', compact('meals', 'users', 'date'));
+        }
 
-        $quantity = $request->input('quantity') ?? 1;
+        return view('user_order.select_date');
+
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+            'meal_id' => ['required', 'exists:meals,id'],
+            'quantity' => ['sometimes', 'numeric' ,'min:1']
+        ]);
+
+        $quantity = $request->input('quantity', 1);
+        $user = $request->user()->is_admin ? User::findOrFail($request->input('user_id')) : $request->user();
+        $meal = Meal::findOrFail($request->input('meal_id'));
 
         DB::transaction(function () use ($user, $meal, $quantity) {
-            $user->meals()->attach($meal,  ['quantity' => $quantity, 'created_at' => now()]);
+            if ($user->meals()->whereKey($meal)->exists()) {
+                $user->meals()->updateExistingPivot($meal, ['quantity' => $quantity]);
+            } else {
+                $user->meals()->attach($meal, ['quantity' => $quantity, 'created_at' => now()]);
+            }
 
             /** @var Order $order */
             $order = Order::firstOrCreate([
@@ -59,13 +82,17 @@ class UserOrderController extends Controller
             return view('meal.meal', compact('meal', 'orders'));
         }
 
-        return back();
+        return back()->with('success', trans('Saved'));
     }
 
     public function destroy(Request $request, Meal $meal)
     {
-        /** @var User $user */
-        $user = $request->user();
+        $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+        ]);
+
+        $user = $request->user()->is_admin ? User::findOrFail($request->input('user_id')) : $request->user();
+
         DB::transaction(function () use ($user, $meal) {
             $user->meals()->detach($meal);
 

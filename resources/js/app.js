@@ -5,6 +5,8 @@ let lang = document.documentElement.lang;
 
 $('input[type=date]').each(function () {
   this.type = 'text';
+  $(this).parent().append('<input type="hidden" name="' + this.name+'" id="' + this.id + '_raw">');
+  this.name = '';
   if (this.value) {
     this.value = new Date(this.value).toLocaleDateString(lang);
   }

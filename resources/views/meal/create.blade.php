@@ -39,11 +39,11 @@
 
                                     <input type="date"
                                            id="date"
+                                           name="date"
                                            class="form-control{{ $errors->has('date') ? ' is-invalid' : '' }}"
                                            required
                                            value="{{ old('date') }}"
                                     >
-                                    <input type="hidden" name="date" id="date_raw" value="{{ old('date') }}">
 
                                     @if ($errors->has('date'))
                                         <span class="invalid-feedback" role="alert">

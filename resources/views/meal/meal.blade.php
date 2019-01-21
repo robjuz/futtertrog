@@ -19,10 +19,11 @@
             <small>{{ number_format($meal->price, 2, ',', '.') }} €</small>
 
             @if($orders->contains($meal))
-                @can('order', $meal)
+                @can('disorder', $meal)
                     <form onsubmit="order(event, 'DELETE')" action="{{ route('user_meals.destroy', $meal) }}" method="post" class="ml-3">
                         @csrf
                         @method('delete')
+                        <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
                         <button type="submit" class="btn btn-outline-danger btn-sm">
                             ( {{ $orders->firstWhere('id', $meal->id)->pivot->quantity }} ) {{ __('Delete order') }}
                             <span class="d-none spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -31,20 +32,25 @@
                 @endcan
 
             @else
-                <form onsubmit="order(event, 'POST')"  action="{{ route('user_meals.store', $meal) }}" method="post" class="d-flex ml-3 flex-shrink-1">
-                    @csrf
-                    <input type="number"
-                           class="form-control"
-                           name="quantity"
-                           min="1"
-                           value="1"
-                           style="width: 80px;"
-                    >
-                    <button type="submit" class="btn btn-outline-primary btn-sm">
-                        {{ __('Place order') }}
-                        <span class="d-none spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    </button>
-                </form>
+                @can('order', $meal)
+                    <form onsubmit="order(event, 'POST')"  action="{{ route('user_meals.store') }}" method="post" class="d-flex ml-3 flex-shrink-1">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
+                        <input type="hidden" name="meal_id" value="{{ $meal->id }}"/>
+
+                        <input type="number"
+                               class="form-control"
+                               name="quantity"
+                               min="1"
+                               value="1"
+                               style="width: 80px;"
+                        >
+                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                            {{ __('Place order') }}
+                            <span class="d-none spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        </button>
+                    </form>
+                @endcan
             @endif
         </div>
     </h4>

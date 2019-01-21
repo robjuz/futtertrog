@@ -3,8 +3,9 @@
 @section('content')
     <div class="container">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between">
                 {{ __('Order index') }}
+                <a href="{{ route('user_meals.create') }}" class="btn btn-link"> {{ __('Create order') }}</a>
             </div>
             <div class="card-body">
                 <div class="py3-">
@@ -13,15 +14,13 @@
                             <div class="col-md">
                                 <div class="form-group">
                                     <label for="from">{{ __('From') }}</label>
-                                    <input type="date" class="form-control" id="from" value="{{ $from->toDateString() }}">
-                                    <input type="hidden" name="from" id="from_raw" value="{{ $from->toDateString() }}">
+                                    <input type="date" class="form-control" name="from" id="from" value="{{ $from->toDateString() }}">
                                 </div>
                             </div>
                             <div class="col-md">
                                 <div class="form-group">
                                     <label for="to">{{ __('To') }}</label>
-                                    <input type="date" class="form-control" id="to" value="{{ $to ? $to->toDateString() : '' }}">
-                                    <input type="hidden" name="to" id="to_raw" value="{{ $to ? $to->toDateString() : '' }}">
+                                    <input type="date" class="form-control" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
                                 </div>
                             </div>
                             <div class="col-md-auto">
