@@ -118,7 +118,7 @@ class MealController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'orderable_until' => 'required|date|after:date',
+            'can_be_ordered_until' => 'required|date|after:date',
             'provider' => ['required', Rule::in(Meal::$providers)]
         ]));
 
@@ -175,7 +175,7 @@ class MealController extends Controller
                 'title' => 'sometimes|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'sometimes|numeric|min:0',
-                'orderable_until' => 'sometimes|date|after:date',
+                'can_be_ordered_until' => 'sometimes|date|after:date',
                 'provider' => ['sometimes', Rule::in(Meal::$providers)]
             ])
         );

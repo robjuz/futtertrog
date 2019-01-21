@@ -43,7 +43,7 @@ class Meal extends Model
 
     protected $guarded = [];
 
-    protected $dates = ['date', 'orderable_until'];
+    protected $dates = ['date', 'can_be_ordered_until'];
 
     public function users()
     {
@@ -55,15 +55,12 @@ class Meal extends Model
         return $this->belongsToMany(Order::class);
     }
 
-    public function setOrderableUntilAttribute($value)
+    public function setCanBeOrderedUntilAttribute($value)
     {
         if (!$value) {
             return;
         }
-        if ($value instanceof Carbon) {
-            $this->attributes['orderable_until'] = $value;
-        } else {
-            $this->attributes['orderable_until'] = Carbon::createFromFormat('Y-m-d\TH:i', $value);
-        }
+
+        $this->attributes['can_be_ordered_until'] = Carbon::parse($value);
     }
 }

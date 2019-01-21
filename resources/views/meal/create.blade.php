@@ -93,21 +93,21 @@
                                 </div>
 
                                 <div class="form-group col-12 col-md-4">
-                                    <label for="orderable_until" class="col-form-label-sm">
+                                    <label for="can_be_ordered_until" class="col-form-label-sm">
                                         {{ __('Orderable until') }}
                                     </label>
 
                                     <input type="datetime-local"
-                                           name="orderable_until"
-                                           id="orderable_until"
-                                           class="form-control{{ $errors->has('orderable_until') ? ' is-invalid' : '' }}"
+                                           name="can_be_ordered_until"
+                                           id="can_be_ordered_until"
+                                           class="form-control{{ $errors->has('can_be_ordered_until') ? ' is-invalid' : '' }}"
                                            required
-                                           value="{{ old('orderable_until') }}"
+                                           value="{{ old('can_be_ordered_until') }}"
                                     >
 
-                                    @if ($errors->has('orderable_until'))
+                                    @if ($errors->has('can_be_ordered_until'))
                                         <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('orderable_until') }}</strong>
+                                            <strong>{{ $errors->first('can_be_ordered_until') }}</strong>
                                         </span>
                                     @endif
                                 </div>

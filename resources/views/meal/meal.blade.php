@@ -30,7 +30,6 @@
                         </button>
                     </form>
                 @endcan
-
             @else
                 @can('order', $meal)
                     <form onsubmit="order(event, 'POST')"  action="{{ route('user_meals.store') }}" method="post" class="d-flex ml-3 flex-shrink-1">

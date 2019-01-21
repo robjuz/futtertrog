@@ -35,17 +35,21 @@ class AuthServiceProvider extends ServiceProvider
                 return null;
             }
 
+            if ($ability === 'disorder') {
+                return null;
+            }
+
             if ($user->is_admin) {
                 return true;
             }
         });
 
         Gate::define('order', function (User $user, Meal $meal) {
-            return $meal->oderable_until > now();
+            return $meal->can_be_ordered_until > now();
         });
 
         Gate::define('disorder', function (User $user, Meal $meal) {
-            return $meal->oderable_until > now();
+            return $meal->can_be_ordered_until > now();
         });
     }
 }

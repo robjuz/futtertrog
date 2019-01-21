@@ -14,7 +14,7 @@ class UpdateMealsTable extends Migration
     public function up()
     {
         Schema::table('meals', function (Blueprint $table) {
-            $table->timestamp('orderable_until')->nullable();
+            $table->timestamp('can_be_ordered_until')->nullable();
             $table->string('provider')->nullable();
         });
     }

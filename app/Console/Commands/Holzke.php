@@ -81,7 +81,7 @@ class Holzke extends Command
                 ], [
                     'description' => trim($meal->find('.cBody')[0]->removeChildren()[0]->text()),
                     'price' => floatval(str_replace(',', '.', $priceMatch[1])),
-                    'orderable_until' => $date->setTime('7', '30'),
+                    'can_be_ordered_until' => $date->setTime('7', '30'),
                 ]);
             }
 
