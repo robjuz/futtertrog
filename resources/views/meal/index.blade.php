@@ -97,12 +97,6 @@
 
             <div class="col">
 
-                @foreach($messages as $message)
-                    <div class="alert alert-{{$message['type']}}" role="alert">
-                        {{ $message['text'] }}
-                    </div>
-                @endforeach
-
                 <form action="{{ route('meals.index') }}" method="GET">
 
                     <input type="hidden" name="date" value="{{ $requestedDate->format('Y-m-d') }}">

@@ -12,7 +12,7 @@
                             @csrf
 
                             <div class="form-row">
-                                <div class="form-group col-12 col-md-6">
+                                <div class="form-group col-12">
                                     <label for="title" class="col-form-label-sm">
                                         {{__('Title')}}
                                     </label>
@@ -28,28 +28,6 @@
                                     @if ($errors->has('title'))
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $errors->first('title') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="price" class="col-form-label-sm">
-                                        {{ __('Price') }}
-                                    </label>
-
-                                    <input type="number"
-                                           name="price"
-                                           id="price"
-                                           class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
-                                           required
-                                           min="0"
-                                           step="0.01"
-                                           value="{{ old('price') }}"
-                                    >
-
-                                    @if ($errors->has('price'))
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('price') }}</strong>
                                         </span>
                                     @endif
                                 </div>
@@ -93,43 +71,43 @@
                                 </div>
 
                                 <div class="form-group col-12 col-md-4">
-                                    <label for="can_be_ordered_until" class="col-form-label-sm">
-                                        {{ __('Orderable until') }}
+                                    <label for="price" class="col-form-label-sm">
+                                        {{ __('Price') }}
                                     </label>
 
-                                    <input type="datetime-local"
-                                           name="can_be_ordered_until"
-                                           id="can_be_ordered_until"
-                                           class="form-control{{ $errors->has('can_be_ordered_until') ? ' is-invalid' : '' }}"
+                                    <input type="number"
+                                           name="price"
+                                           id="price"
+                                           class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
                                            required
-                                           value="{{ old('can_be_ordered_until') }}"
+                                           min="0"
+                                           step="0.01"
+                                           value="{{ old('price') }}"
                                     >
 
-                                    @if ($errors->has('can_be_ordered_until'))
+                                    @if ($errors->has('price'))
                                         <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('can_be_ordered_until') }}</strong>
+                                            <strong>{{ $errors->first('price') }}</strong>
                                         </span>
                                     @endif
                                 </div>
 
+                                <div class="form-group col-12">
+                                    <label for="description" class="col-form-label-sm">
+                                        {{ __('Description') }}
+                                    </label>
 
-                            </div>
+                                    <textarea name="description"
+                                              id="description"
+                                              class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}"
+                                    >{{ old('description') }}</textarea>
 
-                            <div class="form-group">
-                                <label for="description" class="col-form-label-sm">
-                                    {{ __('Description') }}
-                                </label>
-
-                                <textarea name="description"
-                                          id="description"
-                                          class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}"
-                                >{{ old('description') }}</textarea>
-
-                                @if ($errors->has('description'))
-                                    <span class="invalid-feedback" role="alert">
+                                    @if ($errors->has('description'))
+                                        <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('description') }}</strong>
                                     </span>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>

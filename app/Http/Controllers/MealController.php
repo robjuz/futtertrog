@@ -23,6 +23,7 @@ class MealController extends Controller
         $this->authorize('list', Meal::class);
 
         $requestedDate = Carbon::parse($request->query('date', today()->addWeekday()));
+        $startOfWeek = Carbon::parse($requestedDate)->startOfWeek();
 
         $settings = $request->user()->settings ?? [];
 
@@ -30,8 +31,7 @@ class MealController extends Controller
         $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
 
         $meals = Meal::query()
-            ->whereYear('date', $requestedDate->year)
-            ->whereMonth('date', $requestedDate->month)
+            ->whereDate('date', '>=', $startOfWeek)
             ->when(!empty($includes), function (Builder $query) use ($includes) {
                 $includes = array_map('trim', explode(',', $includes));
 
@@ -49,44 +49,16 @@ class MealController extends Controller
                 }
             })->get();
 
-
-        $messages = [];
-
-        if (Carbon::parse($requestedDate)->isWeekend()) {
-            $messages[] = [
-                'type' => 'success',
-                'text' => 'Wochenende!'
-            ];
-        } else {
-            if (!Carbon::parse($requestedDate)->greaterThan(today())) {
-                $messages[] = [
-                    'type' => 'danger',
-                    'text' => 'Keine Bestellmöglichkeit für diesen Tag.'
-                ];
-            } else {
-                if (!$meals->count()) {
-                    $messages[] = [
-                        'type' => 'warning',
-                        'text' => 'Es gibt noch keine Bestellmöglichkeiten für diesen Tag. Probieren Sie morgen.'
-                    ];
-                }
-            }
-        }
-
         if ($request->wantsJson()) {
-            return [
-                'meals' => $meals,
-                'messages' => $messages
-            ];
+            return $meals;
         }
 
         $orders = $request->user()->meals()
-            ->whereYear('date', $requestedDate->year)
-            ->whereMonth('date', $requestedDate->month)
+            ->whereDate('date', '>=', $startOfWeek)
             ->get();
 
 
-        return view('meal.index', compact('meals', 'orders', 'requestedDate', 'messages', 'includes', 'excludes'));
+        return view('meal.index', compact('meals', 'orders', 'requestedDate', 'includes', 'excludes'));
     }
 
     /**
