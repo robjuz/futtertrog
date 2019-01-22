@@ -4,6 +4,7 @@
     <div class="container">
         <div class="row justify-content-center">
 
+
             <div class="col-md-6 mb-3">
 
                 <div class="card mb-3">
@@ -16,15 +17,6 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    @include('deposit_history')
-                </div>
-
-                @include('order_history', ['user' => auth()->user()])
-
-            </div>
-
-            <div class="col-md-6 mb-3">
                 <div class="card mb-3">
                     <div class="card-header">{{ __('Your today order') }}</div>
 
@@ -110,6 +102,14 @@
                     </div>
                 </div>
 
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="mb-3">
+                    @include('deposit_history')
+                </div>
+
+                @include('order_history', ['meals' => $mealsHistory])
             </div>
 
         </div>

@@ -2,40 +2,30 @@
 
 @section('content')
     <div class="container">
-        <h2 class="py-3"> {{ $user->name }}</h2>
-
+        <div class="py-3 d-md-flex justify-content-between align-items-end">
+            <h2>
+                {{ $user->name }}
+            </h2>
+            <a href="{{ route('users.edit', $user) }}" class="btn btn-link">
+                {{ __('Edit') }}
+            </a>
+        </div>
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="mb-3">
-                    @include('order_history')
-                </div>
 
-                @include('deposit_history')
-            </div>
-            <div class="col-md-8 col-lg-6">
-
-                <div class="card mb-sm-3">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        {{ $user->name }}
-
-                        <a href="{{ route('users.edit', $user) }}">
-                            {{ __('Edit') }}
-                        </a>
-                    </div>
+            <div class="col-12 col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">{{ __('Balance') }}</div>
 
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-3">{{__('Balance')}}</div>
-                            <div class="col-sm-9">
-                                <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
-                                    {{ number_format($user->balance, 2, ',','.') }} €
-                                </span>
-                            </div>
-                        </div>
+                        <span class="{{  $user->balance > 0 ? 'text-success' : 'text-danger' }}">
+                        {{ number_format( $user->balance, 2, ',','.') }} €
+                        </span>
                     </div>
                 </div>
+            </div>
 
-                <div class="card mb-sm-3">
+            <div class="col-12 col-md-6">
+                <div class="card mb-3">
                     <div class="card-header">{{ __('New deposit') }}</div>
 
                     <div class="card-body">
@@ -71,7 +61,13 @@
                         </form>
                     </div>
                 </div>
+            </div>
 
+            <div class="col-12">
+                @include('order_history')
+            </div>
+            <div class="col-12">
+                @include('deposit_history')
             </div>
         </div>
 

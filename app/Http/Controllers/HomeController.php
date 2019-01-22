@@ -23,9 +23,9 @@ class HomeController extends Controller
         $balance = $user->balance;
         $todayMeals = $user->meals()->whereDate('date', today())->get();
 
-        $meals = $user->meals()->orderBy('meal_user.created_at', 'desc')->paginate(5, ['*'], 'meals_page');
-        $meals->appends('deposits_page', $request->deposits_page);
-        $meals->appends('future_meals_page', $request->future_meals_page);
+        $mealsHistory = $user->meals()->orderBy('meal_user.created_at', 'desc')->paginate(5, ['*'], 'meals_page');
+        $mealsHistory->appends('deposits_page', $request->deposits_page);
+        $mealsHistory->appends('future_meals_page', $request->future_meals_page);
 
         $futureMeals = $user->meals()->whereDate('date', '>', today())->orderBy('date')->paginate(5, ['*'], 'future_meals_page');
         $futureMeals->appends('meals_page', $request->meals_page);
@@ -35,6 +35,6 @@ class HomeController extends Controller
         $deposits->appends('meals_page', $request->meals_page);
         $deposits->appends('future_meals_page', $request->future_meals_page);
 
-        return view('home', compact('balance','meals', 'todayMeals','futureMeals', 'deposits'));
+        return view('home', compact('balance','mealsHistory', 'todayMeals','futureMeals', 'deposits', 'user'));
     }
 }
