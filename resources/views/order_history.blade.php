@@ -28,6 +28,7 @@
                         <form action="{{ route('user_meals.destroy', $meal) }}" method="post">
                             @csrf
                             @method('delete')
+                            <input type="hidden" name="user_id" value="{{ $user->id }}"/>
                             <button type="submit" class="btn btn-link btn-sm text-danger">
                                 {{ __('Delete') }}
                             </button>
