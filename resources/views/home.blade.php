@@ -20,7 +20,7 @@
                     @include('deposit_history')
                 </div>
 
-                @include('order_history')
+                @include('order_history', ['user' => auth()->user()])
 
             </div>
 
