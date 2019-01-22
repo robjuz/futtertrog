@@ -43,24 +43,10 @@ class Meal extends Model
 
     protected $guarded = [];
 
-    protected $dates = ['date', 'can_be_ordered_until'];
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class)->withPivot('quantity');
-    }
+    protected $dates = ['date_from', 'date_to'];
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class);
-    }
-
-    public function setCanBeOrderedUntilAttribute($value)
-    {
-        if (!$value) {
-            return;
-        }
-
-        $this->attributes['can_be_ordered_until'] = Carbon::parse($value);
+        return $this->hasMany(Order::class);
     }
 }

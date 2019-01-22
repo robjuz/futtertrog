@@ -4,7 +4,6 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
 
 /**
  * App\User
@@ -72,23 +71,25 @@ class User extends Authenticatable
         return $this->hasMany(Deposit::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function meals()
     {
-        return $this->belongsToMany(Meal::class)->withPivot('quantity');
+        return $this->hasManyThrough(Meal::class, Order::class, 'meal_id', 'id');
     }
 
     public function getBalanceAttribute()
     {
-        return $this->deposits()->sum('value') - $this->meals()->sum('price');
-    }
+        $this->load('orders.meal');
 
-    public function setPasswordAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['password'] = Hash::make($value);
-        }
+        $deposits = $this->deposits()->sum('value');
+        $orders = $this->orders->sum(function ($order) {
+            return $order->meal->price * $order->quantity;
+        });
+
+        return $deposits - $orders;
     }
 }

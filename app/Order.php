@@ -38,11 +38,15 @@ class Order extends Model
         self::STATUS_ORDERED
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function meals()
+    public function meal()
     {
-        return $this->belongsToMany(Meal::class);
+        return $this->belongsTo(Meal::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
 }

@@ -16,6 +16,9 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->date('date');
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('meal_id');
+            $table->tinyInteger('quantity')->default(1);
             $table->string('status')->default('open');
             $table->timestamps();
         });
