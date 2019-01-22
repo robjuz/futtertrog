@@ -45,8 +45,9 @@
                             </div>
                         </div>
                         @foreach($orders as $order)
-                            <div class="row border-top py-3 align-items-center">
+                            <div class="row border-top border-primary py-3 align-items-center">
                                 <div class="col-2 text-center">
+                                    {{ __('calendar.' . $order->date->englishDayOfWeek) }}<br>
                                     {{ $order->date->format(__('futtertrog.d.m.Y')) }}<br>
                                     {{ $order->provider }}
                                 </div>
