@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DepositTest extends TestCase
 {
@@ -45,11 +44,11 @@ class DepositTest extends TestCase
             'value' => 10,
         ]);
 
-        $this->login($admin)
-            ->post(route('deposits.store'), $deposit);
+        $this->login($admin);
+
+        $this->post(route('deposits.store'), $deposit);
 
         $this->assertDatabaseHas('deposits', $deposit);
-
         $this->assertEqual(10, $user->balance);
     }
 
@@ -64,5 +63,25 @@ class DepositTest extends TestCase
             ->post(route('deposits.store'), $deposit);
 
         $this->assertDatabaseHas('deposits', $deposit);
+    }
+
+    /** @test */
+    public function admin_can_delete_a_deposit()
+    {
+        $admin = factory('App\User')->create(['is_admin' => true]);
+
+        $user = factory('App\User')->create();
+
+        $deposit = factory('App\Deposit')->create([
+            'user_id' => $user->id,
+            'value' => 10,
+        ]);
+
+        $this->login($admin)
+            ->delete(route('deposits.destroy', $deposit));
+
+        $this->assertDatabaseMissing('deposits', $deposit->toArray());
+
+        $this->assertEquals(0, $user->balance);
     }
 }
