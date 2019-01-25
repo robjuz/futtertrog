@@ -49,4 +49,11 @@ class Meal extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function wasOrdered($date, User $user = null)
+    {
+        $userId = $user ? $user->id: auth()->id();
+
+        return $this->orders()->whereDate('date', $date)->where('user_id', $userId)->exists();
+    }
 }

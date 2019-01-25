@@ -78,7 +78,7 @@ class User extends Authenticatable
 
     public function meals()
     {
-        return $this->hasManyThrough(Meal::class, Order::class, 'meal_id', 'id');
+        return $this->hasManyThrough(Meal::class, Order::class, 'user_id', 'id', 'id', 'meal_id');
     }
 
     public function getBalanceAttribute()
@@ -91,5 +91,12 @@ class User extends Authenticatable
         });
 
         return $deposits - $orders;
+    }
+
+    public function markAsAdmin()
+    {
+        return $this->forceFill([
+            'is_admin' => true,
+        ])->save();
     }
 }

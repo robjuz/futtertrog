@@ -15,6 +15,7 @@ class MealController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -23,7 +24,6 @@ class MealController extends Controller
         $this->authorize('list', Meal::class);
 
         $requestedDate = Carbon::parse($request->query('date', today()->addWeekday()));
-        $startOfWeek = Carbon::parse($requestedDate)->startOfWeek();
 
         $settings = $request->user()->settings ?? [];
 
@@ -31,7 +31,8 @@ class MealController extends Controller
         $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
 
         $meals = Meal::query()
-            ->whereDate('date', '>=', $startOfWeek)
+            ->whereDate('date_from', '<=', $requestedDate)
+            ->whereDate('date_to', '>=', $requestedDate)
             ->when(!empty($includes), function (Builder $query) use ($includes) {
                 $includes = array_map('trim', explode(',', $includes));
 
@@ -47,14 +48,15 @@ class MealController extends Controller
                 foreach ($excludes as $exclude) {
                     $query->where('description', 'not like', '%' . $exclude . '%');
                 }
-            })->get();
+            })
+            ->get();
 
         if ($request->wantsJson()) {
             return $meals;
         }
 
         $orders = $request->user()->meals()
-            ->whereDate('date', '>=', $startOfWeek)
+            ->whereDate('orders.date', '=', $requestedDate)
             ->get();
 
 
@@ -78,6 +80,7 @@ class MealController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -86,11 +89,11 @@ class MealController extends Controller
         $this->authorize('create', Meal::class);
 
         Meal::create($request->validate([
-            'date' => 'required|date',
+            'date_from' => 'required|date',
+            'date_to' => 'required|date|after_or_equal:date_from',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'can_be_ordered_until' => 'required|date|after:date',
             'provider' => ['required', Rule::in(Meal::$providers)]
         ]));
 
@@ -105,6 +108,7 @@ class MealController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Meal $meal
+     *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -119,6 +123,7 @@ class MealController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Meal $meal
+     *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -133,7 +138,8 @@ class MealController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Meal $meal
+     * @param  \App\Meal                $meal
+     *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -158,8 +164,9 @@ class MealController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
+     * @param Request    $request
      * @param  \App\Meal $meal
+     *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Exception

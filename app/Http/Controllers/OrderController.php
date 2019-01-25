@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Meal;
 use App\Order;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -16,6 +16,7 @@ class OrderController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -35,8 +36,8 @@ class OrderController extends Controller
         $sum = $orders->sum(function ($order) {
             return $order->meals->sum(function ($meal) {
                 return $meal->price * $meal->users->sum(function ($user) {
-                    return $user->pivot->quantity;
-                });
+                        return $user->pivot->quantity;
+                    });
             });
         });
 
@@ -57,36 +58,45 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $attributes = $request->validate([
             'date' => 'required|date',
-            'status' => 'required|string|max:30',
-            'meals' => [
-                'sometimes',
-                'array',
-                Rule::in(Meal::pluck('id'))
-            ]
+            'meal_id' => 'required|exists:meals,id',
+            'user_id' => 'sometimes|exists:users,id',
+            'quantity' => 'sometimes|numeric|min:1,max:10',
+            'status' => 'sometimes|string|max:30',
+
         ]);
 
+        /** @var User $user */
+        $user = $request->user();
+
+        if ($user->is_admin) {
+            $attributes['user_id'] = $attributes['user_id'] ?: $user->id;
+        } else {
+            $attributes['user_id'] =  $user->id;
+        }
+
         /** @var Order $order */
-        $order = Order::create($request->only(['date', 'status']));
-        $order->meals()->attach($request->only('meals'));
+        $order = Order::create($attributes);
 
         if ($request->wantsJson()) {
             return response($order, Response::HTTP_CREATED);
         }
 
-        return redirect()->route('orders.index')->with('message', __('Success'));
+        return back()->with('message', __('Success'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param Request $request
+     * @param Request     $request
      * @param  \App\Order $order
+     *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -107,6 +117,7 @@ class OrderController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Order $order
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Order $order)
@@ -118,7 +129,8 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Order $order
+     * @param  \App\Order               $order
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Order $order)
@@ -139,8 +151,9 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
+     * @param Request     $request
      * @param  \App\Order $order
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException

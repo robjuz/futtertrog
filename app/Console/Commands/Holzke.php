@@ -76,7 +76,8 @@ class Holzke extends Command
 
                 Meal::updateOrCreate([
                     'title' => trim($titleMatch[0]),
-                    'date' => $date->toDateString(),
+                    'date_from' => $date->toDateString(),
+                    'date_to' => $date->toDateString(),
                     'provider' => Meal::PROVIDER_HOLZKE
                 ], [
                     'description' => trim($meal->find('.cBody')[0]->removeChildren()[0]->text()),

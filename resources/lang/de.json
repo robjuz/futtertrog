@@ -106,6 +106,7 @@
   ":user updated :meal" : ":user hat :meal aktualisiert",
   "Next" : "Weiter",
   "Saved" : "Gespeichert",
-  "Create order" : "Bestellung erstellen"
+  "Create order" : "Bestellung erstellen",
+  "No items found" : "Keine Einträge gefunden"
 
 }

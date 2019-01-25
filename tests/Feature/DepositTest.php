@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class DepositTest extends TestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function only_admin_can_create_a_deposit()

@@ -60,22 +60,18 @@
 
                             <div class="position-relative col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->where('date', $date)->count() ? ' has-orders' : '' }}">
                                 <div class="inner">
-                                @if ($meals->where('date', $date)->count())
-                                    <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
+                                    <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>" class="btn btn-link">
                                         <span>{{ $date->day }}</span>
                                     </a>
-                                    <div class="food-container">
-                                        @if($ordersCount = $orders->where('date', $date)->sum(function($order) { return $order->pivot->quantity;}))
-                                            @foreach($orders->where('date', $date) as $order)
-                                                <span title="{{$order->title}}">
-                                                    <svg aria-hidden="true" data-prefix="fas" data-icon="drumstick-bite" class="svg-inline--fa fa-drumstick-bite fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M462.79 49.57c-66.14-66.09-173.36-66.09-239.5 0C187.81 85.02 160.12 128 160.12 192v85.83l-40.62 40.59c-9.7 9.69-24.04 11.07-36.78 5.98-21.72-8.68-47.42-4.29-65.02 13.29-23.61 23.59-23.61 61.84 0 85.43 15.28 15.27 36.53 19.58 56.14 15.09-4.5 19.6-.18 40.83 15.1 56.1 23.61 23.59 61.88 23.59 85.49 0 17.6-17.58 21.99-43.26 13.31-64.97-5.09-12.73-3.72-27.05 5.99-36.75L234.35 352h85.89c23.2 0 43.57-3.72 61.89-10.03-39.64-43.89-39.83-110.23 1.05-151.07 34.38-34.36 86.76-39.46 128.74-16.8 1.3-44.93-14.81-90.25-49.13-124.53z"></path></svg>
-                                                </span>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                @else
-                                    <span class="a">{{ $date->day }}</span>
-                                @endif
+                                    {{--<div class="food-container">--}}
+                                        {{--@if($ordersCount = $orders->where('date', $date)->sum(function($order) { return $order->pivot->quantity;}))--}}
+                                            {{--@foreach($orders->where('date', $date) as $order)--}}
+                                                {{--<span title="{{$order->title}}">--}}
+                                                    {{--<svg aria-hidden="true" data-prefix="fas" data-icon="drumstick-bite" class="svg-inline--fa fa-drumstick-bite fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M462.79 49.57c-66.14-66.09-173.36-66.09-239.5 0C187.81 85.02 160.12 128 160.12 192v85.83l-40.62 40.59c-9.7 9.69-24.04 11.07-36.78 5.98-21.72-8.68-47.42-4.29-65.02 13.29-23.61 23.59-23.61 61.84 0 85.43 15.28 15.27 36.53 19.58 56.14 15.09-4.5 19.6-.18 40.83 15.1 56.1 23.61 23.59 61.88 23.59 85.49 0 17.6-17.58 21.99-43.26 13.31-64.97-5.09-12.73-3.72-27.05 5.99-36.75L234.35 352h85.89c23.2 0 43.57-3.72 61.89-10.03-39.64-43.89-39.83-110.23 1.05-151.07 34.38-34.36 86.76-39.46 128.74-16.8 1.3-44.93-14.81-90.25-49.13-124.53z"></path></svg>--}}
+                                                {{--</span>--}}
+                                            {{--@endforeach--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
                                 </div>
                             </div>
                             @php
@@ -129,11 +125,15 @@
                     </div>
                 </form>
 
-                @foreach($meals->where('date', $requestedDate) as $meal)
+                @forelse($meals as $meal)
                     <div class="meal-container">
                         @include('meal.meal')
                     </div>
-                @endforeach
+                @empty
+                    <div class="alert alert-warning" role="alert">
+                        <strong>{{ __('No items found') }}</strong>
+                    </div>
+                @endforelse
 
             </div>
         </div>

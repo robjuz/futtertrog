@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function it_has_many_deposits()
@@ -34,7 +34,14 @@ class UserTest extends TestCase
         /** @var \App\User $user */
         $user = factory('App\User')->create();
 
+        factory('App\Order', 10)->create([
+            'user_id' => $user->id
+        ]);
+
+
         $this->assertInstanceOf('Illuminate\Support\Collection', $user->meals);
+        $this->assertCount(10, $user->meals);
+
     }
 
     /** @test */
@@ -62,5 +69,14 @@ class UserTest extends TestCase
         $this->assertEquals(14.10, $user->balance);
     }
 
+    /** @test */
+    public function it_can_be_marked_as_admin()
+    {
+        $user = factory('App\User')->create(['is_admin' => false]);
+
+        $user->markAsAdmin();
+
+        $this->assertTrue($user->fresh()->is_admin);
+    }
 
 }

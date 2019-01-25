@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderTest extends TestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function it_belongs_to_an_user()
