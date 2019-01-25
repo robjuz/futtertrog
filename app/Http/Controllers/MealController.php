@@ -31,7 +31,8 @@ class MealController extends Controller
         $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
 
         $meals = Meal::query()
-            ->whereDate('date', '>=', $startOfWeek)
+            ->whereYear('date', $requestedDate)
+            ->whereMonth('date', $requestedDate)
             ->when(!empty($includes), function (Builder $query) use ($includes) {
                 $includes = array_map('trim', explode(',', $includes));
 
