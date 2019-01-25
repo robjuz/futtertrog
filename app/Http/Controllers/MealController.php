@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Meal;
-use Illuminate\Database\Eloquent\Builder;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -24,43 +24,64 @@ class MealController extends Controller
         $this->authorize('list', Meal::class);
 
         $requestedDate = Carbon::parse($request->query('date', today()->addWeekday()));
+        $firstOfMonth = Carbon::parse($requestedDate)->firstOfMonth();
 
         $settings = $request->user()->settings ?? [];
 
         $includes = $request->has('reset') ? $settings['includes'] ?? null : $request->query('includes');
         $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
 
-        $meals = Meal::query()
+        $todayMeals = Meal::query()
             ->whereDate('date_from', '<=', $requestedDate)
             ->whereDate('date_to', '>=', $requestedDate)
-            ->when(!empty($includes), function (Builder $query) use ($includes) {
-                $includes = array_map('trim', explode(',', $includes));
-
-                $query->where(function (Builder $query) use ($includes) {
-                    foreach ($includes as $include) {
-                        $query->orWhere('description', 'like', '%' . $include . '%');
-                    }
-                });
-            })
-            ->when(!empty($excludes), function (Builder $query) use ($excludes) {
-                $excludes = array_map('trim', explode(',', $excludes));
-
-                foreach ($excludes as $exclude) {
-                    $query->where('description', 'not like', '%' . $exclude . '%');
-                }
-            })
+//            ->when(!empty($includes), function (Builder $query) use ($includes) {
+//                $includes = array_map('trim', explode(',', $includes));
+//
+//                $query->where(function (Builder $query) use ($includes) {
+//                    foreach ($includes as $include) {
+//                        $query->orWhere('description', 'like', '%' . $include . '%');
+//                    }
+//                });
+//            })
+//            ->when(!empty($excludes), function (Builder $query) use ($excludes) {
+//                $excludes = array_map('trim', explode(',', $excludes));
+//
+//                foreach ($excludes as $exclude) {
+//                    $query->where('description', 'not like', '%' . $exclude . '%');
+//                }
+//            })
             ->get();
 
         if ($request->wantsJson()) {
-            return $meals;
+            return $todayMeals;
         }
 
-        $orders = $request->user()->meals()
-            ->whereDate('orders.date', '=', $requestedDate)
-            ->get();
+        $meals = collect();
+
+        //TODO: optimize
+        for ($day = 0; $day <= $firstOfMonth->daysInMonth; $day++) {
+            $meals[$firstOfMonth->toDateString()] = Meal::whereDate('date_from', '>=', $firstOfMonth)->whereDate('date_to', '<=', $firstOfMonth)->exists();
+            $orders[$firstOfMonth->toDateString()] = $request->user()->orders()
+                ->whereDate('date', $requestedDate->year)
+                ->get();
+
+            $firstOfMonth->addDay();
+        }
+
+        /** @var User $user */
+        $user = $request->user();
+        $orders = $user->orders()
+            ->with('meal')
+            ->whereYear('date', $requestedDate->year)
+            ->whereMonth('date', $requestedDate->month)
+            ->get()
+            ->mapToGroups(function ($order, $key) {
+                return [$order->date->toDateString() => $order->meal->title . ' (' . $order->quantity . ')'];
+            });
 
 
-        return view('meal.index', compact('meals', 'orders', 'requestedDate', 'includes', 'excludes'));
+
+        return view('meal.index', compact('meals', 'todayMeals', 'orders', 'requestedDate', 'includes', 'excludes'));
     }
 
     /**

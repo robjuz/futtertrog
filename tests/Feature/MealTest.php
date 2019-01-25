@@ -75,13 +75,13 @@ class MealTest extends TestCase
         ]);
 
         $meal2 = factory('App\Meal')->create([
-            'date_from' => Carbon::tomorrow(),
-            'date_to' => Carbon::tomorrow(),
+            'date_from' => Carbon::today()->addWeekday(),
+            'date_to' => Carbon::today()->addWeekday(),
         ]);
 
         $meal3 = factory('App\Meal')->create([
             'date_from' => Carbon::today(),
-            'date_to' => Carbon::tomorrow(),
+            'date_to' => Carbon::today()->addWeekday(),
         ]);
 
         $this->login();
