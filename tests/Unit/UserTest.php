@@ -59,8 +59,12 @@ class UserTest extends TestCase
             'price' => 5.45
         ]);
 
-        OrderItem::create([
-            'date' => $meal->date_from,
+        /** @var \App\Order $order */
+        $order = factory('App\Order')->create([
+            'date' => $meal->date_from
+        ]);
+
+        $order->orderItems()->create([
             'user_id' => $user->id,
             'meal_id' => $meal->id,
             'quantity' => 2

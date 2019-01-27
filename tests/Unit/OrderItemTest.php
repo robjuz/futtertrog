@@ -13,16 +13,24 @@ class OrderItemTest extends TestCase
     /** @test */
     public function it_belongs_to_an_user()
     {
-        $order = factory('App\OrderItem')->create();
+        $orderItem = factory('App\OrderItem')->create();
 
-        $this->assertInstanceOf('App\User', $order->user);
+        $this->assertInstanceOf('App\User', $orderItem->user);
     }
 
     /** @test */
     public function it_belongs_to_a_meal()
     {
-        $order = factory('App\OrderItem')->create();
+        $orderItem = factory('App\OrderItem')->create();
 
-        $this->assertInstanceOf('App\Meal', $order->meal);
+        $this->assertInstanceOf('App\Meal', $orderItem->meal);
+    }
+    
+    /** @test */
+    public function it_belongs_to_an_order()
+    {
+        $orderItem = factory('App\OrderItem')->create();
+
+        $this->assertInstanceOf('App\Order', $orderItem->order);
     }
 }

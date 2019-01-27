@@ -12,6 +12,7 @@ class HomeController extends Controller
      * Show the application dashboard.
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function __invoke(Request $request)
@@ -21,20 +22,27 @@ class HomeController extends Controller
         $user = $request->user();
 
         $balance = $user->balance;
-        $todayMeals = $user->meals()->whereDate('date', today())->get();
+        $todayOrders = $user->orderItems()->with('meal')
+            ->whereHas('order', function ($query) {
+                $query->whereDate('date', today());
+            })->get();
 
-        $mealsHistory = $user->meals()->orderBy('meal_user.created_at', 'desc')->paginate(5, ['*'], 'meals_page');
-        $mealsHistory->appends('deposits_page', $request->deposits_page);
-        $mealsHistory->appends('future_meals_page', $request->future_meals_page);
+        $ordersHistory = $user->orderItems()->with(['order','meal'])->latest()->paginate(5, ['*'], 'meals_page');
+        $ordersHistory->appends('deposits_page', $request->deposits_page);
+        $ordersHistory->appends('future_meals_page', $request->future_meals_page);
 
-        $futureMeals = $user->meals()->whereDate('date', '>', today())->orderBy('date')->paginate(5, ['*'], 'future_meals_page');
-        $futureMeals->appends('meals_page', $request->meals_page);
-        $futureMeals->appends('deposits_page', $request->deposits_page);
+        $futureOrders = $user->orderItems()->with(['order','meal'])
+            ->whereHas('order', function ($query) {
+                $query->whereDate('date', '>', today());
+            })->paginate(5, ['*'], 'future_meals_page');
+
+        $futureOrders->appends('meals_page', $request->meals_page);
+        $futureOrders->appends('deposits_page', $request->deposits_page);
 
         $deposits = $user->deposits()->latest()->paginate(5, ['*'], 'deposits_page');
         $deposits->appends('meals_page', $request->meals_page);
         $deposits->appends('future_meals_page', $request->future_meals_page);
 
-        return view('home', compact('balance','mealsHistory', 'todayMeals','futureMeals', 'deposits', 'user'));
+        return view('home', compact('balance', 'ordersHistory', 'todayOrders', 'futureOrders', 'deposits', 'user'));
     }
 }

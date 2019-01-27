@@ -45,15 +45,8 @@ class Meal extends Model
 
     protected $dates = ['date_from', 'date_to'];
 
-    public function orders()
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
-    }
-
-    public function wasOrdered($date, User $user = null)
-    {
-        $userId = $user ? $user->id: auth()->id();
-
-        return $this->orders()->whereDate('date', $date)->where('user_id', $userId)->exists();
     }
 }

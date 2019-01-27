@@ -102,7 +102,7 @@ class OrderController extends Controller
         $order->orderItems()->create([
             'meal_id' => $attributes['meal_id'],
             'user_id' => $attributes['user_id'],
-            'quantity' => $attributes['quantity'],
+            'quantity' => $attributes['quantity'] ?? 1,
         ]);
 
         if ($order->wasChanged()) {

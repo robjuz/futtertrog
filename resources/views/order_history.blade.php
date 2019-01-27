@@ -16,19 +16,18 @@
             </tr>
             </thead>
             <tbody>
-            @foreach ($meals as $meal)
+            @foreach ($orders as $orderItem)
                 <tr>
                     <th scope="row">{{ $loop->iteration }}</th>
-                    <td>{{ $meal->date->format(__('futtertrog.d.m.Y')) }}</td>
-                    <td>{{ $meal->title }}</td>
-                    <td class="text-nowrap">{{ number_format($meal->price, 2, ',','.') }} €</td>
-                    <td class="text-center">{{ $meal->pivot->quantity }}</td>
+                    <td>{{ $orderItem->order->date->format(__('futtertrog.d.m.Y')) }}</td>
+                    <td>{{ $orderItem->meal->title }}</td>
+                    <td class="text-nowrap">{{ number_format($orderItem->meal->price, 2, ',','.') }} €</td>
+                    <td class="text-center">{{ $orderItem->quantity }}</td>
                     @admin()
                     <td>
-                        <form action="{{ route('user_meals.destroy', $meal) }}" method="post">
+                        <form action="{{ route('orders.destroy', $orderItem) }}" method="post">
                             @csrf
                             @method('delete')
-                            <input type="hidden" name="user_id" value="{{ $user->id }}"/>
                             <button type="submit" class="btn btn-link btn-sm text-danger">
                                 {{ __('Delete') }}
                             </button>
@@ -40,6 +39,6 @@
 
             </tbody>
         </table>
-        {{ $meals->links() }}
+        {{ $orders->links() }}
     </div>
 </div>

@@ -21,7 +21,7 @@ class MealTest extends TestCase
     }
 
     /** @test */
-    public function only_authenticated_users_can_create_meals()
+    public function guests_are_not_allowed_to_create_meals()
     {
         $this->withExceptionHandling();
 
@@ -30,7 +30,7 @@ class MealTest extends TestCase
     }
 
     /** @test */
-    public function only_authenticated_users_can_see_meals()
+    public function guests_are_not_allowed_to_see_meals()
     {
         $meal = factory('App\Meal')->create();
 
