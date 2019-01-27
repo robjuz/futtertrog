@@ -61,10 +61,6 @@ class MealController extends Controller
         //TODO: optimize
         for ($day = 0; $day <= $firstOfMonth->daysInMonth; $day++) {
             $meals[$firstOfMonth->toDateString()] = Meal::whereDate('date_from', '>=', $firstOfMonth)->whereDate('date_to', '<=', $firstOfMonth)->exists();
-            $orders[$firstOfMonth->toDateString()] = $request->user()->orders()
-                ->whereDate('date', $requestedDate->year)
-                ->get();
-
             $firstOfMonth->addDay();
         }
 
