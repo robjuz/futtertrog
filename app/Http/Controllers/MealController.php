@@ -66,17 +66,18 @@ class MealController extends Controller
 
         /** @var User $user */
         $user = $request->user();
-//        $orders = $user->orders()
-//            ->with('orderItems.meal')
-//            ->whereYear('date', $requestedDate->year)
-//            ->whereMonth('date', $requestedDate->month)
-//            ->get()
-//            ->mapToGroups(function ($order, $key) {
-//                return [$order->date->toDateString() => $order->meal->title . ' (' . $order->quantity . ')'];
-//            });
+        $orders = $user->orderItems()
+            ->with(['order', 'meal'])
+            ->whereHas('order', function ($query) use ($requestedDate) {
+                $query->whereYear('date', $requestedDate->year)
+                    ->whereMonth('date', $requestedDate->month);
+            })
+            ->get()
+            ->mapToGroups(function ($orderItem, $key) {
 
-        $orders = collect();
+                return [$orderItem->order->date->toDateString() => $orderItem->meal->title . ' (' . $orderItem->quantity . ')'];
 
+            });
 
         return view('meal.index', compact('meals', 'todayMeals', 'orders', 'requestedDate', 'includes', 'excludes'));
     }

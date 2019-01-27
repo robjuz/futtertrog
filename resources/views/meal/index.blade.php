@@ -4,7 +4,8 @@
 
     <div class="container-fluid">
 
-        <h2 class="py-3">{{ __('Order meal') }} für <span class="text-primary">{{ $requestedDate->format('d.m.Y') }}</span> </h2>
+        <h2 class="py-3">{{ __('Order meal') }} für <span
+                    class="text-primary">{{ $requestedDate->format('d.m.Y') }}</span></h2>
 
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5 col-xl-4">
@@ -14,11 +15,15 @@
                         <ul>
                             <li class="prev">
                                 <a href="<?= route('meals.index',
-                                    ['date' => \Carbon::parse($requestedDate)->subMonthNoOverflow()->toDateString()]) ?>">&#10094;</a>
+                                    [
+                                        'date' => \Carbon::parse($requestedDate)->subMonthNoOverflow()->toDateString()
+                                    ]) ?>">&#10094;</a>
                             </li>
                             <li class="next">
                                 <a href="<?= route('meals.index',
-                                    ['date' => \Carbon::parse($requestedDate)->addMonthNoOverflow()->toDateString()]) ?>">&#10095;</a>
+                                    [
+                                        'date' => \Carbon::parse($requestedDate)->addMonthNoOverflow()->toDateString()
+                                    ]) ?>">&#10095;</a>
                             </li>
                             <li>
                                 {{ $requestedDate->format('F') }}&nbsp;

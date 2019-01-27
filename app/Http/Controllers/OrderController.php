@@ -129,7 +129,7 @@ class OrderController extends Controller
     {
         $this->authorize('view', $order);
 
-        $order->load('meals.users');
+        $order->load(['orderItems.meal', 'orderItems.user']);
 
         if ($request->wantsJson()) {
             return response($order);
@@ -154,11 +154,11 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\OrderItem           $order
+     * @param  \App\Order               $order
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, OrderItem $order)
+    public function update(Request $request, Order $order)
     {
         $order->update(
             $request->validate([
