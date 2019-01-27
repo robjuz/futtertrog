@@ -73,12 +73,12 @@ class User extends Authenticatable
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(OrderItem::class);
     }
 
     public function meals()
     {
-        return $this->hasManyThrough(Meal::class, Order::class, 'user_id', 'id', 'id', 'meal_id');
+        return $this->hasManyThrough(Meal::class, OrderItem::class, 'user_id', 'id', 'id', 'meal_id');
     }
 
     public function getBalanceAttribute()

@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Meal;
-use App\Order;
+use App\OrderItem;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
@@ -18,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Meal' => 'App\Policies\MealPolicy',
-        'App\Order' => 'App\Policies\OrderPolicy'
+        'App\OrderItem' => 'App\Policies\OrderPolicy'
     ];
 
     /**

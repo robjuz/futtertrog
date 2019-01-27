@@ -8,16 +8,16 @@ use Illuminate\Support\Carbon;
 /**
  * App\Meal
  *
- * @property int $id
- * @property int|null $order_id
- * @property \Illuminate\Support\Carbon $date
- * @property string $title
- * @property string $description
- * @property float $price
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $order
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
+ * @property int                                                            $id
+ * @property int|null                                                       $order_id
+ * @property \Illuminate\Support\Carbon                                     $date
+ * @property string                                                         $title
+ * @property string                                                         $description
+ * @property float                                                          $price
+ * @property \Illuminate\Support\Carbon|null                                $created_at
+ * @property \Illuminate\Support\Carbon|null                                $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $order
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[]      $users
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal query()
@@ -47,7 +47,7 @@ class Meal extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(OrderItem::class);
     }
 
     public function wasOrdered($date, User $user = null)

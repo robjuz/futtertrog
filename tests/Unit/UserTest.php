@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Order;
+use App\OrderItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -34,7 +34,7 @@ class UserTest extends TestCase
         /** @var \App\User $user */
         $user = factory('App\User')->create();
 
-        factory('App\Order', 10)->create([
+        factory('App\OrderItem', 10)->create([
             'user_id' => $user->id
         ]);
 
@@ -59,7 +59,7 @@ class UserTest extends TestCase
             'price' => 5.45
         ]);
 
-        Order::create([
+        OrderItem::create([
             'date' => $meal->date_from,
             'user_id' => $user->id,
             'meal_id' => $meal->id,

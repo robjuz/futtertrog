@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderReopened;
+use App\Meal;
 use App\Order;
+use App\OrderItem;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,8 +27,7 @@ class OrderController extends Controller
         $from = Carbon::parse($request->query('from', today()));
         $to = $request->has('to') && !empty($request->to) ? Carbon::parse($request->to) : null;
 
-        $orders = Order::with('meals.users')
-            ->whereHas('meals')
+        $orders = Order::with(['orderItems.meal', 'orderItems.user'])
             ->whereDate('date', '>=', $from->toDateString())
             ->when(!empty($to), function (Builder $query) use ($to) {
                 $query->whereDate('date', '<=', $to->toDateString());
@@ -34,10 +36,8 @@ class OrderController extends Controller
             ->get();
 
         $sum = $orders->sum(function ($order) {
-            return $order->meals->sum(function ($meal) {
-                return $meal->price * $meal->users->sum(function ($user) {
-                        return $user->pivot->quantity;
-                    });
+            return $order->orderItems->sum(function ($order) {
+                return $order->meal->price * $order->quantity;
             });
         });
 
@@ -63,26 +63,51 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $attributes = $request->validate([
+        $rules = [
             'date' => 'required|date',
-            'meal_id' => 'required|exists:meals,id',
             'user_id' => 'sometimes|exists:users,id',
             'quantity' => 'sometimes|numeric|min:1,max:10',
             'status' => 'sometimes|string|max:30',
+        ];
 
-        ]);
+        //only meals for the requested date are allowed
+        $mealIds = Meal::whereDate('date_from', '<=', $request->date)->whereDate('date_to', '>=', $request->date)->pluck('id');
+        $rules['meal_id'] = [
+            'required',
+            Rule::in($mealIds)
+        ];
+
+        $attributes = $request->validate($rules);
 
         /** @var User $user */
         $user = $request->user();
 
+        //admin can create orders for other users;
         if ($user->is_admin) {
             $attributes['user_id'] = $attributes['user_id'] ?: $user->id;
         } else {
-            $attributes['user_id'] =  $user->id;
+            $attributes['user_id'] = $user->id;
         }
 
+        $meal = Meal::find($attributes['meal_id']);
+
         /** @var Order $order */
-        $order = Order::create($attributes);
+        $order = Order::query()->updateOrCreate([
+            'date' => $attributes['date'],
+            'provider' => $meal->provider
+        ], [
+            'status' => Order::STATUS_OPEN
+        ]);
+
+        $order->orderItems()->create([
+            'meal_id' => $attributes['meal_id'],
+            'user_id' => $attributes['user_id'],
+            'quantity' => $attributes['quantity'],
+        ]);
+
+        if ($order->wasChanged()) {
+            event(new OrderReopened($order, User::find($attributes['user_id']), $meal));
+        }
 
         if ($request->wantsJson()) {
             return response($order, Response::HTTP_CREATED);
@@ -94,13 +119,13 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Request     $request
-     * @param  \App\Order $order
+     * @param Request         $request
+     * @param  \App\OrderItem $order
      *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show(Request $request, Order $order)
+    public function show(Request $request, OrderItem $order)
     {
         $this->authorize('view', $order);
 
@@ -116,11 +141,11 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Order $order
+     * @param  \App\OrderItem $order
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Order $order)
+    public function edit(OrderItem $order)
     {
         //
     }
@@ -129,15 +154,15 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Order               $order
+     * @param  \App\OrderItem           $order
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, OrderItem $order)
     {
         $order->update(
             $request->validate([
-                'status' => ['sometimes', 'string', Rule::in(Order::$statuses)]
+                'status' => ['sometimes', 'string', Rule::in(OrderItem::$statuses)]
             ])
         );
 
@@ -151,14 +176,14 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request     $request
-     * @param  \App\Order $order
+     * @param Request         $request
+     * @param  \App\OrderItem $order
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Request $request, Order $order)
+    public function destroy(Request $request, OrderItem $order)
     {
         $this->authorize('delete', $order);
 

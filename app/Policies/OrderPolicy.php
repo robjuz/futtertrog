@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\User;
-use App\Order;
+use App\OrderItem;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class OrderPolicy
@@ -19,11 +19,12 @@ class OrderPolicy
     /**
      * Determine whether the user can view the order.
      *
-     * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\User      $user
+     * @param  \App\OrderItem $order
+     *
      * @return mixed
      */
-    public function view(User $user, Order $order)
+    public function view(User $user, OrderItem $order)
     {
         //
     }
@@ -42,11 +43,12 @@ class OrderPolicy
     /**
      * Determine whether the user can update the order.
      *
-     * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\User      $user
+     * @param  \App\OrderItem $order
+     *
      * @return mixed
      */
-    public function update(User $user, Order $order)
+    public function update(User $user, OrderItem $order)
     {
         //
     }
@@ -54,11 +56,12 @@ class OrderPolicy
     /**
      * Determine whether the user can delete the order.
      *
-     * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\User      $user
+     * @param  \App\OrderItem $order
+     *
      * @return mixed
      */
-    public function delete(User $user, Order $order)
+    public function delete(User $user, OrderItem $order)
     {
         //
     }
@@ -67,10 +70,11 @@ class OrderPolicy
      * Determine whether the user can restore the order.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\OrderItem  $order
+     *
      * @return mixed
      */
-    public function restore(User $user, Order $order)
+    public function restore(User $user, OrderItem $order)
     {
         //
     }
@@ -78,11 +82,12 @@ class OrderPolicy
     /**
      * Determine whether the user can permanently delete the order.
      *
-     * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  \App\User      $user
+     * @param  \App\OrderItem $order
+     *
      * @return mixed
      */
-    public function forceDelete(User $user, Order $order)
+    public function forceDelete(User $user, OrderItem $order)
     {
         //
     }

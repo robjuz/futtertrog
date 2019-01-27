@@ -29,8 +29,8 @@ class OrderReopenedNotification extends Notification
      * Create a new notification instance.
      *
      * @param Order $order
-     * @param User $user
-     * @param Meal $meal
+     * @param User      $user
+     * @param Meal      $meal
      */
     public function __construct(Order $order, User $user, Meal $meal)
     {

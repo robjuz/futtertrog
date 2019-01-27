@@ -45,7 +45,7 @@
 
                     @endcan
                 </li>
-                @can('list', \App\Order::class)
+                @can('list', \App\OrderItem::class)
                     <li class="nav-item {{ request()->routeIs('orders.index') ? 'active' : '' }}">
                         <a href="{{ route('orders.index') }}" class="nav-link" title="{{ __('Manage orders') }}">
                             {{ __('Manage orders') }}

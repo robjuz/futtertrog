@@ -13,13 +13,15 @@
                         <div class="col-md">
                             <div class="form-group">
                                 <label for="from">{{ __('From') }}</label>
-                                <input type="date" class="form-control" name="from" id="from" value="{{ $from->toDateString() }}">
+                                <input type="date" class="form-control" name="from" id="from"
+                                       value="{{ $from->toDateString() }}">
                             </div>
                         </div>
                         <div class="col-md">
                             <div class="form-group">
                                 <label for="to">{{ __('To') }}</label>
-                                <input type="date" class="form-control" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
+                                <input type="date" class="form-control" name="to" id="to"
+                                       value="{{ $to ? $to->toDateString() : '' }}">
                             </div>
                         </div>
                         <div class="col-md-auto">
@@ -54,13 +56,13 @@
                                 <div class="col-2 text-center">
                                     {{ __('futtertrog.status.' . $order->status) }}
 
-                                    @if ($order->status === \App\Order::STATUS_OPEN)
+                                    @if ($order->status === \App\OrderItem::STATUS_OPEN)
                                         @can('update', $order)
                                             <form action="{{ route('orders.update', $order) }}" method="POST">
                                                 @method('put')
                                                 @csrf
                                                 <input type="hidden" name="status"
-                                                       value="{{ \App\Order::STATUS_ORDERED }}">
+                                                       value="{{ \App\OrderItem::STATUS_ORDERED }}">
                                                 <button type="submit" class="btn btn-link p-0">
                                                     {{ __('Mark as ordered') }}
                                                 </button>
@@ -69,20 +71,15 @@
                                     @endif
                                 </div>
                                 <div class="col-8">
-                                    @foreach($order->meals as $meal)
+                                    @foreach($order->orderItems as $orderItem)
                                         <div class="row py-3 align-items-center {{ $loop->last ? '' : ' border-bottom' }}">
-                                            <div class="col-4 text-center">{{ $meal->title }}</div>
-                                            <div class="col-2 text-center">{{ $meal->users()->sum('quantity') }}</div>
-                                            <div class="col-2 text-center text-nowrap">{{ number_format($meal->price, 2, ',','.') }}
-                                                €
+                                            <div class="col-4 text-center">{{ $orderItem->meal->title }}</div>
+                                            <div class="col-2 text-center">{{ $orderItem->quantity }}</div>
+                                            <div class="col-2 text-center text-nowrap">
+                                                {{ number_format($orderItem->meal->price, 2, ',','.') }} €
                                             </div>
                                             <div class="col-4">
-                                                @foreach($meal->users as $user)
-                                                    <div>
-                                                        <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
-                                                        ( {{ $user->pivot->quantity }} )
-                                                    </div>
-                                                @endforeach
+                                                <a href="{{ route('users.show', $orderItem->user) }}">{{ $orderItem->user->name }}</a>
                                             </div>
                                         </div>
                                     @endforeach
@@ -91,8 +88,9 @@
                         @endforeach
                         <div class="row">
                             <div class="col-1  offset-6 text-center"><strong>{{ __('Sum') }}</strong></div>
-                            <div class="col-1 text-center text-nowrap"><strong>{{ number_format($sum, 2, ',','.') }}
-                                    €</strong></div>
+                            <div class="col-1 text-center text-nowrap">
+                                <strong>{{ number_format($sum, 2, ',','.') }} €</strong>
+                            </div>
                         </div>
                         @else
                             {{ __('No orders') }}
