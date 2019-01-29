@@ -1,12 +1,13 @@
 /**** HEADER ****/
-.navbar-dark {
+body > nav {
   background-image: linear-gradient(to bottom right, $primary-dark, $primary);
   border-bottom: 3px solid $primary-darker;
   box-shadow: 0 0 10px 5px $gray-400;
+  min-height: 110px;
 }
 
 /** FUTTERTROG **/
-.navbar-dark .navbar-brand {
+.navbar-brand {
   display: inline-block;
   font-size: 2em;
   padding-bottom: 0.7em;
@@ -63,7 +64,7 @@
 /**** RUNNING DOG ****/
 .running-dog {
   position: relative;
-  height: 3.5em;
+  height: 3em;
   overflow: hidden;
   width: 100%;
   display: flex;
