@@ -187,12 +187,14 @@ class OrderController extends Controller
     {
         $this->authorize('delete', $order);
 
+
         $order->delete();
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
         }
 
-        return redirect()->route('orders.index');
+
+        return back()->with('message', __('Success'));
     }
 }

@@ -7,11 +7,13 @@ body > nav {
 }
 
 /** FUTTERTROG **/
-.navbar-brand {
+.navbar-brand h1 {
   display: inline-block;
   font-size: 2em;
   padding-bottom: 0.7em;
   transition: 0.3s;
+  margin-bottom: 0;
+  color: inherit;
 
   &::first-letter {
     font-size: 1.4em;

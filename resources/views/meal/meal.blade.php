@@ -18,19 +18,18 @@
         <div class="d-flex align-items-center justify-content-end">
             <small>{{ number_format($meal->price, 2, ',', '.') }} €</small>
 
-            @can('disorder', $meal)
-                <form action="{{ route('orders.destroy', $meal) }}" method="post"
-                      class="ml-3">
+            @if($orderItem = $todayOrders->firstWhere('meal_id', $meal->id))
+                <form onsubmit="toggleOrder(event)" action="{{ route('orders.destroy', $orderItem) }}"
+                      method="post" class="ml-3">
                     @csrf
                     @method('delete')
-                    <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
-                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <button type="submit" class="btn btn-outline-danger btn-sm btn-submit">
                         {{ __('Delete order') }}
                         <span class="d-none spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </button>
                 </form>
-            @elsecan('order', $meal)
-                <form action="{{ route('orders.store') }}" method="post"
+            @else
+                <form onsubmit="toggleOrder(event)" action="{{ route('orders.store') }}" method="post"
                       class="d-flex ml-3 flex-shrink-1">
                     @csrf
                     <input type="hidden" name="date" value="{{ $requestedDate->toDateString() }}"/>
@@ -44,7 +43,7 @@
                            value="1"
                            style="width: 80px;"
                     >
-                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <button type="submit" class="btn btn-outline-primary btn-sm btn-submit">
                         {{ __('Place order') }}
                         <span class="d-none spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </button>

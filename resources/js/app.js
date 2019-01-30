@@ -1,37 +1,34 @@
-require('jquery-ui/ui/widgets/datepicker');
-require('jquery-ui/ui/i18n/datepicker-de');
+// es modules are recommended, if available, especially for typescript
+import flatpickr from "flatpickr";
 
-let lang = document.documentElement.lang;
+flatpickr("input[type=date]");
 
-$('input[type=date]').each(function () {
-  this.type = 'text';
-  $(this).parent().append('<input type="hidden" name="' + this.name+'" id="' + this.id + '_raw">');
-  this.name = '';
-  if (this.value) {
-    this.value = new Date(this.value).toLocaleDateString(lang);
-  }
+window.toggleOrder = function(e) {
+  var form = e.target;
 
-  $(this).datepicker(
-    Object.assign({}, {
-      altField: '#' + this.id + '_raw',
-      altFormat: 'yy-mm-dd'
-    }, $.datepicker.regional[ lang ])
-  );
-});
+  var submitButton = form.querySelector('.btn-submit');
+  submitButton.attributes.disabled = true;
 
-window.order = function(e, type) {
-  let form = $(e.target);
+  var spinner = submitButton.querySelector('.spinner-border');
+  spinner.classList.toggle('d-none');
 
- form.find(':submit').attr('disabled', true).find('.spinner-border').toggleClass('d-none');
+  fetch(form.action, {
+    method: 'POST',
+    credentials: 'same-origin',
+    redirect: 'follow',
+    headers: {
+      'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: new FormData(form)
+  }).then(function(res) {
+    return res.text();
+  }).then(function(data) {
+    var container = form.closest('.meal-container');
+    var el = new DOMParser().parseFromString(data, 'text/html');
 
-  $.ajax({
-    type,
-    url: form.attr('action'),
-    data: form.serialize(),
-    success: function(data)
-    {
-      form.closest('.meal-container').html(data);
-    }
+    container.innerHTML = el.querySelector('#' + container.id).innerHTML;
+    document.getElementById('calendar').innerHTML = el.querySelector('#calendar').innerHTML;
   });
 
   e.preventDefault();

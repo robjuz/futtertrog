@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>{{ config('app.name') }}</title>
 
 {{--<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
@@ -16,7 +19,7 @@
 
 <nav class="navbar navbar-expand-md navbar-dark bg-primary">
     <a class="navbar-brand text-uppercase" href="{{ url('/') }}" title="{{ config('app.name') }}">
-        {{ config('app.name') }}
+        <h1> {{ config('app.name') }} </h1>
     </a>
 
     <input type="checkbox" id="nav-toggler" class="d-none"/>
@@ -109,6 +112,6 @@
     @include('running_dog')
 </footer>
 
-{{--<script src="{{ mix('js/app.js') }}"></script>--}}
+<script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>

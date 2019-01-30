@@ -79,7 +79,13 @@ class MealController extends Controller
 
             });
 
-        return view('meal.index', compact('meals', 'todayMeals', 'orders', 'requestedDate', 'includes', 'excludes'));
+        $todayOrders = $user->orderItems()
+            ->whereHas('order', function ($query) use ($requestedDate) {
+                $query->whereDate('date', $requestedDate);
+            })
+            ->get();
+
+        return view('meal.index', compact('meals', 'todayMeals', 'orders', 'todayOrders' ,'requestedDate', 'includes', 'excludes'));
     }
 
     /**

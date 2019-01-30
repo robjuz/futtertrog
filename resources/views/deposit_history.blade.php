@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-header">{{ __('Deposit history') }} </div>
+    <h2 class="card-header">{{ __('Deposit history') }} </h2>
 
     <div class="card-body">
         <table class="table table-hover">

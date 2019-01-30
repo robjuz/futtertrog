@@ -3,19 +3,19 @@ const mix = require('laravel-mix');
 if (mix.inProduction()) {
   mix.version();
 
-  // mix.options({
-  //   purifyCss: {
-  //     purifyOptions: {
-  //       purifyCss: true,
-  //       whitelist: [
-  //         'pagination',
-  //         'page-item',
-  //         'page-link',
-  //         'alert-warning',
-  //       ],
-  //     },
-  //   },
-  // });
+  mix.options({
+    purifyCss: {
+      purifyOptions: {
+        purifyCss: true,
+        whitelist: [
+          'pagination',
+          'page-item',
+          'page-link',
+          'alert-warning'
+        ]
+      }
+    }
+  });
 }
 
 /*
@@ -29,15 +29,9 @@ if (mix.inProduction()) {
  |
  */
 
-
-// mix.js('resources/js/app.js', 'public/js');
-// mix.autoload({
-//   jquery: ['$', 'window.jQuery'],
-// });
-
-mix.sass('resources/sass/app.scss', 'css');
-// mix.combine([
-//   './node_modules/jquery-ui/themes/base/theme.css',
-//   './node_modules/jquery-ui/themes/base/datepicker.css',
-//   'public/css/app.css'
-// ], 'public/css/all.css');
+mix.js('resources/js/app.js', 'public/js/app.js');
+mix.sass('resources/sass/app.scss', 'public/css/sass.css');
+mix.styles([
+  'node_modules/flatpickr/dist/flatpickr.css',
+  'public/css/sass.css',
+], 'public/css/app.css');

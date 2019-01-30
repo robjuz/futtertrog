@@ -8,7 +8,7 @@
             <div class="col-md-6 mb-3">
 
                 <div class="card mb-3">
-                    <div class="card-header">{{ __('Your balance') }}</div>
+                    <h2 class="card-header">{{ __('Your balance') }}</h2>
 
                     <div class="card-body">
                         <span class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} text-nowrap">
@@ -18,27 +18,14 @@
                 </div>
 
                 <div class="card mb-3">
-                    <div class="card-header">{{ __('Your today order') }}</div>
+                    <h2 class="card-header">{{ __('Your today order') }}</h2>
 
                     <div class="card-body">
                         @if($todayOrders->count())
-
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th scope="col">{{ __('Title') }}</th>
-                                    <th scope="col">{{ __('Description') }}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
                                 @foreach($todayOrders as $order)
-                                    <tr>
                                         <th scope="row" class="text-nowrap">{{ $order->meal->title }}</th>
                                         <td>{{ $order->meal->description }}</td>
-                                    </tr>
                                 @endforeach
-                                </tbody>
-                            </table>
                         @else
                             <div class="card bg-danger">
 
@@ -51,7 +38,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header">{{ __('Your upcoming orders') }}</div>
+                    <h2 class="card-header">{{ __('Your upcoming orders') }}</h2>
 
                     <div class="card-body">
                         <div class="card-deck flex-column">
