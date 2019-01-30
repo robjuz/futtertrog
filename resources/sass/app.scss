@@ -9,10 +9,11 @@
 
 // Custom
 @import 'header';
+@import 'running-dog';
 @import 'calendar';
 
 html, body {
-  height: 100%;
+  min-height: 100%;
 }
 
 .row-padding {
@@ -52,11 +53,11 @@ html, body {
   font-size: 17px;
 }
 
-.card.bg-danger {
-  background: transparent !important;
-  color: $danger;
-  border: none;
-  border-left: 3px solid $danger;
+/** FOOTER **/
+#mainFooter {
+  background-image: linear-gradient(to top left, $gray-600, $gray-700);
+  border-top: 3px solid $gray-700;
+  box-shadow: 0 0 10px 5px $gray-400;
 }
 
 /** MISCELLANEOUS **/
@@ -77,10 +78,4 @@ h4 .btn-sm {
 
 h4 input {
   height: 42px !important;
-}
-
-body > footer {
-  background-image: linear-gradient(to top left, $gray-600, $gray-700);
-  border-top: 3px solid $gray-700;
-  box-shadow: 0 0 10px 5px $gray-400;
 }

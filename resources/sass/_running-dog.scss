@@ -1,0 +1,71 @@
+/**** RUNNING DOG ****/
+.running-dog {
+  position: relative;
+  height: 3em;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  background: transparent;
+  color: $white;
+  order: 1;
+
+  .running-icons {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
+    animation: run 12s linear infinite,
+    flip-horizontal 12s linear infinite;
+
+    path {
+      fill: $white;
+    }
+  }
+
+  .running-dog-icon {
+    animation: jump 300ms linear infinite;
+  }
+
+  .running-bone-icon {
+    margin-left: 1rem;
+    animation: rotate 300ms linear infinite;
+  }
+
+  @keyframes run {
+    0%, 100% {
+      left: -120px;
+    }
+    50% {
+      left: calc(100% + 120px);
+    }
+  }
+
+  @keyframes flip-horizontal {
+    0%, 49%, 100% {
+      transform: scale(1, 1);
+    }
+    50%, 99% {
+      transform: scale(-1, 1);
+    }
+  }
+
+  @keyframes jump {
+    0%, 100% {
+      transform: translateY(0)
+    }
+    50% {
+      transform: translateY(-5px)
+    }
+  }
+
+  @keyframes rotate {
+    0%, 100% {
+      transform: rotateZ(-15deg)
+    }
+    50% {
+      transform: rotateZ(15deg)
+    }
+  }
+}

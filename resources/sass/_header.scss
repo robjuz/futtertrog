@@ -1,16 +1,15 @@
 /**** HEADER ****/
-body > nav {
+#mainNavbar {
   background-image: linear-gradient(to bottom right, $primary-dark, $primary);
   border-bottom: 3px solid $primary-darker;
   box-shadow: 0 0 10px 5px $gray-400;
-  min-height: 110px;
+  min-height: 90px;
 }
 
 /** FUTTERTROG **/
 .navbar-brand h1 {
   display: inline-block;
   font-size: 2em;
-  padding-bottom: 0.7em;
   transition: 0.3s;
   margin-bottom: 0;
   color: inherit;
@@ -24,114 +23,47 @@ body > nav {
   }
 }
 
-/** LINKS LEFT **/
-.navbar-dark .navbar-collapse ul:first-child .nav-link {
-  color: $white;
-  padding-left: 0.75em;
-  padding-right: 0.75em;
-  position: relative;
-  text-transform: uppercase;
 
-  &::before {
-    border-bottom: 2px solid #c5e0f5;
-    bottom: 0;
-    content: "";
-    left: 50%;
-    position: absolute;
-    right: 50%;
-    transition-duration: 0.25s;
-  }
+#mainNavbar .navbar-collapse {
+  overflow: hidden;
 
-  &:hover, &:focus {
-    color: #c5e0f5;
+  /** LINKS LEFT **/
+  ul:first-child .nav-link {
+    color: $white;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    position: relative;
+    text-transform: uppercase;
 
     &::before {
-      left: -0.5em;
-      right: -0.5em;
+      border-bottom: 2px solid #c5e0f5;
+      bottom: 0;
+      content: "";
+      left: 50%;
+      position: absolute;
+      right: 50%;
+      transition-duration: 0.25s;
     }
-  }
-}
 
-/** LINKS RIGHT **/
-.navbar-dark .navbar-collapse ul:last-child .nav-link {
-  color:  #c5e0f5;
+    &:hover, &:focus {
+      color: #c5e0f5;
 
-  &:hover, &:focus {
-    color: #c5e0f5;
-    text-decoration: underline;
-  }
-
-}
-
-/**** RUNNING DOG ****/
-.running-dog {
-  position: relative;
-  height: 3em;
-  overflow: hidden;
-  width: 100%;
-  display: flex;
-  background: transparent;
-  color: $white;
-  order: 1;
-
-  .running-icons {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-
-    animation: run 12s linear infinite,
-    flip-horizontal 12s linear infinite;
-
-    path {
-      fill: $white;
+      &::before {
+        left: -0.5em;
+        right: -0.5em;
+      }
     }
   }
 
-  .running-dog-icon {
-    animation: jump 300ms linear infinite;
-  }
+  /** LINKS RIGHT **/
+  ul:last-child .nav-link {
+    color:  #c5e0f5;
 
-  .running-bone-icon {
-    margin-left: 1rem;
-    animation: rotate 300ms linear infinite;
-  }
+    &:hover, &:focus {
+      color: #c5e0f5;
+      text-decoration: underline;
+    }
 
-  @keyframes run {
-    0%, 100% {
-      left: -120px;
-    }
-    50% {
-      left: calc(100% + 120px);
-    }
-  }
-
-  @keyframes flip-horizontal {
-    0%, 49%, 100% {
-      transform: scale(1, 1);
-    }
-    50%, 99% {
-      transform: scale(-1, 1);
-    }
-  }
-
-  @keyframes jump {
-    0%, 100% {
-      transform: translateY(0)
-    }
-    50% {
-      transform: translateY(-5px)
-    }
-  }
-
-  @keyframes rotate {
-    0%, 100% {
-      transform: rotateZ(-15deg)
-    }
-    50% {
-      transform: rotateZ(15deg)
-    }
   }
 }
 
@@ -149,6 +81,7 @@ body > nav {
     max-height: 1000px;
   }
 }
+
 #nav-toggler:checked ~ .collapse {
   display: block !important;
   animation: grow 1s ease-in-out;

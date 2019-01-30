@@ -17,7 +17,7 @@
 </head>
 <body class="d-flex flex-column">
 
-<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+<nav id="mainNavbar" class="navbar navbar-expand-md navbar-dark bg-primary">
     <a class="navbar-brand text-uppercase" href="{{ url('/') }}" title="{{ config('app.name') }}">
         <h1> {{ config('app.name') }} </h1>
     </a>
@@ -25,7 +25,7 @@
     <input type="checkbox" id="nav-toggler" class="d-none"/>
     <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
 
-    <div class="collapse navbar-collapse order-1 order-md-0">
+    <div class="collapse navbar-collapse">
         <!-- Left Side Of Navbar -->
         <ul class="navbar-nav mr-auto">
             @auth()
@@ -107,7 +107,7 @@
 
 </main>
 
-<footer class="text-center text-white py-3">
+<footer id="mainFooter" class="text-center text-white py-3">
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
     @include('running_dog')
 </footer>
