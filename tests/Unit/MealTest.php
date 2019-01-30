@@ -14,6 +14,6 @@ class MealTest extends TestCase
     {
         $meal = factory('App\Meal')->create();
 
-        $this->assertInstanceOf('Illuminate\Support\Collection', $meal->orders);
+        $this->assertInstanceOf('Illuminate\Support\Collection', $meal->orderItems);
     }
 }

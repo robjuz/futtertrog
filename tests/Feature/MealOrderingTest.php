@@ -20,7 +20,7 @@ class MealOrderingTest extends TestCase
             'meal_id' => $meal->id
         ]);
 
-        $this->assertTrue(auth()->user()->meals->contains($meal));
+        $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
     /** @test */
@@ -38,8 +38,7 @@ class MealOrderingTest extends TestCase
             'meal_id' => $meal->id
         ]);
 
-        $this->assertTrue(auth()->user()->meals->contains($meal));
-        $this->assertFalse($user->meals->contains($meal));
+        $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
     public function admin_can_order_a_meal_for_other_users()

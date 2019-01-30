@@ -2,10 +2,10 @@
     <div class="month">
         <ul>
             <li class="prev">
-                <a href="<?= route('meals.index', ['date' => \Carbon::parse($requestedDate)->subMonthNoOverflow()->toDateString()]) ?>">&#10094;</a>
+                <a href="<?= route('meals.index', ['date' => \Carbon::parse($requestedDate)->subMonthNoOverflow()->lastOfMonth()->toDateString()]) ?>">&#10094;</a>
             </li>
             <li class="next">
-                <a href="<?= route('meals.index', ['date' => \Carbon::parse($requestedDate)->addMonthNoOverflow()->toDateString()]) ?>">&#10095;</a>
+                <a href="<?= route('meals.index', ['date' => \Carbon::parse($requestedDate)->addMonthNoOverflow()->firstOfMonth()->toDateString()]) ?>">&#10095;</a>
             </li>
             <li>
                 {{ $requestedDate->format('F') }}&nbsp;

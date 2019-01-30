@@ -20,28 +20,12 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function it_has_many_orders()
+    public function it_has_many_order_items()
     {
         /** @var \App\User $user */
         $user = factory('App\User')->create();
 
-        $this->assertInstanceOf('Illuminate\Support\Collection', $user->orders);
-    }
-
-    /** @test */
-    public function it_has_many_meal()
-    {
-        /** @var \App\User $user */
-        $user = factory('App\User')->create();
-
-        factory('App\OrderItem', 10)->create([
-            'user_id' => $user->id
-        ]);
-
-
-        $this->assertInstanceOf('Illuminate\Support\Collection', $user->meals);
-        $this->assertCount(10, $user->meals);
-
+        $this->assertInstanceOf('Illuminate\Support\Collection', $user->orderItems);
     }
 
     /** @test */
