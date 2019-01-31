@@ -4,66 +4,74 @@
   border-bottom: 3px solid $primary-darker;
   box-shadow: 0 0 10px 5px $gray-400;
   min-height: 90px;
-}
-
-/** FUTTERTROG **/
-.navbar-brand h1 {
-  display: inline-block;
-  font-size: 2em;
-  transition: 0.3s;
-  margin-bottom: 0;
-  color: inherit;
-
-  &::first-letter {
-    font-size: 1.4em;
-  }
-
-  &:hover {
-    color: #bde1ff;
-  }
-}
 
 
-#mainNavbar .navbar-collapse {
-  overflow: hidden;
+  /** FUTTERTROG **/
+  .navbar-brand h1 {
+    display: inline-block;
+    font-size: 2em;
+    transition: 0.3s;
+    margin-bottom: 0;
+    color: inherit;
 
-  /** LINKS LEFT **/
-  ul:first-child .nav-link {
-    color: $white;
-    padding-left: 0.75em;
-    padding-right: 0.75em;
-    position: relative;
-    text-transform: uppercase;
-
-    &::before {
-      border-bottom: 2px solid #c5e0f5;
-      bottom: 0;
-      content: "";
-      left: 50%;
-      position: absolute;
-      right: 50%;
-      transition-duration: 0.25s;
+    &::first-letter {
+      font-size: 1.4em;
     }
 
-    &:hover, &:focus {
-      color: #c5e0f5;
+    &:hover {
+      color: #bde1ff;
+    }
+  }
 
-      &::before {
-        left: -0.5em;
-        right: -0.5em;
+
+  .navbar-collapse {
+    overflow: hidden;
+
+    @include media-breakpoint-up(lg) {
+      .navbar-nav {
+        text-align: center;
+        align-items: center;
       }
     }
-  }
 
-  /** LINKS RIGHT **/
-  ul:last-child .nav-link {
-    color:  #c5e0f5;
+    /** LINKS LEFT **/
+    ul:first-child .nav-link {
+      color: $white;
+      padding-left: 0.75em;
+      padding-right: 0.75em;
+      position: relative;
+      text-transform: uppercase;
 
-    &:hover, &:focus {
-      color: #c5e0f5;
-      text-decoration: underline;
+      &::before {
+        border-bottom: 2px solid #c5e0f5;
+        bottom: 0;
+        content: "";
+        left: 50%;
+        position: absolute;
+        right: 50%;
+        transition-duration: 0.25s;
+      }
+
+      &:hover, &:focus {
+        color: #c5e0f5;
+
+        &::before {
+          left: -0.5em;
+          right: -0.5em;
+        }
+      }
     }
 
+    /** LINKS RIGHT **/
+    ul:last-child .nav-link {
+      color: #c5e0f5;
+
+      &:hover, &:focus {
+        color: #c5e0f5;
+        text-decoration: underline;
+      }
+
+    }
   }
 }
 

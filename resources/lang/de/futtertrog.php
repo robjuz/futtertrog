@@ -2,5 +2,5 @@
 return [
     'status.open' => 'Offen',
     'status.ordered' => 'Bestellt',
-    'd.m.Y' => 'j.m.Y'
+    'd.m.Y' => 'd.m.Y'
 ];

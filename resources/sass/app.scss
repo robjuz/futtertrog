@@ -12,8 +12,15 @@
 @import 'running-dog';
 @import 'calendar';
 
-html, body {
-  min-height: 100%;
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+
+  > main {
+    flex-grow: 1;
+    padding-top: 106px;
+  }
 }
 
 .row-padding {
@@ -55,6 +62,7 @@ html, body {
 
 /** FOOTER **/
 #mainFooter {
+  margin-top: 1rem;
   background-image: linear-gradient(to top left, $gray-600, $gray-700);
   border-top: 3px solid $gray-700;
   box-shadow: 0 0 10px 5px $gray-400;
@@ -78,4 +86,8 @@ h4 .btn-sm {
 
 h4 input {
   height: 42px !important;
+}
+
+.pagination {
+  justify-content: center;
 }

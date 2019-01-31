@@ -16653,11 +16653,10 @@ readers do not read off random characters that represent icons */
   border-bottom: 3px solid #01569E;
   box-shadow: 0 0 10px 5px #ced4da;
   min-height: 90px;
+  /** FUTTERTROG **/
 }
 
-/** FUTTERTROG **/
-
-.navbar-brand h1 {
+#mainNavbar .navbar-brand h1 {
   display: inline-block;
   font-size: 2em;
   transition: 0.3s;
@@ -16665,11 +16664,11 @@ readers do not read off random characters that represent icons */
   color: inherit;
 }
 
-.navbar-brand h1::first-letter {
+#mainNavbar .navbar-brand h1::first-letter {
   font-size: 1.4em;
 }
 
-.navbar-brand h1:hover {
+#mainNavbar .navbar-brand h1:hover {
   color: #bde1ff;
 }
 
@@ -16677,6 +16676,13 @@ readers do not read off random characters that represent icons */
   overflow: hidden;
   /** LINKS LEFT **/
   /** LINKS RIGHT **/
+}
+
+@media (min-width: 992px) {
+  #mainNavbar .navbar-collapse .navbar-nav {
+    text-align: center;
+    align-items: center;
+  }
 }
 
 #mainNavbar .navbar-collapse ul:first-child .nav-link {
@@ -17023,9 +17029,15 @@ readers do not read off random characters that represent icons */
   color: #dc3545;
 }
 
-html,
 body {
-  min-height: 100%;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+body > main {
+  flex-grow: 1;
+  padding-top: 106px;
 }
 
 .row-padding th,
@@ -17067,6 +17079,7 @@ body {
 /** FOOTER **/
 
 #mainFooter {
+  margin-top: 1rem;
   background-image: linear-gradient(to top left, #6c757d, #495057);
   border-top: 3px solid #495057;
   box-shadow: 0 0 10px 5px #ced4da;
@@ -17091,5 +17104,9 @@ h4 .btn-group-sm > .btn {
 
 h4 input {
   height: 42px !important;
+}
+
+.pagination {
+  justify-content: center;
 }
 

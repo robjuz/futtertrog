@@ -32,11 +32,11 @@ class SettingsController extends Controller
     public function store(Request $request)
     {
         $settings = $request->validate([
-            'show_dog' => ['required', 'boolean'],
             'noOrderNotification' => ['required', 'boolean'],
             'noOrderForNextDayNotification' => ['required', 'boolean'],
-            'includes' => ['nullable', 'string'],
-            'excludes' => ['nullable', 'string']
+//             TODO: add in v2.2
+//            'includes' => ['nullable', 'string'],
+//            'excludes' => ['nullable', 'string']
         ]);
 
         $user = $request->user();

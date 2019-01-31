@@ -34,6 +34,7 @@ class MealController extends Controller
         $todayMeals = Meal::query()
             ->whereDate('date_from', '<=', $requestedDate)
             ->whereDate('date_to', '>=', $requestedDate)
+//            TODO: add in v2.2
 //            ->when(!empty($includes), function (Builder $query) use ($includes) {
 //                $includes = array_map('trim', explode(',', $includes));
 //

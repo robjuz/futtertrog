@@ -15,9 +15,9 @@
 <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
-<body class="d-flex flex-column">
+<body>
 
-<nav id="mainNavbar" class="navbar navbar-expand-md navbar-dark bg-primary">
+<nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <a class="navbar-brand text-uppercase" href="{{ url('/') }}" title="{{ config('app.name') }}">
         <h1> {{ config('app.name') }} </h1>
     </a>
@@ -93,7 +93,7 @@
     </div>
 </nav>
 
-<main class="py-3 mb-auto">
+<main>
 
     @if (session('success'))
         <div class="container">

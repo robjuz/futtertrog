@@ -29,22 +29,6 @@
 
                                     <div class="form-group pb-2">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="hidden" name="show_dog" value="0">
-                                            <input type="checkbox"
-                                                   class="custom-control-input"
-                                                   name="show_dog"
-                                                   id="show_dog"
-                                                   {{ old('show_dog', $settings['show_dog'] ?? true) ? 'checked' : '' }}
-                                                   value="1"
-                                            >
-                                            <label class="custom-control-label" for="show_dog">
-                                                {{ __('Show dog') }}
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group pb-2">
-                                        <div class="custom-control custom-checkbox">
                                             <input type="hidden" name="noOrderNotification" value="0">
                                             <input type="checkbox"
                                                    class="custom-control-input"
@@ -86,39 +70,40 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">{{ __('Ingredients') }}</label>
-                                <div class="col-sm-9">
+{{--                            TODO: add in v2.2 --}}
+{{--                            <div class="form-group row">--}}
+{{--                                <label class="col-sm-3 col-form-label">{{ __('Ingredients') }}</label>--}}
+{{--                                <div class="col-sm-9">--}}
 
-                                    <div class="form-group">
-                                        <label for="includes">{{ __('includes') }}</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               name="includes"
-                                               id="includes"
-                                               value="{{ old('includes', $settings['includes'] ?? null) }}"
-                                               aria-describedby="includesHelp"
-                                        >
-                                        <small id="includesHelp" class="form-text text-muted">
-                                            {{ __('Comma-separated values') }}
-                                        </small>
-                                    </div>
+{{--                                    <div class="form-group">--}}
+{{--                                        <label for="includes">{{ __('includes') }}</label>--}}
+{{--                                        <input type="text"--}}
+{{--                                               class="form-control"--}}
+{{--                                               name="includes"--}}
+{{--                                               id="includes"--}}
+{{--                                               value="{{ old('includes', $settings['includes'] ?? null) }}"--}}
+{{--                                               aria-describedby="includesHelp"--}}
+{{--                                        >--}}
+{{--                                        <small id="includesHelp" class="form-text text-muted">--}}
+{{--                                            {{ __('Comma-separated values') }}--}}
+{{--                                        </small>--}}
+{{--                                    </div>--}}
 
-                                    <div class="form-group">
-                                        <label for="excludes">{{ __('excludes') }}</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               name="excludes"
-                                               id="excludes"
-                                               value="{{ old('excludes', $settings['excludes'] ?? null) }}"
-                                               aria-describedby="excludesHelp"
-                                        >
-                                        <small id="excludesHelp" class="form-text text-muted">
-                                            {{ __('Comma-separated values') }}
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
+{{--                                    <div class="form-group">--}}
+{{--                                        <label for="excludes">{{ __('excludes') }}</label>--}}
+{{--                                        <input type="text"--}}
+{{--                                               class="form-control"--}}
+{{--                                               name="excludes"--}}
+{{--                                               id="excludes"--}}
+{{--                                               value="{{ old('excludes', $settings['excludes'] ?? null) }}"--}}
+{{--                                               aria-describedby="excludesHelp"--}}
+{{--                                        >--}}
+{{--                                        <small id="excludesHelp" class="form-text text-muted">--}}
+{{--                                            {{ __('Comma-separated values') }}--}}
+{{--                                        </small>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
 
                             <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
                         </form>

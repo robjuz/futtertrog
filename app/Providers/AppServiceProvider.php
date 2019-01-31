@@ -16,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Blade::directive('date', function ($expression) {
+            return "<?php echo ($expression)->format(trans('futtertrog.d.m.Y')); ?>";
+        });
+
         Blade::if('admin', function () {
             return Auth::user()->is_admin;
         });
