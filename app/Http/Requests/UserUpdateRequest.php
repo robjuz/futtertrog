@@ -14,7 +14,7 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->is_admin;
     }
 
     /**

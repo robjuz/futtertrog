@@ -16,6 +16,7 @@ class UserController extends Controller
      * @param Request $request
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request)
     {
@@ -53,8 +54,6 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        $this->authorize('create', User::class);
-
         $user = User::create($request->validated());
 
         if ($request->wantsJson()) {
@@ -127,8 +126,6 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        $this->authorize('update', $user);
-
         $user->update($request->validated());
 
         if ($request->wantsJson()) {
