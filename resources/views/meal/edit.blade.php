@@ -13,7 +13,7 @@
                             @csrf
 
                             <div class="form-row">
-                                <div class="form-group col-12">
+                                <div class="form-group col-12 col-md-8">
                                     <label for="title" class="col-form-label-sm">
                                         {{__('Title')}}
                                     </label>
@@ -52,22 +52,39 @@
                                 </div>
 
                                 <div class="form-group col-12 col-md-4">
-                                    <label for="date" class="col-form-label-sm">
-                                        {{ __('Date') }}
+                                    <label for="date_from" class="col-form-label-sm">
+                                        {{ __('Date from') }}
                                     </label>
 
                                     <input type="date"
-                                           id="date"
-                                           class="form-control{{ $errors->has('date') ? ' is-invalid' : '' }}"
+                                           id="date_from"
+                                           class="form-control{{ $errors->has('date_from') ? ' is-invalid' : '' }}"
                                            required
-                                           value="{{ old('date', $meal->date->toDateString()) }}"
+                                           value="{{ old('date_from', $meal->date_from->toDateString()) }}"
                                     >
-                                    <input type="hidden" name="date" id="date_raw"
-                                           value="{{ old('date', $meal->date->toDateString()) }}">
 
-                                    @if ($errors->has('date'))
+                                    @if ($errors->has('date_from'))
                                         <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('date') }}</strong>
+                                            <strong>{{ $errors->first('date_from') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-12 col-md-4">
+                                    <label for="date_to" class="col-form-label-sm">
+                                        {{ __('Date to') }}
+                                    </label>
+
+                                    <input type="date"
+                                           id="date_to"
+                                           class="form-control{{ $errors->has('date_to') ? ' is-invalid' : '' }}"
+                                           required
+                                           value="{{ old('date_to', $meal->date_to->toDateString()) }}"
+                                    >
+
+                                    @if ($errors->has('date_to'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('date_to') }}</strong>
                                         </span>
                                     @endif
                                 </div>

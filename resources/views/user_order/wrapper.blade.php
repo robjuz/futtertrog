@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <span>{{ __('Create order') }}</span>
-                        {{ isset($date) ? $date->format(__('futtertrog.d.m.Y')) : null }}
+                        {{ isset($date) ? $date->format(__('futtertrog.date_format')) : null }}
                     </div>
 
                     <div class="card-body">

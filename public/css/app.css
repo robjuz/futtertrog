@@ -16658,10 +16658,16 @@ readers do not read off random characters that represent icons */
 
 #mainNavbar .navbar-brand h1 {
   display: inline-block;
-  font-size: 2em;
+  font-size: 1.6em;
   transition: 0.3s;
   margin-bottom: 0;
   color: inherit;
+}
+
+@media (min-width: 576px) {
+  #mainNavbar .navbar-brand h1 {
+    font-size: 2em;
+  }
 }
 
 #mainNavbar .navbar-brand h1::first-letter {
@@ -16756,6 +16762,10 @@ readers do not read off random characters that represent icons */
   100% {
     max-height: 1000px;
   }
+}
+
+.navbar-toggler {
+  margin: 0;
 }
 
 #nav-toggler:checked ~ .collapse {

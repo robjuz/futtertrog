@@ -7,7 +7,6 @@ use App\Http\Requests\UserUpdateRequest;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -48,6 +47,7 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param UserStoreRequest $request
+     *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -67,8 +67,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Request $request
+     * @param Request    $request
      * @param  \App\User $user
+     *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -80,21 +81,27 @@ class UserController extends Controller
             return response()->json($user);
         }
 
-        $meals = $user->meals()->orderBy('meal_user.created_at', 'desc')->paginate(5, ['*'], 'meals_page');
-        $meals->appends('deposits_page', $request->deposits_page);
+        $orders = $user->orderItems()
+            ->with(['order', 'meal'])
+            ->latest()
+            ->paginate(5, ['*'], 'orders_page')
+            ->appends('deposits_page', $request->deposits_page);
 
-        $deposits = $user->deposits()->paginate(5, ['*'], 'deposits_page');
-        $deposits->appends('meals_page', $request->meals_page);
+        $deposits = $user->deposits()
+            ->latest()
+            ->paginate(5, ['*'], 'deposits_page')
+            ->appends('orders_page', $request->meals_page);
 
-        return view('user.show', compact('user', 'meals', 'deposits'));
+        return view('user.show', compact('user', 'orders', 'deposits'));
 
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Request $request
+     * @param Request    $request
      * @param  \App\User $user
+     *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -113,7 +120,8 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param UserUpdateRequest $request
-     * @param  \App\User $user
+     * @param  \App\User        $user
+     *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -133,8 +141,9 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
+     * @param Request    $request
      * @param  \App\User $user
+     *
      * @return \Illuminate\Http\RedirectResponse|Response
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException

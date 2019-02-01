@@ -45,7 +45,7 @@
   "Whoops!": "Ups!",
   "Whoops, something went wrong on our servers.": "Ups, etwas ist schief gelaufen.",
 
-  "New meal": "Essen Anlegen",
+  "New meal": "Essen anlegen",
   "Edit Meal": "Essen bearbeiten",
   "Title": "Titel",
   "Date": "Datum",
@@ -69,6 +69,7 @@
   "Your balance": "Dein Guthaben",
   "Your today order": "Deine Bestellung für heute",
   "No orders for today": "Du hast kein Essen für heute.",
+  "No results found": "Keine Eintrage gefunden",
   "Your upcoming orders": "Deine Bestellungen für weitere Tage",
   "No upcoming orders": "Du hast kein Essen für weitere Tage bestellt.",
   "More orders": "Weitere Bestellungen",

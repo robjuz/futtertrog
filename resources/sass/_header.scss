@@ -9,10 +9,13 @@
   /** FUTTERTROG **/
   .navbar-brand h1 {
     display: inline-block;
-    font-size: 2em;
+    font-size: 1.6em;
     transition: 0.3s;
     margin-bottom: 0;
     color: inherit;
+    @include media-breakpoint-up(sm) {
+      font-size: 2em;
+    }
 
     &::first-letter {
       font-size: 1.4em;
@@ -88,6 +91,10 @@
   100% {
     max-height: 1000px;
   }
+}
+
+.navbar-toggler {
+  margin: 0;
 }
 
 #nav-toggler:checked ~ .collapse {

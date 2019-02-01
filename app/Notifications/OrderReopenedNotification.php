@@ -66,7 +66,7 @@ class OrderReopenedNotification extends Notification
 
         return (new MailMessage)
             ->subject(__('Order reopened'))
-            ->line(__('The order for :date was reopened', ['date' => $this->order->date->format(trans('futtertrog.d.m.Y'))]))
+            ->line(__('The order for :date was reopened', ['date' => $this->order->date->format(trans('futtertrog.date_format'))]))
             ->line(__(':user updated :meal', ['user' => $this->user->name, 'meal' => $this->meal->title]))
             ->action(__('Click here for more details'), $url);
     }

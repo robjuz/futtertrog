@@ -63,10 +63,10 @@
                 </div>
             </div>
 
-            <div class="col-12">
+            <div class="col-12 col-lg-6">
                 @include('order_history')
             </div>
-            <div class="col-12">
+            <div class="col-12 col-lg-6">
                 @include('deposit_history')
             </div>
         </div>

@@ -61,11 +61,11 @@
                             </div>
 
                             <div class="form-group mt-4 mb-0">
-                                <div>
-                                    <button type="submit" class="btn btn-primary">{{ __('Login') }}</button>
+                                <div class="d-flex flex-wrap">
+                                    <button type="submit" class="btn btn-primary mr-auto">{{ __('Login') }}</button>
 
                                     @if (Route::has('password.request'))
-                                        <a class="btn btn-link float-right" href="{{ route('password.request') }}">
+                                        <a class="btn btn-link" href="{{ route('password.request') }}">
                                             {{ __('Forgot Your Password?') }}
                                         </a>
                                     @endif

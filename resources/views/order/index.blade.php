@@ -33,26 +33,26 @@
                 </form>
 
                 @if($orders->isNotEmpty())
-                    <div class="row py-3">
-                        <div class="col-2 text-center"><strong>{{__('Date')}}</strong></div>
-                        <div class="col-2 text-center"><strong>{{__('Status')}}</strong></div>
-                        <div class="col-8">
+                    <div class="row py-3x">
+                        <div class="col-6 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Date')}}</strong></div>
+                        <div class="col-6 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Status')}}</strong></div>
+                        <div class="col-12 col-md-8">
                             <div class="row">
-                                <div class="col-4 text-center"><strong>{{__('Title')}}</strong></div>
-                                <div class="col-2 text-center"><strong>{{__('Quantity')}}</strong></div>
-                                <div class="col-2 text-center"><strong>{{__('Price')}}</strong></div>
-                                <div class="col-4"><strong>{{__('Ordered by')}}</strong></div>
+                                <div class="col-4 col-md-4 text-md-center mb-2 mb-md-0"><strong>{{__('Title')}}</strong></div>
+                                <div class="col-4 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Quantity')}}</strong></div>
+                                <div class="col-4 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Price')}}</strong></div>
+                                <div class="col-12 col-md-4 mb-2 mb-md-0"><strong>{{__('Ordered by')}}</strong></div>
                             </div>
                         </div>
                     </div>
                     @foreach($orders as $order)
                         <div class="row border-top border-primary py-3 align-items-center">
-                            <div class="col-2 text-center">
+                            <div class="col-6 col-md-2 text-md-center">
                                 {{ __('calendar.' . $order->date->englishDayOfWeek) }}<br>
-                                {{ $order->date->format(__('futtertrog.d.m.Y')) }}<br>
+                                {{ $order->date->format(__('futtertrog.date_format')) }}<br>
                                 {{ $order->provider }}
                             </div>
-                            <div class="col-2 text-center">
+                            <div class="col-6 col-md-2 text-md-center">
                                 {{ __('futtertrog.status.' . $order->status) }}
 
                                 @if ($order->status === \App\Order::STATUS_OPEN)
@@ -60,24 +60,23 @@
                                         <form action="{{ route('orders.update', $order) }}" method="POST">
                                             @method('put')
                                             @csrf
-                                            <input type="hidden" name="status"
-                                                   value="{{ \App\Order::STATUS_ORDERED }}">
-                                            <button type="submit" class="btn btn-link p-0">
+                                            <input type="hidden" name="status" value="{{ \App\Order::STATUS_ORDERED }}">
+                                            <button type="submit" class="btn btn-link p-0 text-left text-md-center">
                                                 {{ __('Mark as ordered') }}
                                             </button>
                                         </form>
                                     @endcan
                                 @endif
                             </div>
-                            <div class="col-8">
+                            <div class="col-12 col-md-8">
                                 @foreach($order->orderItems as $orderItem)
                                     <div class="row py-3 align-items-center {{ $loop->last ? '' : ' border-bottom' }}">
-                                        <div class="col-4 text-center">{{ $orderItem->meal->title }}</div>
-                                        <div class="col-2 text-center">{{ $orderItem->quantity }}</div>
-                                        <div class="col-2 text-center text-nowrap">
+                                        <div class="col-6 col-md-4 text-md-center mb-2 mb-md-0">{{ $orderItem->meal->title }}</div>
+                                        <div class="col-3 col-md-2 text-md-center mb-2 mb-md-0">{{ $orderItem->quantity }}</div>
+                                        <div class="col-3 col-md-2 text-md-center mb-2 mb-md-0 text-nowrap">
                                             {{ number_format($orderItem->meal->price, 2, ',','.') }} €
                                         </div>
-                                        <div class="col-4">
+                                        <div class="col-12 col-md-4">
                                             <a href="{{ route('users.show', $orderItem->user) }}">{{ $orderItem->user->name }}</a>
                                         </div>
                                     </div>
@@ -85,9 +84,9 @@
                             </div>
                         </div>
                     @endforeach
-                    <div class="row">
-                        <div class="col-1  offset-6 text-center"><strong>{{ __('Sum') }}</strong></div>
-                        <div class="col-1 text-center text-nowrap">
+                    <div class="row flex-row-reverse">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <strong class="mr-3">{{ __('Sum') }}</strong>
                             <strong>{{ number_format($sum, 2, ',','.') }} €</strong>
                         </div>
                     </div>
