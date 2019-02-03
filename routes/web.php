@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
-Auth::routes();
+Auth::routes([
+    'register' => false
+]);
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'HomeController')->name('home');
