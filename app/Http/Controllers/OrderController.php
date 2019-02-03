@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\OrderReopened;
-use App\Meal;
 use App\Order;
 use App\OrderItem;
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -21,9 +18,12 @@ class OrderController extends Controller
      * @param Request $request
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request)
     {
+        $this->authorize('list', Order::class);
+
         $from = Carbon::parse($request->query('from', today()));
         $to = $request->has('to') && !empty($request->to) ? Carbon::parse($request->to) : null;
 
@@ -48,10 +48,11 @@ class OrderController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
     {
-        //
+        $this->authorize('create', Order::class);
     }
 
     /**
@@ -60,60 +61,11 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
     {
-        $rules = [
-            'date' => 'required|date',
-            'user_id' => 'sometimes|exists:users,id',
-            'quantity' => 'sometimes|numeric|min:1,max:10',
-            'status' => 'sometimes|string|max:30',
-        ];
-
-        //only meals for the requested date are allowed
-        $mealIds = Meal::whereDate('date_from', '<=', $request->date)->whereDate('date_to', '>=', $request->date)->pluck('id');
-        $rules['meal_id'] = [
-            'required',
-            Rule::in($mealIds)
-        ];
-
-        $attributes = $request->validate($rules);
-
-        /** @var User $user */
-        $user = $request->user();
-
-        //admin can create orders for other users;
-        if ($user->is_admin) {
-            $attributes['user_id'] = $attributes['user_id'] ?: $user->id;
-        } else {
-            $attributes['user_id'] = $user->id;
-        }
-
-        $meal = Meal::find($attributes['meal_id']);
-
-        /** @var Order $order */
-        $order = Order::query()->updateOrCreate([
-            'date' => $attributes['date'],
-            'provider' => $meal->provider
-        ], [
-            'status' => Order::STATUS_OPEN
-        ]);
-
-        $order->orderItems()->create([
-            'meal_id' => $attributes['meal_id'],
-            'user_id' => $attributes['user_id'],
-            'quantity' => $attributes['quantity'] ?? 1,
-        ]);
-
-        if ($order->wasChanged()) {
-            event(new OrderReopened($order, User::find($attributes['user_id']), $meal));
-        }
-
-        if ($request->wantsJson()) {
-            return response($order, Response::HTTP_CREATED);
-        }
-
-        return back()->with('message', __('Success'));
+        $this->authorize('create', Order::class);
     }
 
     /**
@@ -141,25 +93,29 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\OrderItem $order
+     * @param OrderItem $orderItem
      *
-     * @return \Illuminate\Http\Response
+     * @return void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(OrderItem $order)
+    public function edit(OrderItem $orderItem)
     {
-        //
+        $this->authorize('update', $orderItem);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Order               $order
+     * @param Order                     $orderItem
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, Order $orderItem)
     {
+        $this->authorize('update', $orderItem);
+
         $order->update(
             $request->validate([
                 'status' => ['sometimes', 'string', Rule::in(OrderItem::$statuses)]
@@ -177,18 +133,18 @@ class OrderController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request         $request
-     * @param  \App\OrderItem $order
+     * @param  \App\OrderItem $orderItem
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Request $request, OrderItem $order)
+    public function destroy(Request $request, OrderItem $orderItem)
     {
-        $this->authorize('delete', $order);
+        $this->authorize('delete', $orderItem);
 
 
-        $order->delete();
+        $orderItem->delete();
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);

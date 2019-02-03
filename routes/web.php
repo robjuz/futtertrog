@@ -23,7 +23,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'HomeController')->name('home');
 
     Route::resource('meals' ,'MealController');
-    Route::resource('orders', 'OrderController');
+    Route::resource('orders', 'OrderController')->only(['index', 'update', 'destroy']);
+    Route::resource('order_items', 'OrderItemController');
     Route::resource('users' ,'UserController');
 
     Route::resource('deposits', 'DepositsController')->only(['store', 'destroy']);

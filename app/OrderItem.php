@@ -22,6 +22,17 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $order_id
+ * @property int $user_id
+ * @property int $meal_id
+ * @property int $quantity
+ * @property-read \App\Meal $meal
+ * @property-read \App\Order $order
+ * @property-read \App\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereMealId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereUserId($value)
  */
 class OrderItem extends Model
 {

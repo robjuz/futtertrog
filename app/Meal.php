@@ -30,6 +30,13 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $provider
+ * @property \Illuminate\Support\Carbon $date_from
+ * @property \Illuminate\Support\Carbon $date_to
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDateFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDateTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereProvider($value)
  */
 class Meal extends Model
 {

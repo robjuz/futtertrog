@@ -34,6 +34,9 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property array|null $settings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereSettings($value)
  */
 class User extends Authenticatable
 {

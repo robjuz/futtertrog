@@ -19,7 +19,7 @@
             <small>{{ number_format($meal->price, 2, ',', '.') }} €</small>
 
             @if($orderItem = $todayOrders->firstWhere('meal_id', $meal->id))
-                <form onsubmit="toggleOrder(event)" action="{{ route('orders.destroy', $orderItem) }}"
+                <form onsubmit="toggleOrder(event)" action="{{ route('order_items.destroy', $orderItem) }}"
                       method="post" class="ml-3">
                     @csrf
                     @method('delete')
@@ -29,7 +29,7 @@
                     </button>
                 </form>
             @else
-                <form onsubmit="toggleOrder(event)" action="{{ route('orders.store') }}" method="post"
+                <form onsubmit="toggleOrder(event)" action="{{ route('order_items.store') }}" method="post"
                       class="d-flex ml-3 flex-shrink-1">
                     @csrf
                     <input type="hidden" name="date" value="{{ $requestedDate->toDateString() }}"/>
