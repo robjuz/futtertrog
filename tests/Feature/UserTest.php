@@ -40,11 +40,9 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_a_list_of_system_users()
     {
-        $admin = factory('App\User')->create(['is_admin' => true]);
-
         $users = factory('App\User', 10)->create();
 
-        $response = $this->actingAs($admin)->get(route('users.index'));
+        $response = $this->loginAsAdmin()->get(route('users.index'));
 
         foreach ($users as $user) {
             $response->assertSee($user->name);
@@ -54,15 +52,13 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_manage_users()
     {
-        $admin = factory('App\User')->create(['is_admin' => true]);
-
         $data = factory('App\User')->raw([
             'is_admin' => true,
             'password' => 'secret',
             'password_confirmation' => 'secret',
         ]);
 
-        $this->login($admin);
+        $this->loginAsAdmin();
 
         $this->post(route('users.store'), $data);
 
@@ -79,7 +75,7 @@ class UserTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'name' => 'John',
-            'is_admin' => '1'
+            'is_admin' => true
         ]);
 
         $this->delete(route('users.destroy', 2));
@@ -89,39 +85,39 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_users_order_history()
     {
-        $admin = factory('App\User')->create(['is_admin' => true]);
+        $user = factory('App\User')->create();
 
         $orderItem = factory('App\OrderItem')->make();
-        $admin->orderItems()->save($orderItem);
+        $user->orderItems()->save($orderItem);
 
-        $this->login($admin)
-            ->get(route('users.show', $admin))
+        $this->loginAsAdmin()
+            ->get(route('users.show', $user))
             ->assertSee($orderItem->meal->title);
     }
 
     /** @test */
     public function admin_can_see_users_deposit_history()
     {
-        $admin = factory('App\User')->create(['is_admin' => true]);
+        $user = factory('App\User')->create();
 
         $deposit = factory('App\Deposit')->make(['value' => 999]);
-        $admin->deposits()->save($deposit);
+        $user->deposits()->save($deposit);
 
-        $this->login($admin)
-            ->get(route('users.show', $admin))
+        $this->loginAsAdmin()
+            ->get(route('users.show', $user))
             ->assertSee($deposit->value);
     }
 
     /** @test */
     public function admin_can_see_users_current_balance()
     {
-        $admin = factory('App\User')->create(['is_admin' => true]);
+        $user = factory('App\User')->create();
 
         $deposits = factory('App\Deposit', 2)->make(['value' => 10]);
-        $admin->deposits()->saveMany($deposits);
+        $user->deposits()->saveMany($deposits);
 
-        $this->login($admin)
-            ->get(route('users.show', $admin))
+        $this->loginAsAdmin()
+            ->get(route('users.show', $user))
             ->assertSee(20);
     }
 }

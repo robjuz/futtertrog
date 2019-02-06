@@ -34,8 +34,6 @@ class DepositTest extends TestCase
     /** #test */
     public function admin_can_create_a_new_deposit()
     {
-        $admin = factory('App\User')->create(['is_admin' => true]);
-
         $user = factory('App\User')->create();
 
         $deposit = factory('App\Deposit')->raw([
@@ -43,9 +41,8 @@ class DepositTest extends TestCase
             'value' => 10,
         ]);
 
-        $this->login($admin);
-
-        $this->post(route('deposits.store'), $deposit);
+        $this->loginAsAdmin()
+            ->post(route('deposits.store'), $deposit);
 
         $this->assertDatabaseHas('deposits', $deposit);
         $this->assertEqual(10, $user->balance);
@@ -54,11 +51,9 @@ class DepositTest extends TestCase
     /** @test */
     public function admin_can_create_a_negative_deposit()
     {
-        $admin = factory('App\User')->create(['is_admin' => true]);
-
         $deposit = factory('App\Deposit')->raw(['value' => -10]);
 
-        $this->login($admin)
+        $this->loginAsAdmin()
             ->post(route('deposits.store'), $deposit);
 
         $this->assertDatabaseHas('deposits', $deposit);
@@ -67,8 +62,6 @@ class DepositTest extends TestCase
     /** @test */
     public function admin_can_delete_a_deposit()
     {
-        $admin = factory('App\User')->create(['is_admin' => true]);
-
         $user = factory('App\User')->create();
 
         $deposit = factory('App\Deposit')->create([
@@ -76,7 +69,7 @@ class DepositTest extends TestCase
             'value' => 10,
         ]);
 
-        $this->login($admin)
+        $this->loginAsAdmin()
             ->delete(route('deposits.destroy', $deposit));
 
         $this->assertDatabaseMissing('deposits', $deposit->toArray());

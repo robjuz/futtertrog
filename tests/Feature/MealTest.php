@@ -56,7 +56,7 @@ class MealTest extends TestCase
     {
         $meal = factory('App\Meal')->create();
 
-        $this->login(factory('App\User')->create(['is_admin' => true]));
+        $this->loginAsAdmin();
 
         $this->delete(route('meals.destroy', $meal))
             ->assertRedirect(route('meals.index'));
@@ -206,13 +206,26 @@ class MealTest extends TestCase
         $meal = factory('App\Meal')->create();
 
 
-        $this->login(factory('App\User')->create(['is_admin' => true]));
+        $this->loginAsAdmin();
 
         $this->get(route('meals.show', $meal))
             ->assertSee($meal->title);
 
         $this->getJson(route('meals.show', $meal))
             ->assertJson($meal->toArray());
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_trying_to_delete_on_ordered_meal()
+    {
+        $meal = factory('App\Meal')->create();
+
+        factory('App\OrderItem')->create([
+            'meal_id' => $meal->id,
+        ]);
+
+        $this->expectExceptionMessage(trans('futtertrog.meal_was_ordered'));
+        $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
     }
 
 }

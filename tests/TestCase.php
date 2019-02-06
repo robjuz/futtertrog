@@ -9,19 +9,24 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication, RefreshDatabase;
 
+    public function login($user = null)
+    {
+        $user = $user ?: factory('App\User')->create();
+
+        $this->actingAs($user);
+
+        return $this;
+    }
+
+    public function loginAsAdmin()
+    {
+        return $this->login(factory('App\User')->create(['is_admin' => true]));
+    }
+
     protected function setUp()
     {
         parent::setUp();
 
         $this->withoutExceptionHandling();
-    }
-
-    public function login($user = null)
-    {
-        $user = $user ? : factory('App\User')->create();
-
-        $this->actingAs($user);
-
-        return $this;
     }
 }
