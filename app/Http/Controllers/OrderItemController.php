@@ -105,7 +105,7 @@ class OrderItemController extends Controller
             'status' => Order::STATUS_OPEN
         ]);
 
-        $order->orderItems()->create([
+        $orderItem = $order->orderItems()->create([
             'meal_id' => $attributes['meal_id'],
             'user_id' => $attributes['user_id'],
             'quantity' => $attributes['quantity'] ?? 1,
@@ -116,7 +116,7 @@ class OrderItemController extends Controller
         }
 
         if ($request->wantsJson()) {
-            return response($order, Response::HTTP_CREATED);
+            return response($orderItem, Response::HTTP_CREATED);
         }
 
         return back()->with('message', __('Success'));

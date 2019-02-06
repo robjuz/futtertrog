@@ -19,12 +19,16 @@ class MealOrderingTest extends TestCase
 
         $this->login();
         $this->post(route('order_items.store'), [
-            'date' => $meal->date_from,
-            'user_id' => auth()->id(),
+            'date' => $meal->date_from->toDateString(),
             'meal_id' => $meal->id
         ]);
 
         $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+
+        $this->postJson(route('order_items.store'), [
+            'date' => $meal->date_from->toDateString(),
+            'meal_id' => $meal->id
+        ])->assertSuccessful();
     }
 
     /** @test */
