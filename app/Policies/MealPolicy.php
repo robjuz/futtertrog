@@ -48,7 +48,7 @@ class MealPolicy
      */
     public function update(User $user, Meal $meal)
     {
-        //
+        return true;
     }
 
     /**

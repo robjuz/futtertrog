@@ -16,7 +16,7 @@
     <h4 class="d-flex justify-content-between">
         {{ $meal->title }}
         <div class="d-flex align-items-center justify-content-end">
-            <small>{{ number_format($meal->price, 2, ',', '.') }} €</small>
+            <small class="text-nowrap">{{ number_format($meal->price, 2, ',', '.') }} €</small>
 
             @if($orderItem = $todayOrders->firstWhere('meal_id', $meal->id))
                 <form onsubmit="toggleOrder(event)" action="{{ route('order_items.destroy', $orderItem) }}"

@@ -54,7 +54,7 @@ class MealController extends Controller
             ->get();
 
         if ($request->wantsJson()) {
-            return $todayMeals;
+            return response()->json($todayMeals);
         }
 
         $meals = collect();
@@ -114,7 +114,7 @@ class MealController extends Controller
     {
         $this->authorize('create', Meal::class);
 
-        Meal::create($request->validate([
+        $meal = Meal::create($request->validate([
             'date_from' => 'required|date',
             'date_to' => 'required|date|after_or_equal:date_from',
             'title' => 'required|string|max:255',
@@ -122,6 +122,10 @@ class MealController extends Controller
             'price' => 'required|numeric|min:0',
             'provider' => ['required', Rule::in(Meal::$providers)]
         ]));
+
+        if ($request->wantsJson()) {
+            return response()->json($meal, Response::HTTP_CREATED);
+        }
 
         if ($request->has('saveAndNew')) {
             return redirect()->route('meals.create');
@@ -133,14 +137,19 @@ class MealController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Meal $meal
+     * @param \Illuminate\Http\Request $request
+     * @param  \App\Meal               $meal
      *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show(Meal $meal)
+    public function show(Request $request, Meal $meal)
     {
         $this->authorize('view', $meal);
+
+        if ($request->wantsJson()) {
+            return response()->json($meal);
+        }
 
         return view('meal.show', compact('meal'));
     }
@@ -184,6 +193,10 @@ class MealController extends Controller
             ])
         );
 
+        if ($request->wantsJson()) {
+            return response()->json($meal);
+        }
+
         return redirect()->route('meals.index');
     }
 
@@ -201,22 +214,14 @@ class MealController extends Controller
     {
         $this->authorize('delete', $meal);
 
-        if ($meal->users()->count()) {
-
-            if ($request->wantsJson()) {
-                abort(Response::HTTP_FORBIDDEN,
-                    'Dieses Menu wurde bereits bestellt! Bitte erst alle Bestellungen löschen.');
-            }
-
-            return back()->withErrors([
-                'Dieses Menu wurde bereits bestellt! Bitte erst alle Bestellungen löschen.'
-            ]);
+        if ($meal->orderItems()->exists()) {
+            abort(Response::HTTP_BAD_REQUEST, trans('futtertrog.meal_was_ordered'));
         }
 
         $meal->delete();
 
         if ($request->wantsJson()) {
-            return response(null, Response::HTTP_NO_CONTENT);
+            return response()->json(null, Response::HTTP_NO_CONTENT);
         }
 
         return redirect()->route('meals.index');
