@@ -62,28 +62,4 @@ class MealPolicy
     {
         //
     }
-
-    /**
-     * Determine whether the user can restore the meal.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Meal  $meal
-     * @return mixed
-     */
-    public function restore(User $user, Meal $meal)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the meal.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Meal  $meal
-     * @return mixed
-     */
-    public function forceDelete(User $user, Meal $meal)
-    {
-        //
-    }
 }

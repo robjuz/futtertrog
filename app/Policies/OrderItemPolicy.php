@@ -65,30 +65,4 @@ class OrderItemPolicy
     {
         return $orderItem->user->is($user);
     }
-
-    /**
-     * Determine whether the user can restore the order.
-     *
-     * @param  \App\User      $user
-     * @param  \App\OrderItem $orderItem
-     *
-     * @return mixed
-     */
-    public function restore(User $user, OrderItem $orderItem)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the order.
-     *
-     * @param  \App\User      $user
-     * @param  \App\OrderItem $orderItem
-     *
-     * @return mixed
-     */
-    public function forceDelete(User $user, OrderItem $orderItem)
-    {
-        //
-    }
 }

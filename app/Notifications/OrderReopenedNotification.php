@@ -15,15 +15,15 @@ class OrderReopenedNotification extends Notification
     /**
      * @var Order
      */
-    private $order;
+    public $order;
     /**
      * @var User
      */
-    private $user;
+    public $user;
     /**
      * @var Meal
      */
-    private $meal;
+    public $meal;
 
     /**
      * Create a new notification instance.
@@ -80,7 +80,9 @@ class OrderReopenedNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'date' => $this->order->date,
+            'user' => $this->user->name,
+            'meal' => $this->meal->title
         ];
     }
 }

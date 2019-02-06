@@ -6,10 +6,9 @@ use App\Events\OrderReopened;
 use App\Notifications\OrderReopenedNotification;
 use App\Order;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MealOrderingTest extends TestCase
 {
@@ -97,7 +96,7 @@ class MealOrderingTest extends TestCase
         ]);
 
         // En event is dispatched
-        Event::assertDispatched(OrderReopened::class, function($event) use ($order, $user, $meal) {
+        Event::assertDispatched(OrderReopened::class, function ($event) use ($order, $user, $meal) {
             return $event->order->id === $order->id
                 && $event->user->id === $user->id
                 && $event->meal->id === $meal->id;
@@ -113,7 +112,7 @@ class MealOrderingTest extends TestCase
         $admin = factory('App\User')->create(['is_admin' => true]);
 
         // Given we have a closed order
-        factory('App\Order')->create([
+        $order = factory('App\Order')->create([
             'date' => $meal->date_from,
             'status' => Order::STATUS_ORDERED,
             'provider' => $meal->provider
@@ -121,6 +120,7 @@ class MealOrderingTest extends TestCase
 
 
         Notification::fake();
+        Mail::fake();
 
         // When a user creates a new order item associated with this order
         $this->login($user);
@@ -131,7 +131,23 @@ class MealOrderingTest extends TestCase
         ]);
 
         // Admin should be notified
-        Notification::assertSentTo([$admin], OrderReopenedNotification::class);
+        Notification::assertSentTo(
+            $admin,
+            OrderReopenedNotification::class,
+            function ($notification, $channels) use ($user, $meal, $order) {
+                /** @var \Illuminate\Notifications\Messages\MailMessage $mailData */
+                $mailData = $notification->toMail($user);
+                $this->assertEquals(__('Order reopened'), $mailData->subject);
+
+                $arrayData = $notification->toArray($user);
+                $this->assertEquals($arrayData['date'], $order->date);
+                $this->assertEquals($arrayData['user'], $user->name);
+                $this->assertEquals($arrayData['meal'], $meal->title);
+
+                return $notification->order->is($order)
+                    && $notification->user->is($user)
+                    && $notification->meal->is($meal);
+            });
 
     }
 }
