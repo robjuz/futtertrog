@@ -33,4 +33,16 @@ class OrderItemTest extends TestCase
 
         $this->assertInstanceOf('App\Order', $orderItem->order);
     }
+
+    /** @test */
+    public function it_knows_its_subtotal()
+    {
+        $meal = factory('App\Meal')->create(['price' => 1]);
+
+        /** @var \App\OrderItem $orderItem */
+        $orderItem = factory('App\OrderItem')->make(['quantity' => 2]);
+        $orderItem->meal()->associate($meal)->save();
+
+        $this->assertEquals(2, $orderItem->subtotal);
+    }
 }

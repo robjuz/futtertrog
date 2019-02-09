@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Order
  *
- * @property int $id
- * @property \Illuminate\Support\Carbon $date
- * @property string|null $provider
- * @property string $status
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int                                                            $id
+ * @property \Illuminate\Support\Carbon                                     $date
+ * @property string|null                                                    $provider
+ * @property string                                                         $status
+ * @property \Illuminate\Support\Carbon|null                                $created_at
+ * @property \Illuminate\Support\Carbon|null                                $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
@@ -27,17 +27,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Order extends Model
 {
+    const STATUS_OPEN = 'open';
+
+    const STATUS_ORDERED = 'ordered';
+    public static $statuses = [
+            self::STATUS_OPEN,
+            self::STATUS_ORDERED
+        ];
+
     protected $guarded = [];
 
-    const STATUS_OPEN = 'open';
-    const STATUS_ORDERED = 'ordered';
-
-    public static $statuses = [
-        self::STATUS_OPEN,
-        self::STATUS_ORDERED
-    ];
-
     protected $dates = ['date'];
+
+    protected $appends = ['subtotal'];
 
     public function orderItems()
     {
@@ -53,5 +55,10 @@ class Order extends Model
 //    {
 //        return $this->hasManyThrough(Meal::class, OrderItem::class, 'order_id', 'id', 'id', 'user_id');
 //    }
+
+    public function getSubtotalAttribute()
+    {
+        return $this->orderItems->sum->subtotal;
+    }
 
 }

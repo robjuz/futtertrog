@@ -56,5 +56,9 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function getSubtotalAttribute()
+    {
+        return $this->meal->price * $this->quantity;
+    }
 
 }
