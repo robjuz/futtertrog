@@ -18,7 +18,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Meal' => 'App\Policies\MealPolicy',
-        'App\Order' => 'App\Policies\OrderPolicy',
         'App\OrderItem' => 'App\Policies\OrderItemPolicy'
     ];
 
@@ -32,26 +31,11 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::before(function ($user, $ability) {
-            if ($ability === 'order') {
-                return null;
-            }
-
-            if ($ability === 'disorder') {
-                return null;
-            }
-
             if ($user->is_admin) {
                 return true;
             }
-        });
 
-        Gate::define('order', function (User $user, Meal $meal) {
-            return $meal->date_from > today() && today() < $meal->date_to;
-        });
-
-        Gate::define('disorder', function (User $user, Meal $meal) {
-            return true;
-//            return $user->meals->contains($meal);
+            return null;
         });
     }
 }

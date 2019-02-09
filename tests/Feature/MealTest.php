@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -87,7 +88,9 @@ class MealTest extends TestCase
         $this->withExceptionHandling();
 
         $this->get(route('meals.create'))->assertRedirect(route('login'));
+        $this->getJson(route('meals.create'))->assertStatus(Response::HTTP_UNAUTHORIZED);
         $this->post(route('meals.store'))->assertRedirect(route('login'));
+        $this->postJson(route('meals.store'))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /** @test */
@@ -96,6 +99,7 @@ class MealTest extends TestCase
         $this->withExceptionHandling();
 
         $this->get(route('meals.index'))->assertRedirect(route('login'));
+        $this->getJson(route('meals.index'))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /** @test */
@@ -105,11 +109,10 @@ class MealTest extends TestCase
 
         $this->withExceptionHandling();
 
-        $this->get(route('meals.edit', $meal))
-            ->assertRedirect(route('login'));
+        $this->get(route('meals.edit', $meal))->assertRedirect(route('login'));
+        $this->getJson(route('meals.edit', $meal))->assertStatus(Response::HTTP_UNAUTHORIZED);
 
-        $this->put(route('meals.update', $meal))
-            ->assertRedirect(route('login'));
+        $this->putJson(route('meals.update', $meal))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /** @test */
@@ -119,8 +122,8 @@ class MealTest extends TestCase
 
         $this->withExceptionHandling();
 
-        $this->delete(route('meals.destroy', $meal))
-            ->assertRedirect(route('login'));
+        $this->delete(route('meals.destroy', $meal))->assertRedirect(route('login'));
+        $this->deleteJson(route('meals.destroy', $meal))->assertStatus(Response::HTTP_UNAUTHORIZED);
 
 
         $this->login()
@@ -135,8 +138,8 @@ class MealTest extends TestCase
 
         $this->withExceptionHandling();
 
-        $this->get(route('meals.show', $meal))
-            ->assertRedirect(route('login'));
+        $this->get(route('meals.show', $meal))->assertRedirect(route('login'));
+        $this->getJson(route('meals.show', $meal))->assertStatus(Response::HTTP_UNAUTHORIZED);
 
         $this->login()
             ->get(route('meals.show', $meal))

@@ -7,6 +7,7 @@ use App\Notifications\OrderReopenedNotification;
 use App\Order;
 use App\OrderItem;
 use App\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -76,6 +77,7 @@ class MealOrderingTest extends TestCase
         $this->withExceptionHandling();
 
         $this->post(route('order_items.store'))->assertRedirect(route('login'));
+        $this->postJson(route('order_items.store'))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /** @test */

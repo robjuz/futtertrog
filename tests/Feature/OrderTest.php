@@ -14,6 +14,7 @@ class OrderTest extends TestCase
         $this->withExceptionHandling();
 
         $this->get(route('orders.index'))->assertRedirect(route('login'));
+        $this->getJson(route('orders.index'))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /** @test */

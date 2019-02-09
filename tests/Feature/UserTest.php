@@ -14,12 +14,25 @@ class UserTest extends TestCase
         $this->withExceptionHandling();
 
         $this->get(route('users.index'))->assertRedirect(route('login'));
+        $this->getJson(route('users.index'))->assertStatus(Response::HTTP_UNAUTHORIZED);
+
         $this->get(route('users.create'))->assertRedirect(route('login'));
+        $this->getJson(route('users.create'))->assertStatus(Response::HTTP_UNAUTHORIZED);
+
         $this->get(route('users.edit', 1))->assertRedirect(route('login'));
+        $this->getJson(route('users.edit', 1))->assertStatus(Response::HTTP_UNAUTHORIZED);
+
         $this->get(route('users.show', 1))->assertRedirect(route('login'));
+        $this->getJson(route('users.show', 1))->assertStatus(Response::HTTP_UNAUTHORIZED);
+
         $this->post(route('users.store'))->assertRedirect(route('login'));
+        $this->postJson(route('users.store'))->assertStatus(Response::HTTP_UNAUTHORIZED);
+
         $this->put(route('users.update', 1))->assertRedirect(route('login'));
+        $this->putJson(route('users.update', 1))->assertStatus(Response::HTTP_UNAUTHORIZED);
+
         $this->delete(route('users.destroy', 1))->assertRedirect(route('login'));
+        $this->deleteJson(route('users.destroy', 1))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /** @test */
