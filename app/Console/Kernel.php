@@ -8,6 +8,12 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Notification;
 
+/**
+ * Class Kernel
+ *
+ * @package App\Console
+ * @codeCoverageIgnore
+ */
 class Kernel extends ConsoleKernel
 {
     /**

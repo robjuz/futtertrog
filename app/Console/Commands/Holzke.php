@@ -8,6 +8,12 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 
+/**
+ * Class Holzke
+ *
+ * @package App\Console\Commands
+ * @codeCoverageIgnore
+ */
 class Holzke extends Command
 {
     /**
