@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -40,19 +41,32 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_a_list_of_system_users()
     {
-        $users = factory('App\User', 10)->create();
+        $users = factory('App\User', 5)->create();
 
-        $response = $this->loginAsAdmin()->get(route('users.index'));
+        $this->loginAsAdmin();
+
+        $response = $this->get(route('users.index'));
+        $jsonResponse = $this->getJson(route('users.index'));
 
         foreach ($users as $user) {
             $response->assertSee($user->name);
         }
+
+        $jsonResponse->assertJson($users->toArray());
     }
 
     /** @test */
     public function admin_can_manage_users()
     {
         $data = factory('App\User')->raw([
+            'name' => 'Example1',
+            'is_admin' => true,
+            'password' => 'secret',
+            'password_confirmation' => 'secret',
+        ]);
+
+        $data2 = factory('App\User')->raw([
+            'name' => 'Example2',
             'is_admin' => true,
             'password' => 'secret',
             'password_confirmation' => 'secret',
@@ -60,26 +74,31 @@ class UserTest extends TestCase
 
         $this->loginAsAdmin();
 
-        $this->post(route('users.store'), $data);
+        $this->post(route('users.store'), $data)->assertRedirect();
+        $this->postJson(route('users.store'), $data2)->assertJsonFragment([ 'name' => 'Example2',]);
 
         $this->assertDatabaseHas('users', [
-           'name' => $data['name'],
-           'is_admin' => true
+            'name' => $data['name'],
+            'is_admin' => true
         ]);
 
         $this->get(route('users.edit', 2))->assertSee($data['name']);
 
         $this->get(route('users.show', 2))->assertSee($data['name']);
+        $this->getJson(route('users.show', 2))->assertJsonFragment([ 'name' => 'Example1',]);
 
-        $this->put(route('users.update', 2), ['name' => 'John']);
+        $this->put(route('users.update', 2), ['name' => 'John'])->assertRedirect();
+        $this->putJson(route('users.update', 2), ['name' => 'John'])->assertJsonFragment(['name' => 'John']);
 
         $this->assertDatabaseHas('users', [
             'name' => 'John',
             'is_admin' => true
         ]);
 
-        $this->delete(route('users.destroy', 2));
-        $this->assertDatabaseMissing('users',['name' => 'John']);
+        $this->delete(route('users.destroy', 2))->assertRedirect();
+        $this->assertDatabaseMissing('users', ['name' => 'John']);
+
+        $this->deleteJson(route('users.destroy', 3))->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
     /** @test */

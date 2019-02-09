@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Events\OrderReopened;
 use App\Notifications\OrderReopenedNotification;
 use App\Order;
+use App\OrderItem;
+use App\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -49,21 +51,23 @@ class MealOrderingTest extends TestCase
         $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
+    /** @test */
     public function admin_can_order_a_meal_for_other_users()
     {
         $meal = factory('App\Meal')->create();
 
+        /** @var \App\User $user */
         $user = factory('App\User')->create();
 
         $this->loginAsAdmin()
-            ->post(route('orders.store'), [
+            ->post(route('order_items.store'), [
                 'date' => $meal->date_from,
                 'user_id' => $user->id,
                 'meal_id' => $meal->id
             ]);
 
-        $this->assertFalse(auth()->user()->meals->contains($meal));
-        $this->assertTrue($user->meals->contains($meal));
+        $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+        $this->assertTrue($user->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
     /** @test */
@@ -151,5 +155,46 @@ class MealOrderingTest extends TestCase
                     && $notification->meal->is($meal);
             });
 
+    }
+
+    /** @test */
+    public function it_provides_a_list_of_order_items()
+    {
+        $user = factory(User::class)->create();
+        $orderItem = factory(OrderItem::class)->make();
+        $user->orderItems()->save($orderItem);
+
+        $orderItem->load('meal');
+
+        $this->login($user)
+            ->get(route('order_items.index'))
+            ->assertJsonFragment($orderItem->toArray());
+    }
+
+    /** @test */
+    public function admin_can_see_all_order_items()
+    {
+        $orderItem = factory(OrderItem::class)->create();
+
+        $this->loginAsAdmin()
+            ->get(route('order_items.index'))
+            ->assertJsonFragment($orderItem->toArray());
+    }
+
+    /** @test */
+    public function admin_can_see_order_items_from_other_users()
+    {
+        $user = factory(User::class)->create();
+        $orderItem = factory(OrderItem::class)->make();
+        $user->orderItems()->save($orderItem);
+
+        $orderItem2 = factory(OrderItem::class)->create();
+
+        $orderItem->load('meal');
+
+        $this->loginAsAdmin()
+            ->get(route('order_items.index', ['user_id' => $user->id]))
+            ->assertJsonFragment($orderItem->toArray())
+            ->assertJsonMissingExact(['user_id' => $orderItem2->user_id]);
     }
 }

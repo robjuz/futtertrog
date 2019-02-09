@@ -41,6 +41,13 @@ class OrderItem extends Model
 
     protected $dates = ['date'];
 
+    protected $casts = [
+        'order_id' => 'integer',
+        'user_id' => 'integer',
+        'meal_id' => 'integer',
+        'quantity' => 'integer'
+    ];
+
     public function meal()
     {
         return $this->belongsTo(Meal::class);

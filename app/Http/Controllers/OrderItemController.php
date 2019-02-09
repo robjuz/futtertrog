@@ -18,34 +18,28 @@ class OrderItemController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-//    public function index(Request $request)
-//    {
-//        $this->authorize('list', OrderItem::class);
-//
-//        $from = Carbon::parse($request->query('from', today()));
-//        $to = $request->has('to') && !empty($request->to) ? Carbon::parse($request->to) : null;
-//
-//        $orders = Order::with(['orderItems.meal', 'orderItems.user'])
-//            ->whereDate('date', '>=', $from->toDateString())
-//            ->when(!empty($to), function (Builder $query) use ($to) {
-//                $query->whereDate('date', '<=', $to->toDateString());
-//            })
-//            ->orderBy('date')
-//            ->get();
-//
-//        $sum = $orders->sum(function ($order) {
-//            return $order->orderItems->sum(function ($order) {
-//                return $order->meal->price * $order->quantity;
-//            });
-//        });
-//
-//        return view('order.index', compact('orders', 'from', 'to', 'sum'));
-//    }
+    public function index(Request $request)
+    {
+        $this->authorize('list', OrderItem::class);
+
+        /** @var \App\User $user */
+        $user = $request->user();
+        if ($user->is_admin) {
+            $query = OrderItem::with(['meal', 'user'])
+                ->when($request->has('user_id'), function (Builder $query) use ($request) {
+                    $query->where('user_id', $request->query('user_id'));
+                });
+        } else {
+            $query = $user->orderItems()->with(['meal']);
+        }
+
+        return response()->json($query->paginate());
+    }
 
     /**
      * Show the form for creating a new resource.
