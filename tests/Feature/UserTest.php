@@ -74,6 +74,8 @@ class UserTest extends TestCase
 
         $this->loginAsAdmin();
 
+        $this->get(route('users.create'))->assertViewIs('user.create');
+
         $this->post(route('users.store'), $data)->assertRedirect();
         $this->postJson(route('users.store'), $data2)->assertJsonFragment([ 'name' => 'Example2',]);
 

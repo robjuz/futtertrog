@@ -98,19 +98,14 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Request    $request
      * @param  \App\User $user
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(Request $request, User $user)
+    public function edit(User $user)
     {
         $this->authorize('update', $user);
-
-        if ($request->wantsJson()) {
-            return response()->json($user);
-        }
 
         return view('user.edit', compact('user'));
     }
