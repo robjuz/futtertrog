@@ -24,4 +24,12 @@ class LoginTest extends TestCase
 
        $this->assertAuthenticated();
    }
+
+   /** @test */
+   public function authenticated_users_cannot_access_the_login_page()
+   {
+       $this->login()
+           ->get(route('login'))
+           ->assertRedirect('/');
+   }
 }
