@@ -5,13 +5,11 @@ namespace App\Console\Commands;
 use App\Meal;
 use DiDom\Document;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 
 /**
- * Class Holzke
+ * Class Holzke.
  *
- * @package App\Console\Commands
  * @codeCoverageIgnore
  */
 class Holzke extends Command
@@ -52,7 +50,7 @@ class Holzke extends Command
             ->withData([
                 'kdnr' => config('services.holzke.login'),
                 'passwort' => config('services.holzke.password'),
-                'is_send' => 'login'
+                'is_send' => 'login',
             ])
             ->setCookieJar(storage_path('holtzke_cookie.txt'))
             ->post();
@@ -64,7 +62,6 @@ class Holzke extends Command
         }
 
         do {
-
             $response = Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
                 ->withData(['t' => $date->timestamp])
                 ->setCookieFile(storage_path('holtzke_cookie.txt'))
@@ -84,7 +81,7 @@ class Holzke extends Command
                     'title' => trim($titleMatch[0]),
                     'date_from' => $date->toDateString(),
                     'date_to' => $date->toDateString(),
-                    'provider' => Meal::PROVIDER_HOLZKE
+                    'provider' => Meal::PROVIDER_HOLZKE,
                 ], [
                     'description' => trim($meal->find('.cBody')[0]->removeChildren()[0]->text()),
                     'price' => floatval(str_replace(',', '.', $priceMatch[1])),
@@ -92,7 +89,6 @@ class Holzke extends Command
             }
 
             $date->addWeekday();
-
         } while (count($meals));
     }
 }

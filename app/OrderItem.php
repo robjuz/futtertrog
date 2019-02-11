@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Order
+ * App\Order.
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon $date
@@ -36,7 +36,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OrderItem extends Model
 {
-
     protected $guarded = [];
 
     protected $dates = ['date'];
@@ -45,7 +44,7 @@ class OrderItem extends Model
         'order_id' => 'integer',
         'user_id' => 'integer',
         'meal_id' => 'integer',
-        'quantity' => 'integer'
+        'quantity' => 'integer',
     ];
 
     public function meal()
@@ -67,5 +66,4 @@ class OrderItem extends Model
     {
         return $this->meal->price * $this->quantity;
     }
-
 }

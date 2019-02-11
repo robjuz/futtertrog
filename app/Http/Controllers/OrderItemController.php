@@ -7,7 +7,6 @@ use App\Meal;
 use App\Order;
 use App\OrderItem;
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -74,7 +73,7 @@ class OrderItemController extends Controller
         $mealIds = Meal::whereDate('date_from', '<=', $request->date)->whereDate('date_to', '>=', $request->date)->pluck('id');
         $rules['meal_id'] = [
             'required',
-            Rule::in($mealIds)
+            Rule::in($mealIds),
         ];
 
         $attributes = $request->validate($rules);
@@ -94,9 +93,9 @@ class OrderItemController extends Controller
         /** @var Order $order */
         $order = Order::query()->updateOrCreate([
             'date' => $attributes['date'],
-            'provider' => $meal->provider
+            'provider' => $meal->provider,
         ], [
-            'status' => Order::STATUS_OPEN
+            'status' => Order::STATUS_OPEN,
         ]);
 
         $orderItem = $order->orderItems()->create([

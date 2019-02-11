@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Deposit
+ * App\Deposit.
  *
  * @property int $id
  * @property int $user_id

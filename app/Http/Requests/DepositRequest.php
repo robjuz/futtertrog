@@ -26,7 +26,7 @@ class DepositRequest extends FormRequest
         return [
             'user_id' => 'required',
             'value' => 'required|numeric',
-            'comment' => 'nullable|string'
+            'comment' => 'nullable|string',
         ];
     }
 }

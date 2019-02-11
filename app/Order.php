@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Order
+ * App\Order.
  *
  * @property int                                                            $id
  * @property \Illuminate\Support\Carbon                                     $date
@@ -32,7 +32,7 @@ class Order extends Model
     const STATUS_ORDERED = 'ordered';
     public static $statuses = [
             self::STATUS_OPEN,
-            self::STATUS_ORDERED
+            self::STATUS_ORDERED,
         ];
 
     protected $guarded = [];
@@ -60,5 +60,4 @@ class Order extends Model
     {
         return $this->orderItems->sum->subtotal;
     }
-
 }

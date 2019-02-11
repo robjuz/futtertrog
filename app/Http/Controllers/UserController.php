@@ -92,7 +92,6 @@ class UserController extends Controller
             ->appends('orders_page', $request->meals_page);
 
         return view('user.show', compact('user', 'orders', 'deposits'));
-
     }
 
     /**

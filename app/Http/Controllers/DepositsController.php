@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Deposit;
 use App\Http\Requests\DepositDestroyRequest;
 use App\Http\Requests\DepositRequest;
-use Illuminate\Http\Response;
 
 class DepositsController extends Controller
 {
-
     /**
      * Store a newly created resource in storage.
      *

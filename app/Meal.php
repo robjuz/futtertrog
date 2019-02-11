@@ -3,10 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
- * App\Meal
+ * App\Meal.
  *
  * @property int                                                            $id
  * @property int|null                                                       $order_id
@@ -45,7 +44,7 @@ class Meal extends Model
 
     public static $providers = [
       self::PROVIDER_HOLZKE,
-      self::PROVIDER_PARADIES_PIZZA
+      self::PROVIDER_PARADIES_PIZZA,
     ];
 
     protected $guarded = [];

@@ -2,14 +2,13 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Meal;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MealPolicy
 {
     use HandlesAuthorization;
-
 
     public function list(User $user)
     {
