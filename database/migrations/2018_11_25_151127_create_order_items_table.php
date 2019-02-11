@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateOrderItemsTable extends Migration
 {
@@ -24,7 +24,6 @@ class CreateOrderItemsTable extends Migration
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('meal_id')->references('id')->on('meals');
-
         });
     }
 

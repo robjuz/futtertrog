@@ -25,11 +25,11 @@ class OrderController extends Controller
         $this->authorize('list', Order::class);
 
         $from = Carbon::parse($request->query('from', today()));
-        $to = $request->has('to') && !empty($request->to) ? Carbon::parse($request->to) : null;
+        $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
 
         $orders = Order::with(['orderItems.meal', 'orderItems.user'])
             ->whereDate('date', '>=', $from->toDateString())
-            ->when(!empty($to), function (Builder $query) use ($to) {
+            ->when(! empty($to), function (Builder $query) use ($to) {
                 $query->whereDate('date', '<=', $to->toDateString());
             })
             ->orderBy('date')
@@ -59,7 +59,7 @@ class OrderController extends Controller
 
         $order->update(
             $request->validate([
-                'status' => ['sometimes', 'string', Rule::in(Order::$statuses)]
+                'status' => ['sometimes', 'string', Rule::in(Order::$statuses)],
             ])
         );
 
@@ -84,13 +84,11 @@ class OrderController extends Controller
     {
         $this->authorize('delete', $orderItem);
 
-
         $orderItem->delete();
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
         }
-
 
         return back()->with('message', __('Success'));
     }

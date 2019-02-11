@@ -2,14 +2,13 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\OrderItem;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class OrderItemPolicy
 {
     use HandlesAuthorization;
-
 
     public function list(User $user)
     {

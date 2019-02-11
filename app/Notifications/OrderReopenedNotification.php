@@ -82,7 +82,7 @@ class OrderReopenedNotification extends Notification
         return [
             'date' => $this->order->date,
             'user' => $this->user->name,
-            'meal' => $this->meal->title
+            'meal' => $this->meal->title,
         ];
     }
 }

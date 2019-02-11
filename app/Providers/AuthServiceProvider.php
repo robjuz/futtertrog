@@ -2,12 +2,8 @@
 
 namespace App\Providers;
 
-use App\Meal;
-use App\OrderItem;
-use App\User;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Meal' => 'App\Policies\MealPolicy',
-        'App\OrderItem' => 'App\Policies\OrderItemPolicy'
+        'App\OrderItem' => 'App\Policies\OrderItemPolicy',
     ];
 
     /**
@@ -34,8 +30,6 @@ class AuthServiceProvider extends ServiceProvider
             if ($user->is_admin) {
                 return true;
             }
-
-            return null;
         });
     }
 }

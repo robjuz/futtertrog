@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-
     /**
      * Show the application dashboard.
      *
@@ -27,11 +26,11 @@ class HomeController extends Controller
                 $query->whereDate('date', today());
             })->get();
 
-        $ordersHistory = $user->orderItems()->with(['order','meal'])->latest()->paginate(5, ['*'], 'meals_page');
+        $ordersHistory = $user->orderItems()->with(['order', 'meal'])->latest()->paginate(5, ['*'], 'meals_page');
         $ordersHistory->appends('deposits_page', $request->deposits_page);
         $ordersHistory->appends('future_meals_page', $request->future_meals_page);
 
-        $futureOrders = $user->orderItems()->with(['order','meal'])
+        $futureOrders = $user->orderItems()->with(['order', 'meal'])
             ->whereHas('order', function ($query) {
                 $query->whereDate('date', '>', today());
             })->paginate(5, ['*'], 'future_meals_page');

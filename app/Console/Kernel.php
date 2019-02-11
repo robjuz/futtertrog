@@ -9,9 +9,8 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Notification;
 
 /**
- * Class Kernel
+ * Class Kernel.
  *
- * @package App\Console
  * @codeCoverageIgnore
  */
 class Kernel extends ConsoleKernel
@@ -56,7 +55,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

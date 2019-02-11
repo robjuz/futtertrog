@@ -24,15 +24,15 @@ class UserUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $rules =  [
+        $rules = [
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'string', 'email', Rule::unique('users')->ignoreModel($this->user)],
             'is_admin' => ['sometimes', 'boolean'],
 
         ];
 
-        if (!is_null($this->password)) {
-           $rules['password'] = ['sometimes', 'min:6', 'confirmed'];
+        if (! is_null($this->password)) {
+            $rules['password'] = ['sometimes', 'min:6', 'confirmed'];
         }
 
         return $rules;

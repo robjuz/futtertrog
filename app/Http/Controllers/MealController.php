@@ -75,9 +75,7 @@ class MealController extends Controller
             })
             ->get()
             ->mapToGroups(function ($orderItem, $key) {
-
-                return [$orderItem->order->date->toDateString() => $orderItem->meal->title . ' (' . $orderItem->quantity . ')'];
-
+                return [$orderItem->order->date->toDateString() => $orderItem->meal->title.' ('.$orderItem->quantity.')'];
             });
 
         $todayOrders = $user->orderItems()
@@ -86,7 +84,7 @@ class MealController extends Controller
             })
             ->get();
 
-        return view('meal.index', compact('meals', 'todayMeals', 'orders', 'todayOrders' ,'requestedDate', 'includes', 'excludes'));
+        return view('meal.index', compact('meals', 'todayMeals', 'orders', 'todayOrders', 'requestedDate', 'includes', 'excludes'));
     }
 
     /**
@@ -120,7 +118,7 @@ class MealController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'provider' => ['required', Rule::in(Meal::$providers)]
+            'provider' => ['required', Rule::in(Meal::$providers)],
         ]));
 
         if ($request->wantsJson()) {
@@ -189,7 +187,7 @@ class MealController extends Controller
                 'description' => 'nullable|string',
                 'price' => 'sometimes|numeric|min:0',
                 'can_be_ordered_until' => 'sometimes|date|after:date',
-                'provider' => ['sometimes', Rule::in(Meal::$providers)]
+                'provider' => ['sometimes', Rule::in(Meal::$providers)],
             ])
         );
 
