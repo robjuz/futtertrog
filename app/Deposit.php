@@ -27,4 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 class Deposit extends Model
 {
     protected $guarded = [];
+
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_OK = 'ok';
 }

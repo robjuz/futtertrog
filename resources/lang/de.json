@@ -110,5 +110,7 @@
   "Create order" : "Bestellung erstellen",
   "No items found" : "Keine Einträge gefunden",
   "From" : "Von",
-  "To" : "Bis"
+  "To" : "Bis",
+  "How much do you want to deposit?" : "Wie viel möchtest du einzahlen?",
+  "Pay with PayPal": "Mit PayPal bezahlen"
 }

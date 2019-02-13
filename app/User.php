@@ -83,7 +83,7 @@ class User extends Authenticatable
     {
         $this->load('orderItems.meal');
 
-        $deposits = $this->deposits()->sum('value');
+        $deposits = $this->deposits()->whereStatus(Deposit::STATUS_OK)->sum('value');
         $orders = $this->orderItems->sum(function ($order) {
             return $order->meal->price * $order->quantity;
         });
