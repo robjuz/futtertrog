@@ -6,12 +6,8 @@ $factory->define(App\OrderItem::class, function (Faker $faker) {
     $meal = factory('App\Meal')->create();
 
     return [
-        'order_id' => function () {
-            return factory('App\Order')->create()->id;
-        },
-        'user_id' => function () {
-            return factory('App\User')->create()->id;
-        },
+        'order_id' => factory('App\Order'),
+        'user_id' => factory('App\User'),
         'meal_id' => $meal->id,
         'quantity' => $faker->numberBetween(1, 10),
     ];
