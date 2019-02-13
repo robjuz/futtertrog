@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Srmklive\PayPal\Services\ExpressCheckout;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -9,12 +10,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class PayPalDepositTest extends TestCase
 {
     /** @test */
-    public function it_allows_the_user_to_make_a_deposit_with_paypal()
+    public function it_redirects_to_paypal_when_requested()
     {
         $this->login();
 
-        $this->post(route('paypal.express_checkout'), ['value' => 10]);
-
-        $this->assertEquals(10, auth()->user()->balance);
+        $this->post(route('paypal.express_checkout'), ['value' => 10])
+            ->assertRedirect()
+            ->assertSee('paypal.com');
+    }
+    
+    /** @test */
+    public function it_creates_a_deposite_when_payment_is_successfull()
+    {
+        $provider = new ExpressCheckout();
     }
 }

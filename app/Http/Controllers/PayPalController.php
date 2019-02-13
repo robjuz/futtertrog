@@ -29,10 +29,16 @@ class PayPalController extends Controller
     public function expressCheckout(Request $request)
     {
         $request->validate(['value' => 'required|numeric|min:0.01']);
-
         try {
             return DB::transaction(function () use ($request) {
+                $request->user()->deposits()->create([
+                    'value' => $request->input('value'),
+                    'status' => Deposit::STATUS_PROCESSING,
+                    'comment' => trans('Payed with PayPal')
+                ]);
+
                 $response = $this->provider->setExpressCheckout($this->getCheckoutData($request->input('value')));
+
                 return redirect($response['paypal_link']);
             });
         } catch (\Throwable $e) {
@@ -76,7 +82,6 @@ class PayPalController extends Controller
      */
     public function getCheckoutData($value): array
     {
-
         return [
             'items' => [
                 [

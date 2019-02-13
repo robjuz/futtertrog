@@ -11,40 +11,42 @@
                     <h2 class="card-header">{{ __('Your balance') }}</h2>
 
                     <div class="card-body">
-                        <span class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} text-nowrap">
-                        {{ number_format($balance, 2, ',','.') }} €
-                        </span>
+                        <h3 class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} h5 text-nowrap">
+                            {{ number_format($balance, 2, ',','.') }} €
+                        </h3>
 
-                        <form class="mt-3" action="{{ route('paypal.express_checkout') }}" method="POST" novalidate>
-                            @csrf
-                            <div class="form-group ">
-                                <label for="value">{{ __('How much do you want to deposit?') }}</label>
-                                <div class="input-group mb-3">
-                                    <input id="value"
-                                           type="number"
-                                           min="0.01"
-                                           step="0.01"
-                                           name="value"
-                                           class="form-control {{ $errors->has('value') ? ' is-invalid' : '' }}"
-                                           aria-describedby="pay_wiht_paypal"
-                                           required
-                                    >
-                                    @if ($errors->has('value'))
-                                        <span class="invalid-tooltip d-block" role="alert">
+                        @if (Route::has('paypal.express_checkout'))
+                            <form class="mt-3" action="{{ route('paypal.express_checkout') }}" method="POST" novalidate>
+                                @csrf
+                                <div class="form-group ">
+                                    <label for="value">{{ __('How much do you want to deposit?') }}</label>
+                                    <div class="input-group mb-3">
+                                        <input id="value"
+                                               type="number"
+                                               min="0.01"
+                                               step="0.01"
+                                               name="value"
+                                               class="form-control {{ $errors->has('value') ? ' is-invalid' : '' }}"
+                                               aria-describedby="pay_wiht_paypal"
+                                               required
+                                        >
+                                        @if ($errors->has('value'))
+                                            <span class="invalid-tooltip d-block" role="alert">
                                         <strong>{{ $errors->first('value') }}</strong>
                                     </span>
-                                    @endif
-                                    <div class="input-group-append">
-                                        <button id="pay_wiht_paypal"
-                                                class="btn btn-primary"
-                                                type="submit"
-                                        >
-                                            {{ __('Pay with PayPal') }}
-                                        </button>
+                                        @endif
+                                        <div class="input-group-append">
+                                            <button id="pay_wiht_paypal"
+                                                    class="btn btn-primary"
+                                                    type="submit"
+                                            >
+                                                {{ __('Pay with PayPal') }}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        @endif
                     </div>
                 </div>
 

@@ -8,10 +8,9 @@
                     <h3 class="mb-0 h5 text-nowrap {{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
                         {{ number_format($deposit->value, 2, ',','.') }} €
                     </h3>
-                    <small class="ml-auto"
-                           title="{{ $deposit->created_at->format(__('futtertrog.datetime_format')) }}">{{ $deposit->created_at->diffForHumans() }}</small>
+                    <small class="ml-auto" title="{{ $deposit->created_at->format(__('futtertrog.datetime_format')) }}">{{ $deposit->created_at->diffForHumans() }}</small>
                 </div>
-                <p class="mb-2"> {{ $deposit->comment }} </p>
+                <p class="mt-2 mb-0"> {{ $deposit->comment }} </p>
                 @if(auth()->user()->is_admin AND !request()->routeIs('home'))
                     <form action="{{ route('deposits.destroy', $deposit) }}" method="post" class="text-right">
                         @csrf
