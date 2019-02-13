@@ -7,6 +7,6 @@ $factory->define(App\Deposit::class, function (Faker $faker) {
         'user_id' => factory('App\User'),
         'value' => $faker->randomFloat(2, -10, 10),
         'comment' => $faker->sentence,
-        'status' => \App\Deposit::STATUS_OK
+        'status' => \App\Deposit::STATUS_OK,
     ];
 });

@@ -9,7 +9,6 @@ use Srmklive\PayPal\Services\ExpressCheckout;
 
 class PayPalController extends Controller
 {
-
     /**
      * @var ExpressCheckout
      */
@@ -25,7 +24,6 @@ class PayPalController extends Controller
         $this->provider = new ExpressCheckout();
     }
 
-
     public function expressCheckout(Request $request)
     {
         $request->validate(['value' => 'required|numeric|min:0.01']);
@@ -34,7 +32,7 @@ class PayPalController extends Controller
                 $request->user()->deposits()->create([
                     'value' => $request->input('value'),
                     'status' => Deposit::STATUS_PROCESSING,
-                    'comment' => trans('Payed with PayPal')
+                    'comment' => trans('Payed with PayPal'),
                 ]);
 
                 $response = $this->provider->setExpressCheckout($this->getCheckoutData($request->input('value')));
@@ -64,10 +62,11 @@ class PayPalController extends Controller
             );
 
             if (
-                !strcasecmp($payment_status['PAYMENTINFO_0_PAYMENTSTATUS'], 'Completed')
-                || !strcasecmp($payment_status['PAYMENTINFO_0_PAYMENTSTATUS'], 'Processed')
+                ! strcasecmp($payment_status['PAYMENTINFO_0_PAYMENTSTATUS'], 'Completed')
+                || ! strcasecmp($payment_status['PAYMENTINFO_0_PAYMENTSTATUS'], 'Processed')
             ) {
                 $deposit->update(['status' => Deposit::STATUS_OK]);
+
                 return redirect('/')->with('success', trans('Success'));
             }
         }
@@ -87,14 +86,14 @@ class PayPalController extends Controller
                 [
                     'name' => trans('Futtertrog deposit'),
                     'price' => $value,
-                    'qty' => 1
-                ]
+                    'qty' => 1,
+                ],
             ],
             'invoice_description' => null,
             'invoice_id' => null,
             'return_url' => route('paypal.express_checkout_success'),
             'cancel_url' => url('/'),
-            'total' => $value
+            'total' => $value,
         ];
     }
 }
