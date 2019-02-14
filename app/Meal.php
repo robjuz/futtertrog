@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Meal
+ * App\Meal.
  *
  * @property int $id
  * @property string $title

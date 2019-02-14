@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\OrderItem
+ * App\OrderItem.
  *
  * @property int $id
  * @property int $order_id

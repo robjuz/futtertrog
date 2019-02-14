@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Order
+ * App\Order.
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon $date
