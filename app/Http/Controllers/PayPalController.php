@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Deposit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Srmklive\PayPal\Services\ExpressCheckout;
 
@@ -12,21 +13,22 @@ class PayPalController extends Controller
     /**
      * @var ExpressCheckout
      */
-    protected $provider;
+    protected $paypal;
 
     /**
      * PayPalController constructor.
      *
-     * @throws \Exception
+     * @param \Srmklive\PayPal\Services\ExpressCheckout $paypal
      */
-    public function __construct()
+    public function __construct(ExpressCheckout $paypal)
     {
-        $this->provider = new ExpressCheckout();
+        $this->paypal = $paypal;
     }
 
     public function expressCheckout(Request $request)
     {
         $request->validate(['value' => 'required|numeric|min:0.01']);
+
         try {
             return DB::transaction(function () use ($request) {
                 $request->user()->deposits()->create([
@@ -35,7 +37,7 @@ class PayPalController extends Controller
                     'comment' => trans('Payed with PayPal'),
                 ]);
 
-                $response = $this->provider->setExpressCheckout($this->getCheckoutData($request->input('value')));
+                $response = $this->paypal->setExpressCheckout($request->user()->getCheckoutData());
 
                 return redirect($response['paypal_link']);
             });
@@ -48,15 +50,14 @@ class PayPalController extends Controller
     {
         $token = $request->input('token');
         // Verify Express Checkout Token
-        $response = $this->provider->getExpressCheckoutDetails($token);
+        $response = $this->paypal->getExpressCheckoutDetails($token);
 
         if (in_array(strtoupper($response['ACK']), ['SUCCESS', 'SUCCESSWITHWARNING'])) {
 
             // Perform transaction on PayPal
-            $deposit = $request->user()->deposits()->whereStatus(Deposit::STATUS_PROCESSING)->latest()->first();
 
-            $payment_status = $this->provider->doExpressCheckoutPayment(
-                $this->getCheckoutData($deposit->value),
+            $payment_status = $this->paypal->doExpressCheckoutPayment(
+                $request->user()->getCheckoutData(),
                 $token,
                 $request->input('PayerID')
             );
@@ -65,35 +66,15 @@ class PayPalController extends Controller
                 ! strcasecmp($payment_status['PAYMENTINFO_0_PAYMENTSTATUS'], 'Completed')
                 || ! strcasecmp($payment_status['PAYMENTINFO_0_PAYMENTSTATUS'], 'Processed')
             ) {
-                $deposit->update(['status' => Deposit::STATUS_OK]);
+                $request->user()
+                    ->deposits()
+                    ->whereStatus(Deposit::STATUS_PROCESSING)
+                    ->update(['status' => Deposit::STATUS_OK]);
 
                 return redirect('/')->with('success', trans('Success'));
             }
         }
 
         return redirect('/')->with('error', trans('Error processing PayPal payment'));
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return array
-     */
-    public function getCheckoutData($value): array
-    {
-        return [
-            'items' => [
-                [
-                    'name' => trans('Futtertrog deposit'),
-                    'price' => $value,
-                    'qty' => 1,
-                ],
-            ],
-            'invoice_description' => null,
-            'invoice_id' => null,
-            'return_url' => route('paypal.express_checkout_success'),
-            'cancel_url' => url('/'),
-            'total' => $value,
-        ];
     }
 }

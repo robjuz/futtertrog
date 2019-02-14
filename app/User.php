@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * App\User.
+ * App\User
  *
  * @property int $id
  * @property string $name
@@ -14,13 +14,14 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $email_verified_at
  * @property string $password
  * @property bool $is_admin
+ * @property array|null $settings
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Deposit[] $deposits
  * @property-read mixed $balance
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Meal[] $meals
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User query()
@@ -32,11 +33,9 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereSettings($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property array|null $settings
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
- * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereSettings($value)
  */
 class User extends Authenticatable
 {
@@ -96,5 +95,28 @@ class User extends Authenticatable
         return $this->forceFill([
             'is_admin' => true,
         ])->save();
+    }
+
+    /**
+     * @return array
+     */
+    public function getCheckoutData(): array
+    {
+        $deposit = $this->deposits()->whereStatus(Deposit::STATUS_PROCESSING)->firstOrFail();
+
+        return [
+            'items' => [
+                [
+                    'name' => trans('Futtertrog deposit'),
+                    'price' => $deposit->value,
+                    'qty' => 1
+                ]
+            ],
+            'invoice_description' => null,
+            'invoice_id' => null,
+            'return_url' => route('paypal.express_checkout_success'),
+            'cancel_url' => url('/'),
+            'total' => $deposit->value
+        ];
     }
 }
