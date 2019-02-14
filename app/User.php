@@ -8,20 +8,20 @@ use Illuminate\Notifications\Notifiable;
 /**
  * App\User.
  *
- * @property int $id
- * @property string $name
- * @property string $email
- * @property string|null $email_verified_at
- * @property string $password
- * @property bool $is_admin
- * @property array|null $settings
- * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Deposit[] $deposits
- * @property-read mixed $balance
+ * @property int                                                                                                            $id
+ * @property string                                                                                                         $name
+ * @property string                                                                                                         $email
+ * @property string|null                                                                                                    $email_verified_at
+ * @property string                                                                                                         $password
+ * @property bool                                                                                                           $is_admin
+ * @property array|null                                                                                                     $settings
+ * @property string|null                                                                                                    $remember_token
+ * @property \Illuminate\Support\Carbon|null                                                                                $created_at
+ * @property \Illuminate\Support\Carbon|null                                                                                $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Deposit[]                                                   $deposits
+ * @property-read mixed                                                                                                     $balance
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[]                                                 $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User query()
@@ -41,15 +41,21 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    const SETTING_NO_ORDER_NOTIFICATION = 'noOrderNotification';
+    const SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION = 'noOrderForNextDayNotification';
+    const SETTING_MEAL_PREFERENCES = 'mealPreferences';
+    const SETTING_MEAL_AVERSION = 'mealAversion';
+
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
-        'is_admin' => 'boolean',
-        'settings' => 'array',
-    ];
+    protected $casts
+        = [
+            'is_admin' => 'boolean',
+            'settings' => 'array',
+        ];
 
     /**
      * The attributes that are mass assignable.
@@ -63,10 +69,11 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden
+        = [
+            'password',
+            'remember_token',
+        ];
 
     public function deposits()
     {

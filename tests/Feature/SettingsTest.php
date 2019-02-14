@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,8 +22,10 @@ class SettingsTest extends TestCase
     public function it_allows_to_store_settings()
     {
         $data = [
-            'noOrderNotification' => true,
-            'noOrderForNextDayNotification' => true,
+            User::SETTING_NO_ORDER_NOTIFICATION => true,
+            User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => true,
+            User::SETTING_MEAL_PREFERENCES => 'meal1, meal2',
+            User::SETTING_MEAL_AVERSION => 'meal3, meal4'
         ];
 
         $this->login()->post(route('settings.store'),$data)->assertRedirect();

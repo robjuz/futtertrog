@@ -13,8 +13,10 @@
         </form>
     @endcan
 
-    <h4 class="d-flex justify-content-between">
-        {{ $meal->title }}
+    <h4 class="d-flex justify-content-between align-items-center">
+        <span class="{{ $meal->getTitleClasses() }}">
+            {{ $meal->title }}
+        </span>
         <div class="d-flex align-items-center justify-content-end">
             <small class="text-nowrap">{{ number_format($meal->price, 2, ',', '.') }} €</small>
 

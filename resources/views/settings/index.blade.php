@@ -70,40 +70,39 @@
                                 </div>
                             </div>
 
-{{--                            TODO: add in v2.2 --}}
-{{--                            <div class="form-group row">--}}
-{{--                                <label class="col-sm-3 col-form-label">{{ __('Ingredients') }}</label>--}}
-{{--                                <div class="col-sm-9">--}}
 
-{{--                                    <div class="form-group">--}}
-{{--                                        <label for="includes">{{ __('includes') }}</label>--}}
-{{--                                        <input type="text"--}}
-{{--                                               class="form-control"--}}
-{{--                                               name="includes"--}}
-{{--                                               id="includes"--}}
-{{--                                               value="{{ old('includes', $settings['includes'] ?? null) }}"--}}
-{{--                                               aria-describedby="includesHelp"--}}
-{{--                                        >--}}
-{{--                                        <small id="includesHelp" class="form-text text-muted">--}}
-{{--                                            {{ __('Comma-separated values') }}--}}
-{{--                                        </small>--}}
-{{--                                    </div>--}}
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">{{ __('Ingredients') }}</label>
+                                <div class="col-sm-9">
 
-{{--                                    <div class="form-group">--}}
-{{--                                        <label for="excludes">{{ __('excludes') }}</label>--}}
-{{--                                        <input type="text"--}}
-{{--                                               class="form-control"--}}
-{{--                                               name="excludes"--}}
-{{--                                               id="excludes"--}}
-{{--                                               value="{{ old('excludes', $settings['excludes'] ?? null) }}"--}}
-{{--                                               aria-describedby="excludesHelp"--}}
-{{--                                        >--}}
-{{--                                        <small id="excludesHelp" class="form-text text-muted">--}}
-{{--                                            {{ __('Comma-separated values') }}--}}
-{{--                                        </small>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+                                    <div class="form-group">
+                                        <label for="mealPreferences">{{ __('Meal preferences') }}</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               name="mealPreferences"
+                                               id="mealPreferences"
+                                               value="{{ old('mealPreferences', $settings['mealPreferences'] ?? null) }}"
+                                               aria-describedby="mealPreferencesHelp"
+                                        >
+                                        <small id="mealPreferencesHelp" class="form-text text-muted">
+                                            {{ __('Comma-separated values') }}
+                                        </small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mealAversion">{{ __('excludes') }}</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               name="mealAversion"
+                                               id="mealAversion"
+                                               value="{{ old('mealAversion', $settings['mealAversion'] ?? null) }}"
+                                               aria-describedby="mealAversionHelp"
+                                        >
+                                        <small id="mealAversionHelp" class="form-text text-muted">
+                                            {{ __('Comma-separated values') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
 
                             <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
                         </form>

@@ -3,19 +3,21 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 /**
  * App\Meal.
  *
- * @property int $id
- * @property string $title
- * @property string|null $description
- * @property string|null $provider
- * @property float $price
- * @property \Illuminate\Support\Carbon $date_from
- * @property \Illuminate\Support\Carbon $date_to
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int                                                            $id
+ * @property string                                                         $title
+ * @property string|null                                                    $description
+ * @property string|null                                                    $provider
+ * @property float                                                          $price
+ * @property \Illuminate\Support\Carbon                                     $date_from
+ * @property \Illuminate\Support\Carbon                                     $date_to
+ * @property \Illuminate\Support\Carbon|null                                $created_at
+ * @property \Illuminate\Support\Carbon|null                                $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newQuery()
@@ -36,10 +38,11 @@ class Meal extends Model
     const PROVIDER_HOLZKE = 'Holzke';
     const PROVIDER_PARADIES_PIZZA = 'Paradies Pizza';
 
-    public static $providers = [
-      self::PROVIDER_HOLZKE,
-      self::PROVIDER_PARADIES_PIZZA,
-    ];
+    public static $providers
+        = [
+            self::PROVIDER_HOLZKE,
+            self::PROVIDER_PARADIES_PIZZA,
+        ];
 
     protected $guarded = [];
 
@@ -48,5 +51,71 @@ class Meal extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function getIsPreferredAttribute()
+    {
+        if (!isset($this->attributes['is_preferred'])) {
+            $this->attributes['is_preferred'] = false;
+
+            if (Auth::check()) {
+                $preferences = Auth::user()->settings[User::SETTING_MEAL_PREFERENCES] ?? '';
+                $preferences = array_map('trim', explode(',', $preferences));
+
+                foreach ($preferences as $preference) {
+                    if (Str::contains(strtolower($this->title), strtolower($preference))) {
+                        $this->attributes['is_preferred'] = true;
+                        break;
+                    }
+                    if (Str::contains(strtolower($this->description), strtolower($preference))) {
+                        $this->attributes['is_preferred'] = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $this->attributes['is_preferred'];
+    }
+
+    public function getIsHatedAttribute()
+    {
+        if (!isset($this->attributes['is_hated'])) {
+            $this->attributes['is_hated'] = false;
+
+            if (Auth::check()) {
+                $aversions = Auth::user()->settings[User::SETTING_MEAL_AVERSION] ?? '';
+                $aversions = array_map('trim', explode(',', $aversions));
+
+                foreach ($aversions as $aversion) {
+                    if (Str::contains(strtolower($this->title), strtolower($aversion))) {
+                        $this->attributes['is_hated'] = true;
+                        break;
+                    }
+                    if (Str::contains(strtolower($this->description), strtolower($aversion))) {
+                        $this->attributes['is_hated'] = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $this->attributes['is_hated'];
+    }
+
+    public function getTitleClasses()
+    {
+        $classes = [];
+        if ($this->is_hated OR $this->is_preferred) {
+            $classes[] = 'font-weight-bold';
+        }
+
+        if ($this->is_hated) {
+            $classes[] = 'text-danger';
+        } else if ($this->is_preferred) {
+            $classes[] = 'text-success';
+        }
+
+        return join(' ', $classes);
     }
 }

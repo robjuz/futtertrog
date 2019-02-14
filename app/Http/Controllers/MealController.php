@@ -28,22 +28,13 @@ class MealController extends Controller
 
         $settings = $request->user()->settings ?? [];
 
-        $includes = $request->has('reset') ? $settings['includes'] ?? null : $request->query('includes');
-        $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
+//        $includes = $request->has('reset') ? $settings['includes'] ?? null : $request->query('includes');
+//        $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
 
         $todayMeals = Meal::query()
             ->whereDate('date_from', '<=', $requestedDate)
             ->whereDate('date_to', '>=', $requestedDate)
 //            TODO: add in v2.2
-//            ->when(!empty($includes), function (Builder $query) use ($includes) {
-//                $includes = array_map('trim', explode(',', $includes));
-//
-//                $query->where(function (Builder $query) use ($includes) {
-//                    foreach ($includes as $include) {
-//                        $query->orWhere('description', 'like', '%' . $include . '%');
-//                    }
-//                });
-//            })
 //            ->when(!empty($excludes), function (Builder $query) use ($excludes) {
 //                $excludes = array_map('trim', explode(',', $excludes));
 //
@@ -51,7 +42,16 @@ class MealController extends Controller
 //                    $query->where('description', 'not like', '%' . $exclude . '%');
 //                }
 //            })
-            ->get();
+            ->get()
+            ->sortByDesc(function($meal) {
+                if ($meal->is_hated) {
+                    return -1;
+                }
+                if ($meal->is_preferred) {
+                    return 1;
+                }
+                return 0;
+            });
 
         if ($request->wantsJson()) {
             return response()->json($todayMeals);
@@ -75,7 +75,7 @@ class MealController extends Controller
             })
             ->get()
             ->mapToGroups(function ($orderItem, $key) {
-                return [$orderItem->order->date->toDateString() => $orderItem->meal->title.' ('.$orderItem->quantity.')'];
+                return [$orderItem->order->date->toDateString() => $orderItem->meal->title . ' (' . $orderItem->quantity . ')'];
             });
 
         $todayOrders = $user->orderItems()
