@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Meal;
+use App\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -12,7 +14,7 @@ class MealTest extends TestCase
     /** @test */
     public function user_can_create_a_meal()
     {
-        $meal = factory('App\Meal')->make()->toArray();
+        $meal = factory(Meal::class)->make()->toArray();
 
         $this->login();
 
@@ -31,7 +33,7 @@ class MealTest extends TestCase
     /** @test */
     public function user_can_update_a_meal()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
         $attributes = [
             'title' => 'Changed title',
@@ -55,7 +57,7 @@ class MealTest extends TestCase
     /** @test */
     public function admin_can_delete_a_meal()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
         $this->loginAsAdmin();
 
@@ -63,7 +65,7 @@ class MealTest extends TestCase
             ->assertRedirect(route('meals.index'));
         $this->assertDatabaseMissing('meals', $meal->toArray());
 
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
         $this->deleteJson(route('meals.destroy', $meal))
             ->assertSuccessful();
         $this->assertDatabaseMissing('meals', $meal->toArray());
@@ -72,7 +74,7 @@ class MealTest extends TestCase
     /** @test */
     public function user_can_create_a_meal_and_stay_on_the_create_page()
     {
-        $meal = factory('App\Meal')->make()->toArray();
+        $meal = factory(Meal::class)->make()->toArray();
 
         $this->login();
 
@@ -105,7 +107,7 @@ class MealTest extends TestCase
     /** @test */
     public function guests_are_not_allowed_to_edit_meals()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
         $this->withExceptionHandling();
 
@@ -118,7 +120,7 @@ class MealTest extends TestCase
     /** @test */
     public function guests_and_users_are_not_allowed_to_delete_meals()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
         $this->withExceptionHandling();
 
@@ -134,7 +136,7 @@ class MealTest extends TestCase
     /** @test */
     public function guests_and_users_are_not_allowed_to_see_meal_details()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
         $this->withExceptionHandling();
 
@@ -149,17 +151,17 @@ class MealTest extends TestCase
     /** @test */
     public function meals_can_be_filtered_down_by_date()
     {
-        $meal1 = factory('App\Meal')->create([
+        $meal1 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
         ]);
 
-        $meal2 = factory('App\Meal')->create([
+        $meal2 = factory(Meal::class)->create([
             'date_from' => Carbon::tomorrow(),
             'date_to' => Carbon::tomorrow(),
         ]);
 
-        $meal3 = factory('App\Meal')->create([
+        $meal3 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::tomorrow(),
         ]);
@@ -175,17 +177,17 @@ class MealTest extends TestCase
     /** @test */
     public function is_shows_meals_for_the_next_day()
     {
-        $meal1 = factory('App\Meal')->create([
+        $meal1 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
         ]);
 
-        $meal2 = factory('App\Meal')->create([
+        $meal2 = factory(Meal::class)->create([
             'date_from' => Carbon::today()->addWeekday(),
             'date_to' => Carbon::today()->addWeekday(),
         ]);
 
-        $meal3 = factory('App\Meal')->create([
+        $meal3 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today()->addWeekday(),
         ]);
@@ -206,7 +208,7 @@ class MealTest extends TestCase
     /** @test */
     public function admin_can_see_meal_details()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
 
         $this->loginAsAdmin();
@@ -221,11 +223,9 @@ class MealTest extends TestCase
     /** @test */
     public function it_throws_an_exception_when_trying_to_delete_on_ordered_meal()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
-        factory('App\OrderItem')->create([
-            'meal_id' => $meal->id,
-        ]);
+        $meal->orderItems()->save(factory(OrderItem::class)->make());
 
         $this->expectExceptionMessage(trans('futtertrog.meal_was_ordered'));
         $this->loginAsAdmin()->delete(route('meals.destroy', $meal));

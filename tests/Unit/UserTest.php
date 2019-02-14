@@ -2,8 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\OrderItem;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Deposit;
+use App\Meal;
+use App\Order;
+use App\User;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -14,37 +17,37 @@ class UserTest extends TestCase
     public function it_has_many_deposits()
     {
         /** @var \App\User $user */
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
-        $this->assertInstanceOf('Illuminate\Support\Collection', $user->deposits);
+        $this->assertInstanceOf(Collection::class, $user->deposits);
     }
 
     /** @test */
     public function it_has_many_order_items()
     {
         /** @var \App\User $user */
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
-        $this->assertInstanceOf('Illuminate\Support\Collection', $user->orderItems);
+        $this->assertInstanceOf(Collection::class, $user->orderItems);
     }
 
     /** @test */
     public function it_knows_its_current_balance()
     {
         /** @var \App\User $user */
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
         $user->deposits()->saveMany([
-            factory('App\Deposit')->make(['value' => 10]),
-            factory('App\Deposit')->make(['value' => 15]),
+            factory(Deposit::class)->make(['value' => 10]),
+            factory(Deposit::class)->make(['value' => 15]),
         ]);
 
-        $meal = factory('App\Meal')->create([
+        $meal = factory(Meal::class)->create([
             'price' => 5.45
         ]);
 
         /** @var \App\Order $order */
-        $order = factory('App\Order')->create([
+        $order = factory(Order::class)->create([
             'date' => $meal->date_from
         ]);
 
@@ -60,7 +63,7 @@ class UserTest extends TestCase
     /** @test */
     public function it_can_be_marked_as_admin()
     {
-        $user = factory('App\User')->create(['is_admin' => false]);
+        $user = factory(User::class)->create(['is_admin' => false]);
 
         $user->markAsAdmin();
 

@@ -2,18 +2,16 @@
 
 namespace Tests\Unit;
 
+use App\Meal;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MealTest extends TestCase
 {
-
-    /** @test */
-    public function it_has_many_order_items()
+    public function testOrderItems()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
-        $this->assertInstanceOf('Illuminate\Support\Collection', $meal->orderItems);
+        $this->assertInstanceOf(Collection::class, $meal->orderItems);
     }
 }

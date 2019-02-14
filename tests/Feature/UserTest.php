@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Deposit;
+use App\OrderItem;
+use App\User;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
@@ -54,7 +57,7 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_a_list_of_system_users()
     {
-        $users = factory('App\User', 5)->create();
+        $users = factory(User::class, 5)->create();
 
         $this->loginAsAdmin();
 
@@ -71,14 +74,14 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_manage_users()
     {
-        $data = factory('App\User')->raw([
+        $data = factory(User::class)->raw([
             'name' => 'Example1',
             'is_admin' => true,
             'password' => 'secret',
             'password_confirmation' => 'secret',
         ]);
 
-        $data2 = factory('App\User')->raw([
+        $data2 = factory(User::class)->raw([
             'name' => 'Example2',
             'is_admin' => true,
             'password' => 'secret',
@@ -119,9 +122,9 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_users_order_history()
     {
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
-        $orderItem = factory('App\OrderItem')->make();
+        $orderItem = factory(OrderItem::class)->make();
         $user->orderItems()->save($orderItem);
 
         $this->loginAsAdmin()
@@ -132,9 +135,9 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_users_deposit_history()
     {
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
-        $deposit = factory('App\Deposit')->make(['value' => 999]);
+        $deposit = factory(Deposit::class)->make(['value' => 999]);
         $user->deposits()->save($deposit);
 
         $this->loginAsAdmin()
@@ -145,9 +148,9 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_users_current_balance()
     {
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
-        $deposits = factory('App\Deposit', 2)->make(['value' => 10]);
+        $deposits = factory(Deposit::class, 2)->make(['value' => 10]);
         $user->deposits()->saveMany($deposits);
 
         $this->loginAsAdmin()

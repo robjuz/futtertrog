@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Deposit;
+use App\User;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
@@ -24,7 +26,7 @@ class DepositTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $deposit = factory('App\Deposit')->create();
+        $deposit = factory(Deposit::class)->create();
 
         $this->login()
             ->delete(route('deposits.destroy', $deposit))
@@ -34,9 +36,9 @@ class DepositTest extends TestCase
     /** #test */
     public function admin_can_create_a_new_deposit()
     {
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
-        $deposit = factory('App\Deposit')->raw([
+        $deposit = factory(Deposit::class)->raw([
             'user_id' => $user->id,
             'value' => 10,
         ]);
@@ -51,7 +53,7 @@ class DepositTest extends TestCase
     /** @test */
     public function admin_can_create_a_negative_deposit()
     {
-        $deposit = factory('App\Deposit')->raw(['value' => -10]);
+        $deposit = factory(Deposit::class)->raw(['value' => -10]);
 
         $this->loginAsAdmin()
             ->post(route('deposits.store'), $deposit);
@@ -62,9 +64,9 @@ class DepositTest extends TestCase
     /** @test */
     public function admin_can_delete_a_deposit()
     {
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
-        $deposit = factory('App\Deposit')->create([
+        $deposit = factory(Deposit::class)->create([
             'user_id' => $user->id,
             'value' => 10,
         ]);

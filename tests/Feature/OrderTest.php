@@ -31,7 +31,7 @@ class OrderTest extends TestCase
     public function it_provides_a_list_of_orders()
     {
         /** @var \Illuminate\Support\Collection|\App\Order[] $orders */
-        $orders = factory('App\Order', 5)->create([
+        $orders = factory(Order::class, 5)->create([
             'date' => today()
         ]);
 
@@ -56,9 +56,9 @@ class OrderTest extends TestCase
     /** @test */
     public function it_shows_per_default_today_and_upcoming_orders()
     {
-        $yesterdayOrder = factory('App\Order')->create(['date' => today()->subDay()]);
-        $todayOrder = factory('App\Order')->create(['date' => today()]);
-        $tomorrowOrder = factory('App\Order')->create(['date' => today()->addDay()]);
+        $yesterdayOrder = factory(Order::class)->create(['date' => today()->subDay()]);
+        $todayOrder = factory(Order::class)->create(['date' => today()]);
+        $tomorrowOrder = factory(Order::class)->create(['date' => today()->addDay()]);
 
         $this->loginAsAdmin()
             ->get(route('orders.index'))
@@ -70,9 +70,9 @@ class OrderTest extends TestCase
     /** @test */
     public function it_allows_to_filter_orders_by_date_range()
     {
-        $yesterdayOrder = factory('App\Order')->create(['date' => today()->subDay()]);
-        $todayOrder = factory('App\Order')->create(['date' => today()]);
-        $tomorrowOrder = factory('App\Order')->create(['date' => today()->addDay()]);
+        $yesterdayOrder = factory(Order::class)->create(['date' => today()->subDay()]);
+        $todayOrder = factory(Order::class)->create(['date' => today()]);
+        $tomorrowOrder = factory(Order::class)->create(['date' => today()->addDay()]);
 
         $this->loginAsAdmin()
             ->get(route('orders.index', [
@@ -88,7 +88,7 @@ class OrderTest extends TestCase
     public function it_provides_a_sum_of_order_items_prices()
     {
         /** @var \App\Order $order */
-        $order = factory('App\Order')->create(['date' => today()]);
+        $order = factory(Order::class)->create(['date' => today()]);
 
         $meal = factory('App\Meal')->create([
             'date_from' => today(),
@@ -110,13 +110,13 @@ class OrderTest extends TestCase
     public function it_allows_to_update_order_status()
     {
         /** @var \App\Order $order */
-        $order = factory('App\Order')->create(['status' => Order::STATUS_OPEN]);
+        $order = factory(Order::class)->create(['status' => Order::STATUS_OPEN]);
         $this->loginAsAdmin()
             ->put(route('orders.update', $order), ['status' => Order::STATUS_ORDERED])
             ->assertRedirect();
         $this->assertEquals(Order::STATUS_ORDERED, $order->fresh()->status);
 
-        $order = factory('App\Order')->create(['status' => Order::STATUS_OPEN]);
+        $order = factory(Order::class)->create(['status' => Order::STATUS_OPEN]);
         $this->loginAsAdmin()
             ->putJson(route('orders.update', $order), ['status' => Order::STATUS_ORDERED])
             ->assertSuccessful()
@@ -128,14 +128,14 @@ class OrderTest extends TestCase
     public function it_allows_to_delete_a_order()
     {
         /** @var \App\Order $order */
-        $order = factory('App\Order')->create();
+        $order = factory(Order::class)->create();
         $this->loginAsAdmin()
             ->delete(route('orders.destroy', $order))
             ->assertRedirect();
         $this->assertDatabaseMissing('orders', $order->toArray());
 
         /** @var \App\Order $order */
-        $order = factory('App\Order')->create();
+        $order = factory(Order::class)->create();
         $this->loginAsAdmin()
             ->deleteJson(route('orders.destroy', $order))
             ->assertStatus(Response::HTTP_NO_CONTENT);

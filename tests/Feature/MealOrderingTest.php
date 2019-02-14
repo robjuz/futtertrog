@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Events\OrderReopened;
+use App\Meal;
 use App\Notifications\OrderReopenedNotification;
 use App\Order;
 use App\OrderItem;
@@ -18,7 +19,7 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_can_order_a_meal_for_himself()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
         $this->login();
         $this->post(route('order_items.store'), [
@@ -37,9 +38,9 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_cannot_order_a_meal_for_other_users()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
         $this->login();
 
@@ -55,10 +56,10 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function admin_can_order_a_meal_for_other_users()
     {
-        $meal = factory('App\Meal')->create();
+        $meal = factory(Meal::class)->create();
 
         /** @var \App\User $user */
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
 
         $this->loginAsAdmin()
             ->post(route('order_items.store'), [
@@ -83,11 +84,11 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function it_dispatches_an_event_when_an_order_was_reopened()
     {
-        $meal = factory('App\Meal')->create();
-        $user = factory('App\User')->create();
+        $meal = factory(Meal::class)->create();
+        $user = factory(User::class)->create();
 
         // Given we have a closed order
-        $order = factory('App\Order')->create([
+        $order = factory(Order::class)->create([
             'date' => $meal->date_from,
             'status' => Order::STATUS_ORDERED,
             'provider' => $meal->provider
@@ -114,13 +115,13 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function it_notifies_an_admin_when_an_closed_was_reopened()
     {
-        $meal = factory('App\Meal')->create();
-        $user = factory('App\User')->create();
+        $meal = factory(Meal::class)->create();
+        $user = factory(User::class)->create();
 
-        $admin = factory('App\User')->create(['is_admin' => true]);
+        $admin = factory(User::class)->create(['is_admin' => true]);
 
         // Given we have a closed order
-        $order = factory('App\Order')->create([
+        $order = factory(Order::class)->create([
             'date' => $meal->date_from,
             'status' => Order::STATUS_ORDERED,
             'provider' => $meal->provider

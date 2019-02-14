@@ -2,6 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\Meal;
+use App\Order;
+use App\OrderItem;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -10,26 +14,26 @@ class OrderTest extends TestCase
     public function it_has_many_order_items()
     {
         /** @var \App\Order $order */
-        $order = factory('App\Order')->create();
+        $order = factory(Order::class)->create();
 
-        $this->assertInstanceOf('\Illuminate\Support\Collection', $order->orderItems);
+        $this->assertInstanceOf(Collection::class, $order->orderItems);
     }
 
     /** @test */
     public function it_knows_its_subtotal()
     {
-        $meal1 = factory('App\Meal')->create(['price' => 1]);
-        $meal2 = factory('App\Meal')->create(['price' => 2]);
-        $order = factory('App\Order')->create();
+        $meal1 = factory(Meal::class)->create(['price' => 1]);
+        $meal2 = factory(Meal::class)->create(['price' => 2]);
+        $order = factory(Order::class)->create();
 
         /** @var \App\OrderItem $orderItem1 */
-        $orderItem1 = factory('App\OrderItem')->make(['quantity' => 2]);
+        $orderItem1 = factory(OrderItem::class)->make(['quantity' => 2]);
         $orderItem1->meal()->associate($meal1);
         $orderItem1->order()->associate($order);
         $orderItem1->save();
 
         /** @var \App\OrderItem $orderItem2 */
-        $orderItem2 = factory('App\OrderItem')->make(['quantity' => 2]);
+        $orderItem2 = factory(OrderItem::class)->make(['quantity' => 2]);
         $orderItem2->meal()->associate($meal2);
         $orderItem2->order()->associate($order);
         $orderItem2->save();

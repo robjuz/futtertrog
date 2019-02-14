@@ -2,45 +2,41 @@
 
 namespace Tests\Unit;
 
+use App\Meal;
+use App\Order;
+use App\OrderItem;
+use App\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderItemTest extends TestCase
 {
-
-
-    /** @test */
-    public function it_belongs_to_an_user()
+    public function testUser()
     {
-        $orderItem = factory('App\OrderItem')->create();
+        $orderItem = factory(OrderItem::class)->create();
 
-        $this->assertInstanceOf('App\User', $orderItem->user);
+        $this->assertInstanceOf(User::class, $orderItem->user);
     }
 
-    /** @test */
-    public function it_belongs_to_a_meal()
+    public function testMeal()
     {
-        $orderItem = factory('App\OrderItem')->create();
+        $orderItem = factory(OrderItem::class)->create();
 
-        $this->assertInstanceOf('App\Meal', $orderItem->meal);
-    }
-    
-    /** @test */
-    public function it_belongs_to_an_order()
-    {
-        $orderItem = factory('App\OrderItem')->create();
-
-        $this->assertInstanceOf('App\Order', $orderItem->order);
+        $this->assertInstanceOf(Meal::class, $orderItem->meal);
     }
 
-    /** @test */
-    public function it_knows_its_subtotal()
+    public function testOrder()
     {
-        $meal = factory('App\Meal')->create(['price' => 1]);
+        $orderItem = factory(OrderItem::class)->create();
+
+        $this->assertInstanceOf(Order::class, $orderItem->order);
+    }
+
+    public function testGetSubtotalAttribute()
+    {
+        $meal = factory(Meal::class)->create(['price' => 1]);
 
         /** @var \App\OrderItem $orderItem */
-        $orderItem = factory('App\OrderItem')->make(['quantity' => 2]);
+        $orderItem = factory(OrderItem::class)->make(['quantity' => 2]);
         $orderItem->meal()->associate($meal)->save();
 
         $this->assertEquals(2, $orderItem->subtotal);
