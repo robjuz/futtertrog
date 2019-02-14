@@ -24,7 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('meals', 'MealController');
     Route::resource('orders', 'OrderController')->only(['index', 'update', 'destroy']);
-    Route::resource('order_items', 'OrderItemController');
+    Route::resource('order_items', 'OrderItemController')->only(['index', 'store', 'destroy']);
     Route::resource('users', 'UserController');
 
     Route::resource('deposits', 'DepositsController')->only(['store', 'destroy']);

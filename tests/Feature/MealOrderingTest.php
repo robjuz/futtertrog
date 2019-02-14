@@ -199,4 +199,28 @@ class MealOrderingTest extends TestCase
             ->assertJsonFragment($orderItem->toArray())
             ->assertJsonMissingExact(['user_id' => $orderItem2->user_id]);
     }
+    
+    /** @test */
+    public function it_allows_to_delete_an_order_item()
+    {
+        $user = factory(User::class)->create();
+        $orderItem = factory(OrderItem::class)->make();
+        $user->orderItems()->save($orderItem);
+
+        $this->login($user)
+            ->delete(route('order_items.destroy', $orderItem))
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('order_items', $orderItem->toArray());
+
+        $orderItem = factory(OrderItem::class)->make();
+        $user->orderItems()->save($orderItem);
+
+        $this->login($user)
+            ->deleteJson(route('order_items.destroy', $orderItem))
+            ->assertSuccessful();
+
+        $this->assertDatabaseMissing('order_items', $orderItem->toArray());
+
+    }
 }

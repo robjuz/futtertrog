@@ -7,6 +7,7 @@ use App\Http\Requests\UserUpdateRequest;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -54,7 +55,10 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        $user = User::create($request->validated());
+        $user = User::make($request->validated());
+        $user->password = Hash::make($request->input('password'));
+
+        $user->save();
 
         if ($request->wantsJson()) {
             return response()->json($user);
@@ -120,7 +124,13 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        $user->update($request->validated());
+        $user->fill($request->validated());
+
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+
+        $user->save();
 
         if ($request->wantsJson()) {
             return response()->json($user);

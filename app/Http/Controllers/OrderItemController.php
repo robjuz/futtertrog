@@ -114,4 +114,17 @@ class OrderItemController extends Controller
 
         return back()->with('message', __('Success'));
     }
+
+    public function destroy(Request $request, OrderItem $orderItem)
+    {
+        $this->authorize('delete', $orderItem);
+
+        $orderItem->delete();
+
+        if ($request->wantsJson()) {
+            return response(null, Response::HTTP_NO_CONTENT);
+        }
+
+        return back(Response::HTTP_FOUND, [], route('order_items.index'));
+    }
 }
