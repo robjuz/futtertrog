@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Order.
  *
- * @property int                                                            $id
- * @property \Illuminate\Support\Carbon                                     $date
- * @property string|null                                                    $provider
- * @property string                                                         $status
- * @property \Illuminate\Support\Carbon|null                                $created_at
- * @property \Illuminate\Support\Carbon|null                                $updated_at
+ * @property int $id
+ * @property \Illuminate\Support\Carbon $date
+ * @property string|null $provider
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $subtotal
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
