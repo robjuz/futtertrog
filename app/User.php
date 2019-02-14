@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * App\User
+ * App\User.
  *
  * @property int $id
  * @property string $name
@@ -109,14 +109,14 @@ class User extends Authenticatable
                 [
                     'name' => trans('Futtertrog deposit'),
                     'price' => $deposit->value,
-                    'qty' => 1
-                ]
+                    'qty' => 1,
+                ],
             ],
             'invoice_description' => null,
             'invoice_id' => null,
             'return_url' => route('paypal.express_checkout_success'),
             'cancel_url' => url('/'),
-            'total' => $deposit->value
+            'total' => $deposit->value,
         ];
     }
 }
