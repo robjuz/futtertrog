@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'description' => 'Ein einfaches System um Essenbestellungen zu verwalten',
     'status.open' => 'Offen',
     'status.ordered' => 'Bestellt',
     'date_format' => 'd.m.Y',
