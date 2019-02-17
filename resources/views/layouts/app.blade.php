@@ -12,9 +12,6 @@
 
 {{--<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
 {{--<link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
-
-<!-- Styles -->
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
 
@@ -113,6 +110,8 @@
     @include('running_dog')
 </footer>
 
-<script src="{{ mix('js/app.js') }}"></script>
+<!-- Styles -->
+<link href="{{ mix('css/app.css') }}" rel="stylesheet">
+<script src="{{ mix('js/app.js') }}" ></script>
 </body>
 </html>
