@@ -13,6 +13,7 @@
         "dflydev/markdown": "^1.0",
         "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
+        "htmlmin/htmlmin": "^5.7",
         "imangazaliev/didom": "^1.13",
         "ixudra/curl": "^6.16",
         "laravel/framework": "5.7.*",
