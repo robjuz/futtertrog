@@ -55,7 +55,7 @@ class Meal extends Model
 
     public function getIsPreferredAttribute()
     {
-        if (!isset($this->attributes['is_preferred'])) {
+        if (! isset($this->attributes['is_preferred'])) {
             $this->attributes['is_preferred'] = false;
 
             if (Auth::check()) {
@@ -80,7 +80,7 @@ class Meal extends Model
 
     public function getIsHatedAttribute()
     {
-        if (!isset($this->attributes['is_hated'])) {
+        if (! isset($this->attributes['is_hated'])) {
             $this->attributes['is_hated'] = false;
 
             if (Auth::check()) {
@@ -106,16 +106,16 @@ class Meal extends Model
     public function getTitleClasses()
     {
         $classes = [];
-        if ($this->is_hated OR $this->is_preferred) {
+        if ($this->is_hated or $this->is_preferred) {
             $classes[] = 'font-weight-bold';
         }
 
         if ($this->is_hated) {
             $classes[] = 'text-danger';
-        } else if ($this->is_preferred) {
+        } elseif ($this->is_preferred) {
             $classes[] = 'text-success';
         }
 
-        return join(' ', $classes);
+        return implode(' ', $classes);
     }
 }

@@ -43,13 +43,14 @@ class MealController extends Controller
 //                }
 //            })
             ->get()
-            ->sortByDesc(function($meal) {
+            ->sortByDesc(function ($meal) {
                 if ($meal->is_hated) {
                     return -1;
                 }
                 if ($meal->is_preferred) {
                     return 1;
                 }
+
                 return 0;
             });
 
@@ -75,7 +76,7 @@ class MealController extends Controller
             })
             ->get()
             ->mapToGroups(function ($orderItem, $key) {
-                return [$orderItem->order->date->toDateString() => $orderItem->meal->title . ' (' . $orderItem->quantity . ')'];
+                return [$orderItem->order->date->toDateString() => $orderItem->meal->title.' ('.$orderItem->quantity.')'];
             });
 
         $todayOrders = $user->orderItems()
