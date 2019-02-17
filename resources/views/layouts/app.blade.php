@@ -10,8 +10,8 @@
     <title>{{ config('app.name') }}</title>
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
-{{--<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
-{{--<link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">--}}
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <script src="{{ mix('js/app.js') }}" async defer></script>
 </head>
 <body>
 
@@ -109,9 +109,5 @@
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
     @include('running_dog')
 </footer>
-
-<!-- Styles -->
-<link href="{{ mix('css/app.css') }}" rel="stylesheet">
-<script src="{{ mix('js/app.js') }}" ></script>
 </body>
 </html>
