@@ -90,7 +90,7 @@
                                         <div class="col-12 col-md-4">
                                             @foreach($orderItem->users as $user)
                                                 <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
-                                                @if(!$loop->last) | @endif
+                                                @if(!$loop->last) <br> @endif
                                             @endforeach
                                         </div>
                                     </div>
