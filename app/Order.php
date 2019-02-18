@@ -78,7 +78,7 @@ class Order extends Model
             }
         }
 
-        return collect($orderItemsGrouped)->map(function($item) {
+        return collect($orderItemsGrouped)->map(function ($item) {
             return new OrderItemCompact($item['meal'], $item['users'], $item['quantity']);
         });
     }
