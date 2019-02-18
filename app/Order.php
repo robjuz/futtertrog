@@ -31,10 +31,11 @@ class Order extends Model
     const STATUS_OPEN = 'open';
 
     const STATUS_ORDERED = 'ordered';
+
     public static $statuses = [
-            self::STATUS_OPEN,
-            self::STATUS_ORDERED,
-        ];
+        self::STATUS_OPEN,
+        self::STATUS_ORDERED,
+    ];
 
     protected $guarded = [];
 
@@ -60,5 +61,25 @@ class Order extends Model
     public function getSubtotalAttribute()
     {
         return $this->orderItems->sum->subtotal;
+    }
+
+    public function orderItemsCompact()
+    {
+        $orderItems = $this->orderItems->groupBy('meal_id');
+
+        $orderItemsGrouped = [];
+
+        foreach ($orderItems as $key => $mealGroup) {
+            $orderItemsGrouped[$key]['quantity'] = 0;
+            foreach ($mealGroup as $orderItem) {
+                $orderItemsGrouped[$key]['meal'] = $orderItem->meal;
+                $orderItemsGrouped[$key]['users'][] = $orderItem->user;
+                $orderItemsGrouped[$key]['quantity'] += $orderItem->quantity;
+            }
+        }
+
+        return collect($orderItemsGrouped)->map(function($item) {
+            return new OrderItemCompact($item['meal'], $item['users'], $item['quantity']);
+        });
     }
 }

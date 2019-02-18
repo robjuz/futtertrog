@@ -13,15 +13,23 @@
                         <div class="col-md">
                             <div class="form-group">
                                 <label for="from">{{ __('From') }}</label>
-                                <input type="date" class="form-control" name="from" id="from"
-                                       value="{{ $from->toDateString() }}">
+                                <input type="date"
+                                       class="form-control"
+                                       name="from"
+                                       id="from"
+                                       value="{{ $from->toDateString() }}"
+                                >
                             </div>
                         </div>
                         <div class="col-md">
                             <div class="form-group">
                                 <label for="to">{{ __('To') }}</label>
-                                <input type="date" class="form-control" name="to" id="to"
-                                       value="{{ $to ? $to->toDateString() : '' }}">
+                                <input type="date"
+                                       class="form-control"
+                                       name="to"
+                                       id="to"
+                                       value="{{ $to ? $to->toDateString() : '' }}"
+                                >
                             </div>
                         </div>
                         <div class="col-md-auto">
@@ -38,9 +46,12 @@
                         <div class="col-6 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Status')}}</strong></div>
                         <div class="col-12 col-md-8">
                             <div class="row">
-                                <div class="col-4 col-md-4 text-md-center mb-2 mb-md-0"><strong>{{__('Title')}}</strong></div>
-                                <div class="col-4 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Quantity')}}</strong></div>
-                                <div class="col-4 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Price')}}</strong></div>
+                                <div class="col-4 col-md-4 text-md-center mb-2 mb-md-0"><strong>{{__('Title')}}</strong>
+                                </div>
+                                <div class="col-4 col-md-2 text-md-center mb-2 mb-md-0">
+                                    <strong>{{__('Quantity')}}</strong></div>
+                                <div class="col-4 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Price')}}</strong>
+                                </div>
                                 <div class="col-12 col-md-4 mb-2 mb-md-0"><strong>{{__('Ordered by')}}</strong></div>
                             </div>
                         </div>
@@ -69,7 +80,7 @@
                                 @endif
                             </div>
                             <div class="col-12 col-md-8">
-                                @foreach($order->orderItems as $orderItem)
+                                @foreach($order->orderItemsCompact() as $orderItem)
                                     <div class="row py-3 align-items-center {{ $loop->last ? '' : ' border-bottom' }}">
                                         <div class="col-6 col-md-4 text-md-center mb-2 mb-md-0">{{ $orderItem->meal->title }}</div>
                                         <div class="col-3 col-md-2 text-md-center mb-2 mb-md-0">{{ $orderItem->quantity }}</div>
@@ -77,7 +88,10 @@
                                             {{ number_format($orderItem->meal->price, 2, ',','.') }} €
                                         </div>
                                         <div class="col-12 col-md-4">
-                                            <a href="{{ route('users.show', $orderItem->user) }}">{{ $orderItem->user->name }}</a>
+                                            @foreach($orderItem->users as $user)
+                                                <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
+                                                @if(!$loop->last) | @endif
+                                            @endforeach
                                         </div>
                                     </div>
                                 @endforeach
