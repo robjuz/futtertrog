@@ -28,11 +28,10 @@ class UserUpdateRequest extends FormRequest
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'string', 'email', Rule::unique('users')->ignoreModel($this->user)],
             'is_admin' => ['sometimes', 'boolean'],
-
         ];
 
         if (! is_null($this->password)) {
-            $rules['password'] = ['sometimes', 'min:6', 'confirmed'];
+            $rules['password'] = ['min:6', 'confirmed'];
         }
 
         return $rules;
