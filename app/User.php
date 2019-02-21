@@ -95,7 +95,7 @@ class User extends Authenticatable
                 return $order->meal->price * $order->quantity;
             });
 
-            $this->attributes['balance'] =  $deposits - $orders;
+            $this->attributes['balance'] = $deposits - $orders;
         }
 
         return $this->attributes['balance'];
