@@ -67,29 +67,29 @@ class OrderController extends Controller
             return response($order, Response::HTTP_OK);
         }
 
-        return back()->with('message', __('Success'));
+        return back()->with('success', __('Success'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Request         $request
-     * @param  \App\OrderItem $orderItem
+     * @param  \App\Order $order
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Request $request, OrderItem $orderItem)
+    public function destroy(Request $request, Order $order)
     {
-        $this->authorize('delete', $orderItem);
+        $this->authorize('delete', $order);
 
-        $orderItem->delete();
+        $order->delete();
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
         }
 
-        return back()->with('message', __('Success'));
+        return back()->with('success', __('Success'));
     }
 }

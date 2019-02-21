@@ -14,7 +14,7 @@
                     <div class="text-nowrap">{{ number_format($orderItem->meal->price, 2, ',','.') }} €</div>
                 </div>
                 @if(auth()->user()->is_admin AND !request()->routeIs('home'))
-                    <form action="{{ route('orders.destroy', $orderItem) }}" method="post" class="text-right">
+                    <form action="{{ route('order_items.destroy', $orderItem) }}" method="post" class="text-right">
                         @csrf
                         @method('delete')
 

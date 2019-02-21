@@ -112,7 +112,7 @@ class OrderItemController extends Controller
             return response($orderItem, Response::HTTP_CREATED);
         }
 
-        return back()->with('message', __('Success'));
+        return back()->with('success', __('Success'));
     }
 
     public function destroy(Request $request, OrderItem $orderItem)
@@ -125,6 +125,7 @@ class OrderItemController extends Controller
             return response(null, Response::HTTP_NO_CONTENT);
         }
 
-        return back(Response::HTTP_FOUND, [], route('order_items.index'));
+        return back(Response::HTTP_FOUND, [], route('order_items.index'))
+            ->with('success', __('Success'));
     }
 }

@@ -18,7 +18,7 @@ class DepositsController extends Controller
     {
         Deposit::create($request->validated());
 
-        return back()->with('message', __('Success'));
+        return back()->with('success', __('Success'));
     }
 
     /**

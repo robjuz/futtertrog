@@ -136,7 +136,7 @@ class UserController extends Controller
             return response()->json($user);
         }
 
-        return back()->with('message', __('Success'));
+        return back()->with('success', __('Success'));
     }
 
     /**
