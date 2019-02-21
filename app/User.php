@@ -130,4 +130,10 @@ class User extends Authenticatable
             'total' => $deposit->value,
         ];
     }
+
+    public function gravatarUrl($size = 100)
+    {
+        return "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->email ) ) )  . "?s=" . $size;
+
+    }
 }

@@ -37,7 +37,7 @@
     }
 
     /** LINKS LEFT **/
-    ul:first-child .nav-link {
+    .navbar-nav:first-child .nav-link {
       color: $white;
       padding-left: 0.75em;
       padding-right: 0.75em;
@@ -65,7 +65,7 @@
     }
 
     /** LINKS RIGHT **/
-    ul:last-child .nav-link {
+    .navbar-nav:last-child .nav-link {
       color: #c5e0f5;
 
       &:hover, &:focus {

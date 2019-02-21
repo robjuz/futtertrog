@@ -76,7 +76,7 @@
                 <div class="card">
                     <h2 class="card-header">{{ __('Your upcoming orders') }}</h2>
 
-                    <div class="card-body">
+                    <div class="card-body pb-0">
                         @if($futureOrders->count())
 
                             @foreach($futureOrders->groupBy(function($orderItem) { return $orderItem->order->date->format(__('futtertrog.date_format')); }) as $date => $orders)
@@ -117,10 +117,10 @@
 
             <div class="col-md-6 mb-3">
                 <div class="mb-3">
-                    @include('deposit_history')
+                    @include('partials.deposit_history')
                 </div>
 
-                @include('order_history', ['orders' => $ordersHistory])
+                @include('partials.order_history', ['orders' => $ordersHistory])
             </div>
 
         </div>

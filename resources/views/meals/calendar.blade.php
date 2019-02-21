@@ -15,7 +15,7 @@
     </div>
 
     <div class="row no-gutters weekdays">
-        <div class="col weekday week-of-year">{{ __('calendar.WN') }}</div>
+        <div class="d-none d-sm-block col weekday week-of-year">{{ __('calendar.WN') }}</div>
         <div class="col weekday">{{ __('calendar.Mo') }}</div>
         <div class="col weekday">{{ __('calendar.Tu') }}</div>
         <div class="col weekday">{{ __('calendar.We') }}</div>
@@ -33,7 +33,7 @@
 
         {{-- First day of isn't monday, add empty preceding column(s)--}}
         @if ($date->format('N') != 1)
-            <div class="col day week-of-year">{{ $date->weekOfYear }}</div>
+            <div class="d-none d-sm-flex col day week-of-year">{{ $date->weekOfYear }}</div>
             @for($i = 1; $i < $date->format('N'); $i++)
                 <div class="col day"></div>
             @endfor
@@ -42,7 +42,7 @@
         @for($i = 1; $i <= $daysInMonth; $i++)
             @if ($date->format('N') == 1)
                 <div class="w-100"></div>
-                <div class="col day week-of-year">{{ $date->weekOfYear }}</div>
+                <div class="d-none d-sm-flex col day week-of-year">{{ $date->weekOfYear }}</div>
             @endif
 
             <div class="position-relative col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->get($date->toDateString()) ? ' has-orders' : '' }}">

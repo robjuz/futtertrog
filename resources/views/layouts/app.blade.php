@@ -60,9 +60,9 @@
         </ul>
 
         <!-- Right Side Of Navbar -->
-        <ul class="navbar-nav ml-auto">
-            <!-- Authentication Links -->
-            @guest
+        <!-- Authentication Links -->
+        @guest
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('login') }}" title="{{ __('Login') }}">
                         {{ __('Login') }}
@@ -75,19 +75,20 @@
                         </a>
                     @endif
                 </li>
-            @else
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('settings.index') }}" title="{{ __('Settings')  }}">
+            </ul>
+        @else
+            <div class="navbar-nav ml-auto flex-row align-items-center">
+                <img src="{{ Auth::user()->gravatarUrl(50) }}" class="rounded-circle mr-3 mr-lg-1" alt="" width="50" height="50">
+                <div class="d-flex flex-column text-left">
+                    <a class="nav-item nav-link" href="{{ route('settings.index') }}" title="{{ __('Settings')  }}">
                         {{ __('Settings') }}
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('logout') }}" title="{{ __('Logout')  }}">
+                    <a class="nav-item nav-link" href="{{ route('logout') }}" title="{{ __('Logout')  }}">
                         {{ __('Logout') }}
                     </a>
-                </li>
-            @endguest
-        </ul>
+                </div>
+            </div>
+        @endguest
     </div>
 </nav>
 
@@ -107,7 +108,7 @@
 
 <footer id="mainFooter" class="text-center text-white py-3">
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
-    @include('running_dog')
+    @include('partials.running_dog')
 </footer>
 </body>
 </html>

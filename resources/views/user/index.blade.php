@@ -12,32 +12,31 @@
                 <a href="{{ route('users.create') }}" class="btn btn-link">{{ __('New user') }}</a>
             </div>
             <div class="card-body">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">{{__('Name')}}</th>
-                        <th scope="col">{{__('Email')}}</th>
-                        <th scope="col">{{__('Balance')}}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($users as $user)
-                        <tr>
-                            <th scope="row">
-                                <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
-                            </th>
-                            <td>{{ $user->email }}</td>
-                            <td>
-                                <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
-                                    {{ number_format($user->balance, 2, ',','.') }} €
-                                </span>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="d-none d-md-block col-1"></div>
+                    <div class="col-7 col-sm-4">{{__('Name')}}</div>
+                    <div class="d-none d-sm-block col-sm-5">{{__('Email')}}</div>
+                    <div class="col-5 col-sm-2">{{__('Balance')}}</div>
+                </div>
+                @foreach($users as $user)
+                    <div class="row mt-3 align-items-center">
+                        <div class="d-none d-md-block col-1">
+                            <img src="{{ $user->gravatarUrl(100) }}" class="rounded-circle img-fluid" alt="">
+                        </div>
+                        <div class="col-7 col-sm-4">
+                            <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
+                        </div>
+                        <div class="d-none d-sm-block col-sm-5">{{ $user->email }}</div>
+                        <div class="col-5 col-sm-2">
+                            <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
+                                {{ number_format($user->balance, 2, ',','.') }} €
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         </div>
+    </div>
     </div>
 
 @endsection
