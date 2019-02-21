@@ -28,9 +28,9 @@
                             </th>
                             <td>{{ $user->email }}</td>
                             <td>
-                        <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
-                            {{ number_format($user->balance, 2, ',','.') }} €
-                        </span>
+                                <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
+                                    {{ number_format($user->balance, 2, ',','.') }} €
+                                </span>
                             </td>
                         </tr>
                     @endforeach

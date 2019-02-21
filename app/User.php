@@ -87,14 +87,18 @@ class User extends Authenticatable
 
     public function getBalanceAttribute()
     {
-        $this->load('orderItems.meal');
+        if (empty($this->attributes['balance'])) {
+            $this->loadMissing('orderItems.meal');
 
-        $deposits = $this->deposits()->whereStatus(Deposit::STATUS_OK)->sum('value');
-        $orders = $this->orderItems->sum(function ($order) {
-            return $order->meal->price * $order->quantity;
-        });
+            $deposits = $this->deposits()->whereStatus(Deposit::STATUS_OK)->sum('value');
+            $orders = $this->orderItems->sum(function ($order) {
+                return $order->meal->price * $order->quantity;
+            });
 
-        return $deposits - $orders;
+            $this->attributes['balance'] =  $deposits - $orders;
+        }
+
+        return $this->attributes['balance'];
     }
 
     public function markAsAdmin()

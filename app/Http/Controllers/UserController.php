@@ -23,7 +23,7 @@ class UserController extends Controller
     {
         $this->authorize('list', User::class);
 
-        $users = User::all();
+        $users = User::with('orderItems.meal')->get();
 
         if ($request->wantsJson()) {
             return response()->json($users);
