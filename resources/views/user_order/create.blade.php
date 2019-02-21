@@ -18,9 +18,9 @@
             </select>
 
             @if ($errors->has('user_id'))
-                <span class="invalid-feedback" role="alert">
+                <div class="invalid-tooltip" role="alert">
                     <strong>{{ $errors->first('user_id') }}</strong>
-                </span>
+                </div>
             @endif
         </div>
 
@@ -38,9 +38,9 @@
             </select>
 
             @if ($errors->has('meal_id'))
-                <span class="invalid-feedback" role="alert">
+                <div class="invalid-tooltip" role="alert">
                     <strong>{{ $errors->first('meal_id') }}</strong>
-                </span>
+                </div>
             @endif
         </div>
 
@@ -56,9 +56,9 @@
             >
 
             @if ($errors->has('quantity'))
-                <span class="invalid-feedback" role="alert">
+                <div class="invalid-tooltip" role="alert">
                     <strong>{{ $errors->first('quantity') }}</strong>
-                </span>
+                </div>
             @endif
         </div>
 

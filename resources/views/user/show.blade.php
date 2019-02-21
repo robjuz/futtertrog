@@ -38,9 +38,9 @@
                                 <div>
                                     <input type="number" class="form-control" name="value" id="value" step="0.01">
                                     @if ($errors->has('value'))
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('value') }}</strong>
-                                    </span>
+                                        <div class="invalid-tooltip" role="alert">
+                                            <strong>{{ $errors->first('value') }}</strong>
+                                        </div>
                                     @endif
                                 </div>
                             </div>
@@ -50,9 +50,9 @@
                                 <div>
                                     <textarea class="form-control" name="comment" id="comment"></textarea>
                                     @if ($errors->has('value'))
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('comment') }}</strong>
-                                    </span>
+                                        <div class="invalid-tooltip" role="alert">
+                                            <strong>{{ $errors->first('comment') }}</strong>
+                                        </div>
                                     @endif
                                 </div>
                             </div>

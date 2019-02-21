@@ -1,12 +1,9 @@
 // Variables
 @import 'variables';
-
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-
 // Font Awesome
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
-
 // Custom
 @import 'header';
 @import 'running-dog';
@@ -90,4 +87,12 @@ h4 input {
 
 .pagination {
   justify-content: center;
+}
+
+.form-group {
+  position: relative;
+
+  .invalid-tooltip {
+    right: 0;
+  }
 }

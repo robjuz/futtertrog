@@ -26,9 +26,9 @@
                                     >
 
                                     @if ($errors->has('title'))
-                                        <span class="invalid-feedback" role="alert">
+                                        <div class="invalid-tooltip" role="alert">
                                             <strong>{{ $errors->first('title') }}</strong>
-                                        </span>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -44,9 +44,9 @@
                                     </select>
 
                                     @if ($errors->has('provider'))
-                                        <span class="invalid-feedback" role="alert">
+                                        <div class="invalid-tooltip" role="alert">
                                             <strong>{{ $errors->first('provider') }}</strong>
-                                        </span>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -63,9 +63,9 @@
                                     >
 
                                     @if ($errors->has('date_from'))
-                                        <span class="invalid-feedback" role="alert">
+                                        <div class="invalid-tooltip" role="alert">
                                             <strong>{{ $errors->first('date_from') }}</strong>
-                                        </span>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -82,9 +82,9 @@
                                     >
 
                                     @if ($errors->has('date_to'))
-                                        <span class="invalid-feedback" role="alert">
+                                        <div class="invalid-tooltip" role="alert">
                                             <strong>{{ $errors->first('date_to') }}</strong>
-                                        </span>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -105,9 +105,9 @@
                                     >
 
                                     @if ($errors->has('price'))
-                                        <span class="invalid-feedback" role="alert">
+                                        <div class="invalid-tooltip" role="alert">
                                             <strong>{{ $errors->first('price') }}</strong>
-                                        </span>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -122,9 +122,9 @@
                                     >{{ old('description') }}</textarea>
 
                                     @if ($errors->has('description'))
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('description') }}</strong>
-                                    </span>
+                                        <div class="invalid-tooltip" role="alert">
+                                            <strong>{{ $errors->first('description') }}</strong>
+                                        </div>
                                     @endif
                                 </div>
                             </div>

@@ -31,9 +31,9 @@
                                                required
                                         >
                                         @if ($errors->has('value'))
-                                            <span class="invalid-tooltip d-block" role="alert">
-                                        <strong>{{ $errors->first('value') }}</strong>
-                                    </span>
+                                            <div class="invalid-tooltip d-block" role="alert">
+                                                <strong>{{ $errors->first('value') }}</strong>
+                                            </div>
                                         @endif
                                         <div class="input-group-append">
                                             <button id="pay_wiht_paypal"
