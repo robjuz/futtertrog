@@ -33,8 +33,8 @@ class OrderItemController extends Controller
             $query = OrderItem::with(['meal', 'user'])->when($request->has('user_id'), function (Builder $query) use (
                     $request
                 ) {
-                    $query->where('user_id', $request->query('user_id'));
-                });
+                $query->where('user_id', $request->query('user_id'));
+            });
         } else {
             $query = $user->orderItems()->with(['meal']);
         }
