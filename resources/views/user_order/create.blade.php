@@ -1,7 +1,7 @@
 @extends('user_order.wrapper')
 
 @section('wrapper-content')
-    <form action="{{ route('user_meals.store') }}" method="post">
+    <form action="{{ route('order_items.store') }}" method="post">
         @csrf
 
         <div class="form-group">

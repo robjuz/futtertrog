@@ -1,7 +1,7 @@
 @extends('user_order.wrapper')
 
 @section('wrapper-content')
-    <form action="{{ route('user_meals.create') }}" method="get">
+    <form action="{{ route('order_items.create') }}" method="get">
         <div class="form-group">
             <label for="date" class="col-form-label-sm">
                 {{__('Date')}}

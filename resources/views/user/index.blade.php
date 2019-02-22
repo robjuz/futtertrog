@@ -6,7 +6,7 @@
     <div class="container">
 
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 {{ __('User index') }}
 
                 <a href="{{ route('users.create') }}" class="btn btn-link">{{ __('New user') }}</a>

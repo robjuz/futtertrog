@@ -3,9 +3,9 @@
 @section('content')
     <div class="container">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 {{ __('Order index') }}
-                {{--                <a href="{{ route('user_meals.create') }}" class="btn btn-link"> {{ __('Create order') }}</a>--}}
+                <a href="{{ route('order_items.create') }}" class="btn btn-link"> {{ __('Create order') }}</a>
             </div>
             <div class="card-body">
                 <form action="{{ route('orders.index') }}" method="get">

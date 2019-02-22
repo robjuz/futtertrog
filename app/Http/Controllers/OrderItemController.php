@@ -10,6 +10,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 class OrderItemController extends Controller
@@ -29,8 +30,9 @@ class OrderItemController extends Controller
         /** @var \App\User $user */
         $user = $request->user();
         if ($user->is_admin) {
-            $query = OrderItem::with(['meal', 'user'])
-                ->when($request->has('user_id'), function (Builder $query) use ($request) {
+            $query = OrderItem::with(['meal', 'user'])->when($request->has('user_id'), function (Builder $query) use (
+                    $request
+                ) {
                     $query->where('user_id', $request->query('user_id'));
                 });
         } else {
@@ -43,12 +45,24 @@ class OrderItemController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-//    public function create()
-//    {
-//        $this->authorize('create', OrderItem::class);
-//    }
+    public function create(Request $request)
+    {
+        $this->authorize('create', OrderItem::class);
+
+        if ($date = $request->query('date')) {
+            $date = Carbon::parse($date);
+            $meals = Meal::whereDate('date_from', '>=', $date)->whereDate('date_to', '<=', $date)->get();
+            $users = User::all();
+
+            return view('user_order.create', compact('meals', 'users', 'date'));
+        }
+
+        return view('user_order.select_date');
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -125,7 +139,6 @@ class OrderItemController extends Controller
             return response(null, Response::HTTP_NO_CONTENT);
         }
 
-        return back(Response::HTTP_FOUND, [], route('order_items.index'))
-            ->with('success', __('Success'));
+        return back(Response::HTTP_FOUND, [], route('order_items.index'))->with('success', __('Success'));
     }
 }
