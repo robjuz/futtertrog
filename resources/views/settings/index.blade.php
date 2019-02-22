@@ -104,6 +104,43 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">{{ __('Surprise me') }}</label>
+                                <div class="col-sm-9">
+                                    <div class="form-group pb-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="hidden" name="hideDashboardMealDescription" value="0">
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   name="hideDashboardMealDescription"
+                                                   id="hideDashboardMealDescription"
+                                                   {{ old('hideDashboardMealDescription', $settings['hideDashboardMealDescription'] ?? false) ? 'checked' : '' }}
+                                                   value="1"
+                                            >
+                                            <label class="custom-control-label" for="hideDashboardMealDescription">
+                                                {{ __('Hide meal description on dashboard') }}
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group pb-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="hidden" name="hideOrderingMealDescription" value="0">
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   name="hideOrderingMealDescription"
+                                                   id="hideOrderingMealDescription"
+                                                   {{ old('hideOrderingMealDescription', $settings['hideOrderingMealDescription'] ?? false) ? 'checked' : '' }}
+                                                   value="1"
+                                            >
+                                            <label class="custom-control-label" for="hideOrderingMealDescription">
+                                                {{ __('Hide meal description on ordering list') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
                         </form>
                     </div>

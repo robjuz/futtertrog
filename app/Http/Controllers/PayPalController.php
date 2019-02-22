@@ -70,7 +70,7 @@ class PayPalController extends Controller
                     ->whereStatus(Deposit::STATUS_PROCESSING)
                     ->update(['status' => Deposit::STATUS_OK]);
 
-                return redirect('/')->with('success', trans('Success'));
+                return redirect('/')->with('success', __('Success'));
             }
         }
 

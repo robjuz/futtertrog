@@ -52,5 +52,7 @@
         @endif
     </div>
 
-    <p class="text-dark">{{ $meal->description }}</p>
+    @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION] ?? false))
+        <p class="text-dark">{{ $meal->description }}</p>
+    @endif
 </div>

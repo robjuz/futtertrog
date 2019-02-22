@@ -61,7 +61,9 @@
                                         {{ $order->meal->title }}
                                         <small>( {{ $order->quantity }} )</small>
                                     </h3>
-                                    <p>{{ $order->meal->description }}</p>
+                                    @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
+                                        <p>{{ $order->meal->description }}</p>
+                                    @endif
                                 </section>
                             @endforeach
                         @else
@@ -93,7 +95,9 @@
                                                     <small>( {{ $order->quantity }} )</small>
                                                 </h3>
 
-                                                <p>{{ $order->meal->description }}</p>
+                                                @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
+                                                    <p>{{ $order->meal->description }}</p>
+                                                @endif
                                             </section>
                                         @endforeach
                                     </div>

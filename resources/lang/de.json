@@ -113,5 +113,8 @@
   "How much do you want to deposit?": "Wie viel möchtest du einzahlen?",
   "Pay with PayPal": "Mit PayPal bezahlen",
   "Payed with PayPal": "Bezaht mit PayPal",
-  "Meal preferences": "Bevorzugte Mahlzeiten"
+  "Meal preferences": "Bevorzugte Mahlzeiten",
+  "Surprise me": "Überrash mich",
+  "Hide meal description on dashboard": "Essen Beschreibung im Dashboard ausblenden",
+  "Hide meal description on ordering list": "Essen Beschreibung in Bestellübersicht ausblenden"
 }
