@@ -19,7 +19,7 @@ class MealPreferencesTest extends TestCase
         ];
         $user->save();
 
-        $tomorrow = today()->addDay();
+        $tomorrow = today()->addWeekday();
 
         $meal1 = factory(Meal::class)->create([
             'date_from' => $tomorrow,
