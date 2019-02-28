@@ -9,15 +9,15 @@ use Illuminate\Support\Str;
 /**
  * App\Meal.
  *
- * @property int                                                            $id
- * @property string                                                         $title
- * @property string|null                                                    $description
- * @property string|null                                                    $provider
- * @property float                                                          $price
- * @property \Illuminate\Support\Carbon                                     $date_from
- * @property \Illuminate\Support\Carbon                                     $date_to
- * @property \Illuminate\Support\Carbon|null                                $created_at
- * @property \Illuminate\Support\Carbon|null                                $updated_at
+ * @property int $id
+ * @property string $title
+ * @property string|null $description
+ * @property string|null $provider
+ * @property float $price
+ * @property \Illuminate\Support\Carbon $date_from
+ * @property \Illuminate\Support\Carbon $date_to
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newQuery()
@@ -36,17 +36,26 @@ use Illuminate\Support\Str;
 class Meal extends Model
 {
     const PROVIDER_HOLZKE = 'Holzke';
+
     const PROVIDER_PARADIES_PIZZA = 'Paradies Pizza';
 
-    public static $providers
-        = [
-            self::PROVIDER_HOLZKE,
-            self::PROVIDER_PARADIES_PIZZA,
-        ];
+    public static $providers = [
+        self::PROVIDER_HOLZKE,
+        self::PROVIDER_PARADIES_PIZZA,
+    ];
 
     protected $guarded = [];
 
     protected $dates = ['date_from', 'date_to'];
+
+    /**
+     * @param array $columns
+     * @return \App\MealCollection
+     */
+    public static function get($columns = [])
+    {
+        return parent::get($columns);
+    }
 
     public function orderItems()
     {
@@ -117,5 +126,21 @@ class Meal extends Model
         }
 
         return implode(' ', $classes);
+    }
+
+    /**
+     * Create a new Eloquent Collection instance.
+     *
+     * @param  array $models
+     * @return \App\MealCollection
+     */
+    public function newCollection(array $models = [])
+    {
+        return new MealCollection($models);
+    }
+
+    public function scopeForDate($query, $date)
+    {
+        return $query->whereDate('date_from', '<=', $date)->whereDate('date_to', '>=', $date);
     }
 }
