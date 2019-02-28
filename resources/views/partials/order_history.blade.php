@@ -2,7 +2,9 @@
     <h2 class="card-header d-flex align-items-center">
         {{ __('Order history') }}
 
-        <a href="{{ route('meals.ical') }}" class="ml-auto btn btn-link">{{ __('Download as iCal') }}</a>
+        @if(request()->routeIs('home'))
+            <a href="{{ route('meals.ical') }}" class="ml-auto btn btn-link">{{ __('Download as iCal') }}</a>
+        @endif
     </h2>
 
     <div class="list-group list-group-flush">
