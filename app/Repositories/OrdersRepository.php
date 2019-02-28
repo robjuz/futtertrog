@@ -10,13 +10,13 @@ class OrdersRepository
     public function usersTodayOrders(User $user, $date)
     {
         return $user->orderItems()->whereHas('order', function (Builder $query) use ($date) {
-                $query->whereDate('date', $date);
-            })->get();
+            $query->whereDate('date', $date);
+        })->get();
     }
 
     public function usersMonthlyOrders(User $user, $date)
     {
-       return $user->orderItems()
+        return $user->orderItems()
             ->with(['order', 'meal'])
             ->whereHas('order', function ($query) use ($date) {
                 $query->whereYear('date', $date->year)
