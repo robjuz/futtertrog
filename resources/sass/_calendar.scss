@@ -4,35 +4,49 @@
     box-shadow: 0 0 10px 5px $gray-200;
 
     .month {
-        padding: 25px;
         width: 100%;
         background: $primary;
+        padding: 1em;
         text-align: center;
 
         a {
             color: $white;
+			display: inline-block;
+			height: 2.75rem;
+			line-height: 2.75rem;
+			width: 2.75rem;
+			
+			&:hover {
+				text-decoration: none;
+			}
+			
+			&:focus {
+				outline: 1px dotted #c5e0f5;
+			}
         }
     }
 
     .month ul {
+		display: flex;
         list-style: none;
         margin: 0;
         padding: 0;
-    }
-
-    .month ul li {
-        color: white;
-        font-size: 20px;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-    }
-
-    .month .prev {
-        float: left;
-    }
-
-    .month .next {
-        float: right;
+    
+		li {
+			color: white;
+			display: inline-block;
+			height: 2.75rem;
+			line-height: 2.75rem;
+			font-size: 1.25em;
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			
+			&.current-month {
+				flex-grow: 1;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		}
     }
 
     .weekdays {
@@ -53,6 +67,7 @@
             flex-grow: unset;
             font-size: 0.85em;
             justify-content: center;
+            line-height: 2.75em;
             min-width: 4.5em;
         }
     }
@@ -84,25 +99,40 @@
                 justify-content: center;
                 margin: 0;
                 padding: 0;
+                position: relative;
 
+                a, .a {
+					color: $primary-darker;
+                    display: inline-block;
+                    height: 100%;
+                    line-height: 3.5em;
+                    width: 100%;
+                }
+                
+                a:hover, a:focus {
+					background: $gray-200;
+					color: $primary-dark;
+					text-decoration: none;
+                }
+                
+                a:focus {
+					outline: 1px dotted $primary-dark;
+                }
+                
                 .a {
-                    color: $gray-900;
+					color: $gray-900;
                 }
             }
 
             &.has-orders {
 
                 .inner {
-                    border-color: lighten($success, 6%);
-                    position: relative;
+                    /* border-color: lighten($success, 6%); */
+                    background: #9f9;
                     width: 100%;
 
-                    a {
-                        padding: 0.5em 1em;
-                    }
-
                     .food-container {
-                        bottom: 3px;
+						bottom: 3px;
                         height: 1em;
                         position: absolute;
                         right: 1px;
@@ -127,6 +157,10 @@
 
                     a, svg {
                         color: inherit;
+                    }
+                    
+                    a:hover, a:focus {
+						color: $primary-dark;
                     }
                 }
             }

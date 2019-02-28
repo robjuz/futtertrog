@@ -16,7 +16,7 @@ body {
 
   > main {
     flex-grow: 1;
-    padding-top: 113px;
+    padding-top: 7.5rem;
   }
 }
 
@@ -44,6 +44,10 @@ body {
 /**** CARD ****/
 .card {
   box-shadow: 0 0 10px 5px $gray-200;
+}
+
+.card:focus-within {
+  box-shadow: 0 0 10px 5px rgba(39, 139, 224, 0.5);
 }
 
 .card .card {
@@ -95,4 +99,35 @@ h4 input {
   .invalid-tooltip {
     right: 0;
   }
+}
+
+.btn-link:focus {
+	outline: 1px dotted $primary-darker;
+}
+
+.skip-link {
+	background: #fff;
+	border: 1px solid $primary-darker;
+	display: inline-block;
+	margin-bottom: 1em;
+	padding: 0.25em 0.5em;
+	position: absolute;
+	top: -9999em;
+	left: -9999em;
+	
+	&:focus {
+		position: relative;
+		z-index: 10000;
+	}
+}
+
+.skip-navigation:focus {
+	left: 0.5em;
+	position: absolute;
+	top: 0.5em;
+}
+
+.skip-calendar:focus {
+	left:0;
+	top: 0;
 }

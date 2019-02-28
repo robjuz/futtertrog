@@ -24,6 +24,10 @@
     <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
 
     <div class="collapse navbar-collapse">
+		<a class="skip-link skip-navigation" href="#main" tabindex="1">
+			Menü überspringen
+		</a>
+
         <!-- Left Side Of Navbar -->
         <ul class="navbar-nav mr-auto">
             @auth()
@@ -92,7 +96,7 @@
     </div>
 </nav>
 
-<main>
+<main id="main">
 
     @if (session('success'))
         <div class="container">

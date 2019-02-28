@@ -1,6 +1,6 @@
 <div class="border-top border-bottom py-3">
     @can('update', $meal)
-        <a href="{{ route('meals.edit', $meal) }}" class="btn btn-link text-info pl-0">
+        <a href="{{ route('meals.edit', $meal) }}" class="btn btn-link text-info px-0">
             {{ __('Edit') }}
         </a>
     @endcan

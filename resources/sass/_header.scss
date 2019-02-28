@@ -27,17 +27,18 @@
 
 
   .navbar-collapse {
-    overflow: hidden;
+	align-items: baseline;	
+	position: relative;
 
     @include media-breakpoint-up(lg) {
       .navbar-nav {
         text-align: center;
-        align-items: center;
+        align-items: baseline;
       }
     }
 
     /** LINKS LEFT **/
-    .navbar-nav:first-child .nav-link {
+    .navbar-nav:nth-child(2) .nav-link {
       color: $white;
       padding-left: 0.75em;
       padding-right: 0.75em;
@@ -53,13 +54,17 @@
         right: 50%;
         transition-duration: 0.25s;
       }
+      
+      &:focus {
+		outline: 1px dotted #c5e0f5;
+      }
 
       &:hover, &:focus {
         color: #c5e0f5;
 
         &::before {
-          left: -0.5em;
-          right: -0.5em;
+          left: 0;
+          right: 0;
         }
       }
     }

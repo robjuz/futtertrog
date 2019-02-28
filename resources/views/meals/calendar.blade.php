@@ -4,12 +4,12 @@
             <li class="prev">
                 <a href="<?= route('meals.index', ['date' => \Carbon::parse($requestedDate)->subMonthNoOverflow()->lastOfMonth()->toDateString()]) ?>">&#10094;</a>
             </li>
-            <li class="next">
-                <a href="<?= route('meals.index', ['date' => \Carbon::parse($requestedDate)->addMonthNoOverflow()->firstOfMonth()->toDateString()]) ?>">&#10095;</a>
-            </li>
-            <li>
+            <li class="current-month">
                 {{ $requestedDate->format('F') }}&nbsp;
                 {{ $requestedDate->format('Y') }}
+            </li>
+			<li class="next">
+                <a href="<?= route('meals.index', ['date' => \Carbon::parse($requestedDate)->addMonthNoOverflow()->firstOfMonth()->toDateString()]) ?>">&#10095;</a>
             </li>
         </ul>
     </div>
@@ -45,7 +45,7 @@
                 <div class="d-none d-sm-flex col day week-of-year">{{ $date->weekOfYear }}</div>
             @endif
 
-            <div class="position-relative col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->get($date->toDateString()) ? ' has-orders' : '' }}">
+            <div class="position-realtive col day {{ $date->isSameDay($requestedDate) ? ' active' : '' }} {{ $orders->get($date->toDateString()) ? ' has-orders' : '' }}">
                 <div class="inner">
                     @if ( ($meals->get($date->toDateString())))
                         <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
@@ -54,8 +54,8 @@
                         <div class="food-container">
                             @foreach($orders->get($date->toDateString(), []) as $order)
                                 <span title="{{ $order }}">
-                                    <svg aria-hidden="true" data-prefix="fas" data-icon="drumstick-bite" class="svg-inline--fa fa-drumstick-bite fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M462.79 49.57c-66.14-66.09-173.36-66.09-239.5 0C187.81 85.02 160.12 128 160.12 192v85.83l-40.62 40.59c-9.7 9.69-24.04 11.07-36.78 5.98-21.72-8.68-47.42-4.29-65.02 13.29-23.61 23.59-23.61 61.84 0 85.43 15.28 15.27 36.53 19.58 56.14 15.09-4.5 19.6-.18 40.83 15.1 56.1 23.61 23.59 61.88 23.59 85.49 0 17.6-17.58 21.99-43.26 13.31-64.97-5.09-12.73-3.72-27.05 5.99-36.75L234.35 352h85.89c23.2 0 43.57-3.72 61.89-10.03-39.64-43.89-39.83-110.23 1.05-151.07 34.38-34.36 86.76-39.46 128.74-16.8 1.3-44.93-14.81-90.25-49.13-124.53z"></path></svg>
-                                </span>
+                                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="utensils" class="svg-inline--fa fa-utensils fa-w-13" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 416 512"><path fill="currentColor" d="M207.9 15.2c.8 4.7 16.1 94.5 16.1 128.8 0 52.3-27.8 89.6-68.9 104.6L168 486.7c.7 13.7-10.2 25.3-24 25.3H80c-13.7 0-24.7-11.5-24-25.3l12.9-238.1C27.7 233.6 0 196.2 0 144 0 109.6 15.3 19.9 16.1 15.2 19.3-5.1 61.4-5.4 64 16.3v141.2c1.3 3.4 15.1 3.2 16 0 1.4-25.3 7.9-139.2 8-141.8 3.3-20.8 44.7-20.8 47.9 0 .2 2.7 6.6 116.5 8 141.8.9 3.2 14.8 3.4 16 0V16.3c2.6-21.6 44.8-21.4 48-1.1zm119.2 285.7l-15 185.1c-1.2 14 9.9 26 23.9 26h56c13.3 0 24-10.7 24-24V24c0-13.2-10.7-24-24-24-82.5 0-221.4 178.5-64.9 300.9z"></path></svg>
+								</span>
                             @endforeach
                         </div>
                     @else
