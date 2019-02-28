@@ -1,13 +1,16 @@
 #calendar {
+	display: inline-flex;
+	flex-direction: column;
     position: sticky;
     top: 7rem;
     box-shadow: 0 0 10px 5px $gray-200;
+    width: 25.5rem;
 
     .month {
-        width: 100%;
         background: $primary;
         padding: 1em;
         text-align: center;
+        width: 100%;
 
         a {
             color: $white;
@@ -51,12 +54,13 @@
 
     .weekdays {
         background-color: $primary-darkest;
-        justify-content: space-around;
+        display: inline-flex;
 
         .weekday {
             color: $white;
             line-height: 2.25em;
             text-align: center;
+            width: 3.5em;
         }
 
         .week-of-year {
@@ -74,11 +78,14 @@
 
     .days {
         background: $white;
+        display: inline-flex;
 
         .day {
             text-align: center;
             line-height: 1;
             padding: 1px;
+            position: static !important;
+            width: 3.5em;
 
             &.week-of-year {
                 align-items: center;
@@ -99,7 +106,6 @@
                 justify-content: center;
                 margin: 0;
                 padding: 0;
-                position: relative;
 
                 a, .a {
 					color: $primary-darker;
@@ -108,6 +114,32 @@
                     line-height: 3.5em;
                     width: 100%;
                 }
+                
+                a:before {
+					content: "";
+					height: calc(3.5em - 2px);
+					left: 0;
+					position: absolute;
+					top: 0;
+					width: calc(3.5em - 2px);
+                }
+                
+                a {
+                        &.monday:before 	{ left: calc(4em - 2px);  }
+                        &.tuesday:before 	{ left: calc(7.5em - 2px);   }
+                        &.wednesday:before  { left: calc(11em - 2px); }
+                        &.thursday:before 	{ left: calc(14.5em - 2px);   }
+                        &.friday:before 	{ left: calc(18em - 2px); }
+                        &.saturday:before 	{ left: calc(21.5em - 2px);   }
+                        &.sunday:before 	{ left: calc(24em - 2px); }
+                        
+                        &.row-0:before { top: calc(7.5em);   }
+                        &.row-1:before { top: calc(11em + 3px); }
+                        &.row-2:before { top: calc(14.5em + 5px);   }
+                        &.row-3:before { top: calc(18em + 7px); }
+                        &.row-4:before { top: calc(21.5em + 9px);   }
+                        &.row-5:before { top: calc(24em + 11px); }
+				}
                 
                 a:hover, a:focus {
 					background: $gray-200;
@@ -129,14 +161,27 @@
                 .inner {
                     /* border-color: lighten($success, 6%); */
                     background: #9f9;
-                    width: 100%;
 
                     .food-container {
 						bottom: 3px;
                         height: 1em;
                         position: absolute;
-                        right: 1px;
                         text-align: right;
+                        
+                        &.monday 	{ left: calc(6.5em - 1px);  }
+                        &.tuesday 	{ left: calc(10em - 1px);   }
+                        &.wednesday { left: calc(13.5em - 1px); }
+                        &.thursday 	{ left: calc(17em - 1px);   }
+                        &.friday 	{ left: calc(20.5em - 1px); }
+                        &.saturday 	{ left: calc(24em - 1px);   }
+                        &.sunday 	{ left: calc(27.5em - 1px); }
+                        
+                        &.row-0 { top: calc(10em - 3px);   }
+                        &.row-1 { top: calc(13.5em - 3px); }
+                        &.row-2 { top: calc(17em - 3px);   }
+                        &.row-3 { top: calc(21.5em - 3px); }
+                        &.row-4 { top: calc(24em - 3px);   }
+                        &.row-5 { top: calc(27.5em - 3px); }
 
                         svg {
                             color: $primary-darkest;
@@ -144,6 +189,29 @@
                             margin-left: -2px;
                             width: auto;
                         }
+                    }
+                    
+                    
+                    
+                    
+                    .ordered-meals-tooltip {
+						background: $white;
+						box-shadow: 0 0 10px 5px $gray-200;
+						color: $gray-800;
+						display: none;
+						padding: 1em;
+						position: absolute;
+						top: calc(100% + 2em);
+						left: 0;
+						
+						.ordered-meals-tooltip-title {
+							font-size: 1.0675em;
+						}
+                    }
+                    
+					a:hover ~ .ordered-meals-tooltip,
+					a:focus ~ .ordered-meals-tooltip {
+						display: block;
                     }
                 }
             }
