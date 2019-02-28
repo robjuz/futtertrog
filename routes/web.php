@@ -22,6 +22,7 @@ Auth::routes([
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'HomeController')->name('home');
 
+    Route::get('meals/ical', 'IcalController')->name('meals.ical');
     Route::resource('meals', 'MealController');
     Route::resource('orders', 'OrderController')->only(['index', 'update', 'destroy']);
     Route::resource('order_items', 'OrderItemController')->only(['index', 'create', 'store', 'destroy']);
