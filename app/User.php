@@ -80,7 +80,7 @@ class User extends Authenticatable
     {
         parent::boot();
 
-        static::creating(function(User $user) {
+        static::creating(function (User $user) {
             $user->generateApiToken();
         });
     }
@@ -96,7 +96,7 @@ class User extends Authenticatable
             $this->loadMissing('orderItems.meal');
 
             $deposits = $this->deposits()->whereStatus(Deposit::STATUS_OK)->sum('value');
-            $orders   = $this->orderItems->sum(function ($order) {
+            $orders = $this->orderItems->sum(function ($order) {
                 return $order->meal->price * $order->quantity;
             });
 
@@ -131,7 +131,7 @@ class User extends Authenticatable
 
     public function gravatarUrl($size = 100)
     {
-        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?s=' . $size;
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?s='.$size;
     }
 
     public function markAsAdmin()
@@ -149,6 +149,7 @@ class User extends Authenticatable
     public function generateApiToken()
     {
         $this->api_token = Str::random(10);
+
         return $this;
     }
 }
