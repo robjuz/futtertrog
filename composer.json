@@ -12,6 +12,7 @@
         "barryvdh/laravel-ide-helper": "^2.5",
         "dflydev/markdown": "^1.0",
         "doctrine/dbal": "^2.9",
+        "eluceo/ical": "^0.15.0",
         "fideloper/proxy": "^4.0",
         "htmlmin/htmlmin": "^5.7",
         "imangazaliev/didom": "^1.13",
