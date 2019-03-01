@@ -4,24 +4,25 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 /**
  * App\User.
  *
- * @property int                                                                                                            $id
- * @property string                                                                                                         $name
- * @property string                                                                                                         $email
- * @property string|null                                                                                                    $email_verified_at
- * @property string                                                                                                         $password
- * @property bool                                                                                                           $is_admin
- * @property array|null                                                                                                     $settings
- * @property string|null                                                                                                    $remember_token
- * @property \Illuminate\Support\Carbon|null                                                                                $created_at
- * @property \Illuminate\Support\Carbon|null                                                                                $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Deposit[]                                                   $deposits
- * @property-read mixed                                                                                                     $balance
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string|null $email_verified_at
+ * @property string $password
+ * @property bool $is_admin
+ * @property array|null $settings
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Deposit[] $deposits
+ * @property-read mixed $balance
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[]                                                 $orderItems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User query()
@@ -53,11 +54,10 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $casts
-        = [
-            'is_admin' => 'boolean',
-            'settings' => 'array',
-        ];
+    protected $casts = [
+        'is_admin' => 'boolean',
+        'settings' => 'array',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -71,20 +71,23 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden
-        = [
-            'password',
-            'remember_token',
-        ];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function(User $user) {
+            $user->generateApiToken();
+        });
+    }
 
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
-    }
-
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
     }
 
     public function getBalanceAttribute()
@@ -93,7 +96,7 @@ class User extends Authenticatable
             $this->loadMissing('orderItems.meal');
 
             $deposits = $this->deposits()->whereStatus(Deposit::STATUS_OK)->sum('value');
-            $orders = $this->orderItems->sum(function ($order) {
+            $orders   = $this->orderItems->sum(function ($order) {
                 return $order->meal->price * $order->quantity;
             });
 
@@ -101,13 +104,6 @@ class User extends Authenticatable
         }
 
         return $this->attributes['balance'];
-    }
-
-    public function markAsAdmin()
-    {
-        return $this->forceFill([
-            'is_admin' => true,
-        ])->save();
     }
 
     /**
@@ -118,23 +114,41 @@ class User extends Authenticatable
         $deposit = $this->deposits()->whereStatus(Deposit::STATUS_PROCESSING)->firstOrFail();
 
         return [
-            'items' => [
+            'items'               => [
                 [
-                    'name' => trans('Futtertrog deposit'),
+                    'name'  => trans('Futtertrog deposit'),
                     'price' => $deposit->value,
-                    'qty' => 1,
+                    'qty'   => 1,
                 ],
             ],
             'invoice_description' => null,
-            'invoice_id' => null,
-            'return_url' => route('paypal.express_checkout_success'),
-            'cancel_url' => url('/'),
-            'total' => $deposit->value,
+            'invoice_id'          => null,
+            'return_url'          => route('paypal.express_checkout_success'),
+            'cancel_url'          => url('/'),
+            'total'               => $deposit->value,
         ];
     }
 
     public function gravatarUrl($size = 100)
     {
-        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?s='.$size;
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?s=' . $size;
+    }
+
+    public function markAsAdmin()
+    {
+        return $this->forceFill([
+            'is_admin' => true,
+        ])->save();
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function generateApiToken()
+    {
+        $this->api_token = Str::random(10);
+        return $this;
     }
 }
