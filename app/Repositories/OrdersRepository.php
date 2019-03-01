@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrdersRepository
@@ -27,6 +28,9 @@ class OrdersRepository
 
     public function usersAllOrders(User $user, $fromDate = null, $toDate = null)
     {
+        $fromDate = $fromDate ? Carbon::parse($fromDate)->toDateString() : null;
+        $toDate = $toDate ? Carbon::parse($toDate)->toDateString() : null;
+
         return $user->orderItems()
             ->with(['order', 'meal'])
             ->whereHas('order', function (Builder $query) use ($fromDate, $toDate) {
