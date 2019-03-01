@@ -31,7 +31,8 @@ class IcalController extends Controller
                 (new Event)->setDtStart($orderItem->order->date)
                     ->setDtEnd($orderItem->order->date)
                     ->setNoTime(true)
-                    ->setSummary($orderItem->meal->title.'('.$orderItem->qunatity.')')
+                    ->setSummary($orderItem->meal->title.' ('.$orderItem->quantity.')')
+                    ->setDescription($orderItem->meal->description)
             );
         }
 
