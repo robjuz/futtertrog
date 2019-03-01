@@ -116,5 +116,10 @@
   "Meal preferences": "Bevorzugte Mahlzeiten",
   "Surprise me": "Überrasch mich",
   "Hide meal description on dashboard": "Essen Beschreibung im Dashboard ausblenden",
-  "Hide meal description on ordering list": "Essen Beschreibung in Bestellübersicht ausblenden"
+  "Hide meal description on ordering list": "Essen Beschreibung in Bestellübersicht ausblenden",
+  "Download as iCal": "Als iCal runterladen",
+  "Search": "Suchen",
+  "User": "Benutzer",
+  "Meal": "Essen",
+  "Is admin": "Ist Admin"
 }

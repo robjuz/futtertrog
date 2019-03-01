@@ -37,11 +37,8 @@ class Meal extends Model
 {
     const PROVIDER_HOLZKE = 'Holzke';
 
-    const PROVIDER_PARADIES_PIZZA = 'Paradies Pizza';
-
     public static $providers = [
         self::PROVIDER_HOLZKE,
-        self::PROVIDER_PARADIES_PIZZA,
     ];
 
     protected $guarded = [];

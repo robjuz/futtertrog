@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
+            <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>
         </form>
     </div>
 </div>
