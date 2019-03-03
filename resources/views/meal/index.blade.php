@@ -12,11 +12,28 @@
 
         <div class="row justify-content-center">
 			
-            <div class="col-lg-5 col-xl-4">
+            <div class="col-xs-12 col-auto">
                @include('meals.calendar')
             </div>
 
-            <div id="current-offer" class="col" style="padding-top:100px">
+            <div id="current-offer" class="col">
+				@php
+					$date = \Illuminate\Support\Carbon::parse($requestedDate);
+				@endphp
+				
+				<div class="row mb-2">
+					<div class="col">
+						<a href="<?= route('meals.index', ['date' => $date->addDay(-1)->toDateString()]) ?>">
+							&lt; Vorheriger Tag
+						</a>
+					</div>
+					<div class="col-auto">
+						<a href="<?= route('meals.index', ['date' => $date->addDay(2)->toDateString()]) ?>">
+							Nächster Tag &gt;
+						</a>
+					</div>
+				</div>
+				
                 @forelse($todayMeals as $meal)
                     <div id="meal_{{ $meal->id }}" class="meal-container">
                         @include('meal.meal')

@@ -84,7 +84,7 @@
                             @foreach($futureOrders->groupBy(function($orderItem) { return $orderItem->order->date->format(__('futtertrog.date_format')); }) as $date => $orders)
                                 <div class="row {{ $loop->last ? '' : ' mb-3 border-bottom' }}">
                                     <div class="col-lg-4">
-                                        <h3 class="h5 d-flex d-lg-block justify-content-center mb-3 mb-lg-0">{{ $date }}</h3>
+                                        <h3 class="md-dark h5 d-flex d-lg-block justify-content-center mb-3 mb-lg-0">{{ $date }}</h3>
                                     </div>
                                     <div class="col-lg-8">
                                         @foreach( $orders as $order)

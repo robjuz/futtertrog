@@ -1,10 +1,20 @@
 #calendar {
+    box-shadow: 0 0 10px 5px $gray-200;
 	display: inline-flex;
 	flex-direction: column;
+	margin-bottom: 10em;
     position: sticky;
     top: 7rem;
-    box-shadow: 0 0 10px 5px $gray-200;
     width: 25.5rem;
+    
+    @media screen and (max-width: 892px) {
+		margin-bottom: 2em;
+	}
+	
+	@media screen and (max-width: 575px) {
+		font-size: 0.8em;
+		width: 18rem;
+	}
 
     .month {
         background: $primary;
@@ -122,7 +132,36 @@
 					position: absolute;
 					top: 0;
 					width: calc(3.5em - 2px);
+					z-index: 1;
                 }
+                
+				.meals-available {
+					padding-top: 2.1em;
+					position: absolute;
+					width: 0.8em;
+                        
+                        &.monday 	{ left: calc(6.5125em - 1px);  }
+                        &.tuesday 	{ left: calc(10.0125em - 1px);   }
+                        &.wednesday { left: calc(13.5125em - 1px); }
+                        &.thursday 	{ left: calc(17.0125em - 1px);   }
+                        &.friday 	{ left: calc(20.5125em - 1px); }
+                        &.saturday 	{ left: calc(24.0125em - 1px);   }
+                        &.sunday 	{ left: calc(27.5125em - 1px); }
+                        
+                        &.row-0 { top: calc(2.75rem + 4.3375em - 1px);   }
+                        &.row-1 { top: calc(2.75rem + 8.0375em + 1px); }
+                        &.row-2 { top: calc(2.75rem + 11.6375em + 3px);   }
+                        &.row-3 { top: calc(2.75rem + 15.0375em + 5px); }
+                        &.row-4 { top: calc(2.75rem + 18.6375em + 7px);   }
+                        &.row-5 { top: calc(2.75rem + 22.0375em + 9px); }
+
+                        svg {
+                            color: $primary-darkest;
+                            height: 100%;
+                            margin-left: -2px;
+                            width: auto;
+                        }
+                    }
                 
                 a {
                         &.monday:before 	{ left: calc(4em - 2px);  }
@@ -139,8 +178,33 @@
                         &.row-3:before { top: calc(18em + 7px); }
                         &.row-4:before { top: calc(21.5em + 9px);   }
                         &.row-5:before { top: calc(24em + 11px); }
+                        
 				}
-                
+				
+				.available-meals-tooltip,
+				.ordered-meals-tooltip {
+					background: $white;
+					box-shadow: 0 0 10px 5px $gray-200;
+					color: $gray-800;
+					display: none;
+					padding: 1em;
+					position: absolute;
+					top: calc(100% + 2em);
+					left: 0;
+					
+					.available-meals-tooltip-title,
+					.ordered-meals-tooltip-title {
+						font-size: 1.0675em;
+					}
+				}
+				
+				@media screen and (min-width: 893px) {
+					a:hover ~ .available-meals-tooltip,
+					a:focus ~ .available-meals-tooltip {
+						display: block;
+					}
+				}
+				
                 a:hover, a:focus {
 					background: $gray-200;
 					color: $primary-dark;
@@ -163,7 +227,6 @@
                     background: #9f9;
 
                     .food-container {
-						bottom: 3px;
                         height: 1em;
                         position: absolute;
                         text-align: right;
@@ -176,12 +239,12 @@
                         &.saturday 	{ left: calc(24em - 1px);   }
                         &.sunday 	{ left: calc(27.5em - 1px); }
                         
-                        &.row-0 { top: calc(10em - 3px);   }
-                        &.row-1 { top: calc(13.5em - 3px); }
-                        &.row-2 { top: calc(17em - 3px);   }
-                        &.row-3 { top: calc(21.5em - 3px); }
-                        &.row-4 { top: calc(24em - 3px);   }
-                        &.row-5 { top: calc(27.5em - 3px); }
+                        &.row-0 { top: calc(2.75rem + 6.8375em - 1px);   }
+                        &.row-1 { top: calc(2.75rem + 10.3375em + 1px); }
+                        &.row-2 { top: calc(2.75rem + 13.8375em + 3px);   }
+                        &.row-3 { top: calc(2.75rem + 17.3375em + 5px); }
+                        &.row-4 { top: calc(2.75rem + 20.8375em + 7px);   }
+                        &.row-5 { top: calc(2.75rem + 24.3375em + 9px); }
 
                         svg {
                             color: $primary-darkest;
@@ -189,29 +252,13 @@
                             margin-left: -2px;
                             width: auto;
                         }
-                    }
+                    }                   
                     
-                    
-                    
-                    
-                    .ordered-meals-tooltip {
-						background: $white;
-						box-shadow: 0 0 10px 5px $gray-200;
-						color: $gray-800;
-						display: none;
-						padding: 1em;
-						position: absolute;
-						top: calc(100% + 2em);
-						left: 0;
-						
-						.ordered-meals-tooltip-title {
-							font-size: 1.0675em;
+                    @media screen and (min-width: 893px) {
+						a:hover ~ .ordered-meals-tooltip,
+						a:focus ~ .ordered-meals-tooltip {
+							display: block;
 						}
-                    }
-                    
-					a:hover ~ .ordered-meals-tooltip,
-					a:focus ~ .ordered-meals-tooltip {
-						display: block;
                     }
                 }
             }
