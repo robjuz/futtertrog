@@ -16,7 +16,7 @@ body {
 
   > main {
     flex-grow: 1;
-    padding-top: 113px;
+    padding-top: 7.5rem;
   }
 }
 
@@ -46,6 +46,10 @@ body {
   box-shadow: 0 0 10px 5px $gray-200;
 }
 
+.card:focus-within {
+  box-shadow: 0 0 10px 5px rgba(39, 139, 224, 0.5);
+}
+
 .card .card {
   border: none;
   box-shadow: none;
@@ -55,6 +59,16 @@ body {
   border-bottom: 2px solid #3C86C4;
   color: $primary-darkest;
   font-size: 17px;
+  line-height: 1.5em;
+}
+
+@media screen and (max-width: 991px) {
+	.card-body .md-dark {
+		background-color: $primary-darker;
+		color: $white;
+		padding-bottom: 0.5rem;
+		padding-top: 0.5rem;
+	}
 }
 
 /** FOOTER **/
@@ -76,15 +90,6 @@ h4 {
   text-transform: uppercase;
 }
 
-h4 .btn-sm {
-  height: 42px;
-  width: 225px;
-}
-
-h4 input {
-  height: 42px !important;
-}
-
 .pagination {
   justify-content: center;
 }
@@ -96,3 +101,74 @@ h4 input {
     right: 0;
   }
 }
+
+.btn-link:focus {
+	outline: 1px dotted $primary-darker;
+}
+
+.skip-link {
+	background: #fff;
+	border: 1px solid $primary-darker;
+	display: inline-block;
+	margin-bottom: 1em;
+	padding: 0.25em 0.5em;
+	position: absolute;
+	top: -9999em;
+	left: -9999em;
+	
+	&:focus {
+		position: relative;
+		z-index: 10000;
+	}
+}
+
+.skip-navigation:focus {
+	left: 0.5em;
+	position: absolute;
+	top: 0.5em;
+}
+
+.skip-calendar:focus {
+	left:0;
+	top: 0;
+}
+
+@media screen and (min-width: 893px) {
+	#current-offer {
+	  margin-top: -11em; 
+	  padding-top: 11em; 
+	}
+}
+
+
+/**** ORDER INDEX ****/
+@media screen and (max-width: 767px) {
+	.order-index {
+		.hidden-sm-down {
+			display: none !important;
+		}
+		
+		.order {
+			border: none !important;
+		}
+		
+		.header-sm {
+			background: $primary-darker;
+			color: $white;
+			margin-bottom: 1rem;
+			text-align: center;
+		}
+		
+		.amount {
+			order: -1;
+		}
+		
+		.amount:after {
+			content: "x";
+			padding-left: 5px;
+		}
+	}
+}
+
+
+

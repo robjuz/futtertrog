@@ -1,48 +1,76 @@
 #calendar {
+    box-shadow: 0 0 10px 5px $gray-200;
+	display: inline-flex;
+	flex-direction: column;
+	margin-bottom: 10em;
     position: sticky;
     top: 7rem;
-    box-shadow: 0 0 10px 5px $gray-200;
+    width: 25.5rem;
+    
+    @media screen and (max-width: 892px) {
+		margin-bottom: 2em;
+	}
+	
+	@media screen and (max-width: 575px) {
+		font-size: 0.7em;
+		width: 18rem;
+	}
 
     .month {
-        padding: 25px;
-        width: 100%;
         background: $primary;
+        padding: 1em;
         text-align: center;
+        width: 100%;
 
         a {
             color: $white;
+			display: inline-block;
+			height: 2.75rem;
+			line-height: 2.75rem;
+			width: 2.75rem;
+			
+			&:hover {
+				text-decoration: none;
+			}
+			
+			&:focus {
+				outline: 1px dotted #c5e0f5;
+			}
         }
     }
 
     .month ul {
+		display: flex;
         list-style: none;
         margin: 0;
         padding: 0;
-    }
-
-    .month ul li {
-        color: white;
-        font-size: 20px;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-    }
-
-    .month .prev {
-        float: left;
-    }
-
-    .month .next {
-        float: right;
+    
+		li {
+			color: white;
+			display: inline-block;
+			height: 2.75rem;
+			line-height: 2.75rem;
+			font-size: 1.25em;
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			
+			&.current-month {
+				flex-grow: 1;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		}
     }
 
     .weekdays {
         background-color: $primary-darkest;
-        justify-content: space-around;
+        display: inline-flex;
 
         .weekday {
             color: $white;
             line-height: 2.25em;
             text-align: center;
+            width: 3.5em;
         }
 
         .week-of-year {
@@ -53,17 +81,21 @@
             flex-grow: unset;
             font-size: 0.85em;
             justify-content: center;
+            line-height: 2.75em;
             min-width: 4.5em;
         }
     }
 
     .days {
         background: $white;
+        display: inline-flex;
 
         .day {
             text-align: center;
             line-height: 1;
             padding: 1px;
+            position: static !important;
+            width: 3.5em;
 
             &.week-of-year {
                 align-items: center;
@@ -85,28 +117,43 @@
                 margin: 0;
                 padding: 0;
 
-                .a {
-                    color: $gray-900;
-                }
-            }
-
-            &.has-orders {
-
-                .inner {
-                    border-color: lighten($success, 6%);
-                    position: relative;
+                a, .a {
+					color: $primary-darker;
+                    display: inline-block;
+                    height: 100%;
+                    line-height: 3.5em;
                     width: 100%;
+                }
+                
+                a:before {
+					content: "";
+					height: calc(3.5em - 2px);
+					left: 0;
+					position: absolute;
+					top: 0;
+					width: calc(3.5em - 2px);
+					z-index: 1;
+                }
 
-                    a {
-                        padding: 0.5em 1em;
-                    }
+				.meals-available {
+					padding-top: 2.1em;
+					position: absolute;
+					width: 0.8em;
 
-                    .food-container {
-                        bottom: 3px;
-                        height: 1em;
-                        position: absolute;
-                        right: 1px;
-                        text-align: right;
+                        &.monday 	{ left: calc(6.5125em - 1px);  }
+                        &.tuesday 	{ left: calc(10.0125em - 1px);   }
+                        &.wednesday { left: calc(13.5125em - 1px); }
+                        &.thursday 	{ left: calc(17.0125em - 1px);   }
+                        &.friday 	{ left: calc(20.5125em - 1px); }
+                        &.saturday 	{ left: calc(24.0125em - 1px);   }
+                        &.sunday 	{ left: calc(27.5125em - 1px); }
+
+                        &.row-0 { top: calc(2.75rem + 4.3375em - 1px);   }
+                        &.row-1 { top: calc(2.75rem + 8.0375em + 1px); }
+                        &.row-2 { top: calc(2.75rem + 11.6375em + 3px);   }
+                        &.row-3 { top: calc(2.75rem + 15.0375em + 5px); }
+                        &.row-4 { top: calc(2.75rem + 18.6375em + 7px);   }
+                        &.row-5 { top: calc(2.75rem + 22.0375em + 9px); }
 
                         svg {
                             color: $primary-darkest;
@@ -114,6 +161,119 @@
                             margin-left: -2px;
                             width: auto;
                         }
+                    }
+
+                a {
+                        &.monday:before 	{ left: calc(4em - 2px);  }
+                        &.tuesday:before 	{ left: calc(7.5em - 2px);   }
+                        &.wednesday:before  { left: calc(11em - 2px); }
+                        &.thursday:before 	{ left: calc(14.5em - 2px);   }
+                        &.friday:before 	{ left: calc(18em - 2px); }
+                        &.saturday:before 	{ left: calc(21.5em - 2px);   }
+                        &.sunday:before 	{ left: calc(24em - 2px); }
+
+                        &.row-0:before { top: calc(7.5em);   }
+                        &.row-1:before { top: calc(11em + 3px); }
+                        &.row-2:before { top: calc(14.5em + 5px);   }
+                        &.row-3:before { top: calc(18em + 7px); }
+                        &.row-4:before { top: calc(21.5em + 9px);   }
+                        &.row-5:before { top: calc(24em + 11px); }
+
+                        @media screen and (max-width: 575px) {
+							&:before {
+								height: 3.5em;
+							}
+
+							&.row-0:before { top: calc(8.5em + 2px);   }
+							&.row-1:before { top: calc(12em + 3px); }
+							&.row-2:before { top: calc(14.5em + 5px);   }
+							&.row-3:before { top: calc(18em + 7px); }
+							&.row-4:before { top: calc(21.5em + 9px);   }
+							&.row-5:before { top: calc(25em + 11px); }
+                        }
+
+				}
+
+				.available-meals-tooltip,
+				.ordered-meals-tooltip {
+					background: $white;
+					box-shadow: 0 0 10px 5px $gray-200;
+					color: $gray-800;
+					display: none;
+					padding: 1em;
+					position: absolute;
+                    right: 0;
+                    text-align: left;
+					top: calc(100% + 2em);
+					left: 0;
+					
+					.available-meals-tooltip-title,
+					.ordered-meals-tooltip-title {
+						font-size: 1.0675em;
+					}
+				}
+				
+				@media screen and (min-width: 893px) {
+					a:hover ~ .available-meals-tooltip,
+					a:focus ~ .available-meals-tooltip {
+						display: block;
+					}
+				}
+				
+                a:hover, a:focus {
+					background: $gray-200;
+					color: $primary-dark;
+					text-decoration: none;
+                }
+                
+                a:focus {
+					outline: 1px dotted $primary-dark;
+                }
+                
+                .a {
+					color: $gray-900;
+                }
+            }
+
+            &.has-orders {
+
+                .inner {
+                    /* border-color: lighten($success, 6%); */
+                    background: #9f9;
+
+                    .food-container {
+                        height: 1em;
+                        position: absolute;
+                        text-align: right;
+                        
+                        &.monday 	{ left: calc(6.5em - 1px);  }
+                        &.tuesday 	{ left: calc(10em - 1px);   }
+                        &.wednesday { left: calc(13.5em - 1px); }
+                        &.thursday 	{ left: calc(17em - 1px);   }
+                        &.friday 	{ left: calc(20.5em - 1px); }
+                        &.saturday 	{ left: calc(24em - 1px);   }
+                        &.sunday 	{ left: calc(27.5em - 1px); }
+                        
+                        &.row-0 { top: calc(2.75rem + 6.8375em - 1px);   }
+                        &.row-1 { top: calc(2.75rem + 10.3375em + 1px); }
+                        &.row-2 { top: calc(2.75rem + 13.8375em + 3px);   }
+                        &.row-3 { top: calc(2.75rem + 17.3375em + 5px); }
+                        &.row-4 { top: calc(2.75rem + 20.8375em + 7px);   }
+                        &.row-5 { top: calc(2.75rem + 24.3375em + 9px); }
+
+                        svg {
+                            color: $primary-darkest;
+                            height: 100%;
+                            margin-left: -2px;
+                            width: auto;
+                        }
+                    }                   
+                    
+                    @media screen and (min-width: 893px) {
+						a:hover ~ .ordered-meals-tooltip,
+						a:focus ~ .ordered-meals-tooltip {
+							display: block;
+						}
                     }
                 }
             }
@@ -127,6 +287,10 @@
 
                     a, svg {
                         color: inherit;
+                    }
+                    
+                    a:hover, a:focus {
+						color: $primary-dark;
                     }
                 }
             }

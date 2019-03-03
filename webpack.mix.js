@@ -11,7 +11,20 @@ if (mix.inProduction()) {
           'pagination',
           'page-item',
           'page-link',
-          'alert-warning'
+          'alert-warning',
+          'row-0',
+          'row-1',
+          'row-2',
+          'row-3',
+          'row-4',
+          'row-5',
+          'monday',
+          'tuesday',
+          'wednesday',
+          'thursday',
+          'friday',
+          'saturday',
+          'sunday'
         ]
       }
     }
