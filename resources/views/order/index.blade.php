@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container order-index">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 {{ __('Order index') }}
@@ -42,9 +42,9 @@
 
                 @if($orders->isNotEmpty())
                     <div class="row py-3x">
-                        <div class="col-6 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Date')}}</strong></div>
-                        <div class="col-6 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Status')}}</strong></div>
-                        <div class="col-12 col-md-8">
+                        <div class="hidden-sm-down col-6 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Date')}}</strong></div>
+                        <div class="hidden-sm-down col-6 col-md-2 text-md-center mb-2 mb-md-0"><strong>{{__('Status')}}</strong></div>
+                        <div class="hidden-sm-down col-12 col-md-8">
                             <div class="row">
                                 <div class="col-4 col-md-4 text-md-center mb-2 mb-md-0"><strong>{{__('Title')}}</strong>
                                 </div>
@@ -57,8 +57,8 @@
                         </div>
                     </div>
                     @foreach($orders as $order)
-                        <div class="row border-top border-primary py-3 align-items-center">
-                            <div class="col-6 col-md-2 text-md-center">
+                        <div class="order row border-top border-primary py-3 align-items-center">
+                            <div class="header-sm col-lg-6 col-md-2 text-md-center">
                                 {{ __('calendar.' . $order->date->englishDayOfWeek) }}<br>
                                 {{ $order->date->format(__('futtertrog.date_format')) }}<br>
                                 {{ $order->provider }}
@@ -82,9 +82,9 @@
                             <div class="col-12 col-md-8">
                                 @foreach($order->orderItemsCompact() as $orderItem)
                                     <div class="row py-3 align-items-center {{ $loop->last ? '' : ' border-bottom' }}">
-                                        <div class="col-6 col-md-4 text-md-center mb-2 mb-md-0">{{ $orderItem->meal->title }}</div>
-                                        <div class="col-3 col-md-2 text-md-center mb-2 mb-md-0">{{ $orderItem->quantity }}</div>
-                                        <div class="col-3 col-md-2 text-md-center mb-2 mb-md-0 text-nowrap">
+                                        <div class="col-xs col-sm col-6 col-md-4 text-md-center mb-2 mb-md-0">{{ $orderItem->meal->title }}</div>
+                                        <div class="amount col-xs-auto col-sm-auto col-3 col-md-2 text-md-center mb-2 mb-md-0">{{ $orderItem->quantity }}</div>
+                                        <div class="col-xs-auto col-sm-auto col-3 col-md-2 text-md-center mb-2 mb-md-0 text-nowrap">
                                             {{ number_format($orderItem->meal->price, 2, ',','.') }} €
                                         </div>
                                         <div class="col-12 col-md-4">
