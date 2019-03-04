@@ -5,106 +5,115 @@
         <div class="row justify-content-center">
 
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6">
 
-                <div class="card mb-3">
-                    <h2 class="card-header">{{ __('Your balance') }}</h2>
+                <section class="mb-3">
+                    <div class="card">
+                        <h2 class="card-header">{{ __('Your balance') }}</h2>
 
-                    <div class="card-body">
-                        <h3 class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} h5 text-nowrap">
-                            {{ number_format($balance, 2, ',','.') }} €
-                        </h3>
+                        <div class="card-body">
+                            <h3 class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} h5 text-nowrap">
+                                {{ number_format($balance, 2, ',','.') }} €
+                            </h3>
 
-                        @if (Route::has('paypal.express_checkout'))
-                            <form class="mt-3" action="{{ route('paypal.express_checkout') }}" method="POST" novalidate>
-                                @csrf
-                                <div class="form-group ">
-                                    <label for="value">{{ __('How much do you want to deposit?') }}</label>
-                                    <div class="input-group mb-3">
-                                        <input id="value"
-                                               type="number"
-                                               min="0.01"
-                                               step="0.01"
-                                               name="value"
-                                               class="form-control {{ $errors->has('value') ? ' is-invalid' : '' }}"
-                                               aria-describedby="pay_wiht_paypal"
-                                               required
-                                        >
-                                        @if ($errors->has('value'))
-                                            <div class="invalid-tooltip d-block" role="alert">
-                                                <strong>{{ $errors->first('value') }}</strong>
-                                            </div>
-                                        @endif
-                                        <div class="input-group-append">
-                                            <button id="pay_wiht_paypal"
-                                                    class="btn btn-primary"
-                                                    type="submit"
+                            @if (Route::has('paypal.express_checkout'))
+                                <form class="mt-3" action="{{ route('paypal.express_checkout') }}" method="POST"
+                                      novalidate>
+                                    @csrf
+                                    <div class="form-group ">
+                                        <label for="value">{{ __('How much do you want to deposit?') }}</label>
+                                        <div class="input-group mb-3">
+                                            <input id="value"
+                                                   type="number"
+                                                   min="0.01"
+                                                   step="0.01"
+                                                   name="value"
+                                                   class="form-control {{ $errors->has('value') ? ' is-invalid' : '' }}"
+                                                   aria-describedby="pay_wiht_paypal"
+                                                   required
                                             >
-                                                {{ __('Pay with PayPal') }}
-                                            </button>
+                                            @if ($errors->has('value'))
+                                                <div class="invalid-tooltip d-block" role="alert">
+                                                    <strong>{{ $errors->first('value') }}</strong>
+                                                </div>
+                                            @endif
+                                            <div class="input-group-append">
+                                                <button id="pay_wiht_paypal"
+                                                        class="btn btn-primary"
+                                                        type="submit"
+                                                >
+                                                    {{ __('Pay with PayPal') }}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
-                        @endif
+                                </form>
+                            @endif
+                        </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="card mb-3">
-                    <h2 class="card-header">{{ __('Your today order') }}</h2>
+                <section class="mb-3">
+                    <div class="card">
+                        <h2 class="card-header">{{ __('Your today order') }}</h2>
 
-                    <div class="card-body">
                         @if($todayOrders->count())
-                            @foreach($todayOrders as $order)
-                                <section class="{{ $loop->last ? '' : ' mb-3 border-bottom' }}">
-                                    <h3 class="h5">
-                                        {{ $order->meal->title }}
-                                        <small>( {{ $order->quantity }} )</small>
-                                    </h3>
-                                    @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
-                                        <p>{{ $order->meal->description }}</p>
-                                    @endif
-                                </section>
-                            @endforeach
+                            <ul class="list-group list-group-flush">
+                                @foreach($todayOrders as $order)
+                                    <li class="list-group-item {{ $loop->last ? '' : 'border-bottom-0' }}">
+                                        <h3 class="h5">
+                                            {{ $order->meal->title }}
+                                            <small>( {{ $order->quantity }} )</small>
+                                        </h3>
+                                        @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
+                                            <p>{{ $order->meal->description }}</p>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
                         @else
-
                             <div class="alert alert-danger m-0" role="alert">
                                 <strong> {{ __('No orders for today') }}!</strong>
                             </div>
                         @endif
                     </div>
-                </div>
+                </section>
 
-                <div class="card">
-                    <h2 class="card-header">{{ __('Your upcoming orders') }}</h2>
+                <section class="mb-3">
+                    <div class="card">
+                        <h2 class="card-header">{{ __('Your upcoming orders') }}</h2>
 
-                    <div class="card-body pb-0">
                         @if($futureOrders->count())
+                            <ul class="list-group list-group-flush">
+                                @foreach($futureOrders->groupBy(function($orderItem) { return $orderItem->order->date->format(__('futtertrog.date_format')); }) as $date => $orders)
+                                    <li class="list-group-item {{ $loop->last ? ' border-bottom-0' : '' }}">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <h3 class="md-dark h5 d-flex d-lg-block justify-content-center mb-3 mb-lg-0">{{ $date }}</h3>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                @foreach( $orders as $order)
+                                                    <section class="{{ $loop->last ? '' : ' mb-3 border-bottom' }}">
 
-                            @foreach($futureOrders->groupBy(function($orderItem) { return $orderItem->order->date->format(__('futtertrog.date_format')); }) as $date => $orders)
-                                <div class="row {{ $loop->last ? '' : ' mb-3 border-bottom' }}">
-                                    <div class="col-lg-4">
-                                        <h3 class="md-dark h5 d-flex d-lg-block justify-content-center mb-3 mb-lg-0">{{ $date }}</h3>
-                                    </div>
-                                    <div class="col-lg-8">
-                                        @foreach( $orders as $order)
-                                            <section class="{{ $loop->last ? '' : ' mb-3 border-bottom' }}">
+                                                        <h3 class="h5">
+                                                            {{ $order->meal->title }}
+                                                            <small>( {{ $order->quantity }} )</small>
+                                                        </h3>
 
-                                                <h3 class="h5">
-                                                    {{ $order->meal->title }}
-                                                    <small>( {{ $order->quantity }} )</small>
-                                                </h3>
+                                                        @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
+                                                            <p>{{ $order->meal->description }}</p>
+                                                        @endif
+                                                    </section>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endforeach
 
-                                                @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
-                                                    <p>{{ $order->meal->description }}</p>
-                                                @endif
-                                            </section>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
-
-                            {{ $futureOrders->links() }}
+                            </ul>
+                            <nav>
+                                {{ $futureOrders->links() }}
+                            </nav>
                         @else
                             <div class="alert alert-danger" role="alert">
                                 <strong>{{ __('No upcoming orders') }}</strong>
@@ -115,16 +124,18 @@
                             </div>
                         @endif
                     </div>
-                </div>
+                </section>
 
             </div>
 
-            <div class="col-md-6 mb-3">
-                <div class="mb-3">
+            <div class="col-md-6">
+                <section class="mb-3">
                     @include('partials.deposit_history')
-                </div>
+                </section>
 
-                @include('partials.order_history', ['orders' => $ordersHistory])
+                <section class="mb-3">
+                    @include('partials.order_history', ['orders' => $ordersHistory])
+                </section>
             </div>
 
         </div>
