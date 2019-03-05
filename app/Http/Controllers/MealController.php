@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MealStoreRequest;
 use App\Http\Requests\MealUpdateRequest;
 use App\Meal;
+use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,35 +18,27 @@ class MealController extends Controller
      *
      * @param Request $request
      *
-     * @param \App\Repositories\OrdersRepository $ordersRepository
+     * @param \App\Repositories\OrdersRepository $orders
+     * @param \App\Repositories\MealsRepository $meals
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, OrdersRepository $ordersRepository)
+    public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {
         $requestedDate = Carbon::parse($request->query('date', today()->addWeekday()));
 
-        $todayMeals = Meal::forDate($requestedDate)->get()->sortByPreferences();
+        $todayMeals = $meals->forDate($requestedDate)->sortByPreferences();
 
         if ($request->wantsJson()) {
             return response()->json($todayMeals);
         }
 
-        $meals = collect();
-        $firstOfMonth = Carbon::parse($requestedDate)->firstOfMonth();
-        //TODO: optimize
-        for ($day = 0; $day <= $firstOfMonth->daysInMonth; $day++) {
-            $meals[$firstOfMonth->toDateString()] = Meal::whereDate('date_from', '>=', $firstOfMonth)->whereDate('date_to', '<=', $firstOfMonth)->exists();
-            $firstOfMonth->addDay();
-        }
+        //$orders = $orders->mapToGroups(function ($orderItem) {
+        //    return [$orderItem->order->date->toDateString() => $orderItem->meal->title.' ('.$orderItem->quantity.')'];
+        //});
 
-        $orders = $ordersRepository->usersMonthlyOrders($request->user(), $requestedDate);
-        $orders = $orders->mapToGroups(function ($orderItem) {
-            return [$orderItem->order->date->toDateString() => $orderItem->meal->title.' ('.$orderItem->quantity.')'];
-        });
+        $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
 
-        $todayOrders = $ordersRepository->usersTodayOrders($request->user(), $requestedDate);
-
-        return view('meal.index', compact('meals', 'todayMeals', 'orders', 'todayOrders', 'requestedDate', 'includes', 'excludes'));
+        return view('meal.index', compact('todayMeals', '', 'todayOrders', 'requestedDate'));
     }
 
     /**
