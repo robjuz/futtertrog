@@ -32,13 +32,9 @@ class MealController extends Controller
             return response()->json($todayMeals);
         }
 
-        //$orders = $orders->mapToGroups(function ($orderItem) {
-        //    return [$orderItem->order->date->toDateString() => $orderItem->meal->title.' ('.$orderItem->quantity.')'];
-        //});
-
         $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
 
-        return view('meal.index', compact('todayMeals', '', 'todayOrders', 'requestedDate'));
+        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate'));
     }
 
     /**

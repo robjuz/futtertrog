@@ -35,16 +35,25 @@
 						</a>
 					</div>
 				</div>
-				
-                @forelse($todayMeals as $meal)
-                    <div id="meal_{{ $meal->id }}" class="meal-container">
-                        @include('meal.meal')
-                    </div>
-                @empty
+
+				@if(!empty($todayMeals))
+					<ol class="list-unstyled">
+						@foreach($todayMeals as $meal)
+							<li id="meal_{{ $meal->id }}" class="meal-container">
+								@include('meal.meal')
+							</li>
+						@endforeach
+					</ol>
+					<div>
+						<a class="text-right" href="#current-offer">
+							Zurück zum Anfang der Liste
+						</a>
+					</div>
+                @else
                     <div class="alert alert-warning" role="alert">
                         <strong>{{ __('No items found') }}</strong>
                     </div>
-                @endforelse
+                @endif
 
             </div>
         </div>

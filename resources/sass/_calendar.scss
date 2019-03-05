@@ -136,24 +136,9 @@
                 }
 
 				.meals-available {
-					padding-top: 2.1em;
-					position: absolute;
-					width: 0.8em;
-
-                        &.monday 	{ left: calc(6.5125em - 1px);  }
-                        &.tuesday 	{ left: calc(10.0125em - 1px);   }
-                        &.wednesday { left: calc(13.5125em - 1px); }
-                        &.thursday 	{ left: calc(17.0125em - 1px);   }
-                        &.friday 	{ left: calc(20.5125em - 1px); }
-                        &.saturday 	{ left: calc(24.0125em - 1px);   }
-                        &.sunday 	{ left: calc(27.5125em - 1px); }
-
-                        &.row-1 { top: calc(2.75rem + 4.3375em - 1px);   }
-                        &.row-2 { top: calc(2.75rem + 8.0375em + 1px); }
-                        &.row-3 { top: calc(2.75rem + 11.6375em + 3px);   }
-                        &.row-4 { top: calc(2.75rem + 15.0375em + 5px); }
-                        &.row-5 { top: calc(2.75rem + 18.6375em + 7px);   }
-                        &.row-6 { top: calc(2.75rem + 22.0375em + 9px); }
+          margin-left: 0.15em;
+					padding-top: 0.0125em;
+					width: 0.6em;
 
                         svg {
                             color: $primary-darkest;
@@ -243,23 +228,7 @@
 
                     .food-container {
                         height: 1em;
-                        position: absolute;
                         text-align: right;
-                        
-                        &.monday 	{ left: calc(6.5em - 1px);  }
-                        &.tuesday 	{ left: calc(10em - 1px);   }
-                        &.wednesday { left: calc(13.5em - 1px); }
-                        &.thursday 	{ left: calc(17em - 1px);   }
-                        &.friday 	{ left: calc(20.5em - 1px); }
-                        &.saturday 	{ left: calc(24em - 1px);   }
-                        &.sunday 	{ left: calc(27.5em - 1px); }
-                        
-                        &.row-1 { top: calc(2.75rem + 6.8375em - 1px);   }
-                        &.row-2 { top: calc(2.75rem + 10.3375em + 1px); }
-                        &.row-3 { top: calc(2.75rem + 13.8375em + 3px);   }
-                        &.row-4 { top: calc(2.75rem + 17.3375em + 5px); }
-                        &.row-5 { top: calc(2.75rem + 20.8375em + 7px);   }
-                        &.row-6 { top: calc(2.75rem + 24.3375em + 9px); }
 
                         svg {
                             color: $primary-darkest;
@@ -301,5 +270,25 @@
     .top-right {
         color: $danger;
     }
+
+    .food-container, .meals-available {
+        position: absolute;
+
+        &.monday 	{ left: calc(6.5em - 1px);  }
+        &.tuesday 	{ left: calc(10em - 1px);   }
+        &.wednesday { left: calc(13.5em - 1px); }
+        &.thursday 	{ left: calc(17em - 1px);   }
+        &.friday 	{ left: calc(20.5em - 1px); }
+        &.saturday 	{ left: calc(24em - 1px);   }
+        &.sunday 	{ left: calc(27.5em - 1px); }
+
+        &.row-1 { top: calc(2.75rem + 6.8375em - 1px);   }
+        &.row-2 { top: calc(2.75rem + 10.3375em + 1px); }
+        &.row-3 { top: calc(2.75rem + 13.8375em + 3px);   }
+        &.row-4 { top: calc(2.75rem + 17.3375em + 5px); }
+        &.row-5 { top: calc(2.75rem + 20.8375em + 7px);   }
+        &.row-6 { top: calc(2.75rem + 24.3375em + 9px); }
+    }
+
 
 }
