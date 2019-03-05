@@ -1,6 +1,9 @@
 // es modules are recommended, if available, especially for typescript
 import flatpickr from "flatpickr";
-
+import {German} from "flatpickr/dist/l10n/de.js"
+import {english} from "flatpickr/dist/l10n/default.js"
+const lang = {en : english, de: German};
+flatpickr.localize(lang[document.documentElement.lang]);
 flatpickr("input[type=date]");
 
 window.toggleOrder = function(e) {

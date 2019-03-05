@@ -33,30 +33,40 @@
                                 </div>
 
                                 <div class="form-group col-12 col-md-4">
-                                    <label for="provider" class="col-form-label-sm">{{ __('Provider') }}</label>
+                                    <label for="price" class="col-form-label-sm">
+                                        {{ __('Price') }}
+                                    </label>
 
-                                    <select class="custom-select {{ $errors->has('provider') ? ' is-invalid' : '' }}"
-                                            name="provider"
-                                            id="provider"
-                                    >
-                                        <option value="{{ \App\Meal::PROVIDER_HOLZKE }}" {{ old('provider') == \App\Meal::PROVIDER_HOLZKE ? ' selected' : '' }}>{{ \App\Meal::PROVIDER_HOLZKE }}</option>
-                                        <option value="{{ \App\Meal::PROVIDER_PARADIES_PIZZA }}" {{ old('provider') == \App\Meal::PROVIDER_PARADIES_PIZZA ? ' selected' : '' }}>{{ \App\Meal::PROVIDER_PARADIES_PIZZA }}</option>
-                                    </select>
+                                    <div class="input-group">
+                                        <input type="number"
+                                               name="price"
+                                               id="price"
+                                               class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
+                                               required
+                                               min="0"
+                                               step="0.01"
+                                               value="{{ old('price') }}"
+                                        >
 
-                                    @if ($errors->has('provider'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('provider') }}</strong>
+                                        @if ($errors->has('price'))
+                                            <div class="invalid-tooltip" role="alert">
+                                                <strong>{{ $errors->first('price') }}</strong>
+                                            </div>
+                                        @endif
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">€</span>
                                         </div>
-                                    @endif
+                                    </div>
                                 </div>
 
-                                <div class="form-group col-12 col-md-4">
+                                <div class="form-group col-12 col-md-6">
                                     <label for="date_from" class="col-form-label-sm">
-                                        {{ __('Date from') }}
+                                        {{ __('From') }}
                                     </label>
 
                                     <input type="date"
                                            id="date_from"
+                                           name="date_from"
                                            class="form-control{{ $errors->has('date_from') ? ' is-invalid' : '' }}"
                                            required
                                            value="{{ old('date_from') }}"
@@ -69,13 +79,14 @@
                                     @endif
                                 </div>
 
-                                <div class="form-group col-12 col-md-4">
+                                <div class="form-group col-12 col-md-6">
                                     <label for="date_to" class="col-form-label-sm">
-                                        {{ __('Date to') }}
+                                        {{ __('To') }}
                                     </label>
 
                                     <input type="date"
                                            id="date_to"
+                                           name="date_to"
                                            class="form-control{{ $errors->has('date_to') ? ' is-invalid' : '' }}"
                                            required
                                            value="{{ old('date_to') }}"
@@ -84,29 +95,6 @@
                                     @if ($errors->has('date_to'))
                                         <div class="invalid-tooltip" role="alert">
                                             <strong>{{ $errors->first('date_to') }}</strong>
-                                        </div>
-                                    @endif
-                                </div>
-
-
-                                <div class="form-group col-12 col-md-4">
-                                    <label for="price" class="col-form-label-sm">
-                                        {{ __('Price') }}
-                                    </label>
-
-                                    <input type="number"
-                                           name="price"
-                                           id="price"
-                                           class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
-                                           required
-                                           min="0"
-                                           step="0.01"
-                                           value="{{ old('price') }}"
-                                    >
-
-                                    @if ($errors->has('price'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('price') }}</strong>
                                         </div>
                                     @endif
                                 </div>

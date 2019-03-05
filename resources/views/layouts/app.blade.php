@@ -29,39 +29,39 @@
 		</a>
 
         <!-- Left Side Of Navbar -->
-        <ul class="navbar-nav mr-auto">
-            @auth()
+        @auth()
+            <ul class="navbar-nav mr-auto">
+
                 <li class="nav-item {{ request()->routeIs('meals.index') ? 'active' : '' }}">
                     <a href="{{ route('meals.index') }}" class="nav-link" title="{{ __('Place order') }}">
                         {{ __('Place order') }}
                     </a>
                 </li>
-            @endauth
-            <li class="nav-item {{ request()->routeIs('meals.create') ? 'active' : '' }}">
-                @can('create', \App\Meal::class)
-                    <a href="{{ route('meals.create') }}" class="nav-link" title="{{ __('New meal') }}">
-                        {{ __('New meal') }}
-                    </a>
+                <li class="nav-item {{ request()->routeIs('meals.create') ? 'active' : '' }}">
+                    @can('create', \App\Meal::class)
+                        <a href="{{ route('meals.create') }}" class="nav-link" title="{{ __('New meal') }}">
+                            {{ __('New meal') }}
+                        </a>
 
+                    @endcan
+                </li>
+                @can('list', \App\Order::class)
+                    <li class="nav-item {{ request()->routeIs('orders.index') ? 'active' : '' }}">
+                        <a href="{{ route('orders.index') }}" class="nav-link" title="{{ __('Manage orders') }}">
+                            {{ __('Manage orders') }}
+                        </a>
+                    </li>
                 @endcan
-            </li>
-            @can('list', \App\OrderItem::class)
-                <li class="nav-item {{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                    <a href="{{ route('orders.index') }}" class="nav-link" title="{{ __('Manage orders') }}">
-                        {{ __('Manage orders') }}
-                    </a>
-                </li>
-            @endcan
 
-            @can('list', \App\User::class)
-                <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
-                    <a href="{{ route('users.index') }}" class="nav-link" title="{{ __('Manage users') }}">
-                        {{ __('Manage users') }}
-                    </a>
-                </li>
-            @endcan
-
-        </ul>
+                @can('list', \App\User::class)
+                    <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
+                        <a href="{{ route('users.index') }}" class="nav-link" title="{{ __('Manage users') }}">
+                            {{ __('Manage users') }}
+                        </a>
+                    </li>
+                @endcan
+            </ul>
+        @endauth
 
         <!-- Right Side Of Navbar -->
         <!-- Authentication Links -->
@@ -72,13 +72,13 @@
                         {{ __('Login') }}
                     </a>
                 </li>
-                <li class="nav-item">
-                    @if (Route::has('register'))
+                @if (Route::has('register'))
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('register') }}" title="{{ __('Register') }}">
                             {{ __('Register') }}
                         </a>
-                    @endif
-                </li>
+                    </li>
+                @endif
             </ul>
         @else
             <div class="navbar-nav ml-auto flex-row align-items-center">

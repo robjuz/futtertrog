@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MealStoreRequest;
+use App\Http\Requests\MealUpdateRequest;
 use App\Meal;
-use App\User;
+use App\Repositories\MealsRepository;
+use App\Repositories\OrdersRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rule;
 
 class MealController extends Controller
 {
@@ -16,76 +18,23 @@ class MealController extends Controller
      *
      * @param Request $request
      *
+     * @param \App\Repositories\OrdersRepository $orders
+     * @param \App\Repositories\MealsRepository $meals
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {
-        $this->authorize('list', Meal::class);
-
         $requestedDate = Carbon::parse($request->query('date', today()->addWeekday()));
-        $firstOfMonth = Carbon::parse($requestedDate)->firstOfMonth();
 
-        $settings = $request->user()->settings ?? [];
-
-//        $includes = $request->has('reset') ? $settings['includes'] ?? null : $request->query('includes');
-//        $excludes = $request->has('reset') ? $settings['excludes'] ?? null : $request->query('excludes');
-
-        $todayMeals = Meal::query()
-            ->whereDate('date_from', '<=', $requestedDate)
-            ->whereDate('date_to', '>=', $requestedDate)
-//            TODO: add in v2.2
-//            ->when(!empty($excludes), function (Builder $query) use ($excludes) {
-//                $excludes = array_map('trim', explode(',', $excludes));
-//
-//                foreach ($excludes as $exclude) {
-//                    $query->where('description', 'not like', '%' . $exclude . '%');
-//                }
-//            })
-            ->get()
-            ->sortByDesc(function ($meal) {
-                if ($meal->is_hated) {
-                    return -1;
-                }
-                if ($meal->is_preferred) {
-                    return 1;
-                }
-
-                return 0;
-            });
+        $todayMeals = $meals->forDate($requestedDate)->sortByPreferences();
 
         if ($request->wantsJson()) {
             return response()->json($todayMeals);
         }
 
-        $meals = collect();
+        $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
 
-        //TODO: optimize
-        for ($day = 0; $day <= $firstOfMonth->daysInMonth; $day++) {
-            $meals[$firstOfMonth->toDateString()] = Meal::whereDate('date_from', '>=', $firstOfMonth)->whereDate('date_to', '<=', $firstOfMonth)->exists();
-            $firstOfMonth->addDay();
-        }
-
-        /** @var User $user */
-        $user = $request->user();
-        $orders = $user->orderItems()
-            ->with(['order', 'meal'])
-            ->whereHas('order', function ($query) use ($requestedDate) {
-                $query->whereYear('date', $requestedDate->year)
-                    ->whereMonth('date', $requestedDate->month);
-            })
-            ->get()
-            ->mapToGroups(function ($orderItem, $key) {
-                return [$orderItem->order->date->toDateString() => $orderItem->quantity . ' x ' . $orderItem->meal->title];
-            });
-
-        $todayOrders = $user->orderItems()
-            ->whereHas('order', function ($query) use ($requestedDate) {
-                $query->whereDate('date', $requestedDate);
-            })
-            ->get();
-
-        return view('meal.index', compact('meals', 'todayMeals', 'orders', 'todayOrders', 'requestedDate', 'includes', 'excludes'));
+        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate'));
     }
 
     /**
@@ -104,23 +53,13 @@ class MealController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\MealStoreRequest $request
      *
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(Request $request)
+    public function store(MealStoreRequest $request)
     {
-        $this->authorize('create', Meal::class);
-
-        $meal = Meal::create($request->validate([
-            'date_from' => 'required|date',
-            'date_to' => 'required|date|after_or_equal:date_from',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'provider' => ['required', Rule::in(Meal::$providers)],
-        ]));
+        $meal = Meal::create($request->validated());
 
         if ($request->wantsJson()) {
             return response()->json($meal, Response::HTTP_CREATED);
@@ -137,7 +76,7 @@ class MealController extends Controller
      * Display the specified resource.
      *
      * @param \Illuminate\Http\Request $request
-     * @param  \App\Meal               $meal
+     * @param  \App\Meal $meal
      *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -171,26 +110,14 @@ class MealController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Meal                $meal
+     * @param \App\Http\Requests\MealUpdateRequest $request
+     * @param  \App\Meal $meal
      *
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, Meal $meal)
+    public function update(MealUpdateRequest $request, Meal $meal)
     {
-        $this->authorize('update', $meal);
-
-        $meal->update(
-            $request->validate([
-                'date' => 'sometimes|date',
-                'title' => 'sometimes|string|max:255',
-                'description' => 'nullable|string',
-                'price' => 'sometimes|numeric|min:0',
-                'can_be_ordered_until' => 'sometimes|date|after:date',
-                'provider' => ['sometimes', Rule::in(Meal::$providers)],
-            ])
-        );
+        $meal->update($request->validated());
 
         if ($request->wantsJson()) {
             return response()->json($meal);
@@ -202,7 +129,7 @@ class MealController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request    $request
+     * @param Request $request
      * @param  \App\Meal $meal
      *
      * @return \Illuminate\Http\Response

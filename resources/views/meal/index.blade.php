@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@inject('orders', 'App\Repositories\OrdersRepository')
+
 @section('content')
 
     <div class="container-fluid">

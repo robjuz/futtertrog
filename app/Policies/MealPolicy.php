@@ -10,11 +10,6 @@ class MealPolicy
 {
     use HandlesAuthorization;
 
-    public function list(User $user)
-    {
-        return true;
-    }
-
     /**
      * Determine whether the user can view the meal.
      *
