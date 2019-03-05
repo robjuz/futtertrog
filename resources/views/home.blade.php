@@ -62,8 +62,7 @@
                                 @foreach($todayOrders as $order)
                                     <li class="list-group-item {{ $loop->last ? '' : 'border-bottom-0' }}">
                                         <h3 class="h5">
-                                            {{ $order->meal->title }}
-                                            <small>( {{ $order->quantity }} )</small>
+                                            {{ $order->quantity }} &times; {{ $order->meal->title }}
                                         </h3>
                                         @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
                                             <p>{{ $order->meal->description }}</p>
@@ -96,8 +95,7 @@
                                                     <section class="{{ $loop->last ? '' : ' mb-3 border-bottom' }}">
 
                                                         <h3 class="h5">
-                                                            {{ $order->meal->title }}
-                                                            <small>( {{ $order->quantity }} )</small>
+                                                            {{ $order->quantity }} &times; {{ $order->meal->title }}
                                                         </h3>
 
                                                         @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
@@ -109,7 +107,6 @@
                                         </div>
                                     </li>
                                 @endforeach
-
                             </ul>
                             <nav>
                                 {{ $futureOrders->links() }}
