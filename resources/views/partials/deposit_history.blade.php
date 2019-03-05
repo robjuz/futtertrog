@@ -1,9 +1,9 @@
 <div class="card">
     <h2 class="card-header">{{ __('Deposit history') }} </h2>
 
-    <div class="list-group list-group-flush">
+    <ul class="list-group list-group-flush">
         @forelse ($deposits as $deposit)
-            <div class="list-group-item {{ $loop->last ? ' border-bottom-0' : '' }}">
+            <li class="list-group-item {{ $loop->last ? ' border-bottom-0' : '' }}">
                 <div class="d-flex w-100 align-items-center mb-2">
                     <h3 class="mb-0 h5 text-nowrap {{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
                         {{ number_format($deposit->value, 2, ',','.') }} €
@@ -23,13 +23,15 @@
                         </button>
                     </form>
                 @endif
-            </div>
+            </li>
         @empty
-            <div class="alert alert-warning m-0" role="alert">
+            <li class="alert alert-warning m-0" role="alert">
                 <strong> {{ __('No results found') }}!</strong>
-            </div>
+            </li>
         @endforelse
-    </div>
+    </ul>
 
-    {{ $deposits->links() }}
+    <nav>
+        {{ $deposits->links() }}
+    </nav>
 </div>
