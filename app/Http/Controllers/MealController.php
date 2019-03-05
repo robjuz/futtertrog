@@ -76,7 +76,7 @@ class MealController extends Controller
             })
             ->get()
             ->mapToGroups(function ($orderItem, $key) {
-                return [$orderItem->order->date->toDateString() => $orderItem->meal->title.' ('.$orderItem->quantity.')'];
+                return [$orderItem->order->date->toDateString() => $orderItem->quantity . ' x ' . $orderItem->meal->title];
             });
 
         $todayOrders = $user->orderItems()
