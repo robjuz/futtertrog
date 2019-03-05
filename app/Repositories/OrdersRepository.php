@@ -8,15 +8,23 @@ use Illuminate\Database\Eloquent\Builder;
 
 class OrdersRepository
 {
-    public function usersTodayOrders(User $user, $date)
+    public function userOrdersForDate($date, User $user = null)
     {
+        $user = $user ?? auth()->user();
+
+        $date = Carbon::parse($date);
+
         return $user->orderItems()->whereHas('order', function (Builder $query) use ($date) {
             $query->whereDate('date', $date);
         })->get();
     }
 
-    public function usersMonthlyOrders(User $user, $date)
+    public function usersMonthlyOrders($date, User $user = null)
     {
+        $user = $user ?? auth()->user();
+
+        $date = Carbon::parse($date);
+
         return $user->orderItems()
             ->with(['order', 'meal'])
             ->whereHas('order', function ($query) use ($date) {
