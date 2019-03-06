@@ -30,7 +30,7 @@ class MealPolicy
      */
     public function create(User $user)
     {
-        return true;
+        //
     }
 
     /**
@@ -42,7 +42,7 @@ class MealPolicy
      */
     public function update(User $user, Meal $meal)
     {
-        return true;
+        //
     }
 
     /**
