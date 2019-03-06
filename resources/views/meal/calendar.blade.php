@@ -10,7 +10,7 @@
                         'date' => \Carbon::parse($requestedDate)
                             ->subMonthNoOverflow()
                             ->lastOfMonth()
-                            ->toDateString()
+                            ->toDateString(),
                     ]
                 ) ?>">&#10094;</a>
             </li>
@@ -25,7 +25,7 @@
                         'date' => \Carbon::parse($requestedDate)
                             ->addMonthNoOverflow()
                             ->firstOfMonth()
-                            ->toDateString()
+                            ->toDateString(),
                     ]
                 ) ?>">&#10095;</a>
             </li>
