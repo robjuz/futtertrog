@@ -15,7 +15,7 @@
         <div class="row justify-content-center">
 			
             <div class="col-xs-12 col-auto">
-               @include('meals.calendar')
+               @include('meal.calendar')
             </div>
 
             <div id="current-offer" class="col">
