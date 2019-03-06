@@ -27,6 +27,7 @@ class OrderController extends Controller
         $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
 
         $orders = Order::with(['orderItems.meal', 'orderItems.user'])
+            ->whereHas('orderItems.meal')
             ->whereDate('date', '>=', $from->toDateString())
             ->when(! empty($to), function (Builder $query) use ($to) {
                 $query->whereDate('date', '<=', $to->toDateString());
