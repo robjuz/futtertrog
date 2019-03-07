@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 /**
  * App\Order.
@@ -76,6 +77,10 @@ class Order extends Model
                 $orderItemsGrouped[$key]['users'][] = $orderItem->user;
                 $orderItemsGrouped[$key]['quantity'] += $orderItem->quantity;
             }
+
+            $orderItemsGrouped = array_values(Arr::sort($orderItemsGrouped, function($value) {
+                return $value['meal']->id;
+            }));
         }
 
         return collect($orderItemsGrouped)->map(function ($item) {
