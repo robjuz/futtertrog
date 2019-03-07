@@ -32,6 +32,7 @@ class IcalTest extends TestCase
             [
                 'date_from' => today(),
                 'date_to' => today(),
+                'title' => 'today meal'
             ]
         );
 
@@ -39,6 +40,7 @@ class IcalTest extends TestCase
             [
                 'date_from' => today()->addDay(),
                 'date_to' => today()->addDay(),
+                'title' => 'tomorrow meal'
             ]
         );
 

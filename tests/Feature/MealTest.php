@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Meal;
 use App\OrderItem;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -12,11 +13,25 @@ use Tests\TestCase;
 class MealTest extends TestCase
 {
     /** @test */
-    public function user_can_create_a_meal()
+    public function only_admin_can_create_a_meal()
     {
+
         $meal = factory(Meal::class)->make()->toArray();
 
-        $this->login();
+        $this->login()->withExceptionHandling();
+
+        $this->get(route('meals.create'))
+            ->assertForbidden();
+
+        $this->post(route('meals.store'), $meal)
+            ->assertForbidden();
+
+        $this->postJson(route('meals.store'), $meal)
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('meals', $meal);
+
+        $this->loginAsAdmin();
 
         $this->get(route('meals.create'))
             ->assertViewIs('meal.create');
@@ -31,7 +46,7 @@ class MealTest extends TestCase
     }
 
     /** @test */
-    public function user_can_update_a_meal()
+    public function only_admin_can_update_a_meal()
     {
         $meal = factory(Meal::class)->create();
 
@@ -40,7 +55,20 @@ class MealTest extends TestCase
             'description' => 'Changed description'
         ];
 
-        $this->login();
+        $this->login()->withExceptionHandling();
+
+        $this->get(route('meals.edit', $meal))
+            ->assertForbidden();
+
+        $this->put(route('meals.update', $meal), $attributes)
+            ->assertForbidden();
+
+        $this->putJson(route('meals.update', $meal), $attributes)
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('meals', $attributes);
+
+        $this->loginAsAdmin();
 
         $this->get(route('meals.edit', $meal))
             ->assertViewIs('meal.edit');
@@ -72,11 +100,11 @@ class MealTest extends TestCase
     }
 
     /** @test */
-    public function user_can_create_a_meal_and_stay_on_the_create_page()
+    public function admin_can_create_a_meal_and_stay_on_the_create_page()
     {
         $meal = factory(Meal::class)->make()->toArray();
 
-        $this->login();
+        $this->loginAsAdmin();
 
         $this->post(route('meals.store'), $meal + ['saveAndNew' => 'saveAndNew'])
             ->assertRedirect(route('meals.create'));
