@@ -5,9 +5,7 @@ namespace App\Events;
 use App\Meal;
 use App\Order;
 use App\User;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -31,21 +29,21 @@ class OrderReopened
      * Create a new event instance.
      *
      * @param Order $order
-     * @param User      $user
-     * @param Meal      $meal
+     * @param User $user
+     * @param Meal $meal
      */
     public function __construct(Order $order, User $user, Meal $meal)
     {
         $this->order = $order;
-        $this->user = $user;
-        $this->meal = $meal;
+        $this->user  = $user;
+        $this->meal  = $meal;
     }
 
-    /*
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
+//    /*
+//     * Get the channels the event should broadcast on.
+//     *
+//     * @return \Illuminate\Broadcasting\Channel|array
+//     */
 //    public function broadcastOn()
 //    {
 //        return new PrivateChannel('channel-name');

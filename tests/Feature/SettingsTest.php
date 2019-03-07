@@ -22,6 +22,7 @@ class SettingsTest extends TestCase
     public function it_allows_to_store_settings()
     {
         $data = [
+            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => true,
             User::SETTING_NO_ORDER_NOTIFICATION => true,
             User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => true,
             User::SETTING_MEAL_PREFERENCES => 'meal1, meal2',

@@ -29,6 +29,22 @@
 
                                     <div class="form-group pb-2">
                                         <div class="custom-control custom-checkbox">
+                                            <input type="hidden" name="newOrderPossibilityNotification" value="0">
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   name="newOrderPossibilityNotification"
+                                                   id="newOrderPossibilityNotification"
+                                                   {{ old('newOrderPossibilityNotification', $settings['newOrderPossibilityNotification'] ?? false) ? 'checked' : '' }}
+                                                   value="1"
+                                            >
+                                            <label class="custom-control-label" for="newOrderPossibilityNotification">
+                                                {{ __('New order possibility notification') }}
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group pb-2">
+                                        <div class="custom-control custom-checkbox">
                                             <input type="hidden" name="noOrderNotification" value="0">
                                             <input type="checkbox"
                                                    class="custom-control-input"
