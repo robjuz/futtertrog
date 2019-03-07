@@ -56,6 +56,7 @@ class NewOrderPossibility extends Notification
 
         return (new MailMessage)
             ->subject(__('New order possibility for :day', ['day' => $day]))
+            ->line(__('New order possibility for :day', ['day' => $day]))
             ->action(__('Click here for more details'), $url);
     }
 

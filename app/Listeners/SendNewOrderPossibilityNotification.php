@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\NewOrderPossibility;
-use App\Notifications\NoOrder;
+use App\Notifications\NewOrderPossibility as NewOrderPossibilityNotification;
 use App\User;
 use Illuminate\Support\Facades\Notification;
 
@@ -22,7 +22,8 @@ class SendNewOrderPossibilityNotification
     /**
      * Handle the event.
      *
-     * @param  NewOrderPossibility  $event
+     * @param  NewOrderPossibility $event
+     *
      * @return void
      */
     public function handle(NewOrderPossibility $event)
@@ -31,6 +32,6 @@ class SendNewOrderPossibilityNotification
                      ->where('settings->newOrderPossibilityNotification', '1')
                      ->get();
 
-        Notification::send($users, new NoOrder(today()));
+        Notification::send($users, new NewOrderPossibilityNotification($event->date));
     }
 }

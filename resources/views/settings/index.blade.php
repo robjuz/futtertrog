@@ -24,7 +24,7 @@
                             @csrf
 
                             <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">{{ __('General') }}</label>
+                                <label class="col-sm-3 col-form-label"><strong>{{ __('Notifications') }}</strong></label>
                                 <div class="col-sm-9">
 
                                     <div class="form-group pb-2">
@@ -88,7 +88,7 @@
 
 
                             <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">{{ __('Ingredients') }}</label>
+                                <label class="col-sm-3 col-form-label"><strong>{{ __('Ingredients') }}</strong></label>
                                 <div class="col-sm-9">
 
                                     <div class="form-group">
@@ -121,7 +121,7 @@
                             </div>
 
                             <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">{{ __('Surprise me') }}</label>
+                                <label class="col-sm-3 col-form-label"><strong>{{ __('Surprise me') }}</strong></label>
                                 <div class="col-sm-9">
                                     <div class="form-group pb-2">
                                         <div class="custom-control custom-checkbox">
