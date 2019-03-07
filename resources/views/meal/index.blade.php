@@ -18,7 +18,7 @@
                @include('meal.calendar')
             </div>
 
-            <div id="current-offer" class="col">
+            <section role="region" id="current-offer" class="col" aria-label="Bestellmöglichkeiten für {{ $requestedDate->format(trans('futtertrog.date_format')) }}">
 				@php
 					$date = \Illuminate\Support\Carbon::parse($requestedDate);
 				@endphp
@@ -26,12 +26,12 @@
 				<div class="row mb-2">
 					<div class="col">
 						<a href="<?= route('meals.index', ['date' => $date->addDay(-1)->toDateString()]) ?>">
-							&lt; Vorheriger Tag
+							<span aria-hidden="true">&lt;</span> Vorheriger Tag
 						</a>
 					</div>
 					<div class="col-auto">
 						<a href="<?= route('meals.index', ['date' => $date->addDay(2)->toDateString()]) ?>">
-							Nächster Tag &gt;
+							Nächster Tag <span aria-hidden="true">&gt;</span>
 						</a>
 					</div>
 				</div>
@@ -55,7 +55,7 @@
                     </div>
                 @endif
 
-            </div>
+            </section>
         </div>
     </div>
 @endsection

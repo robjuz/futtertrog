@@ -12,9 +12,9 @@
                         <h2 class="card-header">{{ __('Your balance') }}</h2>
 
                         <div class="card-body">
-                            <h3 class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} h5 text-nowrap">
+                            <div class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} h5 text-nowrap">
                                 {{ number_format($balance, 2, ',','.') }} €
-                            </h3>
+                            </div>
 
                             @if (Route::has('paypal.express_checkout'))
                                 <form class="mt-3" action="{{ route('paypal.express_checkout') }}" method="POST"
@@ -72,7 +72,7 @@
                             </ul>
                         @else
                             <div class="alert alert-danger m-0" role="alert">
-                                <strong> {{ __('No orders for today') }}!</strong>
+                                <strong> {{ __('No orders for today') }}</strong>
                             </div>
                         @endif
                     </div>
@@ -112,10 +112,10 @@
                                 {{ $futureOrders->links() }}
                             </nav>
                         @else
-                            <div class="alert alert-danger" role="alert">
+                            <div class="alert alert-danger m-0" role="alert">
                                 <strong>{{ __('No upcoming orders') }}</strong>
                             </div>
-                            <div class="card py-2 mt-2">
+                            <div class="card py-2 mt-2 mx-2">
                                 <a href="{{ route('meals.index') }}"
                                    class="btn btn-primary">{{ __('Place order') }}</a>
                             </div>
