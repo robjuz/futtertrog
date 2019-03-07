@@ -35,8 +35,8 @@ class OrderReopened
     public function __construct(Order $order, User $user, Meal $meal)
     {
         $this->order = $order;
-        $this->user  = $user;
-        $this->meal  = $meal;
+        $this->user = $user;
+        $this->meal = $meal;
     }
 
 //    /*

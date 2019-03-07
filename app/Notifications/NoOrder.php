@@ -35,7 +35,7 @@ class NoOrder extends Notification
      */
     public function toArray($notifiable)
     {
-        $day = $this->date->isToday() ? __('calendar.today') : __('calendar.' . $this->date->englishDayOfWeek);
+        $day = $this->date->isToday() ? __('calendar.today') : __('calendar.'.$this->date->englishDayOfWeek);
 
         return [
             [
@@ -54,7 +54,7 @@ class NoOrder extends Notification
      */
     public function toMail($notifiable)
     {
-        $day = $this->date->isToday() ? __('calendar.today') : __('calendar.' . $this->date->englishDayOfWeek);
+        $day = $this->date->isToday() ? __('calendar.today') : __('calendar.'.$this->date->englishDayOfWeek);
 
         return (new MailMessage)
             ->subject(__('No order for', ['day' => $day]))

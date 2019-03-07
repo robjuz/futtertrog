@@ -36,8 +36,8 @@ class OrderReopenedNotification extends Notification
     {
         //
         $this->order = $order;
-        $this->user  = $user;
-        $this->meal  = $meal;
+        $this->user = $user;
+        $this->meal = $meal;
     }
 
     /**

@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Events\NewOrderPossibility;
 use App\Notifications\NoOrder;
 use App\User;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 
 class SendNewOrderPossibilityNotification
