@@ -78,7 +78,7 @@ class Order extends Model
                 $orderItemsGrouped[$key]['quantity'] += $orderItem->quantity;
             }
 
-            $orderItemsGrouped = array_values(Arr::sort($orderItemsGrouped, function($value) {
+            $orderItemsGrouped = array_values(Arr::sort($orderItemsGrouped, function ($value) {
                 return $value['meal']->id;
             }));
         }
