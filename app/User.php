@@ -42,6 +42,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    const SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION = 'newOrderPossibilityNotification';
     const SETTING_NO_ORDER_NOTIFICATION = 'noOrderNotification';
     const SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION = 'noOrderForNextDayNotification';
     const SETTING_MEAL_PREFERENCES = 'mealPreferences';

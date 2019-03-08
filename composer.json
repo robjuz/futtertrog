@@ -19,6 +19,7 @@
         "ixudra/curl": "^6.16",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
+        "silviolleite/laravelpwa": "^1.0",
         "srmklive/paypal": "~1.0"
     },
     "require-dev": {

@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
 
-class NoOrder extends Notification
+class NewOrderPossibility extends Notification
 {
     use Queueable;
 
@@ -35,13 +35,8 @@ class NoOrder extends Notification
      */
     public function toArray($notifiable)
     {
-        $day = $this->date->isToday() ? __('calendar.today') : __('calendar.'.$this->date->englishDayOfWeek);
-
         return [
-            [
-                'title' => __('This is a friendly reminder.'),
-                'body'  => __('You have ordered no food for!', ['day' => $day]),
-            ],
+            'date' => $this->date,
         ];
     }
 
@@ -54,12 +49,15 @@ class NoOrder extends Notification
      */
     public function toMail($notifiable)
     {
-        $day = $this->date->isToday() ? __('calendar.today') : __('calendar.'.$this->date->englishDayOfWeek);
+        $day = $this->date->format(trans('futtertrog.date_format'));
+        $url = route('meals.index', [
+            'date' => $this->date->toDateString(),
+        ]);
 
         return (new MailMessage)
-            ->subject(__('No order for', ['day' => $day]))
-            ->line(__('This is a friendly reminder.'))
-            ->line(__('You have ordered no food for!', ['day' => $day]));
+            ->subject(__('New order possibility for :day', ['day' => $day]))
+            ->line(__('New order possibility for :day', ['day' => $day]))
+            ->action(__('Click here for more details'), $url);
     }
 
     /**

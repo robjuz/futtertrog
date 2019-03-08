@@ -2,44 +2,33 @@
 
 namespace App\Events;
 
-use App\Meal;
-use App\Order;
-use App\User;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
-class OrderReopened
+class NewOrderPossibility
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
     /**
-     * @var Order
+     * @var Carbon
      */
-    public $order;
-    /**
-     * @var User
-     */
-    public $user;
-    /**
-     * @var Meal
-     */
-    public $meal;
+    public $date;
 
     /**
      * Create a new event instance.
      *
-     * @param Order $order
-     * @param User $user
-     * @param Meal $meal
+     * @param Carbon $date
      */
-    public function __construct(Order $order, User $user, Meal $meal)
+    public function __construct(Carbon $date)
     {
-        $this->order = $order;
-        $this->user = $user;
-        $this->meal = $meal;
+        $this->date = $date;
     }
 
-//    /*
+//    /**
 //     * Get the channels the event should broadcast on.
 //     *
 //     * @return \Illuminate\Broadcasting\Channel|array

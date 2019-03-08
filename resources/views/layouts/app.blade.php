@@ -10,6 +10,8 @@
     <title>{{ config('app.name') }}</title>
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
+    @laravelPWA
+
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <script src="{{ mix('js/app.js') }}" async defer></script>
 </head>

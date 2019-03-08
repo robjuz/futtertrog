@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderReopened' => [
             'App\Listeners\SendOrderReopenedNotification',
         ],
+        'App\Events\NewOrderPossibility' => [
+            'App\Listeners\SendNewOrderPossibilityNotification',
+        ],
     ];
 
     /**

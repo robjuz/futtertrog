@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MealStoreRequest;
 use App\Http\Requests\MealUpdateRequest;
 use App\Meal;
+use App\Notifications\NewOrderPossibility;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
 use Illuminate\Http\Request;
@@ -60,6 +61,10 @@ class MealController extends Controller
     public function store(MealStoreRequest $request)
     {
         $meal = Meal::create($request->validated());
+
+        if ($request->has('notify')) {
+            event(new NewOrderPossibility($meal->date_from));
+        }
 
         if ($request->wantsJson()) {
             return response()->json($meal, Response::HTTP_CREATED);

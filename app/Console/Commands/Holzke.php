@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\NewOrderPossibility;
 use App\Meal;
 use DiDom\Document;
 use Illuminate\Console\Command;
@@ -70,6 +71,7 @@ class Holzke extends Command
             $document = new Document($response);
 
             $meals = $document->find('.meal');
+            $createdMealsCount = 0;
 
             foreach ($meals as $meal) {
                 $title = $meal->find('h2')[0]->text();
@@ -77,7 +79,7 @@ class Holzke extends Command
                 preg_match('/^[\w\s]*/mu', $title, $titleMatch);
                 preg_match('/\((\S*)/', $title, $priceMatch);
 
-                Meal::updateOrCreate([
+                $meal = Meal::updateOrCreate([
                     'title' => trim($titleMatch[0]),
                     'date_from' => $date->toDateString(),
                     'date_to' => $date->toDateString(),
@@ -86,6 +88,14 @@ class Holzke extends Command
                     'description' => trim($meal->find('.cBody')[0]->removeChildren()[0]->text()),
                     'price' => floatval(str_replace(',', '.', $priceMatch[1])),
                 ]);
+
+                if ($meal->wasRecentlyCreated) {
+                    $createdMealsCount++;
+                }
+            }
+
+            if ($createdMealsCount > 0) {
+                event(new NewOrderPossibility($date));
             }
 
             $date->addWeekday();

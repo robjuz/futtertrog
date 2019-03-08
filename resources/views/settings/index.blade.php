@@ -24,8 +24,24 @@
                             @csrf
 
                             <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">{{ __('General') }}</label>
+                                <label class="col-sm-3 col-form-label"><strong>{{ __('Notifications') }}</strong></label>
                                 <div class="col-sm-9">
+
+                                    <div class="form-group pb-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="hidden" name="newOrderPossibilityNotification" value="0">
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   name="newOrderPossibilityNotification"
+                                                   id="newOrderPossibilityNotification"
+                                                   {{ old('newOrderPossibilityNotification', $settings['newOrderPossibilityNotification'] ?? false) ? 'checked' : '' }}
+                                                   value="1"
+                                            >
+                                            <label class="custom-control-label" for="newOrderPossibilityNotification">
+                                                {{ __('New order possibility notification') }}
+                                            </label>
+                                        </div>
+                                    </div>
 
                                     <div class="form-group pb-2">
                                         <div class="custom-control custom-checkbox">
@@ -72,7 +88,7 @@
 
 
                             <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">{{ __('Ingredients') }}</label>
+                                <label class="col-sm-3 col-form-label"><strong>{{ __('Ingredients') }}</strong></label>
                                 <div class="col-sm-9">
 
                                     <div class="form-group">
@@ -105,7 +121,7 @@
                             </div>
 
                             <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">{{ __('Surprise me') }}</label>
+                                <label class="col-sm-3 col-form-label"><strong>{{ __('Surprise me') }}</strong></label>
                                 <div class="col-sm-9">
                                     <div class="form-group pb-2">
                                         <div class="custom-control custom-checkbox">

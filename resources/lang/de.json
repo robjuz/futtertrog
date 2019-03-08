@@ -89,8 +89,10 @@
   "This is a friendly reminder.": "Dies ist eine freundliche Erinnerung.",
   "You have ordered no food for!": "Du hast kein Essen für :day bestellt!",
   "Will be sent at 10 o'clock.": "Wird um 10 Uhr verschickt.",
+  "Notifications": "Benachrichtigungen",
   "No order for today notification": "Benachrichtigungen: Kein Essen für heute",
   "No order for next day notification": "Benachrichtigungen: Kein Essen für nächsten Tag",
+  "New order possibility notification":  "Benachrichtigungen: Neue Bestellmöglichkeit",
   "Show dog": "Maskottchen im Header anzeigen",
   "today": "heute",
   "No order for": "Keine Bestellung für :day",
@@ -122,5 +124,7 @@
   "User": "Benutzer",
   "Meal": "Essen",
   "Is admin": "Ist Admin",
-  "Your orders for :date": "Deine Bestellung für <span class=\"text-primary\">:date</span>:"
+  "Your orders for :date": "Deine Bestellung für <span class=\"text-primary\">:date</span>:",
+  "New order possibility for :day" : "Neue Bestellmöglichkeit für :day",
+  "Notify users": "Benachrichtigung an Benutzer senden"
 }

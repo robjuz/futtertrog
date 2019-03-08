@@ -117,6 +117,16 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="notify"
+                                           id="notify" {{ old('notify') ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="notify">
+                                        {{ __('Notify users') }}
+                                    </label>
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>
                         </form>
                     </div>
