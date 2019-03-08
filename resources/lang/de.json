@@ -125,5 +125,6 @@
   "Meal": "Essen",
   "Is admin": "Ist Admin",
   "Your orders for :date": "Deine Bestellung für <span class=\"text-primary\">:date</span>:",
-  "New order possibility for :day" : "Neue Bestellmöglichkeit für :day"
+  "New order possibility for :day" : "Neue Bestellmöglichkeit für :day",
+  "Notify users": "Benachrichtigung an Benutzer senden"
 }
