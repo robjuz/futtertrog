@@ -122,6 +122,5 @@
   "User": "Benutzer",
   "Meal": "Essen",
   "Is admin": "Ist Admin",
-  "Your orders for :date": "Deine Bestellung für <span class=\"text-primary\">:date</span>:",
-  "There are :count order posibilities for :date": "Es gibt <strong>:count</strong> Bestellmöglichkeiten für <span class=\"text-primary\">:date</span>."
+  "Your orders for :date": "Deine Bestellung für <span class=\"text-primary\">:date</span>:"
 }
