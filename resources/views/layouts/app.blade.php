@@ -63,26 +63,6 @@
                     </li>
                 @endcan
             </ul>
-        @endauth
-
-        <!-- Right Side Of Navbar -->
-        <!-- Authentication Links -->
-        @guest
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}" title="{{ __('Login') }}">
-                        {{ __('Login') }}
-                    </a>
-                </li>
-                @if (Route::has('register'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}" title="{{ __('Register') }}">
-                            {{ __('Register') }}
-                        </a>
-                    </li>
-                @endif
-            </ul>
-        @else
             <div class="navbar-nav ml-auto flex-row align-items-center">
                 <img src="{{ Auth::user()->gravatarUrl(50) }}" class="rounded-circle mr-3 mr-lg-1" alt="" width="50" height="50">
                 <div class="d-flex flex-column text-left">
@@ -94,7 +74,7 @@
                     </a>
                 </div>
             </div>
-        @endguest
+        @endauth
     </div>
 </nav>
 
