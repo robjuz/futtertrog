@@ -212,5 +212,76 @@ h2, h4, .h5 {
 	}
 }
 
+/**** MEALS DISPLAY OPTIONS ****/
+.meals-list-option,
+.meals-two-columns-option,
+.meals-grid-option {
+	display: inline-block;
+	height: 2em;
+	margin-right: 1.5em;
+	width: 2em;
+}
 
+.meals-display-option {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}
 
+.meals-display-option[type="radio"] + label > svg {
+	border: 2px solid transparent;
+	cursor: pointer;
+	margin-bottom: 4em;
+	padding: 0.5em;
+}
+
+.meals-display-option[type="radio"]:checked + label > svg {
+	border-color: $gray-400;
+}
+
+.meals-display-option[type="radio"]:focus + label > svg {
+	border-color: $gray-600;
+}
+
+#list:checked ~ ol > .meal-container {
+	min-width: 100%;
+}
+
+#two-columns:checked ~ ol > .meal-container {
+	min-width: 50%;
+}
+
+#grid:checked ~ ol {
+	margin-left: -1rem;
+	margin-right: -1rem;
+}
+
+#grid:checked ~ ol > .meal-container {
+	margin: 0 0.5rem;
+	min-width: 20em;
+
+	> div > div:first-child {
+		flex-wrap: wrap;
+
+		h4 {
+			margin-bottom: 1rem !important;
+			width: 100%;
+		}
+
+		form {
+			width: 100%;
+
+			[type="number"] {
+				margin-left: auto;
+			}
+
+		}
+	}
+}
