@@ -64,6 +64,10 @@ body {
 	}
 }
 
+.card .btn-link {
+	color: $gray-400 !important;
+}
+
 
 @media screen and (max-width: 991px) {
 	.card-body .md-dark {
