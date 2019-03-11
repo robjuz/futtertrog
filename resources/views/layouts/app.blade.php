@@ -11,9 +11,12 @@
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
     @laravelPWA
+    @if ((auth()->user()->settings[\App\User::SETTING_DARK_MODE] ?? false))
+        <link rel="stylesheet" href="{{ mix('css/dark.css') }}">
 
-    {{--    <link rel="stylesheet" href="{{ mix('css/light.css') }}">--}}
-    <link rel="stylesheet" href="{{ mix('css/dark.css') }}">
+    @else
+        <link rel="stylesheet" href="{{ mix('css/light.css') }}">
+    @endif
 </head>
 <body>
 
@@ -27,7 +30,7 @@
 
     <div class="collapse navbar-collapse">
         <a class="skip-link skip-navigation" href="#main" tabindex="1">
-            Menü überspringen
+            {{ __('Skip navigation') }}
         </a>
 
         <!-- Left Side Of Navbar -->
@@ -35,21 +38,21 @@
             <ul class="navbar-nav mr-auto">
 
                 <li class="nav-item {{ request()->routeIs('meals.index') ? 'active' : '' }}">
-                    <a href="{{ route('meals.index') }}" class="nav-link" title="{{ __('Place order') }}">
+                    <a href="{{ route('meals.index') }}" class="nav-link">
                         {{ __('Place order') }}
                     </a>
                 </li>
-                <li class="nav-item {{ request()->routeIs('meals.create') ? 'active' : '' }}">
-                    @can('create', \App\Meal::class)
-                        <a href="{{ route('meals.create') }}" class="nav-link" title="{{ __('New meal') }}">
+                @can('create', \App\Meal::class)
+                    <li class="nav-item {{ request()->routeIs('meals.create') ? 'active' : '' }}">
+                        <a href="{{ route('meals.create') }}" class="nav-link">
                             {{ __('New meal') }}
                         </a>
 
-                    @endcan
-                </li>
+                    </li>
+                @endcan
                 @can('list', \App\Order::class)
                     <li class="nav-item {{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                        <a href="{{ route('orders.index') }}" class="nav-link" title="{{ __('Manage orders') }}">
+                        <a href="{{ route('orders.index') }}" class="nav-link">
                             {{ __('Manage orders') }}
                         </a>
                     </li>
@@ -57,20 +60,24 @@
 
                 @can('list', \App\User::class)
                     <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
-                        <a href="{{ route('users.index') }}" class="nav-link" title="{{ __('Manage users') }}">
+                        <a href="{{ route('users.index') }}" class="nav-link">
                             {{ __('Manage users') }}
                         </a>
                     </li>
                 @endcan
             </ul>
             <div class="navbar-nav ml-auto flex-row align-items-center">
-                <img src="{{ Auth::user()->gravatarUrl(50) }}" class="rounded-circle mr-3 mr-lg-1" alt="" width="50"
-                     height="50">
+                <img src="{{ Auth::user()->gravatarUrl(50) }}"
+                     class="rounded-circle mr-3 mr-lg-1"
+                     alt=""
+                     width="50"
+                     height="50"
+                >
                 <div class="d-flex flex-column text-left">
-                    <a class="nav-item nav-link" href="{{ route('settings.index') }}" title="{{ __('Settings')  }}">
+                    <a class="nav-item nav-link" href="{{ route('settings.index') }}">
                         {{ __('Settings') }}
                     </a>
-                    <a class="nav-item nav-link" href="{{ route('logout') }}" title="{{ __('Logout')  }}">
+                    <a class="nav-item nav-link" href="{{ route('logout') }}">
                         {{ __('Logout') }}
                     </a>
                 </div>

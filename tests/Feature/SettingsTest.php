@@ -26,7 +26,9 @@ class SettingsTest extends TestCase
             User::SETTING_NO_ORDER_NOTIFICATION => true,
             User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => true,
             User::SETTING_MEAL_PREFERENCES => 'meal1, meal2',
-            User::SETTING_MEAL_AVERSION => 'meal3, meal4'
+            User::SETTING_MEAL_AVERSION => 'meal3, meal4',
+            User::SETTING_DARK_MODE => 'true',
+            User::SETTING_LANGUAGE => 'de'
         ];
 
         $this->login()->post(route('settings.store'),$data)->assertRedirect();

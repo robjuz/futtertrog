@@ -58,7 +58,7 @@
   "New user": "Benutzer erstellen",
   "Edit user": "Benutzer :name bearbeiten",
   "Was ordered by:": "Wurde bestellt von:",
-  "Order meal": "Essen bestellen",
+  "Order meal for :date": "Essen bestellen für <span class=\"text-primary\">:date</span>",
   "Order index": "Bestellübersicht",
   "Edit": "Bearbeiten",
   "Delete": "Löschen",
@@ -126,5 +126,11 @@
   "Is admin": "Ist Admin",
   "Your orders for :date": "Deine Bestellung für <span class=\"text-primary\">:date</span>:",
   "New order possibility for :day" : "Neue Bestellmöglichkeit für :day",
-  "Notify users": "Benachrichtigung an Benutzer senden"
+  "Notify users": "Benachrichtigung an Benutzer senden",
+  "Skip navigation": "Menü überspringen",
+  "Language": "Sprache",
+  "Dark mode": "Dunkle Ansicht",
+  "Skip calendar": "Kalender überspringen",
+  "Next day": "Nächster Tag",
+  "Previous day": "Vorheriger Tag"
 }
