@@ -30,7 +30,7 @@ $primary:         $blue !default;
 $primary-dark:    darken($primary, 7.5%) !default;
 $primary-darker:  #01569E !default;
 $primary-darkest: #00345E !default;
-$secondary:       #018E34 !default;
+$secondary:       $green !default;
 $success:         $green !default;
 $info:            #127E8F !default;
 $warning:         $yellow !default;

@@ -17,6 +17,7 @@ body {
   flex-direction: column;
 
   > main {
+	background-color: $body-bg;
     flex-grow: 1;
     padding-top: 7.5rem;
   }
@@ -42,9 +43,6 @@ body {
 
 
 /**** CARD ****/
-//.card {
-//  box-shadow: 0 0 10px 5px $gray-200;
-//}
 
 .card:focus-within {
   box-shadow: 0 0 10px 5px rgba($primary-dark, 0.5);
@@ -80,6 +78,25 @@ body {
 
 /** MISCELLANEOUS **/
 
+#mainNavbar {
+	border-bottom-color: $primary-darkest;
+}
+
+#current-offer {
+	a {
+		color: $white;
+		text-decoration: underline;
+	}
+
+	.description {
+		color: $gray-300 !important;
+	}
+
+	.text-info {
+		color: #1698ad !important;
+	}
+}
+
 .table thead th {
   border-top: none;
 }
@@ -87,6 +104,10 @@ body {
 h4 {
   font-size: 1.2rem;
   text-transform: uppercase;
+}
+
+h2, h4, .h5 {
+	color: lighten($primary, 65%);
 }
 
 .pagination {
@@ -114,7 +135,7 @@ h4 {
 	position: absolute;
 	top: -9999em;
 	left: -9999em;
-	
+
 	&:focus {
 		position: relative;
 		z-index: 10000;
@@ -134,34 +155,52 @@ h4 {
 
 @media screen and (min-width: 893px) {
 	#current-offer {
-	  margin-top: -11em; 
-	  padding-top: 11em; 
+	  margin-top: -11em;
+	  padding-top: 11em;
 	}
 }
 
+.border-primary {
+	border-color: $gray-600 !important;
+}
+
+.user-index a {
+	color: $gray-400;
+	text-decoration: underline;
+}
 
 /**** ORDER INDEX ****/
-@media screen and (max-width: 767px) {
-	.order-index {
+.order-index {
+	a, button.btn-link {
+		color: $gray-400;
+	}
+
+	a {
+		text-decoration: underline;
+	}
+
+
+	@media screen and (max-width: 767px) {
+
 		.hidden-sm-down {
 			display: none !important;
 		}
-		
+
 		.order {
 			border: none !important;
 		}
-		
+
 		.header-sm {
 			background: $primary-darker;
 			color: $white;
 			margin-bottom: 1rem;
 			text-align: center;
 		}
-		
+
 		.amount {
 			order: -1;
 		}
-		
+
 		.amount:after {
 			content: "x";
 			padding-left: 5px;

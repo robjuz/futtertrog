@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container order-index">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 {{ __('Order index') }}
