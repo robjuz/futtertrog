@@ -30,11 +30,11 @@ $primary:         $blue !default;
 $primary-dark:    darken($primary, 7.5%) !default;
 $primary-darker:  #01569E !default;
 $primary-darkest: #00345E !default;
-$secondary:       #018E34 !default;
+$secondary:       $green !default;
 $success:         $green !default;
 $info:            #127E8F !default;
 $warning:         $yellow !default;
-$danger:          $red !default;
+$danger:          #F1B0B6 !default;
 $light:           $gray-100 !default;
 $dark:            $gray-800 !default;
 
@@ -87,6 +87,8 @@ $font-size-sm:        ($font-size-base * .9) !default;
 $line-height-base:    1.6 !default;
 
 $headings-color:      $primary-darkest;
+
+$text-muted:          lighten($gray-500, 5%) !default;
 
 
 // Tables

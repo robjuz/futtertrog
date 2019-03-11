@@ -40,7 +40,7 @@
     </div>
 
     @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION] ?? false))
-        <p class="text-dark order-3">{{ $meal->description }}</p>
+        <p class="text-dark order-3 description">{{ $meal->description }}</p>
     @endif
 
     <div class="actions order-1">
