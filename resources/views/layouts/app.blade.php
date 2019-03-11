@@ -12,12 +12,12 @@
 
     @laravelPWA
 
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-    <script src="{{ mix('js/app.js') }}" async defer></script>
+    {{--    <link rel="stylesheet" href="{{ mix('css/light.css') }}">--}}
+    <link rel="stylesheet" href="{{ mix('css/dark.css') }}">
 </head>
 <body>
 
-<nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+<nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
     <a class="navbar-brand text-uppercase" href="{{ url('/') }}" title="{{ config('app.name') }}">
         <h1> {{ config('app.name') }} </h1>
     </a>
@@ -26,9 +26,9 @@
     <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
 
     <div class="collapse navbar-collapse">
-		<a class="skip-link skip-navigation" href="#main" tabindex="1">
-			Menü überspringen
-		</a>
+        <a class="skip-link skip-navigation" href="#main" tabindex="1">
+            Menü überspringen
+        </a>
 
         <!-- Left Side Of Navbar -->
         @auth()
@@ -64,7 +64,8 @@
                 @endcan
             </ul>
             <div class="navbar-nav ml-auto flex-row align-items-center">
-                <img src="{{ Auth::user()->gravatarUrl(50) }}" class="rounded-circle mr-3 mr-lg-1" alt="" width="50" height="50">
+                <img src="{{ Auth::user()->gravatarUrl(50) }}" class="rounded-circle mr-3 mr-lg-1" alt="" width="50"
+                     height="50">
                 <div class="d-flex flex-column text-left">
                     <a class="nav-item nav-link" href="{{ route('settings.index') }}" title="{{ __('Settings')  }}">
                         {{ __('Settings') }}
@@ -92,9 +93,13 @@
 
 </main>
 
-<footer id="mainFooter" class="text-center text-white py-3">
+<footer id="mainFooter" class="text-center text-white py-3 shadow-sm">
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
+
     @include('partials.running_dog')
+
+    <link rel="stylesheet" href="{{ asset('css/flatpickr.css') }}" as="style">
+    <script src="{{ mix('js/app.js') }}" async defer></script>
 </footer>
 </body>
 </html>

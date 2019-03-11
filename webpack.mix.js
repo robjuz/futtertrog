@@ -31,6 +31,10 @@ if (mix.inProduction()) {
   });
 }
 
+
+mix.browserSync('futtertrog.test');
+
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -43,8 +47,6 @@ if (mix.inProduction()) {
  */
 
 mix.js('resources/js/app.js', 'public/js/app.js');
-mix.sass('resources/sass/app.scss', 'public/css/sass.css');
-mix.styles([
-  'node_modules/flatpickr/dist/flatpickr.css',
-  'public/css/sass.css',
-], 'public/css/app.css');
+mix.sass('resources/sass/light.scss', 'public/css/light.css');
+mix.sass('resources/sass/dark.scss', 'public/css/dark.css');
+mix.copy('node_modules/flatpickr/dist/flatpickr.css', 'public/css/flatpickr.css');
