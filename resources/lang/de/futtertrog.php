@@ -10,6 +10,6 @@ return [
     'available_meals' => '{0} Es gibt <strong>keine</strong> Bestellmöglichkeiten für <span class="text-primary">:date</span>.|{1} Es gibt <strong>:count</strong> Bestellmöglichkeit für <span class="text-primary">:date</span>.|[2, *] Es gibt <strong>:count</strong> Bestellmöglichkeiten für <span class="text-primary">:date</span>.',
     'locale' => [
         'de' => 'Deutsch',
-        'en' => 'Englisch'
-    ]
+        'en' => 'Englisch',
+    ],
 ];

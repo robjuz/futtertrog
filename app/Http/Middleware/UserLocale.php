@@ -17,16 +17,14 @@ class UserLocale
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check()){
+        if (Auth::check()) {
             $language = Auth::user()->settings[User::SETTING_LANGUAGE];
         } else {
             $language = $request->getPreferredLanguage(config('app.supported_locales'));
         }
 
-            app()->setLocale($language);
-
+        app()->setLocale($language);
 
         return $next($request);
-
     }
 }
