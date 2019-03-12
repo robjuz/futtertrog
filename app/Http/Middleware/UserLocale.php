@@ -17,7 +17,7 @@ class UserLocale
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && isset(Auth::user()->settings[User::SETTING_LANGUAGE] )) {
+        if (Auth::check() && isset(Auth::user()->settings[User::SETTING_LANGUAGE])) {
             $language = Auth::user()->settings[User::SETTING_LANGUAGE];
         } else {
             $language = $request->getPreferredLanguage(config('app.supported_locales'));
