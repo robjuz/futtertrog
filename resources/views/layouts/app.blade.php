@@ -13,7 +13,6 @@
     @laravelPWA
     @if ((auth()->user()->settings[\App\User::SETTING_DARK_MODE] ?? false))
         <link rel="stylesheet" href="{{ mix('css/dark.css') }}">
-
     @else
         <link rel="stylesheet" href="{{ mix('css/light.css') }}">
     @endif
