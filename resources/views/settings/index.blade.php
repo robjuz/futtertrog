@@ -183,7 +183,7 @@
                                 </small>
                             </div>
                             <div class="form-group">
-                                <label for="mealAversion">{{ __('excludes') }}</label>
+                                <label for="mealAversion">{{ __('Meal excludes') }}</label>
                                 <input type="text"
                                        class="form-control"
                                        name="mealAversion"
