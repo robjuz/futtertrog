@@ -3,32 +3,32 @@ const mix = require('laravel-mix');
 if (mix.inProduction()) {
   mix.version();
 
-  mix.options({
-    purifyCss: {
-      purifyOptions: {
-        purifyCss: true,
-        whitelist: [
-          'pagination',
-          'page-item',
-          'page-link',
-          'alert-warning',
-          'row-0',
-          'row-1',
-          'row-2',
-          'row-3',
-          'row-4',
-          'row-5',
-          'monday',
-          'tuesday',
-          'wednesday',
-          'thursday',
-          'friday',
-          'saturday',
-          'sunday'
-        ]
-      }
-    }
-  });
+  // mix.options({
+  //   purifyCss: {
+  //     purifyOptions: {
+  //       purifyCss: true,
+  //       whitelist: [
+  //         'pagination',
+  //         'page-item',
+  //         'page-link',
+  //         'alert-warning',
+  //         'row-0',
+  //         'row-1',
+  //         'row-2',
+  //         'row-3',
+  //         'row-4',
+  //         'row-5',
+  //         'monday',
+  //         'tuesday',
+  //         'wednesday',
+  //         'thursday',
+  //         'friday',
+  //         'saturday',
+  //         'sunday'
+  //       ]
+  //     }
+  //   }
+  // });
 }
 
 

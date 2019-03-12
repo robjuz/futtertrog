@@ -251,11 +251,13 @@ class MealTest extends TestCase
     /** @test */
     public function it_throws_an_exception_when_trying_to_delete_on_ordered_meal()
     {
+        //$this->withExceptionHandling();
+
         $meal = factory(Meal::class)->create();
 
         $meal->orderItems()->save(factory(OrderItem::class)->make());
 
-        $this->expectExceptionMessage(trans('futtertrog.meal_was_ordered'));
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
         $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
     }
 

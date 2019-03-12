@@ -14,7 +14,7 @@ class IcalTest extends TestCase
     public function it_allows_to_export_users_order_history_to_ical()
     {
         $user = factory(User::class)->create();
-        $meal = factory(Meal::class)->create(['title' => 'menu 1']);
+        $meal = factory(Meal::class)->create(['title' => 'menu 1', 'description' => 'menu 1 desc']);
         $orderItem = factory(OrderItem::class)->create(['user_id' => $user->id, 'meal_id' => $meal->id]);
 
         $this->login($user)

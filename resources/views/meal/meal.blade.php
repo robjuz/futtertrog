@@ -1,11 +1,29 @@
-<div class="border-top border-bottom py-3 d-flex flex-column">
-    <div class="d-sm-flex mb-2 order-2">
+<div class="border-top border-bottom py-3 d-flex flex-column h-100">
+    <div class="actions">
+        @can('update', $meal)
+            <a href="{{ route('meals.edit', $meal) }}" class="btn btn-link text-info px-0">
+                {{ __('Edit') }}
+            </a>
+        @endcan
+
+        @can('delete', $meal)
+            <form action="{{ route('meals.destroy', $meal) }}" method="post" class="d-inline-block">
+                @method('delete')
+                @csrf
+                <button type="submit" class="btn btn-link text-danger">{{ __('Delete') }}</button>
+            </form>
+        @endcan
+    </div>
+
+    <div class="d-sm-flex mb-2">
+
         <h4 class="d-flex justify-content-between align-items-center flex-grow-1 mb-sm-0">
             <div class="{{ $meal->getTitleClasses() }} mr-auto">
                 {{ $meal->title }}
             </div>
             <small class="text-nowrap">{{ number_format($meal->price, 2, ',', '.') }} €</small>
         </h4>
+
         @if($orderItem = $todayOrders->firstWhere('meal_id', $meal->id))
             <form onsubmit="toggleOrder(event)" action="{{ route('order_items.destroy', $orderItem) }}" method="post"
                   class="d-flex ml-sm-3 justify-content-end">
@@ -42,20 +60,4 @@
     @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION] ?? false))
         <p class="text-dark order-3 description">{{ $meal->description }}</p>
     @endif
-
-    <div class="actions order-1">
-        @can('update', $meal)
-            <a href="{{ route('meals.edit', $meal) }}" class="btn btn-link text-info px-0">
-                {{ __('Edit') }}
-            </a>
-        @endcan
-
-        @can('delete', $meal)
-            <form action="{{ route('meals.destroy', $meal) }}" method="post" class="d-inline-block">
-                @method('delete')
-                @csrf
-                <button type="submit" class="btn btn-link text-danger">{{ __('Delete') }}</button>
-            </form>
-        @endcan
-    </div>
 </div>
