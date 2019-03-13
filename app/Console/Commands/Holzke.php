@@ -4,8 +4,11 @@ namespace App\Console\Commands;
 
 use App\Events\NewOrderPossibility;
 use App\Meal;
+use App\Services\HolzkeService;
 use DiDom\Document;
+use DiDom\Element;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 
 /**
@@ -42,20 +45,11 @@ class Holzke extends Command
     /**
      * Execute the console command.
      *
+     * @param \App\Services\HolzkeService $holzke
      * @return mixed
      */
-    public function handle()
+    public function handle(HolzkeService $holzke)
     {
-        //Login
-        Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-login.html')
-            ->withData([
-                'kdnr' => config('services.holzke.login'),
-                'passwort' => config('services.holzke.password'),
-                'is_send' => 'login',
-            ])
-            ->setCookieJar(storage_path('holtzke_cookie.txt'))
-            ->post();
-
         //get data
         $date = today();
         if ($date->isWeekend()) {
@@ -63,42 +57,60 @@ class Holzke extends Command
         }
 
         do {
-            $response = Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
-                ->withData(['t' => $date->timestamp])
-                ->setCookieFile(storage_path('holtzke_cookie.txt'))
-                ->get();
+            $createdMeals = false;
 
-            $document = new Document($response);
+            $meals = $this->parseResponse($holzke->getMealsForDate($date));
 
-            $meals = $document->find('.meal');
-            $createdMealsCount = 0;
-
-            foreach ($meals as $meal) {
-                $title = $meal->find('h2')[0]->text();
-
-                preg_match('/^[\w\s]*/mu', $title, $titleMatch);
-                preg_match('/\((\S*)/', $title, $priceMatch);
-
-                $meal = Meal::updateOrCreate([
-                    'title' => trim($titleMatch[0]),
-                    'date_from' => $date->toDateString(),
-                    'date_to' => $date->toDateString(),
-                    'provider' => Meal::PROVIDER_HOLZKE,
-                ], [
-                    'description' => trim($meal->find('.cBody')[0]->removeChildren()[0]->text()),
-                    'price' => floatval(str_replace(',', '.', $priceMatch[1])),
-                ]);
+            foreach ($meals as $mealElement) {
+                $meal = $this->createOrUpdateMeal($mealElement, $date);
 
                 if ($meal->wasRecentlyCreated) {
-                    $createdMealsCount++;
+                    $createdMeals = true;
                 }
             }
 
-            if ($createdMealsCount > 0) {
+            if ($createdMeals) {
                 event(new NewOrderPossibility($date));
             }
 
             $date->addWeekday();
         } while (count($meals));
+    }
+
+    /**
+     * @param \DiDom\Element $mealElement
+     * @param \Illuminate\Support\Carbon $date
+     * @return \App\Meal
+     */
+    public function createOrUpdateMeal(Element $mealElement, Carbon $date): Meal
+    {
+        $title = $mealElement->find('h2')[0]->text();
+
+        preg_match('/^[\w\s]*/mu', $title, $titleMatch);
+        preg_match('/\((\S*)/', $title, $priceMatch);
+
+        return Meal::updateOrCreate(
+            [
+                'title' => trim($titleMatch[0]),
+                'date_from' => $date->toDateString(),
+                'date_to' => $date->toDateString(),
+                'provider' => Meal::PROVIDER_HOLZKE,
+            ],
+            [
+                'description' => trim($mealElement->find('.cBody')[0]->removeChildren()[0]->text()),
+                'price' => floatval(str_replace(',', '.', $priceMatch[1])),
+            ]
+        );
+    }
+
+    /**
+     * @param $response
+     * @return \DiDom\Element[]|\DOMElement[]
+     */
+    public function parseResponse($response)
+    {
+        $meals = (new Document($response))->find('.meal');
+
+        return $meals;
     }
 }
