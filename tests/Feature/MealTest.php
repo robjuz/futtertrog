@@ -2,12 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\OrderItem;
+use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class MealTest extends TestCase
@@ -261,4 +265,26 @@ class MealTest extends TestCase
         $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
     }
 
+    /** @test */
+    public function it_can_send_a_notifications_when_a_new_meal_was_created_when_user_opted_in()
+    {
+        /** @var User $john */
+        $john = factory(User::class)->create(['settings' => [
+            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => true
+        ]]);
+
+        /** @var User $sara */
+        $sara = factory(User::class)->create(['settings' => [
+            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => false
+        ]]);
+
+        Notification::fake();
+
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->create();
+        event(new NewOrderPossibility($meal->date_from));
+
+        Notification::assertSentTo($john, \App\Notifications\NewOrderPossibility::class);
+        Notification::assertNotSentTo($sara, \App\Notifications\NewOrderPossibility::class);
+    }
 }
