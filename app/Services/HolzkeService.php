@@ -27,6 +27,10 @@ class HolzkeService
             ->post();
     }
 
+    /**
+     * @param \Illuminate\Support\Carbon $date
+     * @return mixed
+     */
     public function getMealsForDate(Carbon $date)
     {
         return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
