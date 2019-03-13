@@ -173,13 +173,13 @@ class OrderTest extends TestCase
         $this->loginAsAdmin()
             ->delete(route('orders.destroy', $order))
             ->assertRedirect();
-        $this->assertDatabaseMissing('orders', $order->toArray());
+        $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
 
         /** @var \App\Order $order */
         $order = factory(Order::class)->create();
         $this->loginAsAdmin()
             ->deleteJson(route('orders.destroy', $order))
             ->assertStatus(Response::HTTP_NO_CONTENT);
-        $this->assertDatabaseMissing('orders', $order->toArray());
+        $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
     }
 }

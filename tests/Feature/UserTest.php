@@ -100,23 +100,26 @@ class UserTest extends TestCase
             'is_admin' => true
         ]);
 
-        $this->get(route('users.edit', 2))->assertSee($data['name']);
+        $user = factory(User::class)->create(['is_admin' => true]);
 
-        $this->get(route('users.show', 2))->assertSee($data['name']);
-        $this->getJson(route('users.show', 2))->assertJsonFragment([ 'name' => 'Example1',]);
+        $this->get(route('users.edit', $user))->assertSee($user->name);
 
-        $this->put(route('users.update', 2), ['name' => 'John'])->assertRedirect();
-        $this->putJson(route('users.update', 2), ['name' => 'John'])->assertJsonFragment(['name' => 'John']);
+        $this->get(route('users.show', $user))->assertSee($user->name);
+        $this->getJson(route('users.show', $user))->assertJsonFragment([ 'name' => $user->name,]);
+
+        $this->put(route('users.update', $user), ['name' => 'John'])->assertRedirect();
+        $this->putJson(route('users.update', $user), ['name' => 'John'])->assertJsonFragment(['name' => 'John']);
 
         $this->assertDatabaseHas('users', [
             'name' => 'John',
             'is_admin' => true
         ]);
 
-        $this->delete(route('users.destroy', 2))->assertRedirect();
+        $this->delete(route('users.destroy', $user))->assertRedirect();
         $this->assertDatabaseMissing('users', ['name' => 'John']);
 
-        $this->deleteJson(route('users.destroy', 3))->assertStatus(Response::HTTP_NO_CONTENT);
+        $user = factory(User::class)->create(['is_admin' => true]);
+        $this->deleteJson(route('users.destroy', $user))->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
     /** @test */
