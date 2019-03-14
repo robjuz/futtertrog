@@ -66,7 +66,7 @@
   "Place order": "Bestellen",
   "Order": "Bestellung",
   "Your balance": "Dein Guthaben",
-  "Your today's order": "Deine Bestellung für heute",
+  "Your order for today": "Deine Bestellung für heute",
   "No orders for today": "Du hast kein Essen für heute.",
   "No results found": "Keine Einträge gefunden",
   "Your upcoming orders": "Deine Bestellungen für weitere Tage",
@@ -132,5 +132,6 @@
   "Dark mode": "Dunkle Ansicht",
   "Skip calendar": "Kalender überspringen",
   "Next day": "Nächster Tag",
-  "Previous day": "Vorheriger Tag"
+  "Previous day": "Vorheriger Tag",
+  "There are :count order possibilities for :date": "Es gibt <strong>:count</strong> Bestellmöglichkeiten für <span class=\"text-primary\">:date</span>"
 }

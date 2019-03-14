@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="available-meals-tooltip"  class="shadow-sm">
                                     <div class="available-meals-tooltip-title">
-                                        {!! __('There are :count order posibilities for :date',['count' => $meals->forDate($date)->count(), 'date' => $date->format(trans('futtertrog.date_format'))]) !!}
+                                        {!! __('There are :count order possibilities for :date',['count' => $meals->forDate($date)->count(), 'date' => $date->format(trans('futtertrog.date_format'))]) !!}
                                     </div>
                                 </div>
                             @endif

@@ -55,7 +55,7 @@
 
                 <section class="mb-3">
                     <div class="card">
-                        <h2 class="card-header">{{ __('Your today\'s order') }}</h2>
+                        <h2 class="card-header">{{ __('Your order for today') }}</h2>
 
                         @if($todayOrders->count())
                             <ul class="list-group list-group-flush">
