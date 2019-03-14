@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class HolzkeTest extends TestCase
 {
-    /** @test */
+
     public function it_can_create_meals_from_holzke_html()
     {
         $holzkeServiceMock = Mockery::mock(HolzkeService::class);
