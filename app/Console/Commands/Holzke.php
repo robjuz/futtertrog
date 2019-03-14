@@ -9,7 +9,6 @@ use DiDom\Document;
 use DiDom\Element;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Ixudra\Curl\Facades\Curl;
 
 /**
  * Class Holzke.
