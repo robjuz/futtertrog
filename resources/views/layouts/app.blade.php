@@ -23,17 +23,16 @@
     <a class="navbar-brand text-uppercase" href="{{ url('/') }}" title="{{ config('app.name') }}">
         <h1> {{ config('app.name') }} </h1>
     </a>
+    @auth()
+        <input type="checkbox" id="nav-toggler" class="d-none"/>
+        <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
 
-    <input type="checkbox" id="nav-toggler" class="d-none"/>
-    <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
+        <div class="collapse navbar-collapse">
+            <a class="skip-link skip-navigation" href="#main" tabindex="1">
+                {{ __('Skip navigation') }}
+            </a>
 
-    <div class="collapse navbar-collapse">
-        <a class="skip-link skip-navigation" href="#main" tabindex="1">
-            {{ __('Skip navigation') }}
-        </a>
-
-        <!-- Left Side Of Navbar -->
-        @auth()
+            <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
 
                 <li class="nav-item {{ request()->routeIs('meals.index') ? 'active' : '' }}">
@@ -81,8 +80,8 @@
                     </a>
                 </div>
             </div>
-        @endauth
-    </div>
+        </div>
+    @endauth
 </nav>
 
 <main id="main">
