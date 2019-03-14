@@ -5,13 +5,10 @@ php:
 
 dist: xenial
 
-addons:
-  apt:
-    sources:
-      - ppa:jonathonf/backports
-    packages:
-      - sqlite3
-
+before_install:
+  - sudo add-apt-repository ppa:jonathonf/backports -y
+  - sudo apt-get update -q
+  - sudo apt-get install sqlite3 -y
 before_script:
   - cp .env.travis .env
   - composer install --no-interaction
