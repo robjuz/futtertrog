@@ -8,7 +8,7 @@ dist: xenial
 addons:
   apt:
     sources:
-      - travis-ci/sqlite3
+      - ppa:jonathonf/backports
     packages:
       - sqlite3
 
