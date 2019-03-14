@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Meal;
 use App\Services\HolzkeService;
+use Illuminate\Support\Facades\Event;
 use Ixudra\Curl\Facades\Curl;
 use Mockery;
 use Tests\TestCase;
@@ -12,8 +13,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class HolzkeTest extends TestCase
 {
+    /** @test */
     public function it_can_create_meals_from_holzke_html()
     {
+        Event::fake();
+
         $holzkeServiceMock = Mockery::mock(HolzkeService::class);
         $holzkeServiceMock->shouldReceive('getMealsForDate')
             ->withAnyArgs()
