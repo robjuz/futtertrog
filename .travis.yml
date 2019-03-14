@@ -9,6 +9,7 @@ before_install:
   - sudo add-apt-repository ppa:jonathonf/backports -y
   - sudo apt-get update -q
   - sudo apt-get install sqlite3 -y
+  - echo "PRAGMA compile_options;" | sqlite3 | grep JSON1
 
 before_script:
   - cp .env.travis .env
