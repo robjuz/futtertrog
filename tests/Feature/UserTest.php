@@ -8,6 +8,9 @@ use App\User;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
+/**
+ * @runInSeparateProcess
+ */
 class UserTest extends TestCase
 {
 
@@ -137,7 +140,9 @@ class UserTest extends TestCase
             ->assertSee($orderItem->meal->title);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function admin_can_see_users_deposit_history()
     {
         $user = factory(User::class)->create();

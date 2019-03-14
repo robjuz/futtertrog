@@ -29,7 +29,7 @@ class SendNewOrderPossibilityNotification
     public function handle(NewOrderPossibility $event)
     {
         $users = User::query()
-                     ->where('settings->newOrderPossibilityNotification', 1)
+                     ->where('settings->newOrderPossibilityNotification', true)
                      ->get();
 
         Notification::send($users, new NewOrderPossibilityNotification($event->date));
