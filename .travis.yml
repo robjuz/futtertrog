@@ -5,12 +5,12 @@ php:
 
 dist: xenial
 
-before_install:
-  - sudo apt-get autoremove sqlite3
-  - sudo apt-get install python-software-properties
-  - sudo apt-add-repository -y ppa:travis-ci/sqlite3
-  - sudo apt-get -y update
-  - sudo apt-get install sqlite3
+addons:
+  apt:
+    sources:
+      - travis-ci/sqlite3
+    packages:
+      - sqlite3
 
 before_script:
   - cp .env.travis .env
