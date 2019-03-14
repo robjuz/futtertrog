@@ -9,7 +9,7 @@ services:
 dist: xenial
 
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test; set innodb_lock_wait_timeout=100;'
 
 before_script:
   - cp .env.travis .env
