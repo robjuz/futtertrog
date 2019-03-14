@@ -43,15 +43,17 @@ class UserTest extends TestCase
     {
         $this->withExceptionHandling();
 
+        $user = factory(User::class)->create();
+
         $this->login();
 
         $this->get(route('users.index'))->assertForbidden();
         $this->get(route('users.create'))->assertForbidden();
-        $this->get(route('users.edit', 1))->assertForbidden();
-        $this->get(route('users.show', 1))->assertForbidden();
+        $this->get(route('users.edit', $user))->assertForbidden();
+        $this->get(route('users.show', $user))->assertForbidden();
         $this->postJson(route('users.store'), [])->assertForbidden();
-        $this->put(route('users.update', 1))->assertForbidden();
-        $this->delete(route('users.destroy', 1))->assertForbidden();
+        $this->put(route('users.update', $user))->assertForbidden();
+        $this->delete(route('users.destroy', $user))->assertForbidden();
     }
 
     /** @test */
