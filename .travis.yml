@@ -9,12 +9,12 @@ before_install:
   - sudo add-apt-repository ppa:jonathonf/backports -y
   - sudo apt-get update -q
   - sudo apt-get install sqlite3 -y
+
 before_script:
   - cp .env.travis .env
   - composer install --no-interaction
   - php artisan key:generate
-  
-  
+
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
 
