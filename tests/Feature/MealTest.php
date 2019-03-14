@@ -265,7 +265,6 @@ class MealTest extends TestCase
         $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
     }
 
-    /** @test */
     public function it_can_send_a_notifications_when_a_new_meal_was_created_when_user_opted_in()
     {
         /** @var User $john */
