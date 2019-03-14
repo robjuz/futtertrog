@@ -23,7 +23,7 @@ abstract class TestCase extends BaseTestCase
         return $this->login(factory('App\User')->create(['is_admin' => true]));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class PayPalDepositTest extends TestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
@@ -30,10 +30,13 @@ class PayPalDepositTest extends TestCase
     {
         /** @var User $user */
         $user = factory(User::class)->create();
-        $user->deposits()->create([
-            'value' => 10,
-            'status' => Deposit::STATUS_PROCESSING
-        ]);
+        $user->deposits()
+            ->create(
+                [
+                    'value' => 10,
+                    'status' => Deposit::STATUS_PROCESSING,
+                ]
+            );
 
         $token = "some_token";
         $PayerID = "123";
