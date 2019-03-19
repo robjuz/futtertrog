@@ -3,6 +3,8 @@
 namespace App\Console;
 
 use App\Notifications\NoOrder;
+use App\ScheduledJobs\NoOrderForNextDayNotification;
+use App\ScheduledJobs\NoOrderForTodayNotification;
 use App\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -39,13 +41,9 @@ class Kernel extends ConsoleKernel
             $schedule->command('import:holzke')->dailyAt('10:00');
         }
 
-        $schedule->call(function () {
-            $this->noOrderForTodayNotification();
-        })->weekdays()->at('10:00');
+        $schedule->call(new NoOrderForTodayNotification)->weekdays()->at('10:00');
 
-        $schedule->call(function () {
-            $this->noOrderForNextDayNotification();
-        })->weekdays()->at('10:00');
+        $schedule->call(new NoOrderForNextDayNotification)->weekdays()->at('10:00');
     }
 
     /**
@@ -58,30 +56,5 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
-    }
-
-    protected function noOrderForTodayNotification()
-    {
-        $users = User::query()
-            ->where('settings->noOrderNotification', '1')
-            ->whereDoesntHave('meals', function ($q) {
-                return $q->whereDate('date', today());
-            })
-            ->get();
-
-        Notification::send($users, new NoOrder(today()));
-    }
-
-    protected function noOrderForNextDayNotification()
-    {
-        $nextDay = today()->addWeekday();
-        $users = User::query()
-            ->where('settings->noOrderForNextDayNotification', '1')
-            ->whereDoesntHave('meals', function ($q) use ($nextDay) {
-                return $q->whereDate('date', $nextDay);
-            })
-            ->get();
-
-        Notification::send($users, new NoOrder($nextDay));
     }
 }
