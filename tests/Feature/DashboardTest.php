@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Deposit;
 use App\Order;
 use App\OrderItem;
 use App\User;
@@ -60,5 +61,33 @@ class DashboardTest extends TestCase
         foreach ($orderItems as $orderItem) {
             $response->assertSee($orderItem->meal->title);
         }
+    }
+
+    /** @test */
+    public function it_shows_the_users_deposit_history()
+    {
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $deposit = factory(Deposit::class)->make(['status' => Deposit::STATUS_OK]);
+
+        $user->deposits()->save($deposit);
+
+        $this->login($user)
+            ->get(route('home'))
+            ->assertSee(number_format($deposit->value, 2, ',','.'));
+    }
+
+    /** @test */
+    public function it_does_not_show_processing_deposits()
+    {
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $deposit = factory(Deposit::class)->make(['status' => Deposit::STATUS_PROCESSING]);
+
+        $user->deposits()->save($deposit);
+
+        $this->login($user)
+            ->get(route('home'))
+            ->assertDontSee(number_format($deposit->value, 2, ',','.'));
     }
 }
