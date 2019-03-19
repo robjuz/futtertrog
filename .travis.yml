@@ -4,7 +4,7 @@ php:
   - 7.2
 
 before_script:
-  - sqlite3 '.load json1'
+  - sqlite3 ".load json1;" ".exit"
   - cp .env.travis .env
   - composer install --no-interaction
   - php artisan key:generate
