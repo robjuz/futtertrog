@@ -265,16 +265,17 @@ class MealTest extends TestCase
         $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
     }
 
+    /** @test */
     public function it_can_send_a_notifications_when_a_new_meal_was_created_when_user_opted_in()
     {
         /** @var User $john */
         $john = factory(User::class)->create(['settings' => [
-            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => true
+            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1"
         ]]);
 
         /** @var User $sara */
         $sara = factory(User::class)->create(['settings' => [
-            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => false
+            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "0"
         ]]);
 
         Notification::fake();
