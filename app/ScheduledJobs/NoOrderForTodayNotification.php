@@ -12,7 +12,7 @@ class NoOrderForTodayNotification
     public function __invoke()
     {
         $users = User::query()
-            ->where('settings->noOrderNotification', "1")
+            ->where('settings->noOrderNotification', '1')
             ->whereDoesntHave('orderItems.order', function (Builder $q) {
                 return $q->whereDate('date', today());
             })

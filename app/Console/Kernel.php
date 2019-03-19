@@ -2,13 +2,10 @@
 
 namespace App\Console;
 
-use App\Notifications\NoOrder;
 use App\ScheduledJobs\NoOrderForNextDayNotification;
 use App\ScheduledJobs\NoOrderForTodayNotification;
-use App\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Notification;
 
 /**
  * Class Kernel.
