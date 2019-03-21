@@ -28,12 +28,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $connection = config('database.default');
-        $driver = config("database.connections.{$connection}.driver");
-        if ($driver === 'sqlite') {
-            DB::statement('select load_extension(“json1”)');
-
-
+        if (DB::getDriverName() === 'sqlite') {
+            DB::raw('select load_extension(“json1”)');
         }
 
 
