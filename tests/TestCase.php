@@ -27,12 +27,7 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        if (DB::getDriverName() === 'sqlite') {
-            DB::raw('select load_extension(“json1”)');
-        }
-
-
+        
         $this->withoutExceptionHandling();
     }
 }

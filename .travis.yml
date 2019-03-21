@@ -5,9 +5,13 @@ php:
 
 dist: xenial
 
+before_install:
+  - sudo add-apt-repository ppa:jonathonf/backports -y
+  - sudo apt-get update -q
+  - sudo apt-get install sqlite3
+
 before_script:
-  - sqlite3 --version
-  - sqlite3 ".load json1;" ".exit"
+  - sqlite --version
   - cp .env.travis .env
   - composer install --no-interaction
   - php artisan key:generate
