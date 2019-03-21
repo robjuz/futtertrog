@@ -38,21 +38,6 @@
   border-color: $gray-600;
 }
 
-.keyboard-tooltip {
-  display: none;
-}
-
-.meals-display-option[type="radio"]:focus ~ .keyboard-tooltip {
-  background:$gray-200;
-  color: $gray-800;
-  display: inline-block;
-  line-height: 3em;
-  margin-left: 2em;
-  padding: 0 1em;
-  position: absolute;
-  vertical-align: middle;
-}
-
 #list:checked ~ ol > .meal-container {
   min-width: 100%;
 }

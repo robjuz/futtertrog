@@ -69,11 +69,6 @@ body {
 	color: $gray-400 !important;
 }
 
-.card .text-success {
-	color: #02de51 !important;
-	font-weight: normal;
-}
-
 
 @media screen and (max-width: 991px) {
 	.card-body .md-dark {
@@ -216,9 +211,4 @@ h2, h4, .h5 {
 			padding-left: 5px;
 		}
 	}
-}
-
-.btn-outline-primary {
-	color: #028bfe;
-	border-color: #028bfe;
 }

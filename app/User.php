@@ -51,6 +51,7 @@ class User extends Authenticatable
     const SETTING_HIDE_ORDERING_MEAL_DESCRIPTION = 'hideOrderingMealDescription';
     const SETTING_DARK_MODE = 'darkMode';
     const SETTING_LANGUAGE = 'language';
+    const SETTING_MEALS_LIST_TYPE = 'meals_list_type';
 
     /**
      * The attributes that should be cast to native types.
