@@ -11,7 +11,6 @@ before_install:
   - sudo apt-get install sqlite3
 
 before_script:
-  - sqlite --version
   - cp .env.travis .env
   - composer install --no-interaction
   - php artisan key:generate
