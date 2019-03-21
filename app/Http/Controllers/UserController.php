@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Deposit;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\User;
@@ -23,7 +24,8 @@ class UserController extends Controller
     {
         $this->authorize('list', User::class);
 
-        $users = User::with('orderItems.meal')->get();
+        $users = User::with('orderItems.meal')
+            ->get();
 
         if ($request->wantsJson()) {
             return response()->json($users);
@@ -70,8 +72,8 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Request    $request
-     * @param  \App\User $user
+     * @param Request $request
+     * @param \App\User $user
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -91,6 +93,7 @@ class UserController extends Controller
             ->appends('deposits_page', $request->deposits_page);
 
         $deposits = $user->deposits()
+            ->whereStatus(Deposit::STATUS_OK)
             ->latest()
             ->paginate(5, ['*'], 'deposits_page')
             ->appends('orders_page', $request->meals_page);
@@ -101,7 +104,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\User $user
+     * @param \App\User $user
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -117,7 +120,7 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param UserUpdateRequest $request
-     * @param  \App\User        $user
+     * @param \App\User $user
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -142,8 +145,8 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request    $request
-     * @param  \App\User $user
+     * @param Request $request
+     * @param \App\User $user
      *
      * @return \Illuminate\Http\RedirectResponse|Response
      * @throws \Exception

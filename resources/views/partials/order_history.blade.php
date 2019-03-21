@@ -38,7 +38,5 @@
         @endforelse
     </ul>
 
-    <nav>
-        {{ $orders->links() }}
-    </nav>
+    {{ $orders->links() }}
 </div>

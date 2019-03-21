@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SettingsController extends Controller
 {
@@ -40,8 +41,11 @@ class SettingsController extends Controller
             User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => ['required', 'boolean'],
             User::SETTING_MEAL_PREFERENCES => ['nullable', 'string'],
             User::SETTING_MEAL_AVERSION => ['nullable', 'string'],
-            User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => ['nullable', 'boolean'],
-            User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION => ['nullable', 'boolean'],
+            User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => ['required', 'boolean'],
+            User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION => ['required', 'boolean'],
+            User::SETTING_DARK_MODE => ['required', 'boolean'],
+            User::SETTING_LANGUAGE => ['required', Rule::in(config('app.supported_locale'))],
+            User::SETTING_MEALS_LIST_TYPE => ['required', Rule::in(['list', 'two-columns', 'grid'])],
         ]);
 
         $user = $request->user();

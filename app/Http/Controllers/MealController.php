@@ -8,6 +8,7 @@ use App\Meal;
 use App\Notifications\NewOrderPossibility;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -35,7 +36,9 @@ class MealController extends Controller
 
         $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
 
-        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate'));
+        $listType = $request->user()->settings[User::SETTING_MEALS_LIST_TYPE] ?? 'grid';
+
+        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate', 'listType'));
     }
 
     /**

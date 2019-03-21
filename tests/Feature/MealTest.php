@@ -2,12 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\OrderItem;
+use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class MealTest extends TestCase
@@ -251,12 +255,35 @@ class MealTest extends TestCase
     /** @test */
     public function it_throws_an_exception_when_trying_to_delete_on_ordered_meal()
     {
+        //$this->withExceptionHandling();
+
         $meal = factory(Meal::class)->create();
 
         $meal->orderItems()->save(factory(OrderItem::class)->make());
 
-        $this->expectExceptionMessage(trans('futtertrog.meal_was_ordered'));
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
         $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
     }
 
+    public function it_can_send_a_notifications_when_a_new_meal_was_created_when_user_opted_in()
+    {
+        /** @var User $john */
+        $john = factory(User::class)->create(['settings' => [
+            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => true
+        ]]);
+
+        /** @var User $sara */
+        $sara = factory(User::class)->create(['settings' => [
+            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => false
+        ]]);
+
+        Notification::fake();
+
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->create();
+        event(new NewOrderPossibility($meal->date_from));
+
+        Notification::assertSentTo($john, \App\Notifications\NewOrderPossibility::class);
+        Notification::assertNotSentTo($sara, \App\Notifications\NewOrderPossibility::class);
+    }
 }

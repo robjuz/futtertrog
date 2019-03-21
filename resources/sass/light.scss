@@ -1,13 +1,15 @@
 // Variables
-@import 'variables';
+@import 'variables_light';
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 // Font Awesome
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
 // Custom
 @import 'header';
+@import 'footer';
 @import 'running-dog';
 @import 'calendar';
+@import 'meals-display';
 
 body {
   display: flex;
@@ -69,14 +71,6 @@ body {
 		padding-bottom: 0.5rem;
 		padding-top: 0.5rem;
 	}
-}
-
-/** FOOTER **/
-#mainFooter {
-  margin-top: 1rem;
-  background-image: linear-gradient(to top left, $gray-600, $gray-700);
-  border-top: 3px solid $gray-700;
-  box-shadow: 0 0 10px 5px $gray-400;
 }
 
 /** MISCELLANEOUS **/
