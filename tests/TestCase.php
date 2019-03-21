@@ -31,8 +31,11 @@ abstract class TestCase extends BaseTestCase
         $connection = config('database.default');
         $driver = config("database.connections.{$connection}.driver");
         if ($driver === 'sqlite') {
-            DB::raw('.load json1;');
+            DB::statement('select load_extension(“json1”)');
+
+
         }
+
 
         $this->withoutExceptionHandling();
     }
