@@ -31,7 +31,8 @@ class SettingsTest extends TestCase
             User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION => false,
             User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => false,
             User::SETTING_DARK_MODE => true,
-            User::SETTING_LANGUAGE => 'de'
+            User::SETTING_LANGUAGE => 'de',
+            User::SETTING_MEALS_LIST_TYPE => 'list'
         ];
 
         $this->login()->post(route('settings.store'),$data)->assertRedirect();
