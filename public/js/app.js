@@ -2426,6 +2426,67 @@ window.toggleOrder = function (e) {
   e.preventDefault();
 };
 
+function urlBase64ToUint8Array(base64String) {
+  var padding = '='.repeat((4 - base64String.length % 4) % 4);
+  var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  var rawData = window.atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+
+  for (var i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+}
+
+navigator.serviceWorker.ready.then(function (registration) {
+  var options = {
+    userVisibleOnly: true
+  };
+  var vapidPublicKey = window.Laravel.vapidPublicKey;
+
+  if (vapidPublicKey) {
+    options.applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+  }
+
+  console.log(options);
+  registration.pushManager.subscribe(options).then(function (subscription) {
+    console.log(subscription);
+    updateSubscription(subscription);
+  }).catch(function (e) {
+    if (Notification.permission === 'denied') {
+      console.log('Permission for Notifications was denied');
+    } else {
+      console.log('Unable to subscribe to push.', e);
+    }
+  });
+});
+/**
+ * Send a request to the server to update user's subscription.
+ *
+ * @param {PushSubscription} subscription
+ */
+
+function updateSubscription(subscription) {
+  var key = subscription.getKey('p256dh');
+  var token = subscription.getKey('auth');
+  var data = {
+    endpoint: subscription.endpoint,
+    key: key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : null,
+    token: token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null
+  };
+  fetch('/subscriptions', {
+    method: 'POST',
+    credentials: 'same-origin',
+    redirect: 'follow',
+    headers: {
+      'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: data
+  });
+}
+
 /***/ }),
 
 /***/ "./resources/sass/dark.scss":
