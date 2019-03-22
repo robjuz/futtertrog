@@ -81,13 +81,7 @@ class OrderItemController extends Controller
             'user_id' => 'sometimes|exists:users,id',
             'quantity' => 'sometimes|numeric|min:1,max:10',
             'status' => 'sometimes|string|max:30',
-        ];
-
-        //only meals for the requested date are allowed
-        $mealIds = Meal::whereDate('date_from', '<=', $request->date)->whereDate('date_to', '>=', $request->date)->pluck('id');
-        $rules['meal_id'] = [
-            'required',
-            Rule::in($mealIds),
+            'meal_id' => 'required|exists:meals,id'
         ];
 
         $attributes = $request->validate($rules);
