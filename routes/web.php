@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//$user = \App\User::find(1);
+//
+//$user->updatePushSubscription($endpoint, $key, $token);
+
+
+
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes([
     'register' => false,

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 
 /**
  * App\User.
@@ -40,7 +41,7 @@ use Illuminate\Support\Str;
  */
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasPushSubscriptions;
 
     const SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION = 'newOrderPossibilityNotification';
     const SETTING_NO_ORDER_NOTIFICATION = 'noOrderNotification';
