@@ -2426,6 +2426,8 @@ window.toggleOrder = function (e) {
   e.preventDefault();
 };
 
+Notification.requestPermission();
+
 /***/ }),
 
 /***/ "./resources/sass/dark.scss":
@@ -2457,9 +2459,9 @@ window.toggleOrder = function (e) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/robjuz/Developer/Sites/futtertrog/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /Users/robjuz/Developer/Sites/futtertrog/resources/sass/light.scss */"./resources/sass/light.scss");
-module.exports = __webpack_require__(/*! /Users/robjuz/Developer/Sites/futtertrog/resources/sass/dark.scss */"./resources/sass/dark.scss");
+__webpack_require__(/*! /home/rj/Developer/Sites/futtertrog/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/rj/Developer/Sites/futtertrog/resources/sass/light.scss */"./resources/sass/light.scss");
+module.exports = __webpack_require__(/*! /home/rj/Developer/Sites/futtertrog/resources/sass/dark.scss */"./resources/sass/dark.scss");
 
 
 /***/ })

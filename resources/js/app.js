@@ -36,3 +36,5 @@ window.toggleOrder = function(e) {
 
   e.preventDefault();
 };
+
+Notification.requestPermission();
