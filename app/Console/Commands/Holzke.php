@@ -12,7 +12,6 @@ use Illuminate\Support\Carbon;
 
 /**
  * Class Holzke.
- *
  */
 class Holzke extends Command
 {

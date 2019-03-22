@@ -9,7 +9,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 /**
  * Class Kernel.
- *
  */
 class Kernel extends ConsoleKernel
 {
