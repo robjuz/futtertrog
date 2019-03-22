@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rule;
 
 class OrderItemController extends Controller
 {
@@ -81,7 +80,7 @@ class OrderItemController extends Controller
             'user_id' => 'sometimes|exists:users,id',
             'quantity' => 'sometimes|numeric|min:1,max:10',
             'status' => 'sometimes|string|max:30',
-            'meal_id' => 'required|exists:meals,id'
+            'meal_id' => 'required|exists:meals,id',
         ];
 
         $attributes = $request->validate($rules);
