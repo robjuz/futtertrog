@@ -13,7 +13,6 @@ use Illuminate\Support\Carbon;
 /**
  * Class Holzke.
  *
- * @codeCoverageIgnore
  */
 class Holzke extends Command
 {
