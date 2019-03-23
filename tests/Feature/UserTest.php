@@ -8,9 +8,6 @@ use App\User;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
-/**
- * @runInSeparateProcess
- */
 class UserTest extends TestCase
 {
 

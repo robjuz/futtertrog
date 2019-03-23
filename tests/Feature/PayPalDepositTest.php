@@ -10,11 +10,6 @@ use Tests\TestCase;
 
 class PayPalDepositTest extends TestCase
 {
-    public function tearDown(): void
-    {
-        Mockery::close();
-    }
-
     /** @test */
     public function it_redirects_to_paypal_when_requested()
     {
