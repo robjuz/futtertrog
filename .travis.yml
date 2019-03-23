@@ -3,6 +3,15 @@ language: php
 php:
   - 7.2
 
+services:
+  - mysql
+
+dist: xenial
+
+before_install:
+  - mysql -e 'CREATE DATABASE futtertrog_test;'
+
+
 before_script:
   - cp .env.travis .env
   - composer install --no-interaction
@@ -16,5 +25,6 @@ after_success:
   - vendor/bin/codacycoverage clover coverage.xml
 
 cache:
+  apt: true
   directories:
     - vendor
