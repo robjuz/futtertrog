@@ -11,7 +11,7 @@ before_install:
   - tar -zxvf sqlite-autoconf-3270200.tar.gz
   - cd sqlite-autoconf-3270200
   - ./configure
-  - make -DSQLITE_ENABLE_JSON1
+  - make
   - sudo make install
 
 
