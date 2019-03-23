@@ -3,7 +3,7 @@ language: php
 php:
   - 7.2
 
-dist: osx
+os: osx
 
 #before_install:
 #  - sudo apt remove sqlite3 -y
