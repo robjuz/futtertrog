@@ -3,12 +3,13 @@ language: php
 php:
   - 7.2
 
+services:
+  - mysql
+
 dist: xenial
 
 before_install:
-  - sudo add-apt-repository ppa:ondrej/php -y
-  - sudo apt-get update
-  - sudo apt-get install php7.2-sqlite3
+  - mysql -e 'CREATE DATABASE futtertrog_test;'
 
 
 before_script:
