@@ -6,6 +6,10 @@ const lang = {en : english, de: German};
 flatpickr.localize(lang[document.documentElement.lang]);
 flatpickr("input[type=date]");
 
+import PushNotifications from './PushNotifications';
+
+PushNotifications();
+
 window.toggleOrder = function(e) {
   var form = e.target;
 

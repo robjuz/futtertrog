@@ -16,6 +16,13 @@
     @else
         <link rel="stylesheet" href="{{ mix('css/light.css') }}">
     @endif
+
+    <script>
+        window.Futtertrog = {!! json_encode([
+            'user' => Auth::user(),
+            'vapidPublicKey' => config('webpush.vapid.public_key'),
+        ]) !!};
+    </script>
 </head>
 <body>
 

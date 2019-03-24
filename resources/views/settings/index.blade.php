@@ -109,7 +109,12 @@
 
                 <section class="col-md-6 mb-3">
                     <div class="card h-100">
-                        <div class="card-header">{{ __('Notifications') }}</div>
+                        <div class="card-header">
+                            {{ __('Notifications') }}
+                            <button type="button" class="btn btn-info js-push-btn">
+                                asdf
+                            </button>
+                        </div>
                         <div class="card-body">
 
                             <div class="form-group pb-4">
