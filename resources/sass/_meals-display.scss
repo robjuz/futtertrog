@@ -33,6 +33,7 @@
   border-color: $gray-400;
 }
 
+.meals-display-option[type="radio"] + label > svg:hover,
 .meals-display-option[type="radio"]:focus + label > svg {
   border-color: $gray-600;
 }
@@ -41,37 +42,17 @@
   min-width: 100%;
 }
 
-#two-columns:checked ~ ol > .meal-container {
+#two-columns:checked ~ ol > li,
+#grid:checked ~ ol > li {
   min-width: 50%;
+
+  @media screen and (max-width: breakpoint-max('lg')) {
+    min-width: 100%;
+  }
 }
 
 #grid:checked ~ ol {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 40em);
-  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(30em, 1fr));
   justify-content: space-between;
-
-
-}
-
-#grid:checked ~ ol > .meal-container {
-  min-width: 20em;
-
-  > div > div:first-child {
-    flex-wrap: wrap;
-
-    h4 {
-      margin-bottom: 1rem !important;
-      width: 100%;
-    }
-
-    form {
-      width: 100%;
-
-      [type="number"] {
-        margin-left: auto;
-      }
-
-    }
-  }
 }

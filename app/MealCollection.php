@@ -8,15 +8,17 @@ class MealCollection extends Collection
 {
     public function sortByPreferences()
     {
-        return $this->sortByDesc(function ($meal) {
-            if ($meal->is_hated) {
-                return -1;
-            }
-            if ($meal->is_preferred) {
-                return 1;
-            }
+        return $this
+            ->sortBy('id')
+            ->sortByDesc(function ($meal) {
+                if ($meal->is_hated) {
+                    return -1;
+                }
+                if ($meal->is_preferred) {
+                    return 1;
+                }
 
-            return 0;
-        });
+                return 0;
+            });
     }
 }

@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use NotificationChannels\WebPush\HasPushSubscriptions;
 
 /**
  * App\User.
@@ -41,7 +40,7 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasPushSubscriptions;
+    use Notifiable;
 
     const SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION = 'newOrderPossibilityNotification';
     const SETTING_NO_ORDER_NOTIFICATION = 'noOrderNotification';
@@ -52,6 +51,7 @@ class User extends Authenticatable
     const SETTING_HIDE_ORDERING_MEAL_DESCRIPTION = 'hideOrderingMealDescription';
     const SETTING_DARK_MODE = 'darkMode';
     const SETTING_LANGUAGE = 'language';
+    const SETTING_MEALS_LIST_TYPE = 'meals_list_type';
 
     /**
      * The attributes that should be cast to native types.

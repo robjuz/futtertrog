@@ -133,5 +133,9 @@
   "Skip calendar": "Kalender überspringen",
   "Next day": "Nächster Tag",
   "Previous day": "Vorheriger Tag",
-  "There are :count order possibilities for :date": "Es gibt <strong>:count</strong> Bestellmöglichkeiten für <span class=\"text-primary\">:date</span>"
+  "There are :count order possibilities for :date": "Es gibt <strong>:count</strong> Bestellmöglichkeiten für <span class=\"text-primary\">:date</span>",
+  "Default meals list view" : "Bestellansicht",
+  "List": "Liste",
+  "Two columns": "Zwei Spallten",
+  "Grid": "Grid"
 }

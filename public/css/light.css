@@ -1,9 +1,9 @@
 @charset "UTF-8";
 
 /*!
- * Bootstrap v4.3.1 (https://getbootstrap.com/)
- * Copyright 2011-2019 The Bootstrap Authors
- * Copyright 2011-2019 Twitter, Inc.
+ * Bootstrap v4.2.1 (https://getbootstrap.com/)
+ * Copyright 2011-2018 The Bootstrap Authors
+ * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
@@ -17282,6 +17282,7 @@ readers do not read off random characters that represent icons */
   border-color: #ced4da;
 }
 
+.meals-display-option[type=radio] + label > svg:hover,
 .meals-display-option[type=radio]:focus + label > svg {
   border-color: #6c757d;
 }
@@ -17290,36 +17291,22 @@ readers do not read off random characters that represent icons */
   min-width: 100%;
 }
 
-#two-columns:checked ~ ol > .meal-container {
+#two-columns:checked ~ ol > li,
+#grid:checked ~ ol > li {
   min-width: 50%;
+}
+
+@media screen and (max-width: 1199.98px) {
+  #two-columns:checked ~ ol > li,
+  #grid:checked ~ ol > li {
+    min-width: 100%;
+  }
 }
 
 #grid:checked ~ ol {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 40em);
-  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(30em, 1fr));
   justify-content: space-between;
-}
-
-#grid:checked ~ ol > .meal-container {
-  min-width: 20em;
-}
-
-#grid:checked ~ ol > .meal-container > div > div:first-child {
-  flex-wrap: wrap;
-}
-
-#grid:checked ~ ol > .meal-container > div > div:first-child h4 {
-  margin-bottom: 1rem !important;
-  width: 100%;
-}
-
-#grid:checked ~ ol > .meal-container > div > div:first-child form {
-  width: 100%;
-}
-
-#grid:checked ~ ol > .meal-container > div > div:first-child form [type=number] {
-  margin-left: auto;
 }
 
 body {

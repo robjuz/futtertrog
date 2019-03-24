@@ -62,6 +62,8 @@
             @endif
         </div>
 
+        <input type="hidden" name="date" value="{{ $date }}"/>
+
         <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
     </form>
 @endsection

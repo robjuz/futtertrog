@@ -6,8 +6,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
-use NotificationChannels\WebPush\WebPushChannel;
-use NotificationChannels\WebPush\WebPushMessage;
 
 class NewOrderPossibility extends Notification
 {
@@ -62,29 +60,6 @@ class NewOrderPossibility extends Notification
             ->action(__('Click here for more details'), $url);
     }
 
-    public function toWebPush($notifiable, $notification)
-    {
-        $day = $this->date->format(trans('futtertrog.date_format'));
-        $url = route('meals.index', [
-            'date' => $this->date->toDateString(),
-        ]);
-
-        return (new WebPushMessage())
-            ->title(__('New order possibility for :day', ['day' => $day]))
-            //->icon('/approved-icon.png')
-            ->body(__('New order possibility for :day', ['day' => $day]))
-            ->action('Click here for more details', $url);
-        // ->data(['id' => $notification->id])
-        // ->badge()
-        // ->dir()
-        // ->image()
-        // ->lang()
-        // ->renotify()
-        // ->requireInteraction()
-        // ->tag()
-        // ->vibrate()
-    }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -94,6 +69,6 @@ class NewOrderPossibility extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', WebPushChannel::class];
+        return ['mail'];
     }
 }

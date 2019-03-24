@@ -54,6 +54,15 @@
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label for="meals_list_type">{{ __('Default meals list view') }}</label>
+                                <select class="custom-select" name="meals_list_type" id="meals_list_type">
+                                        <option value="list" {{ old('meals_list_type', ($settings['meals_list_type'] ?? 'grid')) === 'list' ? 'selected' : '' }}>{{ __('List') }}</option>
+                                        <option value="two-columns" {{ old('meals_list_type', ($settings['meals_list_type'] ?? 'grid')) === 'two-columnd' ? 'selected' : '' }}>{{ __('Two columns') }}</option>
+                                        <option value="grid" {{ old('meals_list_type', ($settings['meals_list_type'] ?? 'grid')) === 'grid' ? 'selected' : '' }}>{{ __('Grid') }}</option>
+                                </select>
+                            </div>
+
                         </div>
                     </div>
                 </section>
