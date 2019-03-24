@@ -18,8 +18,6 @@ use Illuminate\Support\Facades\Route;
 //
 //$user->updatePushSubscription($endpoint, $key, $token);
 
-
-
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes([
     'register' => false,

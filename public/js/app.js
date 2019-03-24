@@ -2426,6 +2426,7 @@ window.toggleOrder = function (e) {
   e.preventDefault();
 };
 
+<<<<<<< HEAD
 function urlBase64ToUint8Array(base64String) {
   var padding = '='.repeat((4 - base64String.length % 4) % 4);
   var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
@@ -2486,6 +2487,9 @@ function updateSubscription(subscription) {
     body: data
   });
 }
+=======
+Notification.requestPermission();
+>>>>>>> 882183317b756f89ae12041796bfa229e9eb0c1c
 
 /***/ }),
 
@@ -2518,9 +2522,9 @@ function updateSubscription(subscription) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/robjuz/Developer/Sites/futtertrog/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /Users/robjuz/Developer/Sites/futtertrog/resources/sass/light.scss */"./resources/sass/light.scss");
-module.exports = __webpack_require__(/*! /Users/robjuz/Developer/Sites/futtertrog/resources/sass/dark.scss */"./resources/sass/dark.scss");
+__webpack_require__(/*! /home/rj/Developer/Sites/futtertrog/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/rj/Developer/Sites/futtertrog/resources/sass/light.scss */"./resources/sass/light.scss");
+module.exports = __webpack_require__(/*! /home/rj/Developer/Sites/futtertrog/resources/sass/dark.scss */"./resources/sass/dark.scss");
 
 
 /***/ })
