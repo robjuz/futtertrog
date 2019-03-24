@@ -2374,6 +2374,7 @@
 
 /***/ }),
 
+
 /***/ "./resources/js/PushNotifications.js":
 /*!*******************************************!*\
   !*** ./resources/js/PushNotifications.js ***!
@@ -2513,6 +2514,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flatpickr_dist_l10n_default_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flatpickr/dist/l10n/default.js */ "./node_modules/flatpickr/dist/l10n/default.js");
 /* harmony import */ var flatpickr_dist_l10n_default_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flatpickr_dist_l10n_default_js__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _PushNotifications__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PushNotifications */ "./resources/js/PushNotifications.js");
+
 // es modules are recommended, if available, especially for typescript
 
 
