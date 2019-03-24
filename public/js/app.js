@@ -2374,6 +2374,130 @@
 
 /***/ }),
 
+
+/***/ "./resources/js/PushNotifications.js":
+/*!*******************************************!*\
+  !*** ./resources/js/PushNotifications.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* eslint-env browser, es6 */
+
+
+function urlB64ToUint8Array(base64String) {
+  var padding = '='.repeat((4 - base64String.length % 4) % 4);
+  var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  var rawData = window.atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+
+  for (var i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+}
+
+function updateSubscriptionOnServer(subscription) {
+  var key = subscription.getKey('p256dh');
+  var token = subscription.getKey('auth');
+  var data = {
+    endpoint: subscription.endpoint,
+    key: key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : null,
+    token: token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null
+  };
+  fetch('/subscriptions', {
+    method: 'POST',
+    credentials: 'same-origin',
+    redirect: 'follow',
+    headers: {
+      'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+}
+
+function removeSubscriptionOnSever(subscription) {
+  fetch('/subscriptions', {
+    method: 'DELETE',
+    credentials: 'same-origin',
+    redirect: 'follow',
+    headers: {
+      'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      endpoint: subscription.endpoint
+    })
+  });
+}
+
+function subscribeUser(swRegistration) {
+  swRegistration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlB64ToUint8Array(window.Futtertrog.vapidPublicKey)
+  }).then(function (subscription) {
+    return updateSubscriptionOnServer(subscription);
+  }).catch(function (err) {
+    return console.log('Failed to subscribe the user: ', err);
+  });
+}
+
+function unsubscribeUser(swRegistration) {
+  swRegistration.pushManager.getSubscription().then(function (subscription) {
+    if (subscription) {
+      subscription.unsubscribe().then(function () {
+        return removeSubscriptionOnSever(subscription);
+      });
+    }
+  }).catch(function (error) {
+    console.log('Error unsubscribing', error);
+  });
+}
+
+function askPermission() {
+  return new Promise(function (resolve, reject) {
+    if (window.Futtertrog.user === null) {
+      reject('No authenticated user');
+    }
+
+    var permissionResult = Notification.requestPermission(function (result) {
+      resolve(result);
+    });
+
+    if (permissionResult) {
+      permissionResult.then(resolve, reject);
+    }
+  }).then(function (permissionResult) {
+    if (permissionResult !== 'granted') {
+      throw new Error('We weren\'t granted permission.');
+    }
+  });
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.register('serviceworker.js').then(function (swReg) {
+      askPermission().then(function () {
+        return subscribeUser(swReg);
+      }).catch(function () {
+        return unsubscribeUser(swReg);
+      });
+    }).catch(function (error) {
+      console.error('Service Worker Error', error);
+    });
+  } else {
+    console.warn('Push messaging is not supported');
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -2389,6 +2513,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flatpickr_dist_l10n_de_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flatpickr_dist_l10n_de_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var flatpickr_dist_l10n_default_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flatpickr/dist/l10n/default.js */ "./node_modules/flatpickr/dist/l10n/default.js");
 /* harmony import */ var flatpickr_dist_l10n_default_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flatpickr_dist_l10n_default_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _PushNotifications__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PushNotifications */ "./resources/js/PushNotifications.js");
+
 // es modules are recommended, if available, especially for typescript
 
 
@@ -2399,6 +2525,8 @@ var lang = {
 };
 flatpickr__WEBPACK_IMPORTED_MODULE_0___default.a.localize(lang[document.documentElement.lang]);
 flatpickr__WEBPACK_IMPORTED_MODULE_0___default()("input[type=date]");
+
+Object(_PushNotifications__WEBPACK_IMPORTED_MODULE_3__["default"])();
 
 window.toggleOrder = function (e) {
   var form = e.target;

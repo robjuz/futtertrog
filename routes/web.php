@@ -35,4 +35,7 @@ Route::group(['middleware' => 'auth:web,api'], function () {
         Route::post('express_checkout', 'PayPalController@expressCheckout')->name('paypal.express_checkout');
         Route::get('express_checkout_success', 'PayPalController@expressCheckoutSuccess')->name('paypal.express_checkout_success');
     }
+
+    Route::post('/subscriptions', 'PushSubscriptionController@update');
+    Route::delete('/subscriptions', 'PushSubscriptionController@destroy');
 });
