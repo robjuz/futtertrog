@@ -126,6 +126,15 @@ class OrderItemController extends Controller
     {
         $this->authorize('delete', $orderItem);
 
+        $order = $orderItem->order;
+        $order->update([
+            'status' => Order::STATUS_OPEN,
+        ]);
+
+        if ($order->wasChanged()) {
+            event(new OrderReopened($order, $orderItem->user, $orderItem->meal));
+        }
+
         $orderItem->delete();
 
         if ($request->wantsJson()) {

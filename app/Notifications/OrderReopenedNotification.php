@@ -8,6 +8,8 @@ use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\WebPush\WebPushChannel;
+use NotificationChannels\WebPush\WebPushMessage;
 
 class OrderReopenedNotification extends Notification
 {
@@ -87,6 +89,31 @@ class OrderReopenedNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', WebPushChannel::class];
+    }
+
+    public function toWebPush($notifiable, $notification)
+    {
+        $url = route('orders.index', [
+            'from' => $this->order->date->toDateString(),
+            'to'   => $this->order->date->toDateString(),
+        ]);
+
+        return (new WebPushMessage())
+            ->title(__('The order for :date was reopened',
+                ['date' => $this->order->date->format(trans('futtertrog.date_format'))]))
+            //->icon('/utensils.svg')
+            ->body(__(':user updated :meal', ['user' => $this->user->name, 'meal' => $this->meal->title]))
+            ->action('Click here for more details', 'click')
+            ->data(['url' =>  $url])
+            // ->badge()
+            // ->dir()
+            // ->image('/utensils.svg')
+            ->lang(app()->getLocale())
+            // ->renotify()
+            // ->requireInteraction()
+            // ->tag()
+            // ->vibrate()
+            ;
     }
 }
