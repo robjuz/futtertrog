@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewOrderPossibility;
 use App\Http\Requests\MealStoreRequest;
 use App\Http\Requests\MealUpdateRequest;
 use App\Meal;
-use App\Notifications\NewOrderPossibility;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
 use App\User;
