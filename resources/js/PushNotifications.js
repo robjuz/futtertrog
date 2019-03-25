@@ -79,7 +79,7 @@ function askPermission() {
     return new Promise(function (resolve, reject) {
 
         if (window.Futtertrog.user === null) {
-            reject('No authenticated user');
+            throw new Error('No authenticated user');
         }
 
         const permissionResult = Notification.requestPermission(function (result) {
