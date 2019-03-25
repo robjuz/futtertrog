@@ -100,7 +100,7 @@ function askPermission() {
 export default function () {
 
     if ('serviceWorker' in navigator && 'PushManager' in window) {
-        navigator.serviceWorker.register('serviceworker.js')
+        navigator.serviceWorker.getRegistration()
             .then(function (swReg) {
                 askPermission()
                     .then(() => subscribeUser(swReg))
