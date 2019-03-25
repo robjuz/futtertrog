@@ -91,9 +91,7 @@ export default function () {
                     .then(() => subscribeUser(swReg))
                     .catch(() => unsubscribeUser(swReg))
             })
-            .catch(function (error) {
-                console.error('Service Worker Error', error);
-            });
+            .catch(err => console.error('Service Worker Error', err));
     } else {
         console.warn('Push messaging is not supported');
     }

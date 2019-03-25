@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use NotificationChannels\WebPush\PushSubscription;
 
 class PushSubscriptionController extends Controller
 {
@@ -38,8 +39,7 @@ class PushSubscriptionController extends Controller
     {
         $request->validate(['endpoint' => 'required']);
 
-        $request->user()
-            ->deletePushSubscription($request->endpoint);
+        PushSubscription::whereEndpoint($request->endpoint)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }

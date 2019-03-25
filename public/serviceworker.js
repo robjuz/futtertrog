@@ -1,10 +1,11 @@
-const version = '20190325_2';
+const version = '20190325_4';
 
 let staticCacheName = "futtertrog_" + version;
 const filesToCache = [
     '/offline',
     '/css/dark.css',
     '/css/light.css',
+    '/css/flatpickr.css',
     '/js/app.js',
     '/images/icons/icon-72x72.png',
     '/images/icons/icon-96x96.png',
@@ -45,13 +46,13 @@ self.addEventListener("fetch", event => {
         caches.match(event.request)
             .then(response => response || fetch(event.request))
             .catch(() => caches.match('offline'))
-    )
+    );
 });
 
 const WebPush = {
     init() {
-        self.addEventListener('push', this.notificationPush.bind(this))
-        self.addEventListener('notificationclick', this.notificationClick.bind(this))
+        self.addEventListener('push', this.notificationPush.bind(this));
+        self.addEventListener('notificationclick', this.notificationClick.bind(this));
         // self.addEventListener('notificationclose', this.notificationClose.bind(this))
     },
 
@@ -71,7 +72,7 @@ const WebPush = {
         if (event.data) {
             event.waitUntil(
                 this.sendNotification(event.data.json())
-            )
+            );
         }
     },
 
@@ -85,7 +86,7 @@ const WebPush = {
     notificationClick(event) {
         let data = event.notification.data;
 
-        self.clients.openWindow(data.url || '/')
+        self.clients.openWindow(data.url || '/');
     },
 
     /**
@@ -111,7 +112,7 @@ const WebPush = {
      * @param {PushMessageData|Object} data
      */
     sendNotification(data) {
-        return self.registration.showNotification(data.title, data)
+        return self.registration.showNotification(data.title, data);
     },
 
     /**
@@ -135,6 +136,6 @@ const WebPush = {
     //         body: data
     //     })
     // }
-}
+};
 
-WebPush.init()
+WebPush.init();
