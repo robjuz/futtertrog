@@ -1,4 +1,3 @@
-// es modules are recommended, if available, especially for typescript
 import flatpickr from "flatpickr";
 import {German} from "flatpickr/dist/l10n/de.js"
 import {english} from "flatpickr/dist/l10n/default.js"
@@ -10,33 +9,34 @@ import PushNotifications from './PushNotifications';
 
 PushNotifications();
 
-window.toggleOrder = function(e) {
-  var form = e.target;
+window.toggleOrder = function (e) {
+    let form = e.target;
 
-  var submitButton = form.querySelector('.btn-submit');
-  submitButton.attributes.disabled = true;
+    let submitButton = form.querySelector('.btn-submit');
+    submitButton.attributes.disabled = true;
 
-  var spinner = submitButton.querySelector('.spinner-border');
-  spinner.classList.toggle('d-none');
+    let spinner = submitButton.querySelector('.spinner-border');
+    spinner.classList.remove('d-none');
 
-  fetch(form.action, {
-    method: 'POST',
-    credentials: 'same-origin',
-    redirect: 'follow',
-    headers: {
-      'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
-      'X-Requested-With': 'XMLHttpRequest'
-    },
-    body: new FormData(form)
-  }).then(function(res) {
-    return res.text();
-  }).then(function(data) {
-    var container = form.closest('.meal-container');
-    var el = new DOMParser().parseFromString(data, 'text/html');
+    fetch(form.action, {
+        method: 'POST',
+        credentials: 'same-origin',
+        redirect: 'follow',
+        headers: {
+            'X-CSRF-TOKEN': window.Futtertrog.csrf,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new FormData(form)
+    })
+        .then(res => res.text())
+        .then(data => {
+                let container = form.closest('.meal-container');
+                let el = new DOMParser().parseFromString(data, 'text/html');
 
-    container.innerHTML = el.querySelector('#' + container.id).innerHTML;
-    document.getElementById('calendar').innerHTML = el.querySelector('#calendar').innerHTML;
-  });
+                container.innerHTML = el.querySelector('#' + container.id).innerHTML;
+                document.getElementById('calendar').innerHTML = el.querySelector('#calendar').innerHTML;
+            }
+        );
 
-  e.preventDefault();
+    e.preventDefault();
 };

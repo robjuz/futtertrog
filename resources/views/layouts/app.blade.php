@@ -4,9 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>{{ config('app.name') }}</title>
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
@@ -21,6 +18,7 @@
         window.Futtertrog = {!! json_encode([
             'user' => Auth::user(),
             'vapidPublicKey' => config('webpush.vapid.public_key'),
+            'csrf' => csrf_token()
         ]) !!};
     </script>
 </head>

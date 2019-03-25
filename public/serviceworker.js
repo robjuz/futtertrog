@@ -1,4 +1,4 @@
-const version = '20190325_1';
+const version = '20190325_2';
 
 let staticCacheName = "futtertrog_" + version;
 const filesToCache = [
@@ -18,12 +18,10 @@ const filesToCache = [
 
 // Cache on install
 self.addEventListener("install", event => {
-    // this.skipWaiting();
     event.waitUntil(
         caches.open(staticCacheName)
-            .then(cache => {
-                return cache.addAll(filesToCache);
-            }).catch(error => console.error(error))
+            .then(cache => cache.addAll(filesToCache))
+            .catch(error => console.error(error))
     )
 });
 
@@ -45,12 +43,8 @@ self.addEventListener('activate', event => {
 self.addEventListener("fetch", event => {
     event.respondWith(
         caches.match(event.request)
-            .then(response => {
-                return response || fetch(event.request);
-            })
-            .catch(() => {
-                return caches.match('offline');
-            })
+            .then(response => response || fetch(event.request))
+            .catch(() => caches.match('offline'))
     )
 });
 

@@ -1,6 +1,12 @@
 /* eslint-env browser, es6 */
 'use strict';
 
+const headers = {
+    'X-CSRF-TOKEN': window.Futtertrog.csrf,
+    'X-Requested-With': 'XMLHttpRequest',
+    'Content-Type': 'application/json'
+};
+
 function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
@@ -20,35 +26,28 @@ function updateSubscriptionOnServer(subscription) {
 
     const key = subscription.getKey('p256dh');
     const token = subscription.getKey('auth');
+
     const data = {
         endpoint: subscription.endpoint,
         key: key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : null,
         token: token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null
     };
 
-    fetch('/subscriptions', {
+    return fetch('/subscriptions', {
         method: 'POST',
         credentials: 'same-origin',
         redirect: 'follow',
-        headers: {
-            'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(data)
     });
 }
 
 function removeSubscriptionOnSever(subscription) {
-    fetch('/subscriptions', {
+    return fetch('/subscriptions', {
         method: 'DELETE',
         credentials: 'same-origin',
         redirect: 'follow',
-        headers: {
-            'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify({endpoint: subscription.endpoint})
     });
 }
@@ -66,39 +65,25 @@ function unsubscribeUser(swRegistration) {
     swRegistration.pushManager.getSubscription()
         .then((subscription) => {
             if (subscription) {
-                subscription.unsubscribe()
-                    .then(() => removeSubscriptionOnSever(subscription));
+                subscription.unsubscribe().then(() => removeSubscriptionOnSever(subscription));
             }
         })
-        .catch(function (error) {
-            console.log('Error unsubscribing', error);
-        });
+        .catch(err => console.log('Error unsubscribing', err));
 }
 
 function askPermission() {
-    return new Promise(function (resolve, reject) {
-
+    return new Promise((resolve, reject) => {
         if (window.Futtertrog.user === null) {
-            throw new Error('No authenticated user');
+            return reject('No authenticated user');
         }
 
-        const permissionResult = Notification.requestPermission(function (result) {
-            resolve(result);
+        Notification.requestPermission().then(permissionResult => {
+            permissionResult === 'granted' ? resolve() : reject();
         });
-
-        if (permissionResult) {
-            permissionResult.then(resolve, reject);
-        }
-    })
-        .then(function (permissionResult) {
-            if (permissionResult !== 'granted') {
-                throw new Error('We weren\'t granted permission.');
-            }
-        });
+    });
 }
 
 export default function () {
-
     if ('serviceWorker' in navigator && 'PushManager' in window) {
         navigator.serviceWorker.getRegistration()
             .then(function (swReg) {
