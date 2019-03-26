@@ -15,9 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
-Auth::routes([
-    'register' => false,
-]);
+Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth:web,api'], function () {
     Route::get('/', 'HomeController')->name('home');
