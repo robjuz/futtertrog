@@ -7,7 +7,6 @@ use Illuminate\Support\ServiceProvider;
 
 class HolzkeServiceServiceProvider extends ServiceProvider
 {
-
     /**
      * Register services.
      *
