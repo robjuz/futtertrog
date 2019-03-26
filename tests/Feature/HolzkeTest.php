@@ -42,4 +42,11 @@ class HolzkeTest extends TestCase
 
         $this->assertEquals(1, Meal::count());
     }
+
+    /** @test */
+    public function it_resolves_a_holzke_provider_from_app_container()
+    {
+        $this->assertInstanceOf(HolzkeService::class, app(HolzkeService::class));
+        $this->assertSame(app(HolzkeService::class), app(HolzkeService::class));
+    }
 }

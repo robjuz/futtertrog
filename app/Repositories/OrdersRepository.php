@@ -19,21 +19,6 @@ class OrdersRepository
         })->get();
     }
 
-    public function usersMonthlyOrders($date, User $user = null)
-    {
-        $user = $user ?? auth()->user();
-
-        $date = Carbon::parse($date);
-
-        return $user->orderItems()
-            ->with(['order', 'meal'])
-            ->whereHas('order', function ($query) use ($date) {
-                $query->whereYear('date', $date->year)
-                    ->whereMonth('date', $date->month);
-            })
-            ->get();
-    }
-
     public function usersAllOrders(User $user, $fromDate = null, $toDate = null)
     {
         $fromDate = $fromDate ? Carbon::parse($fromDate)->toDateString() : null;
