@@ -36,6 +36,7 @@
                        class="form-control"
                        name="quantity"
                        min="1"
+                       pattern="\d*"
                        value="1"
                        style="width: 80px;"
                 >

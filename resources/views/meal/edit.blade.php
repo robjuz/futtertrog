@@ -43,6 +43,7 @@
                                                name="price"
                                                id="price"
                                                class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
+                                               pattern="\d*"
                                                required
                                                min="0"
                                                step="0.01"

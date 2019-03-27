@@ -35,7 +35,7 @@ class HomeController extends Controller
         $ordersHistory = $user->orderItems()
             ->with(['order', 'meal'])
             ->latest()
-            ->paginate(5, ['*'], 'meals_page');
+            ->simplePaginate(5, ['*'], 'meals_page');
         $ordersHistory->appends('deposits_page', $request->deposits_page);
         $ordersHistory->appends('future_meals_page', $request->future_meals_page);
 
@@ -47,7 +47,7 @@ class HomeController extends Controller
                     $query->whereDate('date', '>', today());
                 }
             )
-            ->paginate(5, ['*'], 'future_meals_page');
+            ->simplePaginate(5, ['*'], 'future_meals_page');
 
         $futureOrders->appends('meals_page', $request->meals_page);
         $futureOrders->appends('deposits_page', $request->deposits_page);
@@ -55,7 +55,7 @@ class HomeController extends Controller
         $deposits = $user->deposits()
             ->whereStatus(Deposit::STATUS_OK)
             ->latest()
-            ->paginate(5, ['*'], 'deposits_page');
+            ->simplePaginate(5, ['*'], 'deposits_page');
         $deposits->appends('meals_page', $request->meals_page);
         $deposits->appends('future_meals_page', $request->future_meals_page);
 

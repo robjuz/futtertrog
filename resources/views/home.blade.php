@@ -27,6 +27,7 @@
                                                    type="number"
                                                    min="0.01"
                                                    step="0.01"
+                                                   pattern="\d*"
                                                    name="value"
                                                    class="form-control {{ $errors->has('value') ? ' is-invalid' : '' }}"
                                                    aria-describedby="pay_wiht_paypal"

@@ -51,6 +51,7 @@
             <input type="number"
                    min="1"
                    class="form-control {{ $errors->has('quantity') ? ' is-invalid' : '' }}"
+                   pattern="\d*"
                    name="quantity"
                    id="quantity"
             >

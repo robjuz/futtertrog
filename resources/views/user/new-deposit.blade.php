@@ -9,7 +9,7 @@
             <div class="form-group">
                 <label for="value" class="col-form-label-sm">{{ __('Value') }}</label>
                 <div>
-                    <input type="number" class="form-control" name="value" id="value" step="0.01">
+                    <input type="number" class="form-control" name="value" id="value" step="0.01" pattern="\d*">
                     @if ($errors->has('value'))
                         <div class="invalid-tooltip" role="alert">
                             <strong>{{ $errors->first('value') }}</strong>
