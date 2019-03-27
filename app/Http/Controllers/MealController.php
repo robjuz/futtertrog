@@ -26,7 +26,7 @@ class MealController extends Controller
      */
     public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {
-        $requestedDate = Carbon::parse($request->query('date', today()->addWeekday()));
+        $requestedDate = Carbon::parse($request->query('date', today()));
 
         $todayMeals = $meals->forDate($requestedDate)->sortByPreferences();
 

@@ -19,26 +19,24 @@ class MealPreferencesTest extends TestCase
         ];
         $user->save();
 
-        $tomorrow = today()->addWeekday();
-
         $meal1 = factory(Meal::class)->create([
-            'date_from' => $tomorrow,
-            'date_to' => $tomorrow,
+            'date_from' => today(),
+            'date_to' => today(),
             'description' => 'pumpkin'
         ]);
         $meal2 = factory(Meal::class)->create([
-            'date_from' => $tomorrow,
-            'date_to' => $tomorrow,
+            'date_from' => today(),
+            'date_to' => today(),
             'description' => 'pancake'
         ]);
         $meal3 = factory(Meal::class)->create([
-            'date_from' => $tomorrow,
-            'date_to' => $tomorrow,
+            'date_from' => today(),
+            'date_to' => today(),
             'description' => 'meal_3'
         ]);
         $meal4 = factory(Meal::class)->create([
-            'date_from' => $tomorrow,
-            'date_to' => $tomorrow,
+            'date_from' => today(),
+            'date_to' => today(),
             'description' => 'meal_4'
         ]);
 

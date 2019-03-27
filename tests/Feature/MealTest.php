@@ -207,7 +207,7 @@ class MealTest extends TestCase
     }
 
     /** @test */
-    public function is_shows_meals_for_the_next_day()
+    public function is_shows_meals_for_the_current_day()
     {
         $meal1 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
@@ -227,14 +227,14 @@ class MealTest extends TestCase
         $this->login();
 
         $this->get(route('meals.index'))
-            ->assertSee($meal2->title)
+            ->assertSee($meal1->title)
             ->assertSee($meal3->title)
-            ->assertDontSee($meal1->title);
+            ->assertDontSee($meal2->title);
 
         $this->getJson(route('meals.index'))
-            ->assertSee($meal2->title)
+            ->assertSee($meal1->title)
             ->assertSee($meal3->title)
-            ->assertDontSee($meal1->title);
+            ->assertDontSee($meal2->title);
     }
 
     /** @test */
