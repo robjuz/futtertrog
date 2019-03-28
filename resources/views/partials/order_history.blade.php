@@ -1,5 +1,5 @@
 <div class="card">
-    <h2 class="card-header d-flex align-items-center">
+    <h2 id="order-history" class="card-header d-flex align-items-center">
         {{ __('Order history') }}
 
         @if(request()->routeIs('home'))

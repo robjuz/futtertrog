@@ -5,33 +5,13 @@
 // Font Awesome
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
 // Custom
+@import 'common';
 @import 'header';
 @import 'footer';
 @import 'running-dog';
 @import 'calendar';
 @import 'meals-display';
 
-body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-
-  > main {
-    flex-grow: 1;
-    padding-top: 7.5rem;
-  }
-}
-
-.row-padding {
-  th, td {
-    padding-top: 1.5rem;
-  }
-}
-
-.top-right {
-  top: 5px;
-  right: 5px;
-}
 
 .alert-danger,
 .alert-success,
@@ -84,17 +64,6 @@ h4 {
   text-transform: uppercase;
 }
 
-.pagination {
-  justify-content: center;
-}
-
-.form-group {
-  position: relative;
-
-  .invalid-tooltip {
-    right: 0;
-  }
-}
 
 .btn-link:focus {
 	outline: 1px dotted $primary-darker;
@@ -114,17 +83,6 @@ h4 {
 		position: relative;
 		z-index: 10000;
 	}
-}
-
-.skip-navigation:focus {
-	left: 0.5em;
-	position: absolute;
-	top: 0.5em;
-}
-
-.skip-calendar:focus {
-	left:0;
-	top: 0;
 }
 
 @media screen and (min-width: 893px) {

@@ -81,7 +81,7 @@
 
                 <section class="mb-3">
                     <div class="card">
-                        <h2 class="card-header">{{ __('Your upcoming orders') }}</h2>
+                        <h2 id="future-meals" class="card-header">{{ __('Your upcoming orders') }}</h2>
 
                         @if($futureOrders->count())
                             <ul class="list-group list-group-flush">

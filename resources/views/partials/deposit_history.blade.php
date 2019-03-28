@@ -1,5 +1,5 @@
 <div class="card">
-    <h2 class="card-header">{{ __('Deposit history') }} </h2>
+    <h2 id="deposit-history" class="card-header">{{ __('Deposit history') }} </h2>
 
     @if( count($deposits->items()) > 0)
         <ul class="list-group list-group-flush">

@@ -2,38 +2,22 @@
 #mainNavbar {
   background: $primary-dark linear-gradient(to bottom right, $primary-dark, $primary);
   border-bottom: 3px solid $primary-darker;
-  //box-shadow: 0 0 10px 5px $gray-400;
-  min-height: 90px;
-
 
   /** FUTTERTROG **/
-  .navbar-brand h1 {
-    display: inline-block;
-    font-size: 1.6em;
-    margin-bottom: 0;
-    color: inherit;
-    @include media-breakpoint-up(sm) {
-      font-size: 2em;
-    }
-
-    &::first-letter {
-      font-size: 1.4em;
-    }
-
-    &:hover {
-      color: #bde1ff;
-    }
+  .navbar-brand {
+    fill: $white;
   }
 
 
   .navbar-collapse {
-	align-items: baseline;	
+	align-items: stretch;
 	position: relative;
+    overflow: hidden;
 
     @include media-breakpoint-up(lg) {
       .navbar-nav {
         text-align: center;
-        align-items: baseline;
+        align-items: center;
       }
     }
 

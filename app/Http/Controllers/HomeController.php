@@ -36,6 +36,7 @@ class HomeController extends Controller
             ->with(['order', 'meal'])
             ->latest()
             ->simplePaginate(5, ['*'], 'meals_page');
+        $ordersHistory->fragment('order-history');
         $ordersHistory->appends('deposits_page', $request->deposits_page);
         $ordersHistory->appends('future_meals_page', $request->future_meals_page);
 
@@ -49,6 +50,7 @@ class HomeController extends Controller
             )
             ->simplePaginate(5, ['*'], 'future_meals_page');
 
+        $futureOrders->fragment('future-meals');
         $futureOrders->appends('meals_page', $request->meals_page);
         $futureOrders->appends('deposits_page', $request->deposits_page);
 
@@ -56,6 +58,7 @@ class HomeController extends Controller
             ->whereStatus(Deposit::STATUS_OK)
             ->latest()
             ->simplePaginate(5, ['*'], 'deposits_page');
+        $deposits->fragment('deposit-history');
         $deposits->appends('meals_page', $request->meals_page);
         $deposits->appends('future_meals_page', $request->future_meals_page);
 
