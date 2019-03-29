@@ -1,4 +1,4 @@
-const version = '20190325_4';
+const version = '20190329_1';
 
 let staticCacheName = "futtertrog_" + version;
 const filesToCache = [
