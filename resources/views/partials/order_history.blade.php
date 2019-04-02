@@ -11,7 +11,7 @@
         @forelse ($orders as $orderItem)
             <li class="list-group-item {{ $loop->last ? ' border-bottom-0' : '' }}">
                 <header class="d-flex w-100 align-items-center mb-2">
-                    <h3 class="mb-0 h5 text-nowrap">{{ $orderItem->meal->title }}</h3>
+                    <h3 class="mb-0 h5 text-nowrap"> {{ $orderItem->quantity }} &times; {{ $orderItem->meal->title }}</h3>
                     <small class="ml-auto" title="{{ $orderItem->created_at->format(__('futtertrog.datetime_format')) }}">{{ $orderItem->created_at->diffForHumans() }}</small>
                 </header>
 
