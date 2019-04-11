@@ -158,6 +158,6 @@ class MealController extends Controller
             return response()->json(null, Response::HTTP_NO_CONTENT);
         }
 
-        return redirect()->route('meals.index');
+        return back(302, [], route('meals.create'));
     }
 }

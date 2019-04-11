@@ -94,7 +94,7 @@ class MealTest extends TestCase
         $this->loginAsAdmin();
 
         $this->delete(route('meals.destroy', $meal))
-            ->assertRedirect(route('meals.index'));
+            ->assertRedirect(route('meals.create'));
         $this->assertDatabaseMissing('meals', $meal->toArray());
 
         $meal = factory(Meal::class)->create();
