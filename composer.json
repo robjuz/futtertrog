@@ -10,9 +10,7 @@
     "require": {
         "php": "^7.2",
         "ext-dom": "*",
-        "barryvdh/laravel-ide-helper": "^2.5",
         "dflydev/markdown": "^1.0",
-        "doctrine/dbal": "^2.9",
         "eluceo/ical": "^0.15.0",
         "fideloper/proxy": "^4.0",
         "imangazaliev/didom": "^1.13",
@@ -20,12 +18,13 @@
         "laravel-notification-channels/webpush": "^3.0",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
-        "silviolleite/laravelpwa": "^1.0",
-        "srmklive/paypal": "~1.0"
+        "silviolleite/laravelpwa": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
+        "barryvdh/laravel-ide-helper": "^2.5",
         "beyondcode/laravel-dump-server": "^1.0",
+        "doctrine/dbal": "^2.9",
         "codacy/coverage": "^1.4",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
