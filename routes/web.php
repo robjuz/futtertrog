@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
 /*
 |--------------------------------------------------------------------------
 | Vue Router
@@ -14,7 +13,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/app/{any?}', 'layouts.app')->where('any', '.*');
-
 
 /*
 |--------------------------------------------------------------------------

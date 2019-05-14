@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Auth\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
-
     public function login(Request $request)
     {
         $this->validate($request, $this->rules(), $this->validationErrorMessages());

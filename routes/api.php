@@ -17,13 +17,10 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-
 Route::post('/login', 'Auth\Api\LoginController@login')->name('api.login');
 Route::post('/logout', 'Auth\Api\LoginController@logout')->name('api.logout');
 Route::post('/password/email', 'Auth\Api\ForgotPasswordController@sendResetLinkEmail')->name('api.password.email');
 Route::post('/password/reset', 'Auth\Api\ResetPasswordController@reset')->name('api.password.reset');
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -38,8 +35,7 @@ Route::post('/password/reset', 'Auth\Api\ResetPasswordController@reset')->name('
 */
 
 Route::group(['middleware' => 'auth:api'], function () {
-
-    Route::get('user', function() {
+    Route::get('user', function () {
         return auth()->user();
     });
 
