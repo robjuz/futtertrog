@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use NotificationChannels\WebPush\HasPushSubscriptions;
+use Laravel\Passport\HasApiTokens;
 
 /**
  * App\User.
@@ -41,7 +42,7 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasPushSubscriptions;
+    use Notifiable, HasPushSubscriptions, HasApiTokens;
 
     const SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION = 'newOrderPossibilityNotification';
     const SETTING_NO_ORDER_NOTIFICATION = 'noOrderNotification';

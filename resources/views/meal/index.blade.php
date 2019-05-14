@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @inject('orders', 'App\Repositories\OrdersRepository')
 @inject('meals', 'App\Repositories\MealsRepository')

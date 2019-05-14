@@ -1,39 +1,14 @@
 const mix = require('laravel-mix');
 
-if (mix.inProduction()) {
-  // mix.version();
-
-  // mix.options({
-  //   purifyCss: {
-  //     purifyOptions: {
-  //       purifyCss: true,
-  //       whitelist: [
-  //         'pagination',
-  //         'page-item',
-  //         'page-link',
-  //         'alert-warning',
-  //         'row-0',
-  //         'row-1',
-  //         'row-2',
-  //         'row-3',
-  //         'row-4',
-  //         'row-5',
-  //         'monday',
-  //         'tuesday',
-  //         'wednesday',
-  //         'thursday',
-  //         'friday',
-  //         'saturday',
-  //         'sunday'
-  //       ]
-  //     }
-  //   }
-  // });
-}
-
-
-mix.browserSync('futtertrog.test');
-
+mix.webpackConfig({
+    resolve: {
+        extensions: ['.js', '.vue', '.json'],
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js',
+            '@': __dirname + '/resources/js'
+        },
+    },
+});
 
 /*
  |--------------------------------------------------------------------------
@@ -46,9 +21,9 @@ mix.browserSync('futtertrog.test');
  |
  */
 
+mix.js('resources/js/index.js', 'public/js/index.js');
 mix.js('resources/js/app.js', 'public/js/app.js');
+
 mix.sass('resources/sass/light.scss', 'public/css/light.css');
 mix.sass('resources/sass/dark.scss', 'public/css/dark.css');
-mix.copy('node_modules/flatpickr/dist/flatpickr.css', 'public/css/flatpickr.css');
-
-mix.sourceMaps(false);
+mix.sass('resources/sass/app.scss', 'public/css/app.css');

@@ -21,6 +21,9 @@ class UserLocale
             $language = Auth::user()->settings[User::SETTING_LANGUAGE];
         } else {
             $language = $request->getPreferredLanguage(config('app.supported_locales'));
+            if (!in_array($language, config('app.supported_locale'))) {
+                $language = config('app.fallback_locale');
+            }
         }
 
         app()->setLocale($language);

@@ -3,6 +3,19 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+
+/*
+|--------------------------------------------------------------------------
+| Vue Router
+|--------------------------------------------------------------------------
+|
+| Allows vue router to pick up all other URL's.
+|
+*/
+
+Route::view('/app/{any?}', 'layouts.app')->where('any', '.*');
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
