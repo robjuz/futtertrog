@@ -9,15 +9,16 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import VueAuth from '@websanova/vue-auth'
 import VueI18n from 'vue-i18n'
+import Gravatar from 'vue-gravatar';
 
 library.add(fas);
 
 
 Vue.use(BootstrapVue);
 
+Vue.component('gravatar', Gravatar);
 
-Vue.component('font-awesome-icon', FontAwesomeIcon)
-Vue.component('MainNavigation', require('@/components/MainNavigation').default);
+Vue.component('fa', FontAwesomeIcon)
 
 Vue.router = router;
 
@@ -29,11 +30,11 @@ Vue.use(VueAuth, {
     router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
     registerData: { url: '/api/register', method: 'POST', redirect: '/login' },
     loginData: { url: '/api/login', method: 'POST', redirect: '/', fetchUser: true },
-    logoutData: { url: 'api/logout', method: 'POST', redirect: '/', makeRequest: true },
+    logoutData: { url: '/api/logout', method: 'POST', redirect: '/login', makeRequest: true },
     fetchData: { url: '/api/user', method: 'GET', enabled: true },
-    refreshData: {url: 'oauth/token/refresh', method: 'POST', enabled: false, interval: 30},
+    refreshData: { url: '/oauth/token/refresh', method: 'POST', enabled: false, interval: 30 },
     parseUserData: (data) => data,
-    notFoundRedirect: {path: '/'}
+    notFoundRedirect: { path: '/' }
 });
 
 

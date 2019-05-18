@@ -1,13 +1,19 @@
 const mix = require('laravel-mix');
+const WebpackShellPlugin = require('webpack-shell-plugin');
 
 mix.webpackConfig({
     resolve: {
         extensions: ['.js', '.vue', '.json'],
         alias: {
-            'vue$': 'vue/dist/vue.esm.js',
-            '@': __dirname + '/resources/js'
+              // Vendor
+            vue$: 'vue/dist/vue.esm.js',
+            '@': path.resolve(__dirname, 'resources/js/'),
         },
     },
+    plugins:
+    [
+        new WebpackShellPlugin({onBuildStart:['php artisan lang:js --no-lib --quiet'], onBuildEnd:[]})
+    ]
 });
 
 /*

@@ -1,5 +1,11 @@
 <template>
-  <div class="container mt-3">
+  <b-container>
+    
+    <b-card>
+<h1 class="display-4">{{ $t('Dashboard') }}</h1>
+
+    </b-card>
+    
     <div class="card mb-4">
       <div class="card-body">
         <h1 class="card-title">Dashboard</h1>
@@ -7,7 +13,7 @@
       </div>
     </div>
 
-  </div>
+  </b-container>
 </template>
 
 <script>

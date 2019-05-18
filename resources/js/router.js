@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter);
 
+import App from './components/layout/App.vue'
+
 import Login from '@/components/auth/Login'
 import PasswordEmail from '@/components/auth/password/Email'
 import PasswordReset from '@/components/auth/password/Reset'
@@ -34,21 +36,33 @@ const routes = [
     },
     {
         path: '/',
-        component: {
-            template: '<div><main-navigation class="mb-3"/><router-view/></div>'
-        },
+        component: App,
         meta: {
-            auth: true,
+            auth: true
         },
         children: [
             {
                 path: '',
                 name: 'dashboard',
-                component: Dashboard
+                component: Dashboard,
             },
+            {
+                path: 'meals',
+                name: 'meals.index',
+                component: {
+                    template: '<h1>Place order</h1>'
+                }
+            },
+            {
+                path: 'settings',
+                name: 'settings.index',
+                component: {
+                    template: '<h1>Settings</h1>'
+                }
+            }
         ]
     },
-  
+
 ];
 
 

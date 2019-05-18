@@ -17,10 +17,6 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-Route::post('/login', 'Auth\Api\LoginController@login')->name('api.login');
-Route::post('/logout', 'Auth\Api\LoginController@logout')->name('api.logout');
-Route::post('/password/email', 'Auth\Api\ForgotPasswordController@sendResetLinkEmail')->name('api.password.email');
-Route::post('/password/reset', 'Auth\Api\ResetPasswordController@reset')->name('api.password.reset');
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +45,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('settings', 'SettingsController')->only(['index', 'store']);
 
     Route::post('/subscriptions', 'PushSubscriptionController@update');
+
+    Route::post('/logout', 'Auth\Api\LoginController@logout')->name('api.logout');
 });
 
 Route::delete('/subscriptions', 'PushSubscriptionController@destroy');
+Route::post('/login', 'Auth\Api\LoginController@login')->name('api.login');
+Route::post('/password/email', 'Auth\Api\ForgotPasswordController@sendResetLinkEmail')->name('api.password.email');
+Route::post('/password/reset', 'Auth\Api\ResetPasswordController@reset')->name('api.password.reset');

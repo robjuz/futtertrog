@@ -1,5 +1,14 @@
 {
     "include": [
       "./resources/js/**/*"
-    ]
-  }
+    ],
+    "compilerOptions": {
+      "target": "es2017",
+      "allowSyntheticDefaultImports": false,
+      "baseUrl": "./",
+      "paths": {
+        "@/*": ["resources/js/*"],
+      }
+    },
+    "exclude": ["node_modules", "dist"]
+}
