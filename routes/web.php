@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth:web,api'], function () {
     Route::resource('order_items', 'OrderItemController')->only(['index', 'create', 'store', 'destroy']);
     Route::resource('users', 'UserController');
 
+    Route::get('deposites/transfer', 'DepositTransferController@show');
+    Route::post('deposites/transfer', 'DepositTransferController@store')->name('deposites.transfer');
     Route::resource('deposits', 'DepositsController')->only(['store', 'destroy']);
     Route::resource('settings', 'SettingsController')->only(['index', 'store']);
 

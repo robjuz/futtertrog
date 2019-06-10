@@ -137,5 +137,9 @@
   "Default meals list view" : "Bestellansicht",
   "List": "Liste",
   "Two columns": "Zwei Spallten",
-  "Grid": "Grid"
+  "Grid": "Grid",
+  "New money transfer": "Geldtransfer",
+  "From user": "Vom",
+  "To user": "Zu",
+  "Success": "Erfolg"
 }

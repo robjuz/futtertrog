@@ -78,4 +78,23 @@ class DepositTest extends TestCase
 
         $this->assertEquals(0, $user->balance);
     }
+
+    /** @test */
+    public function it_allows_to_make_a_transfer_from_one_user_to_other_user()
+    {
+        $user = factory(User::class)->create();
+
+        $otherUser = factory(User::class)->create();
+
+        $this->loginAsAdmin()
+        ->postJson(route('deposites.transfer'), [
+            'source' => $user->id,
+            'target' => $otherUser->id,
+            'value' => 10.5,
+            'comment' => 'transfer'
+        ]);
+
+        $this->assertEquals(-10.5, $user->balance);
+        $this->assertEquals(10.5, $otherUser->balance);
+    }
 }

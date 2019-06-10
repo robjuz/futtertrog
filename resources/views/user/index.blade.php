@@ -6,8 +6,10 @@
     <div class="container user-index">
 
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex align-items-center">
                 {{ __('User index') }}
+
+                <a href={{ route('deposites.transfer' )}} class="btn btn-link ml-auto">{{ __('New money transfer') }}</a>
 
                 <a href="{{ route('users.create') }}" class="btn btn-link">{{ __('New user') }}</a>
             </div>

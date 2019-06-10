@@ -20,7 +20,8 @@
                                 <input id="name"
                                        type="text"
                                        class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}"
-                                       name="name" value="{{ old('name', $user->name) }}"
+                                       name="name" 
+                                       value="{{ old('name', $user->name) }}"
                                        required
                                        autofocus
                                 >
