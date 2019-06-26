@@ -50,3 +50,5 @@ mix.js('resources/js/app.js', 'public/js/app.js');
 mix.sass('resources/sass/light.scss', 'public/css/light.css');
 mix.sass('resources/sass/dark.scss', 'public/css/dark.css');
 mix.copy('node_modules/flatpickr/dist/flatpickr.css', 'public/css/flatpickr.css');
+
+mix.sourceMaps(false);
