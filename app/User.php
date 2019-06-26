@@ -85,7 +85,7 @@ class User extends Authenticatable
     {
         parent::boot();
 
-        static::creating(function (User $user) {
+        static::creating(function (self $user) {
             $user->generateApiToken();
         });
     }
