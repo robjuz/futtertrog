@@ -4,7 +4,6 @@ namespace App\ScheduledJobs;
 
 use App\Notifications\NoOrder;
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Notification;
 
@@ -21,6 +20,6 @@ class NoOrderForNextWeekNotification
             })
             ->get();
 
-        Notification::send($users, new NoOrder(__("Next week")));
+        Notification::send($users, new NoOrder(__('Next week')));
     }
 }
