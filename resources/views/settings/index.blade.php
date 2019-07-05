@@ -168,6 +168,26 @@
                                 </div>
                             </div>
 
+                            <div class="form-group pb-1">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="hidden" name="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}" value="0">
+                                    <input type="checkbox"
+                                           class="custom-control-input"
+                                           name="noOrderForNextDayNotification"
+                                           id="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
+                                           {{ old('noOrderForNextDayNotification', $settings[\App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION] ?? false) ? 'checked' : '' }}
+                                           value="1"
+                                           aria-describedby="noOrderForNextDayNotificationHelp"
+                                    >
+                                    <label class="custom-control-label" for="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}">
+                                        {{ __('No order for next week notification') }}
+                                    </label>
+                                    <small id="noOrderForNextDayNotificationHelp" class="form-text text-muted">
+                                        {{ __("Will be sent at 10 o'clock on Thursday and Friday") }}
+                                    </small>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </section>

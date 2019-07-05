@@ -18,6 +18,6 @@ class NoOrderForTodayNotification
             })
             ->get();
 
-        Notification::send($users, new NoOrder(today()));
+        Notification::send($users, new NoOrder(__('calendar.today')));
     }
 }

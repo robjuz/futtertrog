@@ -19,6 +19,6 @@ class NoOrderForNextDayNotification
             })
             ->get();
 
-        Notification::send($users, new NoOrder($nextDay));
+        Notification::send($users, new NoOrder(__('calendar.'.$nextDay->englishDayOfWeek)));
     }
 }

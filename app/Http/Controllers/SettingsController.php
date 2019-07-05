@@ -39,6 +39,7 @@ class SettingsController extends Controller
             User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => ['required', 'boolean'],
             User::SETTING_NO_ORDER_NOTIFICATION => ['required', 'boolean'],
             User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => ['required', 'boolean'],
+            User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => ['required', 'boolean'],
             User::SETTING_MEAL_PREFERENCES => ['nullable', 'string'],
             User::SETTING_MEAL_AVERSION => ['nullable', 'string'],
             User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => ['required', 'boolean'],

@@ -89,9 +89,11 @@
   "This is a friendly reminder.": "Dies ist eine freundliche Erinnerung.",
   "You have ordered no food for!": "Du hast kein Essen für :day bestellt!",
   "Will be sent at 10 o'clock.": "Wird um 10 Uhr verschickt.",
+  "Will be sent at 10 o'clock on Thursday and Friday": "Wird am Donnerstag und Freitag um 10 Uhr verschickt.",
   "Notifications": "Benachrichtigungen",
   "No order for today notification": "Benachrichtigungen: Kein Essen für heute",
   "No order for next day notification": "Benachrichtigungen: Kein Essen für nächsten Tag",
+  "No order for next week notification": "Benachrichtigungen: Kein Essen für nächste Woche",
   "New order possibility notification":  "Benachrichtigungen: Neue Bestellmöglichkeit",
   "Show dog": "Maskottchen im Header anzeigen",
   "today": "heute",
@@ -141,5 +143,6 @@
   "New money transfer": "Geldtransfer",
   "From user": "Vom",
   "To user": "Zu",
-  "Success": "Erfolg"
+  "Success": "Erfolg",
+  "Next week": "Kommende Woche"
 }

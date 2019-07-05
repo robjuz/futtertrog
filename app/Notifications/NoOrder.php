@@ -12,18 +12,18 @@ class NoOrder extends Notification
     use Queueable;
 
     /**
-     * @var Carbon|null
+     * @var string
      */
-    private $date;
+    private $day;
 
     /**
      * Create a new notification instance.
      *
-     * @param Carbon $date
+     * @param string $day
      */
-    public function __construct(Carbon $date)
+    public function __construct(string $day)
     {
-        $this->date = $date;
+        $this->day = $day;
     }
 
     /**
@@ -35,12 +35,10 @@ class NoOrder extends Notification
      */
     public function toArray($notifiable)
     {
-        $day = $this->date->isToday() ? __('calendar.today') : __('calendar.'.$this->date->englishDayOfWeek);
-
         return [
             [
                 'title' => __('This is a friendly reminder.'),
-                'body'  => __('You have ordered no food for!', ['day' => $day]),
+                'body'  => __('You have ordered no food for!', ['day' => $this->day]),
             ],
         ];
     }

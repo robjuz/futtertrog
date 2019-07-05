@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\ScheduledJobs\NoOrderForNextDayNotification;
+use App\ScheduledJobs\NoOrderForNextWeekNotification;
 use App\ScheduledJobs\NoOrderForTodayNotification;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -39,6 +40,11 @@ class Kernel extends ConsoleKernel
         $schedule->call(new NoOrderForTodayNotification)->weekdays()->at('10:00');
 
         $schedule->call(new NoOrderForNextDayNotification)->weekdays()->at('10:00');
+
+        $schedule->call(new NoOrderForNextWeekNotification())
+                 ->thursdays()
+                 ->fridays()
+                 ->at('10:00');
     }
 
     /**
