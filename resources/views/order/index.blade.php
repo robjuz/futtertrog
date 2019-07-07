@@ -5,14 +5,17 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 {{ __('Order index') }}
+
                 <a href="{{ route('order_items.create') }}" class="btn btn-link"> {{ __('Create order') }}</a>
             </div>
+
             <div class="card-body">
                 <form action="{{ route('orders.index') }}" method="get">
                     <div class="form-row align-items-end">
                         <div class="col-md">
                             <div class="form-group">
                                 <label for="from">{{ __('From') }}</label>
+
                                 <input type="date"
                                        class="form-control"
                                        name="from"
@@ -21,9 +24,11 @@
                                 >
                             </div>
                         </div>
+
                         <div class="col-md">
                             <div class="form-group">
                                 <label for="to">{{ __('To') }}</label>
+
                                 <input type="date"
                                        class="form-control"
                                        name="to"
@@ -32,6 +37,29 @@
                                 >
                             </div>
                         </div>
+
+                        <div class="col-md">
+                            <div class="form-group">
+                                <label for="user_id">{{ __('Filter by user') }}</label>
+                                <select class="custom-select" name="user_id" id="user_id">
+                                    <option
+                                        {{ request('user_id', null) == null ? ' selected' : '' }}
+                                        value=""
+                                    >
+                                        {{ __('Filter by user') }}
+                                    </option>
+                                    @foreach($users as $user)
+                                        <option
+                                            value="{{ $user->id }}"
+                                            {{ request('user_id') == $user->id ? ' selected' : '' }}
+                                        >
+                                            {{ $user->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-auto">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-secondary">{{ __('Search') }}</button>

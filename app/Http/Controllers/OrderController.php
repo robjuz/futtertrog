@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -26,12 +27,37 @@ class OrderController extends Controller
         $from = Carbon::parse($request->query('from', today()));
         $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
 
-        $orders = Order::with(['orderItems.meal', 'orderItems.user'])
+        $orders = Order::with(['orderItems.meal'])
             ->whereHas('orderItems.meal')
             ->whereDate('date', '>=', $from->toDateString())
-            ->when(! empty($to), function (Builder $query) use ($to) {
-                $query->whereDate('date', '<=', $to->toDateString());
-            })
+            ->when(
+                ! empty($to),
+                function (Builder $query) use ($to) {
+                    $query->whereDate('date', '<=', $to->toDateString());
+                }
+            )
+            ->when(
+                $request->input('user_id', null),
+                function (Builder $query) use ($request) {
+                    $query->with(
+                        [
+                            'orderItems' => function ($query) use ($request) {
+                                $query->whereUserId($request->user_id);
+                            },
+                            'orderItems.user'
+                        ]
+                    );
+                    $query->whereHas(
+                        'orderItems',
+                        function (Builder $query) use ($request) {
+                            $query->whereUserId($request->user_id);
+                        }
+                    );
+                },
+                function (Builder $query) {
+                    $query->with(['orderItems.user']);
+                }
+            )
             ->orderBy('date')
             ->get();
 
@@ -41,14 +67,16 @@ class OrderController extends Controller
 
         $sum = $orders->sum->subtotal;
 
-        return view('order.index', compact('orders', 'from', 'to', 'sum'));
+        $users = User::all();
+
+        return view('order.index', compact('orders', 'from', 'to', 'sum', 'users'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param \App\Order                $order
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Order $order
      *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -58,9 +86,11 @@ class OrderController extends Controller
         $this->authorize('update', $order);
 
         $order->update(
-            $request->validate([
-                'status' => ['sometimes', 'string', Rule::in(Order::$statuses)],
-            ])
+            $request->validate(
+                [
+                    'status' => ['sometimes', 'string', Rule::in(Order::$statuses)],
+                ]
+            )
         );
 
         if ($request->wantsJson()) {
@@ -73,8 +103,8 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request         $request
-     * @param  \App\Order $order
+     * @param Request $request
+     * @param \App\Order $order
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
      * @throws \Exception
