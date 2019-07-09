@@ -44,7 +44,7 @@ class OrderController extends Controller
                             'orderItems' => function ($query) use ($request) {
                                 $query->whereUserId($request->user_id);
                             },
-                            'orderItems.user'
+                            'orderItems.user',
                         ]
                     );
                     $query->whereHas(
