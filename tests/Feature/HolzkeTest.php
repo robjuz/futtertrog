@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\Services\HolzkeService;
 use Illuminate\Support\Facades\Event;
@@ -41,6 +42,8 @@ class HolzkeTest extends TestCase
         $this->artisan('import:holzke');
 
         $this->assertEquals(1, Meal::count());
+
+        Event::assertDispatched(NewOrderPossibility::class);
     }
 
     /** @test */
