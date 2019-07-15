@@ -15,9 +15,9 @@
 
 
 
-    <div class="container">
+    <main class="container flex-grow-1">
 
-        <h2>{{ __('Settings') }}</h2>
+        <h1>{{ __('Settings') }}</h1>
 
         <form method="POST" action="{{ route('settings.store') }}">
             @csrf
@@ -26,7 +26,7 @@
 
                 <section class="col-md-6 mb-3">
                     <div class="card h-100">
-                        <div class="card-header">{{ __('General') }}</div>
+                        <h2 class="card-header">{{ __('General') }}</h2>
                         <div class="card-body">
 
                             <div class="form-group">
@@ -69,7 +69,7 @@
 
                 <section class="col-md-6 mb-3">
                     <div class="card h-100">
-                        <div class="card-header">{{ __('Surprise me') }}</div>
+                        <h2 class="card-header">{{ __('Surprise me') }}</h2>
                         <div class="card-body">
 
                             <div class="form-group pb-2">
@@ -109,7 +109,7 @@
 
                 <section class="col-md-6 mb-3">
                     <div class="card h-100">
-                        <div class="card-header">{{ __('Notifications') }}</div>
+                        <h1 class="card-header">{{ __('Notifications') }}</h1>
                         <div class="card-body">
 
                             <div class="form-group pb-4">
@@ -194,7 +194,7 @@
 
                 <section class="col-md-6 mb-3">
                     <div class="card h-100">
-                        <div class="card-header">{{ __('Ingredients') }}</div>
+                        <h2 class="card-header">{{ __('Ingredients') }}</h2>
                         <div class="card-body">
 
 
@@ -234,5 +234,5 @@
 
             <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
         </form>
-    </div>
+    </main>
 @endsection

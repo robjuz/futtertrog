@@ -1,44 +1,47 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="container flex-grow-1">
+        <div class="row">
+            <aside class="col-12 col-lg-3 mb-3">
+                @include('partials.user_menu')
+            </aside>
 
+            <main class="col-12 col-lg-9 user-index">
+                <div class="card">
+                    <h1 class="card-header d-flex align-items-center">
+                        {{ __('User index') }}
+                    </h1>
 
-    <div class="container user-index">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                            <th>{{__('Name')}}</th>
 
-        <div class="card">
-            <div class="card-header d-flex align-items-center">
-                {{ __('User index') }}
+                            <th class="d-none d-sm-block">{{__('Email')}}</th>
 
-                <a href={{ route('deposites.transfer' )}} class="btn btn-link ml-auto">{{ __('New money transfer') }}</a>
+                            <th>{{__('Balance')}}</th>
+                            </thead>
+                            <tbody>
+                            @foreach($users as $user)
+                                <tr>
+                                    <td>
+                                        <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
+                                    </td>
 
-                <a href="{{ route('users.create') }}" class="btn btn-link">{{ __('New user') }}</a>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="d-none d-md-block col-1"></div>
-                    <div class="col-7 col-sm-4">{{__('Name')}}</div>
-                    <div class="d-none d-sm-block col-sm-5">{{__('Email')}}</div>
-                    <div class="col-5 col-sm-2">{{__('Balance')}}</div>
-                </div>
-                @foreach($users as $user)
-                    <div class="row mt-3 align-items-center">
-                        <div class="d-none d-md-block col-1">
-                            <img src="{{ $user->gravatarUrl(100) }}" class="rounded-circle img-fluid" alt="">
-                        </div>
-                        <div class="col-7 col-sm-4">
-                            <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
-                        </div>
-                        <div class="d-none d-sm-block col-sm-5">{{ $user->email }}</div>
-                        <div class="col-5 col-sm-2">
-                            <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
-                                {{ number_format($user->balance, 2, ',','.') }} €
-                            </span>
-                        </div>
+                                    <td class="d-none d-sm-block">{{ $user->email }}</td>
+
+                                    <td class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
+                                        {{ number_format($user->balance, 2, ',','.') }} €
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            </main>
         </div>
-    </div>
     </div>
 
 @endsection

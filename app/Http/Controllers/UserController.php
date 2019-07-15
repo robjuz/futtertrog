@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('list', User::class);
+        $this->authorize('viewAny', User::class);
 
         $users = User::with('orderItems.meal')
             ->get();
@@ -57,6 +57,8 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
+        $this->authorize('create', User::class);
+
         $user = User::make($request->validated());
         $user->password = Hash::make($request->input('password'));
 
@@ -127,6 +129,8 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $user->fill($request->validated());
 
         if ($request->has('password') && ! is_null($request->input('password'))) {

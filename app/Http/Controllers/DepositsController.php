@@ -5,9 +5,16 @@ namespace App\Http\Controllers;
 use App\Deposit;
 use App\Http\Requests\DepositDestroyRequest;
 use App\Http\Requests\DepositRequest;
+use App\User;
 
 class DepositsController extends Controller
 {
+    public function create()
+    {
+        $users = User::all();
+
+        return view('deposit.create', compact('users'));
+    }
     /**
      * Store a newly created resource in storage.
      *

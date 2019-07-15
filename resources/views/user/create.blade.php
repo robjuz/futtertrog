@@ -1,11 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
+    <div class="container flex-grow-1">
+        <div class="row">
+            <aside class="col-12 col-lg-3 mb-3">
+                @include('partials.user_menu')
+            </aside>
+
+            <main class="col-12 col-lg-9 user-index">
                 <div class="card">
-                    <div class="card-header">{{ __('New user') }}</div>
+                    <h1 class="card-header">{{ __('New user') }}</h1>
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('users.store') }}">
@@ -81,7 +85,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
 

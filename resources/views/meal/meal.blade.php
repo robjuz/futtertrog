@@ -1,4 +1,4 @@
-<divvvh jkv class="border-top border-bottom py-3 d-flex flex-column h-100">
+<div class="border-top border-bottom py-3 d-flex flex-column h-100">
     <div class="actions d-flex mb-2">
         @can('update', $meal)
             <a href="{{ route('meals.edit', $meal) }}" class="btn btn-link text-info px-0">
@@ -63,4 +63,4 @@
     @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION] ?? false))
         <p class="text-dark order-3 description">{{ $meal->description }}</p>
     @endif
-</divvvhv>
+</div>

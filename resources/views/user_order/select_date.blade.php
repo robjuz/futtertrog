@@ -10,7 +10,7 @@
             <input type="date"
                    name="date"
                    id="date"
-                   class="form-control"
+                   class="form-control @error('date') 'is-invalid @enderror"
                    required
             >
         </div>

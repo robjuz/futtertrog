@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <main class="container flex-grow-1">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Edit Meal') }}</div>
+                    <h1 class="card-header">{{ __('Edit Meal') }}</h1>
 
                     <div class="card-body">
                         <form action="{{ route('meals.update', $meal) }}" method="post">
@@ -18,12 +18,13 @@
                                         {{__('Title')}}
                                     </label>
 
-                                    <input type="text"
-                                           name="title"
-                                           id="title"
-                                           class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}"
-                                           required
-                                           value="{{ old('title', $meal->title) }}"
+                                    <input
+                                        id="title"
+                                        class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}"
+                                        name="title"
+                                        type="text"
+                                        required
+                                        value="{{ old('title', $meal->title) }}"
                                     >
 
                                     @if ($errors->has('title'))
@@ -127,5 +128,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 @endsection()

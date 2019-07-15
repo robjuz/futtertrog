@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <main class="container flex-grow-1">
 
-        <h2>{{ __('Order') }} {{ $order->date->format('d F Y') }}</h2>
+        <h1>{{ __('Order') }} {{ $order->date->format('d F Y') }}</h1>
 
         @foreach($order->meals as $meal)
             <div class="row">

@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <main class="container flex-grow-1">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('New meal') }}</div>
+                    <h1 class="card-header">{{ __('New meal') }}</h1>
 
                     <div class="card-body">
                         <form action="{{ route('meals.store') }}" method="post">
@@ -20,16 +20,16 @@
                                     <input type="text"
                                            name="title"
                                            id="title"
-                                           class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}"
+                                           class="form-control @error('title') 'is-invalid' @enderror"
                                            required
                                            value="{{ old('title') }}"
                                     >
 
-                                    @if ($errors->has('title'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('title') }}</strong>
-                                        </div>
-                                    @endif
+                                    @error('title'))
+                                    <div class="invalid-tooltip" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </div>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group col-12 col-md-4">
@@ -38,22 +38,24 @@
                                     </label>
 
                                     <div class="input-group">
-                                        <input type="number"
-                                               name="price"
-                                               id="price"
-                                               class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
-                                               pattern="\d*"
-                                               required
-                                               min="0"
-                                               step="0.01"
-                                               value="{{ old('price') }}"
+                                        <input
+                                            id="price"
+                                            type="number"
+                                            name="price"
+                                            class="form-control @error('price') 'is-invalid' @enderror"
+                                            pattern="\d*"
+                                            required
+                                            min="0"
+                                            step="0.01"
+                                            value="{{ old('price') }}"
                                         >
 
-                                        @if ($errors->has('price'))
-                                            <div class="invalid-tooltip" role="alert">
-                                                <strong>{{ $errors->first('price') }}</strong>
-                                            </div>
-                                        @endif
+                                        @error('price'))
+                                        <div class="invalid-tooltip" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                        @enderror
+
                                         <div class="input-group-append">
                                             <span class="input-group-text">€</span>
                                         </div>
@@ -65,19 +67,20 @@
                                         {{ __('From') }}
                                     </label>
 
-                                    <input type="date"
-                                           id="date_from"
-                                           name="date_from"
-                                           class="form-control{{ $errors->has('date_from') ? ' is-invalid' : '' }}"
-                                           required
-                                           value="{{ old('date_from') }}"
+                                    <input
+                                        id="date_from"
+                                        type="date"
+                                        name="date_from"
+                                        class="form-control @error('date_from') 'is-invalid' @enderror"
+                                        required
+                                        value="{{ old('date_from') }}"
                                     >
 
-                                    @if ($errors->has('date_from'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('date_from') }}</strong>
-                                        </div>
-                                    @endif
+                                    @error('date_from'))
+                                    <div class="invalid-tooltip" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </div>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group col-12 col-md-6">
@@ -85,19 +88,20 @@
                                         {{ __('To') }}
                                     </label>
 
-                                    <input type="date"
-                                           id="date_to"
-                                           name="date_to"
-                                           class="form-control{{ $errors->has('date_to') ? ' is-invalid' : '' }}"
-                                           required
-                                           value="{{ old('date_to') }}"
+                                    <input
+                                        id="date_to"
+                                        type="date"
+                                        name="date_to"
+                                        class="form-control @error('date_to') 'is-invalid' @enderror"
+                                        required
+                                        value="{{ old('date_to') }}"
                                     >
 
-                                    @if ($errors->has('date_to'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('date_to') }}</strong>
-                                        </div>
-                                    @endif
+                                    @error('date_to'))
+                                    <div class="invalid-tooltip" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </div>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group col-12">
@@ -105,23 +109,29 @@
                                         {{ __('Description') }}
                                     </label>
 
-                                    <textarea name="description"
-                                              id="description"
-                                              class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}"
+                                    <textarea
+                                        id="description"
+                                        name="description"
+                                        class="form-control @error('description') 'is-invalid' @enderror"
                                     >{{ old('description') }}</textarea>
 
-                                    @if ($errors->has('description'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('description') }}</strong>
-                                        </div>
-                                    @endif
+                                    @error('description'))
+                                    <div class="invalid-tooltip" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </div>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" name="notify"
-                                           id="notify" {{ old('notify') ? 'checked' : '' }}>
+                                    <input
+                                        id="notify"
+                                        class="custom-control-input"
+                                        name="notify"
+                                        type="checkbox"
+                                        {{ old('notify') ? 'checked' : '' }}
+                                    >
                                     <label class="custom-control-label" for="notify">
                                         {{ __('Notify users') }}
                                     </label>
@@ -134,5 +144,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 @endsection()

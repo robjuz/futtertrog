@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class DepositTransferController extends Controller
 {
-    public function show()
+    public function create()
     {
         $users = User::all();
 
-        return view('user/new-transfer', compact('users'));
+        return view('deposit-transfer.create', compact('users'));
     }
 
     /**

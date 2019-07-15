@@ -15,11 +15,11 @@
     @endif
 
     <script>
-        window.Futtertrog = {!! json_encode([
+        window.Futtertrog = @json([
             'user' => Auth::user(),
             'vapidPublicKey' => config('webpush.vapid.public_key'),
             'csrf' => csrf_token()
-        ]) !!};
+        ]);
     </script>
 </head>
 <body>
@@ -68,7 +68,7 @@
                     </li>
                 @endcan
 
-                @can('list', \App\User::class)
+                @can('viewAny', \App\User::class)
                     <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
                         <a href="{{ route('users.index') }}" class="nav-link">
                             {{ __('Manage users') }}
@@ -96,19 +96,15 @@
     @endauth
 </nav>
 
-<main id="main">
-
-    @if (session('success'))
-        <div class="container">
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+@if (session('success'))
+    <div class="container">
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
-    @endif
+    </div>
+@endif
 
-    @yield('content')
-
-</main>
+@yield('content')
 
 <footer id="mainFooter" class="text-center text-white py-3 shadow-sm">
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')

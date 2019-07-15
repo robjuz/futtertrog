@@ -3,12 +3,12 @@ body {
   min-height: 100vh;
   flex-direction: column;
 
-  > main {
-    background-color: $body-bg;
-    flex-grow: 1;
+   > nav + * {
+    //background-color: $body-bg;
+    //flex-grow: 1;
     padding-top: 5.5rem;
     @include media-breakpoint-up(lg) {
-      padding-top: 7.5rem;
+      padding-top: 6.5rem;
     }
   }
 }
@@ -51,4 +51,13 @@ body {
 .skip-calendar:focus {
   left:0;
   top: 0;
+}
+
+[aria-haspopup="menu"] + ul {
+    visibility: hidden;
+}
+
+[aria-haspopup="menu"]:hover + ul,
+[aria-haspopup="menu"] + ul:hover {
+    visibility: visible;
 }

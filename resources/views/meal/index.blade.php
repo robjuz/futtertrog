@@ -4,9 +4,9 @@
 
 @section('content')
 
-    <div class="container-fluid">
+    <main class="container-fluid flex-grow-1">
 
-        <h2 class="py-3">@lang('Order meal for :date', ['date' => $requestedDate->format(trans('futtertrog.date_format'))])</h2>
+        <h1 class="py-3">@lang('Order meal for :date', ['date' => $requestedDate->format(trans('futtertrog.date_format'))])</h1>
 
 		<a class="skip-link skip-calendar" href="#current-offer">
 			{{ __('Skip calendar') }}
@@ -73,5 +73,5 @@
 
             </section>
         </div>
-    </div>
+    </main>
 @endsection

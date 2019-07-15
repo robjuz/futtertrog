@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
+    <main class="container">
+        <h1>{{ __('Dashboard') }}</h1>
 
+        <div class="row justify-content-center">
 
             <div class="col-md-6">
 
@@ -102,5 +103,5 @@
             </div>
 
         </div>
-    </div>
+    </main>
 @endsection

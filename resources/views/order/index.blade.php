@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container order-index">
+    <main class="container order-index flex-grow-1">
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <h1 class="card-header d-flex justify-content-between align-items-center">
                 {{ __('Order index') }}
 
                 <a href="{{ route('order_items.create') }}" class="btn btn-link"> {{ __('Create order') }}</a>
-            </div>
+            </h1>
 
             <div class="card-body">
                 <form action="{{ route('orders.index') }}" method="get">
@@ -140,6 +140,6 @@
             </div>
         </div>
 
-    </div>
+    </main>
 
 @endsection
