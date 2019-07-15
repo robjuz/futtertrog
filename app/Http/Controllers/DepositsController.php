@@ -15,6 +15,7 @@ class DepositsController extends Controller
 
         return view('deposit.create', compact('users'));
     }
+
     /**
      * Store a newly created resource in storage.
      *
