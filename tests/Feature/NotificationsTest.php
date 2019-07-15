@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Events\NewOrderPossibility;
+use App\Notifications\CustomNotification;
 use App\Notifications\NewOrderPossibility as NewOrderPossibilityNotification;
 use App\Notifications\NoOrder;
 use App\ScheduledJobs\NoOrderForNextDayNotification;

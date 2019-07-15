@@ -144,5 +144,10 @@
   "From user": "Vom",
   "To user": "Zu",
   "Success": "Erfolg",
-  "Next week": "Kommende Woche"
+  "Next week": "Kommende Woche",
+  "Actions": "Aktionen",
+  "New notification": "Neue Benachrichtigung",
+  "Subject": "Betreff",
+  "Message": "Nachricht",
+  "Notification send": "Benachrichtigung wurde verschickt"
 }

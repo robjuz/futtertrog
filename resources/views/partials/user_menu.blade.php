@@ -24,5 +24,12 @@
                 {{ __('New money transfer') }}
             </a>
         </li>
+
+        <li class="nav-item">
+            <a href="{{ route('notifications.create' )}}"
+               class="btn btn-link {{ request()->routeIs('notifications.create') ? ' active' : '' }}">
+                {{ __('New notification') }}
+            </a>
+        </li>
     </ul>
 </div>

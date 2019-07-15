@@ -31,6 +31,9 @@ Route::group(['middleware' => 'auth:web,api'], function () {
     Route::resource('deposits', 'DepositsController')->only(['create', 'store', 'destroy']);
     Route::resource('settings', 'SettingsController')->only(['index', 'store']);
 
+    Route::get('notifications/create', 'NotificationController@create')->name('notifications.create');
+    Route::post('notifications', 'NotificationController@store')->name('notification.store');
+
     Route::post('/subscriptions', 'PushSubscriptionController@update');
 });
 
