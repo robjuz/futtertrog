@@ -67,13 +67,12 @@ class CustomNotification extends Notification
     {
         return [
             'title' => $this->subject,
-            'body' => $this->body
+            'body' => $this->body,
         ];
     }
 
     public function toWebPush($notifiable)
     {
-
         return (new WebPushMessage())
             ->title($this->subject)
             ->body($this->body);
