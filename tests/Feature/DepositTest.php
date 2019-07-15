@@ -87,7 +87,7 @@ class DepositTest extends TestCase
         $otherUser = factory(User::class)->create();
 
         $this->loginAsAdmin()
-        ->postJson(route('deposites.transfer'), [
+        ->postJson(route('deposits.transfer'), [
             'source' => $user->id,
             'target' => $otherUser->id,
             'value' => 10.5,
