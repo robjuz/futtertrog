@@ -1,0 +1,436 @@
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}main{display:block}h1{font-size:2em;margin:.67em 0}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace,monospace;font-size:1em}a{background-color:transparent}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}img{border-style:none}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{border-style:none;padding:0}[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring,button:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:.35em .75em .625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{vertical-align:baseline}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details{display:block}summary{display:list-item}template{display:none}[hidden]{display:none}
+
+/************************************/
+/*------- Variables ----------------*/
+/************************************/
+:root {
+    --main-text-color: #222;
+    --disabled-text-color: #ddd;
+
+    --gray: #aaa;
+
+    --custom-1: #bf0413;
+    --custom-2: #4c6173;
+    --custom-3: #95acbf;
+    --custom-4: #f28705;
+    --custom-5: #f20505;
+}
+
+/************************************/
+/*------- Basics -------------------*/
+/************************************/
+* {
+    box-sizing: border-box;
+    color: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+* + * {
+    margin-top: 1em;
+}
+
+body, main, br, li, dt, dd, th, td, option, .tabpanels {
+    margin-top: 0;
+}
+
+.sr-only {
+    border: 0;
+    clip: rect(0,0,0,0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+h3 {
+    font-size: 1.15em;
+    text-transform: uppercase;
+}
+
+/**
+ * 1. Prevent adjustments of font size after orientation changes in iOS.
+ */
+html {
+    color: var(--main-text-color);
+    font-size: 100%;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%; /* 1 */
+}
+
+/************************************/
+/*------- Layout -------------------*/
+/************************************/
+body {
+    background: #fcfcfc;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* necessary for sticky footer */
+}
+
+aside {
+    display: block;
+    height: 100vh;
+    min-width: 20em;
+    padding: 1em;
+    width: 20%;
+}
+
+nav {
+    background: #fff;
+    border-bottom: 2px solid var(--custom-3);
+    box-shadow: 0 0 2px 2px #fff;
+    padding: 1em;
+    position: relative; /* to position fancy bottom border */
+}
+
+nav::before {
+    border-bottom: 2px solid var(--custom-2);
+    bottom: -6px;
+    box-shadow: 0 0 4px 2px #fff;
+    content: '';
+    left: 0;
+    position: absolute;
+    right: 0;
+}
+
+main {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40vw;
+}
+
+footer {
+    background: #222;
+    color: #fff;
+    font-size: 0.85em;
+    margin-top: auto; /* combined with display: flex on body it creates sticky footer*/
+    padding: 1em;
+    position: relative; /* to position fancy top border */
+}
+
+/************************************/
+/*------- Login --------------------*/
+/************************************/
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form [type="submit"] {
+    margin-top: 2em;
+}
+
+.login-form + a {
+    display: inline-block;
+    font-size: 0.85em;
+}
+
+
+/************************************/
+/*------- Forms --------------------*/
+/************************************/
+
+[type="submit"] {
+    border-color: var(--custom-4);
+    border-radius: 4px;
+    box-shadow: 0 0 2px 2px #fff;
+    position: relative; /* fancy border */
+}
+
+[type="submit"]::after {
+    border: 2px solid var(--custom-2);
+    border-radius: 6px;
+    bottom: -6px;
+    content: '';
+    left: -6px;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+}
+
+input {
+    background-color: #fff;
+    border: 1px solid var(--custom-2);
+    border-radius: 5px;
+    padding: 0.5em;
+    font-size: 100%;
+}
+
+label {
+    display: inline-block;
+}
+
+[type="checkbox"],
+[type="radio"] {
+    height: 0;
+    opacity: 0;
+    position: absolute; /* remove from flow */
+    width: 0;
+}
+
+[type="checkbox"] + label,
+[type="radio"] + label {
+    display: inline;
+    padding-left: 1.5em;
+    position: relative;
+}
+
+[type="checkbox"] + label::before,
+[type="radio"] + label::before {
+    background: #fff;
+    border: 1px solid var(--custom-2);
+    content: "";
+    height: calc(1em - 2px);
+    left: 0;
+    position: absolute;
+    top: 3px;
+    width: calc(1em - 2px);
+}
+
+[type="radio"] + label::before {
+    border-radius: 50%;
+}
+
+[type="checkbox"]:checked + label::after {
+    content: "";
+    left: 0.3em;
+    position: absolute;
+    top: 0.05em;
+    width: 0.25em;
+    height: 0.625em;
+    border: solid var(--main-text-color);
+    border-width: 0 0.1855em 0.1855em 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+[type="radio"]:checked + label::after {
+    background: var(--main-text-color);
+    border-radius: 50%;
+    content: "";
+    height: calc(1em - 6px);
+    left: 3px;
+    position: absolute;
+    top: 3px;
+    width: calc(1em - 6px);
+}
+
+fieldset {
+    border-radius: 5px;
+    box-shadow: 3px 3px 6px 3px #eee;
+    margin-bottom: 1em;
+    padding: 0 1em 1em;
+}
+
+legend {
+    font-size: 0.85em;
+    padding: 0.5em;
+}
+
+form p[class^="custom"] {
+    border-bottom-style: solid;
+    border-bottom-width: 3px;
+    padding: 0 0.5em 0.5em 1em;;
+}
+
+form button {
+    background: #fff;
+    border-color: var(--gray);
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+    font-size: 0.9em;
+    padding: 0.5em 1em;
+}
+
+/************************************/
+/*------- Tree ---------------------*/
+/************************************/
+[role="tree"] {
+    list-style-type: none;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 0;
+}
+
+[role="treeitem"] {
+    background: #fff;
+    line-height: 2.5em;
+    margin-top: 2px;
+    outline: none;
+    padding: 1px 0;
+    position: relative;
+    white-space: nowrap;
+}
+
+[role="treeitem"]:hover {
+    background: #fcfcfc;
+    cursor: pointer;
+}
+
+[role="treeitem"][aria-selected] > span,
+[role="treeitem"]:focus > span {
+    font-weight: bold;
+}
+
+[role="treeitem"][aria-selected] > span::before,
+[role="treeitem"]:focus > span::before {
+    content: "\2192";
+}
+
+[role="treeitem"][aria-expanded]::after {
+    border-left: 0.5em solid transparent;
+    border-right: 0.5em solid transparent;
+    content: "";
+    height: 0.5em;
+    position: absolute;
+    right: 1em;
+    width: 0;
+}
+
+[role="treeitem"][aria-expanded="true"]::after {
+    border-bottom: 0.5em solid #222;
+    top: 3px;
+}
+
+[role="treeitem"][aria-expanded="false"]::after {
+    border-top: 0.5em solid #222;
+    top: 8px;
+}
+
+[role="treeitem"][aria-expanded="false"] > ul {
+    display: none;
+}
+
+[role="treeitem"][class^="custom"] {
+    border-left-style: solid;
+    border-left-width: 0.3em;
+    padding-left: 0.5em;
+}
+
+[role="group"] {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+/************************************/
+/*------- Tabs ---------------------*/
+/************************************/
+
+[role="tablist"] {
+    border-bottom: 3px solid #ddd;
+    display: flex;
+    margin-top: 1em;
+}
+
+[role="tablist"] button {
+    background: #fff;
+    border-color: #ddd;
+    border-radius: 5px 0 0 0;
+    border-style: solid;
+    border-width: 2px 0 0 2px;
+    outline: none;
+    padding: 0.5em;
+}
+
+[role="tablist"] > *:first-child {
+    margin-left: 0.5em;
+}
+
+[role="tab"] + button:not([role="tab"]) {
+    border-width: 2px 2px 0 0;
+    border-radius: 0 5px 0 0;
+}
+
+[role="tablist"] button:focus,
+[role="tablist"] [aria-selected="true"] {
+    font-weight: bold;
+}
+
+[role="tablist"] [aria-selected="true"],
+[role="tablist"] [aria-selected="true"] + button:not([role="tab"]) {
+    border-bottom: 3px solid #fff;
+    bottom: -3px;
+    position: relative;
+}
+
+[role="tabpanel"] {
+    background: #fff;
+    padding: 1em;
+}
+
+/************************************/
+/*------- Grid ---------------------*/
+/************************************/
+
+[role="grid"] {
+    display:flex;
+    list-style-type: none;
+}
+
+[role="row"] {
+    display: flex;
+}
+
+.inner-form {
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+    box-shadow: 3px 3px 6px 3px #eee;
+    padding: 1em;
+}
+
+.inner-form [role="row"] {
+    width: 100%;
+}
+
+.inner-form [role="gridcell"] {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+}
+
+.inner-form * + [role="gridcell"] {
+    border-left: 1px solid #e3e3e3;
+    margin-left: 1em;
+    padding-left: 1em;
+}
+
+.inner-form [role="gridcell"]:last-child {
+    flex: 1;
+}
+
+
+
+
+
+
+/************************************/
+/*------- Custom -------------------*/
+/************************************/
+
+.custom-1 {  border-color: var(--custom-1); }
+.custom-2 {  border-color: var(--custom-2); }
+.custom-3 {  border-color: var(--custom-3); }
+.custom-4 {  border-color: var(--custom-4); }
+.custom-5 {  border-color: var(--custom-5); }
+.custom-6 {  border-color: var(--custom-6); }
+.custom-7 {  border-color: var(--custom-7); }
+.custom-8 {  border-color: var(--custom-8); }
+.custom-9 {  border-color: var(--custom-9); }
+.custom-10 {  border-color: var(--custom-10); }
+.custom-11 {  border-color: var(--custom-11); }
+.custom-12 {  border-color: var(--custom-12); }
+.custom-13 {  border-color: var(--custom-13); }
+.custom-14 {  border-color: var(--custom-14); }
+
+
