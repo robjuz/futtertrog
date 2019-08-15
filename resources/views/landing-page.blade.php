@@ -93,9 +93,6 @@
             top: -6px;
         }
 
-        div.phpdebugbar {
-            display: none !important;
-        }
     </style>
 </head>
 <body>
@@ -114,7 +111,7 @@
         Chcesz się dowiedzieć, co jeszcze <b>Futtertrog</b> może zrobić dla Ciebie?
     </p>
 
-    <a href="/login">Przekonaj się sam!</a>
+    <a href="{{ route('login') }}">Przekonaj się sam!</a>
 
 </main>
 </body>

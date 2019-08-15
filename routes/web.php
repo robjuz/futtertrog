@@ -17,8 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes(['register' => false]);
 
+Route::view('/', 'landing-page');
+
 Route::group(['middleware' => 'auth:web,api'], function () {
-    Route::get('/', 'HomeController')->name('home');
+    Route::get('/dashboard', 'HomeController')->name('home');
 
     Route::get('meals/ical', 'IcalController')->name('meals.ical');
     Route::resource('meals', 'MealController');

@@ -12,7 +12,7 @@
             <label for="email">
                 <span>{{ __('E-Mail Address') }}</span>
 
-                @error('email'))
+                @error('email')
                 <span>{{ $message }}</span>
                 @enderror
             </label>
@@ -28,7 +28,7 @@
             <label for="password">
                 <span>{{ __('Password') }}</span>
 
-                @error('password'))
+                @error('password')
                 <span>{{ $message }}</span>
                 @enderror
             </label>
