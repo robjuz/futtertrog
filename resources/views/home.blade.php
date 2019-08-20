@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <main>
+    <main class="dashboard">
         <h1>{{ __('Dashboard') }}</h1>
 
         <section>

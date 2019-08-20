@@ -83,21 +83,7 @@ aside {
 }
 
 nav {
-    background: #fff;
-    border-bottom: 2px solid var(--custom-3);
-    box-shadow: 0 0 2px 2px #fff;
     padding: 1em;
-    position: relative; /* to position fancy bottom border */
-}
-
-nav::before {
-    border-bottom: 2px solid var(--custom-2);
-    bottom: -6px;
-    box-shadow: 0 0 4px 2px #fff;
-    content: '';
-    left: 0;
-    position: absolute;
-    right: 0;
 }
 
 main {
@@ -133,6 +119,139 @@ footer {
     font-size: 0.85em;
 }
 
+/************************************/
+/*------- Dashboard ----------------*/
+/************************************/
+
+.dashboard {
+    display: grid;
+    grid-gap: 2vw;
+    grid-template-columns: 20vw 1fr 1fr 20vw;
+    width: auto;
+}
+
+.dashboard h1 {
+    grid-column: 2 / span 2;
+}
+
+.dashboard > section {
+    background: #fff;
+    border-bottom: 2px solid;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    padding: 1em;
+    position: relative;
+}
+
+
+.dashboard > section:nth-child(2n) {
+    border-color: var(--custom-1);
+    grid-column: 2 / span 1;
+}
+
+.dashboard > section:nth-child(2n + 1) {
+    border-color: var(--color-3);
+    grid-column: 3 / span 1;
+}
+
+.dashboard > section::before {
+    border-bottom: 3px solid;
+    border-bottom-color: inherit;
+    content: "";
+    left: -10px;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+}
+
+.dashboard > section::after {
+    border: 0.4em solid;
+    border-color: inherit;
+    border-radius: 50%;
+    content: "";
+    display: block;
+    height: 0;
+    left: 50%;
+    margin-right: -0.4em;
+    position: absolute;
+    top: -20px;
+    transform: translate(-50%);
+    width: 0;
+}
+
+.dashboard > section:nth-of-type(1) { grid-row: 2; }
+.dashboard > section:nth-of-type(2) { grid-row: 3; }
+.dashboard > section:nth-of-type(3) { grid-row: 4; }
+.dashboard > section:nth-of-type(4) { grid-row: 5; }
+.dashboard > section:nth-of-type(5) { grid-row: 6; }
+
+
+/************************************/
+/*------- Main navbar --------------*/
+/************************************/
+
+[id="main-navbar"] {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+[id="main-navbar"] ul{
+    display: inline-grid;
+    float: right;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+[id="main-navbar"] button,
+[id="main-navbar"] li {
+    background: #fff;
+    border: 2px solid; /* border colors are defined with custom properties below */
+    box-shadow: 0 0 6px 3px #eee;
+    transition: 0.25s;
+}
+
+[id="main-navbar"] button {
+    font-size: 1.25em;
+    font-weight: bold;
+    padding: 1em;
+}
+
+[id="main-navbar"] li + li {
+    margin-top: 0.2em;
+}
+
+[id="main-navbar"] li:nth-child(2n) {
+    transform: rotate(2deg);
+}
+
+[id="main-navbar"] li:nth-child(2n+1) {
+    transform: rotate(-2deg);
+}
+
+[id="main-navbar"] li:hover {
+    transform: rotate(0);
+}
+
+[id="main-navbar"] li:nth-child(5n + 1){ border-color: var(--custom-1); }
+[id="main-navbar"] li:nth-child(5n + 2){ border-color: var(--custom-2); }
+[id="main-navbar"] li:nth-child(5n + 3){ border-color: var(--custom-3); }
+[id="main-navbar"] li:nth-child(5n + 4){ border-color: var(--custom-4); }
+[id="main-navbar"] li:nth-child(5n)    { border-color: var(--custom-5); }
+
+[id="main-navbar"] a {
+    display: inline-block; /* for top and bottom padding */
+    font-size: 1.25em;
+    font-weight: bold;
+    padding: 1em 3em;
+    text-transform: uppercase;
+}
+
+[id="main-navbar"] li:hover a {
+    text-decoration-style: double;
+}
 
 /************************************/
 /*------- Forms --------------------*/

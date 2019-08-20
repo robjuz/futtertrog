@@ -20,75 +20,71 @@
 </head>
 <body>
 
-<nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
-    <a href="/">Home</a>
+@auth()
+    <a class="sr-only skip-link skip-navigation" href="#main">
+        {{ __('Skip navigation') }}
+    </a>
+@endauth()
 
-    @auth()
-        <input type="checkbox" id="nav-toggler" class="d-none"/>
-        <label for="nav-toggler" class="navbar-toggler"><span class="navbar-toggler-icon"></span></label>
+<a href="/">Home</a>
 
-        <div class="collapse navbar-collapse">
-            <a class="skip-link skip-navigation" href="#main" tabindex="1">
-                {{ __('Skip navigation') }}
+@auth()
+
+<nav id="main-navbar">
+    <button
+            aria-haspopup="true"
+            aria-controls="main-menu">
+        <span class="sr-only">Menü</span>
+        <span aria-hidden="true">&larr;</span>
+    </button>
+    <ul id="main-menu">
+        <li>
+            <a href="{{ route('home') }}" {{ request()->routeIs('home') ? 'aria-current="page"' : '' }}>
+                {{ __('Dashboard') }}
             </a>
+        </li>
 
-            <!-- Left Side Of Navbar -->
-            <ul class="navbar-nav mr-auto">
+        <li>
+            <a href="{{ route('meals.index') }}" {{ request()->routeIs('meals.index') ? 'aria-current="page"' : '' }}>
+                {{ __('Place order') }}
+            </a>
+        </li>
+        @can('create', \App\Meal::class)
+            <li>
+                <a href="{{ route('meals.create') }}" {{ request()->routeIs('meals.create') ? 'aria-current="page"' : '' }}>
+                    {{ __('New meal') }}
+                </a>
 
-                <li class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
-                    <a href="{{ route('home') }}" class="nav-link">
-                        {{ __('Dashboard') }}
-                    </a>
-                </li>
+            </li>
+        @endcan
+        @can('list', \App\Order::class)
+            <li>
+                <a href="{{ route('orders.index') }}" {{ request()->routeIs('orders.index') ? 'aria-current="page"' : '' }}>
+                    {{ __('Manage orders') }}
+                </a>
+            </li>
+        @endcan
 
-                <li class="nav-item {{ request()->routeIs('meals.index') ? 'active' : '' }}">
-                    <a href="{{ route('meals.index') }}" class="nav-link">
-                        {{ __('Place order') }}
-                    </a>
-                </li>
-                @can('create', \App\Meal::class)
-                    <li class="nav-item {{ request()->routeIs('meals.create') ? 'active' : '' }}">
-                        <a href="{{ route('meals.create') }}" class="nav-link">
-                            {{ __('New meal') }}
-                        </a>
-
-                    </li>
-                @endcan
-                @can('list', \App\Order::class)
-                    <li class="nav-item {{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                        <a href="{{ route('orders.index') }}" class="nav-link">
-                            {{ __('Manage orders') }}
-                        </a>
-                    </li>
-                @endcan
-
-                @can('viewAny', \App\User::class)
-                    <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
-                        <a href="{{ route('users.index') }}" class="nav-link">
-                            {{ __('Manage users') }}
-                        </a>
-                    </li>
-                @endcan
-            </ul>
-            <div class="navbar-nav ml-auto flex-row align-items-center">
-                <img src="{{ Auth::user()->gravatarUrl(50) }}"
-                     class="rounded-circle mr-3 mr-lg-1"
-                     alt=""
-                     width="50"
-                     height="50"
-                >
-                <div class="d-flex flex-column text-left">
-                    <a class="nav-item nav-link" href="{{ route('settings.index') }}">
-                        {{ __('Settings') }}
-                    </a>
-                    <a class="nav-item nav-link" href="{{ route('logout') }}">
-                        {{ __('Logout') }}
-                    </a>
-                </div>
-            </div>
-        </div>
-    @endauth
+        @can('viewAny', \App\User::class)
+            <li>
+                <a href="{{ route('users.index') }}" {{ request()->routeIs('users.index') ? 'aria-current="page"' : '' }}>
+                    {{ __('Manage users') }}
+                </a>
+            </li>
+        @endcan
+        <li>
+            <a href="{{ route('settings.index') }}" {{ request()->routeIs('settings.index') ? 'aria-current="page"' : ''}}>
+                {{ __('Settings') }}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('logout') }}">
+                {{ __('Logout') }}
+            </a>
+        </li>
+    </ul>
 </nav>
+@endauth
 
 @if (session('success'))
     <p>
