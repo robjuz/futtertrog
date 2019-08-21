@@ -48,6 +48,12 @@ body, main, br, li, dt, dd, th, td, option, .tabpanels {
     width: 1px;
 }
 
+h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 4em;
+    text-transform: uppercase;
+}
+
 h3 {
     font-size: 1.15em;
     text-transform: uppercase;
@@ -59,9 +65,45 @@ h3 {
 html {
     color: var(--main-text-color);
     font-size: 100%;
-    font-family: Arial, sans-serif;
+    font-family: 'Livvic', Arial, sans-serif;
     line-height: 1.5;
     -webkit-text-size-adjust: 100%; /* 1 */
+}
+
+/************************************/
+/*------- Table --------------------*/
+/************************************/
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tr {
+    border-bottom: 1px solid var(--custom-3);
+}
+
+tr:nth-child(2n) {
+    background: #f2f2f2;
+}
+
+tr:nth-child(2n + 1) {
+    background: #fff;
+}
+
+thead tr {
+    border-bottom: 2px solid var(--custom-4);
+}
+
+tr:hover {
+    background: #eee;
+}
+
+th {
+    text-align: left;
+}
+
+td {
+    padding: 0.25em;
 }
 
 /************************************/
@@ -90,7 +132,7 @@ main {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 40vw;
+    /* width: 40vw; */
 }
 
 footer {
@@ -123,42 +165,79 @@ footer {
 /*------- Dashboard ----------------*/
 /************************************/
 
+/*-- layout --*/
 .dashboard {
     display: grid;
     grid-gap: 2vw;
-    grid-template-columns: 20vw 1fr 1fr 20vw;
-    width: auto;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 20vw 1em;
+    width: auto; /* undo default */
 }
 
 .dashboard h1 {
-    grid-column: 2 / span 2;
+    grid-column: 1 / span 2;
+    grid-row: 1;
 }
 
-.dashboard > section {
+.dashboard > section:nth-of-type(1) {
+    align-self: end;
+    justify-self: end;
+}
+
+.dashboard > section:nth-of-type(3) {
+    justify-self: end;
+}
+
+.dashboard > section:nth-of-type(4) {
+    align-self: end;
+}
+
+.dashboard > section:nth-of-type(5) {
+    grid-column: span 2;
+}
+/*-- layout end --*/
+
+.dashboard h2 {
+    text-align: center;
+}
+
+.dashboard table td:first-child {
+    padding-right: 0;
+    text-align: right;
+}
+
+.dashboard ul {
+    list-style-type: none;
+}
+
+/*-- pure decoration --*/
+.dashboard > section,
+[id="current-offer"] li.selected,
+[id="calendar"] li:hover {
     background: #fff;
-    border-bottom: 2px solid;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-left: 2px solid;
-    border-right: 2px solid;
+    border: 3px solid;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-color: var(--custom-2);
+    border-top-width: 0;
     padding: 1em;
     position: relative;
 }
 
-
 .dashboard > section:nth-child(2n) {
     border-color: var(--custom-1);
-    grid-column: 2 / span 1;
 }
 
-.dashboard > section:nth-child(2n + 1) {
-    border-color: var(--color-3);
-    grid-column: 3 / span 1;
+.dashboard > section:nth-child(3n) {
+    border-color: var(--custom-3);
 }
 
-.dashboard > section::before {
-    border-bottom: 3px solid;
+.dashboard > section::before,
+[id="current-offer"] li.selected::before,
+[id="calendar"] li:hover::before {
+    border-bottom: 7px solid;
     border-bottom-color: inherit;
+    border-radius: 50%;
     content: "";
     left: -10px;
     position: absolute;
@@ -166,7 +245,9 @@ footer {
     top: -10px;
 }
 
-.dashboard > section::after {
+.dashboard > section::after,
+[id="current-offer"] li.selected::after,
+[id="calendar"] li:hover::after {
     border: 0.4em solid;
     border-color: inherit;
     border-radius: 50%;
@@ -180,13 +261,155 @@ footer {
     transform: translate(-50%);
     width: 0;
 }
+/*-- pure decoration end --*/
 
-.dashboard > section:nth-of-type(1) { grid-row: 2; }
-.dashboard > section:nth-of-type(2) { grid-row: 3; }
-.dashboard > section:nth-of-type(3) { grid-row: 4; }
-.dashboard > section:nth-of-type(4) { grid-row: 5; }
-.dashboard > section:nth-of-type(5) { grid-row: 6; }
+/************************************/
+/*------- Calendar -----------------*/
+/************************************/
 
+[id="calendar"] {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+}
+
+[id="calendar"] > a:first-child {
+    align-items: start;
+    grid-row: 1;
+}
+
+[id="calendar"] > a:last-child {
+    align-items: end;
+    grid-row: 3;
+}
+
+/* For nice effect on hover
+*/
+[id="calendar"] ol {
+    display: flex;
+    grid-row: 2;
+    list-style-type: none;
+    margin-top: 0; /* 1 */
+    max-width: 80vw;
+    overflow-x: auto;
+    padding-left: 0;
+    padding-top: 2em; /* 2 */
+}
+
+[id="calendar"] > ol > li {
+    background: #fff;
+    border: 1px solid;
+    border-color: var(--custom-4);
+    display: block;
+}
+
+[id="calendar"] li.weekend {
+    background: #eaeaea;
+    border-color: var(--custom-3);
+}
+
+/* use first child before pseudo element
+ * because li's before is reserved for hover
+ */
+[id="calendar"] li.today {
+    border-color: var(--custom-2);
+}
+
+[id="calendar"] li.selected {
+    font-weight: bold;
+}
+
+/*-- all styles are in dashboard section --*/
+[id="calendar"] li:hover {
+    border-color: var(--custom-5);
+    padding: 0;
+}
+
+[id="calendar"] li + li {
+    margin-left: 2px;
+}
+
+[id="calendar"] ol a {
+    align-items: center;
+    display: flex;
+    flex-direction: column-reverse;
+    font-size: 1.15em;
+    height: 100%;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    width: 100%;
+}
+
+[id="calendar"] a > span {
+    margin-top: 0;
+}
+
+[id="calendar"] .month {
+    font-size: 0.9em;
+}
+
+[id="calendar"] .weekday {
+    font-size: 0.6em;
+    text-transform: uppercase;
+}
+
+[id="calendar"] .weekend .weekday {
+    color: var(--custom-1);
+}
+
+[id="calendar"] .day {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+[id="calendar"] .order,
+[id="calendar"] .ordered {
+    font-size: 0.6em;
+    order: -1;
+}
+
+[id="calendar"] a *:first-child {
+    margin-bottom: auto;
+}
+
+[id="calendar"] + * {
+    margin-top: 5em;
+}
+
+/************************************/
+/*------- Meals --------------------*/
+/************************************/
+[id="current-offer"] ol {
+    display: grid;
+    grid-gap: 2vw;
+    grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
+    list-style-type: none;
+    padding-left: 0;
+}
+
+[id="current-offer"] li {
+    background: #fff;
+    box-shadow: 0 0 3px 3px #eee;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+}
+
+/*-- all styles are in dashboard section --*/
+[id="current-offer"] li.selected {
+    border-color: var(--custom-1);
+}
+
+[id="current-offer"] li > *:last-child {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 2em;
+}
+
+[id="current-offer"] input + button {
+    margin-left: 1em;
+}
 
 /************************************/
 /*------- Main navbar --------------*/
@@ -196,6 +419,7 @@ footer {
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 1;
 }
 
 [id="main-navbar"] ul{
@@ -370,168 +594,6 @@ form button {
     font-size: 0.9em;
     padding: 0.5em 1em;
 }
-
-/************************************/
-/*------- Tree ---------------------*/
-/************************************/
-[role="tree"] {
-    list-style-type: none;
-    max-height: 80vh;
-    overflow-y: auto;
-    padding: 0;
-}
-
-[role="treeitem"] {
-    background: #fff;
-    line-height: 2.5em;
-    margin-top: 2px;
-    outline: none;
-    padding: 1px 0;
-    position: relative;
-    white-space: nowrap;
-}
-
-[role="treeitem"]:hover {
-    background: #fcfcfc;
-    cursor: pointer;
-}
-
-[role="treeitem"][aria-selected] > span,
-[role="treeitem"]:focus > span {
-    font-weight: bold;
-}
-
-[role="treeitem"][aria-selected] > span::before,
-[role="treeitem"]:focus > span::before {
-    content: "\2192";
-}
-
-[role="treeitem"][aria-expanded]::after {
-    border-left: 0.5em solid transparent;
-    border-right: 0.5em solid transparent;
-    content: "";
-    height: 0.5em;
-    position: absolute;
-    right: 1em;
-    width: 0;
-}
-
-[role="treeitem"][aria-expanded="true"]::after {
-    border-bottom: 0.5em solid #222;
-    top: 3px;
-}
-
-[role="treeitem"][aria-expanded="false"]::after {
-    border-top: 0.5em solid #222;
-    top: 8px;
-}
-
-[role="treeitem"][aria-expanded="false"] > ul {
-    display: none;
-}
-
-[role="treeitem"][class^="custom"] {
-    border-left-style: solid;
-    border-left-width: 0.3em;
-    padding-left: 0.5em;
-}
-
-[role="group"] {
-    list-style-type: none;
-    padding-left: 20px;
-}
-
-/************************************/
-/*------- Tabs ---------------------*/
-/************************************/
-
-[role="tablist"] {
-    border-bottom: 3px solid #ddd;
-    display: flex;
-    margin-top: 1em;
-}
-
-[role="tablist"] button {
-    background: #fff;
-    border-color: #ddd;
-    border-radius: 5px 0 0 0;
-    border-style: solid;
-    border-width: 2px 0 0 2px;
-    outline: none;
-    padding: 0.5em;
-}
-
-[role="tablist"] > *:first-child {
-    margin-left: 0.5em;
-}
-
-[role="tab"] + button:not([role="tab"]) {
-    border-width: 2px 2px 0 0;
-    border-radius: 0 5px 0 0;
-}
-
-[role="tablist"] button:focus,
-[role="tablist"] [aria-selected="true"] {
-    font-weight: bold;
-}
-
-[role="tablist"] [aria-selected="true"],
-[role="tablist"] [aria-selected="true"] + button:not([role="tab"]) {
-    border-bottom: 3px solid #fff;
-    bottom: -3px;
-    position: relative;
-}
-
-[role="tabpanel"] {
-    background: #fff;
-    padding: 1em;
-}
-
-/************************************/
-/*------- Grid ---------------------*/
-/************************************/
-
-[role="grid"] {
-    display:flex;
-    list-style-type: none;
-}
-
-[role="row"] {
-    display: flex;
-}
-
-.inner-form {
-    border: 1px solid #d1d1d1;
-    border-radius: 5px;
-    box-shadow: 3px 3px 6px 3px #eee;
-    padding: 1em;
-}
-
-.inner-form [role="row"] {
-    width: 100%;
-}
-
-.inner-form [role="gridcell"] {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    margin-top: 0;
-}
-
-.inner-form * + [role="gridcell"] {
-    border-left: 1px solid #e3e3e3;
-    margin-left: 1em;
-    padding-left: 1em;
-}
-
-.inner-form [role="gridcell"]:last-child {
-    flex: 1;
-}
-
-
-
-
-
 
 /************************************/
 /*------- Custom -------------------*/

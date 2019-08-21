@@ -7,7 +7,7 @@
     <title>{{ config('app.name') }}</title>
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
-    @laravelPWA
+    {{--@laravelPWA--}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <script>
@@ -17,9 +17,9 @@
             'csrf' => csrf_token()
         ]);
     </script>
+    <link href="https://fonts.googleapis.com/css?family=Caveat|Livvic&display=swap" rel="stylesheet">
 </head>
 <body>
-
 @auth()
     <a class="sr-only skip-link skip-navigation" href="#main">
         {{ __('Skip navigation') }}
@@ -97,7 +97,7 @@
 <footer id="mainFooter">
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 </footer>
-
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="{{ asset('js/app.js') }}" async defer></script>
 </body>
 </html>

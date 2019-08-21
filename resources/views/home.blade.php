@@ -58,9 +58,9 @@
                             </li>
                         @endforeach
                     </ul>
-                    <nav>
-                        {{ $futureOrders->links() }}
-                    </nav>
+
+                    {{ $futureOrders->links() }}
+
                 @else
                     <p>{{ __('No upcoming orders') }}</p>
 
@@ -72,7 +72,7 @@
             @include('partials.deposit_history')
         </section>
 
-        <section>
+        <section id="deposit-history">
             @include('partials.order_history', ['orders' => $ordersHistory])
         </section>
     </main>
