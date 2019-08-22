@@ -6,14 +6,6 @@
 
         <section>
             <header>
-                <h2>{{ __('Your balance') }}</h2>
-            </header>
-
-            <p>{{ number_format($balance, 2, ',','.') }} €</p>
-        </section>
-
-        <section>
-            <header>
                 <h2>{{ __('Your order for today') }}</h2>
             </header>
 
@@ -33,6 +25,14 @@
             @else
                 <p>{{ __('No orders for today') }}</p>
             @endif
+        </section>
+
+        <section>
+            <header>
+                <h2>{{ __('Your balance') }}</h2>
+            </header>
+
+            <p>{{ number_format($balance, 2, ',','.') }} €</p>
         </section>
 
         <section>

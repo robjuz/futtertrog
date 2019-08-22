@@ -12,7 +12,7 @@
             <tr>
                 <th><span class="sr-only">Anzahl</span></th>
                 <th>Menü</th>
-                <th>Bestellt am</th>
+                <th class="hide-xs">Bestellt</th>
                 <th>Bestellt für</th>
                 <th>Preis</th>
                 @if(auth()->user()->is_admin AND !request()->routeIs('home'))
@@ -31,7 +31,7 @@
                      {{ $orderItem->meal->title }}
                 </td>
 
-                <td>
+                <td class="hide-xs">
                     <small title="{{ $orderItem->created_at->format(__('futtertrog.datetime_format')) }}">
                         {{ $orderItem->created_at->diffForHumans() }}
                     </small>

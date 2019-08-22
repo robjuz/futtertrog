@@ -28,6 +28,12 @@ class MealController extends Controller
     {
         $requestedDate = Carbon::parse($request->query('date', today()));
 
+        $previousMonth = $requestedDate->clone()->subMonthNoOverflow()->lastOfMonth();
+        $nextMonth = $requestedDate->clone()->addMonthNoOverflow()->firstOfMonth();
+
+
+        $startOfMonth = $requestedDate->clone()->startOfMonth();
+
         $todayMeals = $meals->forDate($requestedDate)->sortByPreferences();
 
         if ($request->wantsJson()) {
@@ -38,7 +44,7 @@ class MealController extends Controller
 
         $listType = $request->user()->settings[User::SETTING_MEALS_LIST_TYPE] ?? 'grid';
 
-        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate', 'listType'));
+        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate','previousMonth', 'startOfMonth', 'nextMonth' ,'listType'));
     }
 
     /**
