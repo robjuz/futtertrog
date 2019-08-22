@@ -50,7 +50,7 @@ body, main, br, li, dt, dd, th, td, option, .tabpanels {
 
 h1 {
     font-family: 'Caveat', cursive;
-    font-size: 4em;
+    font-size: calc(2em + 2vw);
     text-transform: uppercase;
 }
 
@@ -71,7 +71,7 @@ html {
 }
 
 /************************************/
-/*------- Table --------------------*/
+/*------- Tables -------------------*/
 /************************************/
 table {
     border-collapse: collapse;
@@ -130,9 +130,10 @@ nav {
 
 main {
     display: block;
+    margin-bottom: 2em; /* exceptionally margin on bottom because of sticky footer */
     margin-left: auto;
     margin-right: auto;
-    /* width: 40vw; */
+    min-width: 300px;
 }
 
 footer {
@@ -144,56 +145,66 @@ footer {
     position: relative; /* to position fancy top border */
 }
 
-/************************************/
-/*------- Login --------------------*/
-/************************************/
-.login-form {
+@media only screen and (max-width: 700px) {
+    .hide-xs {
+        display: none;
+    }
+}
+
+.pagination {
     display: flex;
-    flex-direction: column;
 }
 
-.login-form [type="submit"] {
-    margin-top: 2em;
+.pagination > *:first-child {
+    margin-right: auto;
 }
 
-.login-form + a {
-    display: inline-block;
-    font-size: 0.85em;
+.pagination > *:last-child {
+    margin-left: auto;
 }
+
 
 /************************************/
 /*------- Dashboard ----------------*/
 /************************************/
 
 /*-- layout --*/
-.dashboard {
-    display: grid;
-    grid-gap: 2vw;
-    grid-template-columns: 1fr 1fr;
-    margin: 0 20vw 1em;
-    width: auto; /* undo default */
+
+.dashboard > section {
+    margin: 3em auto 0;
+    width: 90%;
 }
 
-.dashboard h1 {
-    grid-column: 1 / span 2;
-    grid-row: 1;
-}
+@media screen and (min-width: 700px) {
+    .dashboard {
+        display: grid;
+        grid-gap: 2vw;
+        grid-template-columns: 1fr 1fr;
+        margin: 0 20vw 1em;
+        width: auto; /* undo default */
+    }
 
-.dashboard > section:nth-of-type(1) {
-    align-self: end;
-    justify-self: end;
-}
+    .dashboard h1 {
+        grid-column: 1 / span 2;
+        grid-row: 1;
+    }
 
-.dashboard > section:nth-of-type(3) {
-    justify-self: end;
-}
+    .dashboard > section:nth-of-type(2) {
+        align-self: end;
+        justify-self: end;
+    }
 
-.dashboard > section:nth-of-type(4) {
-    align-self: end;
-}
+    .dashboard > section:nth-of-type(3) {
+        justify-self: end;
+    }
 
-.dashboard > section:nth-of-type(5) {
-    grid-column: span 2;
+    .dashboard > section:nth-of-type(4) {
+        align-self: end;
+    }
+
+    .dashboard > section:nth-of-type(5) {
+        grid-column: span 2;
+    }
 }
 /*-- layout end --*/
 
@@ -204,26 +215,20 @@ footer {
 .dashboard table td:first-child {
     padding-right: 0;
     text-align: right;
+    white-space: nowrap;
+}
+
+.dashboard table td:last-child {
+    white-space: nowrap;
 }
 
 .dashboard ul {
     list-style-type: none;
 }
 
-/*-- pure decoration --*/
-.dashboard > section,
-[id="current-offer"] li.selected,
-[id="calendar"] li:hover {
-    background: #fff;
-    border: 3px solid;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    border-color: var(--custom-2);
-    border-top-width: 0;
-    padding: 1em;
-    position: relative;
-}
-
+/* styled as pot in CUSTOM section
+ * at the end of this file
+ */
 .dashboard > section:nth-child(2n) {
     border-color: var(--custom-1);
 }
@@ -231,37 +236,6 @@ footer {
 .dashboard > section:nth-child(3n) {
     border-color: var(--custom-3);
 }
-
-.dashboard > section::before,
-[id="current-offer"] li.selected::before,
-[id="calendar"] li:hover::before {
-    border-bottom: 7px solid;
-    border-bottom-color: inherit;
-    border-radius: 50%;
-    content: "";
-    left: -10px;
-    position: absolute;
-    right: -10px;
-    top: -10px;
-}
-
-.dashboard > section::after,
-[id="current-offer"] li.selected::after,
-[id="calendar"] li:hover::after {
-    border: 0.4em solid;
-    border-color: inherit;
-    border-radius: 50%;
-    content: "";
-    display: block;
-    height: 0;
-    left: 50%;
-    margin-right: -0.4em;
-    position: absolute;
-    top: -20px;
-    transform: translate(-50%);
-    width: 0;
-}
-/*-- pure decoration end --*/
 
 /************************************/
 /*------- Calendar -----------------*/
@@ -308,19 +282,22 @@ footer {
     border-color: var(--custom-3);
 }
 
-/* use first child before pseudo element
- * because li's before is reserved for hover
- */
 [id="calendar"] li.today {
     border-color: var(--custom-2);
 }
 
+/* styled as pot in CUSTOM section
+ * at the end of this file
+ */
 [id="calendar"] li.selected {
     font-weight: bold;
+    padding: 0;
 }
 
-/*-- all styles are in dashboard section --*/
-[id="calendar"] li:hover {
+/* styled as pot in CUSTOM section
+ * at the end of this file
+ */
+[id="calendar"] > ol > li:hover {
     border-color: var(--custom-5);
     padding: 0;
 }
@@ -381,10 +358,10 @@ footer {
 /************************************/
 [id="current-offer"] ol {
     display: grid;
-    grid-gap: 2vw;
+    grid-gap: 1em;
     grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
     list-style-type: none;
-    padding-left: 0;
+    padding: 0 1em;
 }
 
 [id="current-offer"] li {
@@ -395,7 +372,9 @@ footer {
     padding: 1em;
 }
 
-/*-- all styles are in dashboard section --*/
+/* styled as pot in CUSTOM section
+ * at the end of this file
+ */
 [id="current-offer"] li.selected {
     border-color: var(--custom-1);
 }
@@ -415,11 +394,29 @@ footer {
 /*------- Main navbar --------------*/
 /************************************/
 
-[id="main-navbar"] {
+[id="main-navbar"].js {
     position: absolute;
     right: 0;
     top: 0;
+    transition: 0.25s;
     z-index: 1;
+}
+
+[id="main-navbar"].js-opened {
+    right: 0;
+}
+
+[id="main-navbar"].js-closed {
+    right: -90%;
+}
+
+@media screen and (min-width: 700px) {
+    [id="main-navbar"] {
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 1;
+    }
 }
 
 [id="main-navbar"] ul{
@@ -438,9 +435,14 @@ footer {
 }
 
 [id="main-navbar"] button {
+    border-radius: 50%;
     font-size: 1.25em;
     font-weight: bold;
-    padding: 1em;
+    left: 0;
+    padding: 0.5em;
+    position: absolute;
+    width: 2.35em;
+    z-index: 2;
 }
 
 [id="main-navbar"] li + li {
@@ -466,10 +468,11 @@ footer {
 [id="main-navbar"] li:nth-child(5n)    { border-color: var(--custom-5); }
 
 [id="main-navbar"] a {
-    display: inline-block; /* for top and bottom padding */
+    display: block; /* for top and bottom padding */
     font-size: 1.25em;
     font-weight: bold;
     padding: 1em 3em;
+    text-align: center;
     text-transform: uppercase;
 }
 
@@ -486,6 +489,7 @@ footer {
     border-radius: 4px;
     box-shadow: 0 0 2px 2px #fff;
     position: relative; /* fancy border */
+    transition: 0.25s;
 }
 
 [type="submit"]::after {
@@ -499,12 +503,23 @@ footer {
     top: -6px;
 }
 
+[type="submit"]:hover,
+[type="submit"]:focus {
+    background: #fffcc8;
+    box-shadow: 0 0 2px 2px #aaa;
+    text-shadow: -1px 0 0 #000;
+}
+
 input {
     background-color: #fff;
     border: 1px solid var(--custom-2);
     border-radius: 5px;
     padding: 0.5em;
     font-size: 100%;
+}
+
+input:focus {
+    border-width: 2px;
 }
 
 label {
@@ -538,15 +553,21 @@ label {
     width: calc(1em - 2px);
 }
 
+[type="checkbox"]:focus + label::before,
+[type="radio"]:focus + label::before {
+    outline: 2px dotted var(--custom-2);
+    outline-offset: 1px;
+}
+
 [type="radio"] + label::before {
     border-radius: 50%;
 }
 
 [type="checkbox"]:checked + label::after {
     content: "";
-    left: 0.3em;
+    left: 0.35em;
     position: absolute;
-    top: 0.05em;
+    top: 0.25em;
     width: 0.25em;
     height: 0.625em;
     border: solid var(--main-text-color);
@@ -596,22 +617,81 @@ form button {
 }
 
 /************************************/
+/*------- Login & Settings ---------*/
+/************************************/
+.login-form,
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1em;
+}
+
+.login-form label,
+.settings-form label {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form [type="submit"],
+.settings-form [type="submit"] {
+    margin-top: 2em;
+}
+
+.login-form + a {
+    display: inline-block;
+    font-size: 0.85em;
+}
+
+/************************************/
 /*------- Custom -------------------*/
 /************************************/
 
-.custom-1 {  border-color: var(--custom-1); }
-.custom-2 {  border-color: var(--custom-2); }
-.custom-3 {  border-color: var(--custom-3); }
-.custom-4 {  border-color: var(--custom-4); }
-.custom-5 {  border-color: var(--custom-5); }
-.custom-6 {  border-color: var(--custom-6); }
-.custom-7 {  border-color: var(--custom-7); }
-.custom-8 {  border-color: var(--custom-8); }
-.custom-9 {  border-color: var(--custom-9); }
-.custom-10 {  border-color: var(--custom-10); }
-.custom-11 {  border-color: var(--custom-11); }
-.custom-12 {  border-color: var(--custom-12); }
-.custom-13 {  border-color: var(--custom-13); }
-.custom-14 {  border-color: var(--custom-14); }
+/*-- POT BOTTOM --*/
+.dashboard > section,
+[id="current-offer"] li.selected,
+[id="calendar"] > ol > li:hover,
+[id="calendar"] li.selected {
+    background: #fff;
+    border: 3px solid;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-color: var(--custom-2);
+    border-top-width: 0;
+    padding: 1em;
+    position: relative;
+}
 
+/*-- POT LID --*/
+.dashboard > section::before,
+[id="current-offer"] li.selected::before,
+[id="calendar"] > ol > li:hover::before,
+[id="calendar"] li.selected::before {
+    border-bottom: 7px solid;
+    border-bottom-color: inherit;
+    border-radius: 50%;
+    content: "";
+    left: -10px;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+}
+
+/*-- POT LID HANDLE --*/
+.dashboard > section::after,
+[id="current-offer"] li.selected::after,
+[id="calendar"] > ol > li:hover::after,
+[id="calendar"] li.selected::after {
+    border: 0.4em solid;
+    border-color: inherit;
+    border-radius: 50%;
+    content: "";
+    display: block;
+    height: 0;
+    left: 50%;
+    margin-right: -0.4em;
+    position: absolute;
+    top: -20px;
+    transform: translate(-50%);
+    width: 0;
+}
 
