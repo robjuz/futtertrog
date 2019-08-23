@@ -16,7 +16,7 @@
     <main>
         <h1>{{ __('Settings') }}</h1>
 
-        <form class="settings-form" method="POST" action="{{ route('settings.store') }}">
+        <form method="POST" action="{{ route('settings.store') }}">
             @csrf
 
             <h2>{{ __('General') }}</h2>

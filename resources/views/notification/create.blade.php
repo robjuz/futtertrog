@@ -2,82 +2,61 @@
 
 @section('content')
 
-    <div class="container flex-grow-1">
-        <div class="row">
-            <aside class="col-12 col-lg-3 mb-3">
-                @include('partials.user_menu')
-            </aside>
+    @include('partials.user_menu')
 
-            <main class="col-12 col-lg-9 user-index">
-                <div class="card mb-3">
-                    <div class="card-header">{{ __('New notification') }}</div>
+    <main>
 
-                    <div class="card-body">
-                        <form action="{{route('notification.store')}}" method="post" role="form">
-                            @csrf()
+        <h1>
+            {{ __('New notification') }}
+        </h1>
 
-                            <div class="form-group">
-                                <label for="user_id">{{ __('User') }}</label>
+        <form action="{{route('notification.store')}}" method="post">
+            @csrf()
 
-                                <select
-                                    id="user_id"
-                                    class="custom-select @error('user_id') is-invalid @enderror"
-                                    name="user_id[]"
-                                    multiple
-                                >
-                                    @foreach ($users as $user)
-                                        <option
-                                            value="{{ $user->id }}"
-                                            {{ old('user_id') == $user->id ? 'selected' : ''}}
-                                        >
-                                            {{ $user->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+            <p id="user_id-desc">
+                <span>
+                   {{ __('User') }}
+                </span>
+                @error('user_id')
+                    <span>{{ $message }}</span>
+                @enderror
+            </p>
 
-                                @error('user_id')
-                                <div class="invalid-tooltip" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </div>
-                                @enderror
-                            </div>
+            @foreach ($users as $user)
+                <input type="checkbox"
+                       id="user_id-{{ $user->id }}"
+                       value="user_id[{{ $user->id }}]"
+                       {{ old('user_id') == $user->id ? 'checked' : ''}}
+                       aria-describedby="user_id-desc"
+                >
+                <label for="user_id-{{ $user->id }}">{{ $user->name }}</label>
+            @endforeach
 
-                            <div class="form-group">
-                                <label for="subject" class="col-form-label-sm">{{ __('Subject') }}</label>
+            <label for="subject">
+                <span>
+                    {{ __('Subject') }}
+                </span>
+                @error('subject')
+                    <span>{{ $message }}</span>
+                @enderror
+            </label>
 
-                                <input
-                                    id="subject"
-                                    class="form-control  @error('subject') is-invalid @enderror"
-                                    name="subject"
-                                >
+            <input id="subject" name="subject">
 
-                                @error('subject')
-                                <div class="invalid-tooltip" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </div>
-                                @enderror
-                            </div>
+            <label for="body">
+                <span>
+                    {{ __('Message') }}
+                </span>
+                @error('body')
+                    <span>{{ $message }}</span>
+                @enderror
+            </label>
 
-                            <div class="form-group">
-                                <label for="body" class="col-form-label-sm">{{ __('Message') }}</label>
+            <textarea id="body" name="body"></textarea>
 
-                                <textarea
-                                    id="body"
-                                    class="form-control @error('body') is-invalid @enderror"
-                                    name="body"
-                                ></textarea>
-                                @error('body')
-                                <div class="invalid-tooltip" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </div>
-                                @enderror
-                            </div>
+            <button type="submit">{{ __('Submit') }}</button>
+        </form>
 
-                            <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
-                        </form>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
+    </main>
+
 @endsection()

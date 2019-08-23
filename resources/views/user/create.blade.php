@@ -1,92 +1,70 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container flex-grow-1">
-        <div class="row">
-            <aside class="col-12 col-lg-3 mb-3">
-                @include('partials.user_menu')
-            </aside>
 
-            <main class="col-12 col-lg-9 user-index">
-                <div class="card">
-                    <h1 class="card-header">{{ __('New user') }}</h1>
+    @include('partials.user_menu')
 
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('users.store') }}">
-                            @csrf
+    <main>
+        <h1>
+            {{ __('New user') }}
+        </h1>
 
-                            <div class="form-group">
-                                <label for="name" class="col-form-label-sm">{{ __('Name') }}</label>
+        <form method="POST" action="{{ route('users.store') }}">
+            @csrf
 
-                                <input id="name" type="text"
-                                       class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name"
-                                       value="{{ old('name') }}" required autofocus>
+            <label for="name">
+                <span>
+                    {{ __('Name') }}
+                </span>
+                @if ($errors->has('name'))
+                    <span>
+                        {{ $errors->first('name') }}
+                    </span>
+                @endif
+            </label>
+            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
 
-                                @if ($errors->has('name'))
-                                    <div class="invalid-tooltip" role="alert">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
 
-                            <div class="form-group">
-                                <label for="email" class="col-form-label-sm">{{ __('E-Mail Address') }}</label>
+            <label for="email">
+                <span>
+                    {{ __('E-Mail Address') }}
+                </span>
+                @if ($errors->has('email'))
+                    <span>{{ $errors->first('email') }}</span>
+                @endif
+            </label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required>
 
-                                <input id="email" type="email"
-                                       class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email"
-                                       value="{{ old('email') }}" required>
+            <label for="password">
+                <span>
+                    {{ __('Password') }}
+                </span>
+                @if ($errors->has('password'))
+                    <span>{{ $errors->first('password') }}</span>
+                @endif
+            </label>
+            <input id="password" type="password" name="password" required>
 
-                                @if ($errors->has('email'))
-                                    <div class="invalid-tooltip" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
+            <label for="password-confirm">
+                <span>
+                    {{ __('Confirm Password') }}
+                </span>
+            </label>
+            <input id="password-confirm" type="password" name="password_confirmation" required>
 
-                            <div class="form-group">
-                                <label for="password" class="col-form-label-sm">{{ __('Password') }}</label>
+            <input type="checkbox"
+                   name="is_admin"
+                   id="is_admin"
+                   {{ old('is_admin') ? 'checked' : '' }}
+                   value="1"
+            >
+            <label for="is_admin">
+                {{ __('Is admin') }}
+            </label>
 
-                                <input id="password" type="password"
-                                       class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
-                                       name="password" required>
+            <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>
+        </form>
 
-                                @if ($errors->has('password'))
-                                    <div class="invalid-tooltip" role="alert">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password-confirm"
-                                       class="col-form-label-sm">{{ __('Confirm Password') }}</label>
-
-                                <input id="password-confirm" type="password" class="form-control"
-                                       name="password_confirmation" required>
-                            </div>
-
-                            <div class="form-group pt-2">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="hidden" name="is_admin" value="0">
-                                    <input type="checkbox"
-                                           class="custom-control-input"
-                                           name="is_admin"
-                                           id="is_admin"
-                                           {{ old('is_admin') ? 'checked' : '' }}
-                                           value="1"
-                                    >
-                                    <label class="custom-control-label" for="is_admin">
-                                        {{ __('Is admin') }}
-                                    </label>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>
-                        </form>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
+    </main>
 
 @endsection

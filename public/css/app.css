@@ -106,6 +106,10 @@ td {
     padding: 0.25em;
 }
 
+tfoot tr {
+    border-top: 2px solid var(--custom-2);
+}
+
 /************************************/
 /*------- Layout -------------------*/
 /************************************/
@@ -484,11 +488,18 @@ footer {
 /*------- Forms --------------------*/
 /************************************/
 
+form {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1em;
+}
+
 [type="submit"] {
     border-color: var(--custom-4);
     border-radius: 4px;
     box-shadow: 0 0 2px 2px #fff;
-    position: relative; /* fancy border */
+    margin-top: 2em;
+    position: relative; /* to position fancy border */
     transition: 0.25s;
 }
 
@@ -506,11 +517,13 @@ footer {
 [type="submit"]:hover,
 [type="submit"]:focus {
     background: #fffcc8;
-    box-shadow: 0 0 2px 2px #aaa;
+    box-shadow: 0 0 2px 2px var(--gray);
     text-shadow: -1px 0 0 #000;
 }
 
-input {
+input,
+select,
+textarea {
     background-color: #fff;
     border: 1px solid var(--custom-2);
     border-radius: 5px;
@@ -523,7 +536,8 @@ input:focus {
 }
 
 label {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
 }
 
 [type="checkbox"],
@@ -588,24 +602,6 @@ label {
     width: calc(1em - 6px);
 }
 
-fieldset {
-    border-radius: 5px;
-    box-shadow: 3px 3px 6px 3px #eee;
-    margin-bottom: 1em;
-    padding: 0 1em 1em;
-}
-
-legend {
-    font-size: 0.85em;
-    padding: 0.5em;
-}
-
-form p[class^="custom"] {
-    border-bottom-style: solid;
-    border-bottom-width: 3px;
-    padding: 0 0.5em 0.5em 1em;;
-}
-
 form button {
     background: #fff;
     border-color: var(--gray);
@@ -617,29 +613,21 @@ form button {
 }
 
 /************************************/
-/*------- Login & Settings ---------*/
+/*------- Form Customizations ------*/
 /************************************/
-.login-form,
-.settings-form {
-    display: flex;
-    flex-direction: column;
-    padding: 0 1em;
-}
-
-.login-form label,
-.settings-form label {
-    display: flex;
-    flex-direction: column;
-}
-
-.login-form [type="submit"],
-.settings-form [type="submit"] {
-    margin-top: 2em;
-}
 
 .login-form + a {
     display: inline-block;
     font-size: 0.85em;
+}
+
+/************************************/
+/*------- Orders Overview ----------*/
+/************************************/
+
+.orders-overview ul {
+    list-style-type: none;
+    padding-left: 0;
 }
 
 /************************************/
