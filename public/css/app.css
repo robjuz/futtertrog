@@ -485,6 +485,39 @@ footer {
 }
 
 /************************************/
+/*------- Admin navbar --------------*/
+/************************************/
+[id="admin-menu"] {
+    display: inline-flex;
+}
+
+[id="admin-menu"] ul {
+    list-style-type: none;
+    padding: 1em;
+}
+
+/* all custom colors used only here */
+[id="admin-menu"] li {
+    background: linear-gradient(to top, #f6ebc0 35%, #eed282 85%,  #9e3d03);
+    border: 1px solid #77310d;
+    border-radius: 1em;
+    margin: 0;
+    position: relative;
+    text-align: center;
+}
+
+[id="admin-menu"] li:first-child::before {
+    display: block;
+    position: absolute;
+    width:
+}
+
+[id="admin-menu"] a {
+    padding: 0.2em 1.5em;
+}
+
+
+/************************************/
 /*------- Forms --------------------*/
 /************************************/
 
