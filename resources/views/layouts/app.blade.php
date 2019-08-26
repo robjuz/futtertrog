@@ -21,69 +21,60 @@
 </head>
 <body>
 @auth()
-    <a class="sr-only skip-link skip-navigation" href="#main">
+    <a class="sr-only skip-link skip-navigation"
+       href="#main" <?php /* keep this link synchronised with main's id */?>
+    >
         {{ __('Skip navigation') }}
     </a>
-@endauth()
 
-<a href="/">Home</a>
-
-@auth()
-
-<nav id="main-navbar">
-    <button
-            aria-haspopup="true"
-            aria-controls="main-menu">
-        <span class="sr-only">Menü</span>
-        <span aria-hidden="true">&larr;</span>
-    </button>
-    <ul id="main-menu">
-        <li>
-            <a href="{{ route('home') }}" {{ request()->routeIs('home') ? 'aria-current="page"' : '' }}>
-                {{ __('Dashboard') }}
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('meals.index') }}" {{ request()->routeIs('meals.index') ? 'aria-current="page"' : '' }}>
-                {{ __('Place order') }}
-            </a>
-        </li>
-        @can('create', \App\Meal::class)
+    <nav id="main-navbar">
+        <ul>
             <li>
-                <a href="{{ route('meals.create') }}" {{ request()->routeIs('meals.create') ? 'aria-current="page"' : '' }}>
-                    {{ __('New meal') }}
-                </a>
-
-            </li>
-        @endcan
-        @can('list', \App\Order::class)
-            <li>
-                <a href="{{ route('orders.index') }}" {{ request()->routeIs('orders.index') ? 'aria-current="page"' : '' }}>
-                    {{ __('Manage orders') }}
+                <a href="{{ route('home') }}#main" {{ request()->routeIs('home') ? 'aria-current="page"' : '' }}>
+                    {{ __('Dashboard') }}
                 </a>
             </li>
-        @endcan
 
-        @can('viewAny', \App\User::class)
             <li>
-                <a href="{{ route('users.index') }}" {{ request()->routeIs('users.index') ? 'aria-current="page"' : '' }}>
-                    {{ __('Manage users') }}
+                <a href="{{ route('meals.index') }}#main" {{ request()->routeIs('meals.index') ? 'aria-current="page"' : '' }}>
+                    {{ __('Place order') }}
                 </a>
             </li>
-        @endcan
-        <li>
-            <a href="{{ route('settings.index') }}" {{ request()->routeIs('settings.index') ? 'aria-current="page"' : ''}}>
-                {{ __('Settings') }}
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('logout') }}">
-                {{ __('Logout') }}
-            </a>
-        </li>
-    </ul>
-</nav>
+            @can('create', \App\Meal::class)
+                <li>
+                    <a href="{{ route('meals.create') }}#main" {{ request()->routeIs('meals.create') ? 'aria-current="page"' : '' }}>
+                        {{ __('New meal') }}
+                    </a>
+
+                </li>
+            @endcan
+            @can('list', \App\Order::class)
+                <li>
+                    <a href="{{ route('orders.index') }}#main" {{ request()->routeIs('orders.index') ? 'aria-current="page"' : '' }}>
+                        {{ __('Manage orders') }}
+                    </a>
+                </li>
+            @endcan
+
+            @can('viewAny', \App\User::class)
+                <li>
+                    <a href="{{ route('users.index') }}#main" {{ request()->routeIs('users.index') ? 'aria-current="page"' : '' }}>
+                        {{ __('Manage users') }}
+                    </a>
+                </li>
+            @endcan
+            <li>
+                <a href="{{ route('settings.index') }}#main" {{ request()->routeIs('settings.index') ? 'aria-current="page"' : ''}}>
+                    {{ __('Settings') }}
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('logout') }}">
+                    {{ __('Logout') }}
+                </a>
+            </li>
+        </ul>
+    </nav>
 @endauth
 
 @if (session('success'))
@@ -92,7 +83,9 @@
     </p>
 @endif
 
-@yield('content')
+<main id="main" <?php /* keep this id for skip link */?>>
+    @yield('content')
+</main>
 
 <footer id="mainFooter">
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')

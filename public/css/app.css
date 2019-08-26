@@ -69,6 +69,60 @@ html {
     line-height: 1.5;
     -webkit-text-size-adjust: 100%; /* 1 */
 }
+/************************************/
+/*------- Custom -------------------*/
+/*- Keep this section here to allow-*/
+/*- simple overriding with cascade -*/
+/************************************/
+
+/*-- POT BOTTOM --*/
+.dashboard > section,
+[id="current-offer"] li.selected,
+[id="calendar"] > ol > li:hover,
+[id="calendar"] li.selected {
+    background: #fff;
+    border: 3px solid;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-color: var(--custom-2);
+    border-top-width: 0;
+    padding: 1em;
+    position: relative;
+}
+
+/*-- POT LID --*/
+.dashboard > section::before,
+[id="current-offer"] li.selected::before,
+[id="calendar"] > ol > li:hover::before,
+[id="calendar"] li.selected::before {
+    border-bottom: 7px solid;
+    border-bottom-color: inherit;
+    border-radius: 50%;
+    content: "";
+    left: -10px;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+}
+
+/*-- POT LID HANDLE --*/
+.dashboard > section::after,
+[id="current-offer"] li.selected::after,
+[id="calendar"] > ol > li:hover::after,
+[id="calendar"] li.selected::after {
+    border: 0.4em solid;
+    border-color: inherit;
+    border-radius: 50%;
+    content: "";
+    display: block;
+    height: 0;
+    left: 50%;
+    margin-right: -0.4em;
+    position: absolute;
+    top: -20px;
+    transform: translate(-50%);
+    width: 0;
+}
 
 /************************************/
 /*------- Tables -------------------*/
@@ -398,44 +452,13 @@ footer {
 /*------- Main navbar --------------*/
 /************************************/
 
+/*-- BEGIN stuff attached by js --*/
 [id="main-navbar"].js {
     position: absolute;
     right: 0;
     top: 0;
     transition: 0.25s;
     z-index: 1;
-}
-
-[id="main-navbar"].js-opened {
-    right: 0;
-}
-
-[id="main-navbar"].js-closed {
-    right: -90%;
-}
-
-@media screen and (min-width: 700px) {
-    [id="main-navbar"] {
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: 1;
-    }
-}
-
-[id="main-navbar"] ul{
-    display: inline-grid;
-    float: right;
-    list-style-type: none;
-    padding-left: 0;
-}
-
-[id="main-navbar"] button,
-[id="main-navbar"] li {
-    background: #fff;
-    border: 2px solid; /* border colors are defined with custom properties below */
-    box-shadow: 0 0 6px 3px #eee;
-    transition: 0.25s;
 }
 
 [id="main-navbar"] button {
@@ -447,6 +470,32 @@ footer {
     position: absolute;
     width: 2.35em;
     z-index: 2;
+}
+
+[id="main-navbar"] [aria-expanded="false"] + ul {
+    position: absolute;
+}
+
+/*
+[id="main-navbar"] [aria-expanded="false"] + ul > li {
+    top: -100%;
+}
+*/
+
+
+/*-- END stuff attached by js -*/
+
+[id="main-navbar"] ul{
+    float: right;
+    list-style-type: none;
+}
+
+[id="main-navbar"] button,
+[id="main-navbar"] li {
+    background: #fff;
+    border: 2px solid; /* border colors are defined with custom properties below */
+    box-shadow: 0 0 6px 3px #eee;
+    transition: 0.25s;
 }
 
 [id="main-navbar"] li + li {
@@ -583,7 +632,6 @@ label {
 
 [type="checkbox"] + label,
 [type="radio"] + label {
-    display: inline;
     padding-left: 1.5em;
     position: relative;
 }
@@ -663,56 +711,4 @@ form button {
     padding-left: 0;
 }
 
-/************************************/
-/*------- Custom -------------------*/
-/************************************/
-
-/*-- POT BOTTOM --*/
-.dashboard > section,
-[id="current-offer"] li.selected,
-[id="calendar"] > ol > li:hover,
-[id="calendar"] li.selected {
-    background: #fff;
-    border: 3px solid;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    border-color: var(--custom-2);
-    border-top-width: 0;
-    padding: 1em;
-    position: relative;
-}
-
-/*-- POT LID --*/
-.dashboard > section::before,
-[id="current-offer"] li.selected::before,
-[id="calendar"] > ol > li:hover::before,
-[id="calendar"] li.selected::before {
-    border-bottom: 7px solid;
-    border-bottom-color: inherit;
-    border-radius: 50%;
-    content: "";
-    left: -10px;
-    position: absolute;
-    right: -10px;
-    top: -10px;
-}
-
-/*-- POT LID HANDLE --*/
-.dashboard > section::after,
-[id="current-offer"] li.selected::after,
-[id="calendar"] > ol > li:hover::after,
-[id="calendar"] li.selected::after {
-    border: 0.4em solid;
-    border-color: inherit;
-    border-radius: 50%;
-    content: "";
-    display: block;
-    height: 0;
-    left: 50%;
-    margin-right: -0.4em;
-    position: absolute;
-    top: -20px;
-    transform: translate(-50%);
-    width: 0;
-}
 
