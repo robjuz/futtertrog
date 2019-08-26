@@ -9,9 +9,6 @@
 
         <h1 id="meal-index-title">@lang('Order meal for :date', ['date' => $requestedDate->format(trans('futtertrog.date_format'))])</h1>
 
-
-
-
         <a class="skip-link skip-calendar sr-only" href="#current-offer">
             {{ __('Skip calendar') }}
         </a>

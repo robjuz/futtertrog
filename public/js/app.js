@@ -4,15 +4,13 @@ class ExpandableMenu {
 
         this.nav.setAttribute('class', 'js');
         this.createToggleButton();
+        this.updateLinks();
     }
 
     createToggleButton() {
         if(!!this.nav.getElementsByTagName('ul')[0]){
             this.toggleButton = document.createElement('button');
-            this.toggleButton.insertAdjacentHTML('afterbegin',
-                '<span aria-hidden="true">&rarr;</span>' +
-                '<span class="sr-only">Menü</span>'
-            );
+            this.toggleButton.innerHTML = this.nav.getAttribute('data-button');
             this.toggleButton.setAttribute('aria-haspopup', 'true');
             this.toggleButton.setAttribute('aria-expanded', 'false');
 
@@ -21,13 +19,18 @@ class ExpandableMenu {
         }
     }
 
+    updateLinks() {
+        this.nav.querySelectorAll('a').forEach(function(link) {
+            let href = link.getAttribute('href');
+           link.setAttribute('href', href.substring(0 , href.indexOf('#')));
+        });
+    }
+
     onButtonClick() {
         if(this.isExpanded()) {
             this.toggleButton.setAttribute('aria-expanded', 'false');
-            this.toggleButton.querySelector('[aria-hidden]').innerHTML = '&larr;';
         } else {
             this.toggleButton.setAttribute('aria-expanded', 'true');
-            this.toggleButton.querySelector('[aria-hidden]').innerHTML = '&rarr;';
         }
     }
 
