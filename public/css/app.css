@@ -192,6 +192,7 @@ main {
     margin-left: auto;
     margin-right: auto;
     min-width: 300px;
+    padding: 0 1em;
 }
 
 footer {
@@ -573,7 +574,6 @@ footer {
 form {
     display: flex;
     flex-direction: column;
-    padding: 0 1em;
 }
 
 [type="submit"] {
