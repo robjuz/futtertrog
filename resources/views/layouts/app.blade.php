@@ -27,7 +27,7 @@
         {{ __('Skip navigation') }}
     </a>
 
-    <nav id="main-navbar">
+    <nav id="main-navbar" data-button="{{ __('Menu') }}">
         <ul>
             <li>
                 <a href="{{ route('home') }}#main" {{ request()->routeIs('home') ? 'aria-current="page"' : '' }}>
