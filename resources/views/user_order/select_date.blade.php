@@ -2,18 +2,10 @@
 
 @section('wrapper-content')
     <form action="{{ route('order_items.create') }}" method="get">
-        <div class="form-group">
-            <label for="date" class="col-form-label-sm">
-                {{__('Date')}}
-            </label>
 
-            <input type="date"
-                   name="date"
-                   id="date"
-                   class="form-control @error('date') 'is-invalid @enderror"
-                   required
-            >
-        </div>
-        <button type="submit" class="btn btn-primary">{{ __('Next') }}</button>
+        <label for="date">{{__('Date')}}</label>
+        <input type="date" name="date" id="date" required>
+
+        <button type="submit">{{ __('Next') }}</button>
     </form>
 @endsection

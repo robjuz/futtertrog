@@ -4,7 +4,6 @@
     <ul>
         @foreach ($deposits as $deposit)
             <li>
-
                 <h3 class="{{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
                     {{ number_format($deposit->value, 2, ',','.') }} €
                 </h3>
