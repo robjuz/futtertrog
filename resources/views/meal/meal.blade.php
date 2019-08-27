@@ -27,9 +27,7 @@
     <form onsubmit="toggleOrder(event)" action="{{ route('order_items.destroy', $orderItem) }}" method="post">
         @csrf
         @method('delete')
-        <button type="submit">
-            {{ __('Delete order') }}
-        </button>
+        <button type="submit">{{ __('Delete order') }}</button>
     </form>
 @else
    <form onsubmit="toggleOrder(event)" action="{{ route('order_items.store') }}" method="post">
@@ -38,16 +36,8 @@
         <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
         <input type="hidden" name="meal_id" value="{{ $meal->id }}"/>
 
-        <input type="number"
-               name="quantity"
-               min="1"
-               pattern="\d*"
-               value="1"
-               style="width: 80px;"
-        >
-        <button type="submit">
-            {{ __('Place order') }}
-        </button>
+        <input type="number" name="quantity" min="1" pattern="\d*" value="1">
+        <button type="submit">{{ __('Place order') }}</button>
     </form>
 @endif
 

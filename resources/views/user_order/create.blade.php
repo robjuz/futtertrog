@@ -4,70 +4,41 @@
     <form action="{{ route('order_items.store') }}" method="post">
         @csrf
 
-        <div class="form-group">
-            <label for="user_id" class="col-form-label-sm">
-                {{__('User')}}
-            </label>
-            <select
-                id="user_id"
-                class="custom-select @error('user_id') 'is-invalid' @enderror"
-                name="user_id"
-            >
-                @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                @endforeach
-            </select>
-
+        <label for="user_id">
+            <span>{{__('User')}}</span>
             @error('user_id'))
-                <div class="invalid-tooltip" role="alert">
-                    <strong>{{ $message }}</strong>
-                </div>
+                <span>{{ $message }}</span>
             @enderror
-        </div>
+        </label>
+        <select id="user_id" name="user_id">
+            @foreach($users as $user)
+                <option value="{{ $user->id }}">{{ $user->name }}</option>
+            @endforeach
+        </select>
 
-        <div class="form-group">
-            <label for="meal_id" class="col-form-label-sm">
-                {{__('Meal')}}
-            </label>
-            <select
-                id="meal_id"
-                class="custom-select @error('meal_id') 'is-invalid' @enderror"
-                name="meal_id"
-            >
-                @foreach($meals as $meal)
-                    <option value="{{ $meal->id }}">{{ $meal->title }}</option>
-                @endforeach
-            </select>
-
+        <label for="meal_id">
+            <span>{{__('Meal')}}</span>
             @error('meal_id'))
-            <div class="invalid-tooltip" role="alert">
-                <strong>{{ $message }}</strong>
-            </div>
+                <span>{{ $message }}</span>
             @enderror
-        </div>
 
-        <div class="form-group">
-            <label for="quantity" class="col-form-label-sm">
-                {{__('Quantity')}}
-            </label>
-            <input
-                id="quantity"
-                type="number"
-                min="1"
-                class="custom-select @error('quantity') 'is-invalid' @enderror"
-                pattern="\d*"
-                name="quantity"
-            >
+        </label>
+        <select id="meal_id" name="meal_id">
+            @foreach($meals as $meal)
+                <option value="{{ $meal->id }}">{{ $meal->title }}</option>
+            @endforeach
+        </select>
 
+        <label for="quantity">
+            <span>{{__('Quantity')}}</span>
             @error('quantity'))
-            <div class="invalid-tooltip" role="alert">
-                <strong>{{ $message }}</strong>
-            </div>
+                <span>{{ $message }}</span>
             @enderror
-        </div>
+        </label>
+        <input id="quantity" type="number" min="1" pattern="\d*" name="quantity">
 
         <input type="hidden" name="date" value="{{ $date }}"/>
 
-        <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
+        <button type="submit">{{ __('Save') }}</button>
     </form>
 @endsection

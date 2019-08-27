@@ -483,20 +483,6 @@ footer {
     top: 0; /* position all elements to top and push down with margin */
 }
 
-[id="main-navbar"] ul::before {
-    background: #fff;
-    bottom: 0;
-    content: '';
-    display: block;
-    left: 0;
-    opacity: 0;
-    position: fixed;
-    right: 0;
-    top: 0;
-    transition: 0s;
-}
-
-[id="main-navbar"] [aria-expanded="true"] + ul::before,
 [id="main-navbar"] [aria-expanded="true"] + ul > li {
     opacity: 1;
 }
