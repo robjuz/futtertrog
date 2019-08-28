@@ -83,6 +83,8 @@
     </p>
 @endif
 
+@yield('before')
+
 <main id="main" <?php /* keep this id for skip link */?>>
     @yield('content')
 </main>

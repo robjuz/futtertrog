@@ -78,7 +78,6 @@ html {
 /*-- POT BOTTOM --*/
 .dashboard > section,
 [id="current-offer"] li.selected,
-[id="calendar"] > ol > li:hover,
 [id="calendar"] li.selected {
     background: #fff;
     border: 3px solid;
@@ -93,7 +92,6 @@ html {
 /*-- POT LID --*/
 .dashboard > section::before,
 [id="current-offer"] li.selected::before,
-[id="calendar"] > ol > li:hover::before,
 [id="calendar"] li.selected::before {
     border-bottom: 7px solid;
     border-bottom-color: inherit;
@@ -108,7 +106,6 @@ html {
 /*-- POT LID HANDLE --*/
 .dashboard > section::after,
 [id="current-offer"] li.selected::after,
-[id="calendar"] > ol > li:hover::after,
 [id="calendar"] li.selected::after {
     border: 0.4em solid;
     border-color: inherit;
@@ -160,8 +157,177 @@ td {
     padding: 0.25em;
 }
 
+tfoot {
+    font-weight: bold;
+    text-align: right;
+}
+
 tfoot tr {
     border-top: 2px solid var(--custom-2);
+}
+
+/************************************/
+/*------- Forms --------------------*/
+/************************************/
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+[type="submit"] {
+    border-color: var(--custom-4);
+    border-radius: 4px;
+    box-shadow: 0 0 2px 2px #fff;
+    margin-bottom: 1em;
+    margin-top: 2em;
+    position: relative; /* to position fancy border */
+    transition: 0.25s;
+}
+
+[type="submit"]::after {
+    border: 2px solid var(--custom-2);
+    border-radius: 6px;
+    bottom: -6px;
+    content: '';
+    left: -6px;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+}
+
+[name="_method"][value="delete"] ~ [type="submit"] {
+    border-color: var(--custom-5);
+}
+
+[type="submit"]:hover,
+[type="submit"]:focus {
+    background: #fffcc8;
+    box-shadow: 0 0 2px 2px var(--gray);
+    text-shadow: -1px 0 0 #000;
+}
+
+input,
+select,
+textarea {
+    background-color: #fff;
+    border: 1px solid var(--custom-2);
+    border-radius: 5px;
+    padding: 0.5em;
+    font-size: 100%;
+}
+
+input:focus {
+    border-width: 2px;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+}
+
+/* error messages */
+label > span:not(:first-child):last-child {
+    color: var(--custom-1);
+    font-weight: normal;
+    margin-top: 0.5em;
+    position: relative;
+}
+
+label > span:not(:first-child):last-child::before {
+    border-bottom: 1em solid var(--custom-1);
+    border-left: 0.65em solid transparent;
+    border-right: 0.65em solid transparent;
+    color: #fff;
+    content: '';
+    display: inline-block;
+    height: 0;
+    margin-right: 0.25em;
+    position: relative;
+    top: 2px;
+    width: 0;
+}
+
+label > span:not(:first-child):last-child::after {
+    color: #fff;
+    content: '!';
+    font-size: 0.8em;
+    font-weight: bold;
+    left: 0.7em;
+    position: absolute;
+    top: 0.3em;
+}
+
+[type="checkbox"],
+[type="radio"] {
+    height: 0;
+    opacity: 0;
+    position: absolute; /* remove from flow */
+    width: 0;
+}
+
+[type="checkbox"] + label,
+[type="radio"] + label {
+    padding-left: 1.5em;
+    position: relative;
+}
+
+[type="checkbox"] + label::before,
+[type="radio"] + label::before {
+    background: #fff;
+    border: 1px solid var(--custom-2);
+    content: "";
+    height: calc(1em - 2px);
+    left: 0;
+    position: absolute;
+    top: 3px;
+    width: calc(1em - 2px);
+}
+
+[type="checkbox"]:focus + label::before,
+[type="radio"]:focus + label::before {
+    outline: 2px dotted var(--custom-2);
+    outline-offset: 1px;
+}
+
+[type="radio"] + label::before {
+    border-radius: 50%;
+}
+
+[type="checkbox"]:checked + label::after {
+    content: "";
+    left: 0.35em;
+    position: absolute;
+    top: 0.25em;
+    width: 0.25em;
+    height: 0.625em;
+    border: solid var(--main-text-color);
+    border-width: 0 0.1855em 0.1855em 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+[type="radio"]:checked + label::after {
+    background: var(--main-text-color);
+    border-radius: 50%;
+    content: "";
+    height: calc(1em - 6px);
+    left: 3px;
+    position: absolute;
+    top: 3px;
+    width: calc(1em - 6px);
+}
+
+form button {
+    background: #fff;
+    border-color: var(--gray);
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+    font-size: 0.9em;
+    padding: 0.5em 1em;
 }
 
 /************************************/
@@ -180,10 +346,6 @@ aside {
     min-width: 20em;
     padding: 1em;
     width: 20%;
-}
-
-nav {
-    padding: 1em;
 }
 
 main {
@@ -285,9 +447,7 @@ footer {
     list-style-type: none;
 }
 
-/* styled as pot in CUSTOM section
- * at the end of this file
- */
+/* styled as POT */
 .dashboard > section:nth-child(2n) {
     border-color: var(--custom-1);
 }
@@ -316,17 +476,19 @@ footer {
     grid-row: 3;
 }
 
-/* For nice effect on hover
-*/
 [id="calendar"] ol {
     display: flex;
-    grid-row: 2;
     list-style-type: none;
-    margin-top: 0; /* 1 */
-    max-width: 80vw;
     overflow-x: auto;
+}
+
+/* 1, 2 - For nice effect on hover */
+[id="calendar"] > ol {
+    grid-row: 2;
+    margin-top: 0; /* 1 */
     padding-left: 0;
     padding-top: 2em; /* 2 */
+    width: 100%;
 }
 
 [id="calendar"] > ol > li {
@@ -334,6 +496,14 @@ footer {
     border: 1px solid;
     border-color: var(--custom-4);
     display: block;
+}
+
+[id="calendar"] > ol > li:first-child {
+    margin-left: 1px;
+}
+
+[id="calendar"] > ol > li:last-child {
+    margin-right: 1px;
 }
 
 [id="calendar"] li.weekend {
@@ -345,20 +515,20 @@ footer {
     border-color: var(--custom-2);
 }
 
-/* styled as pot in CUSTOM section
- * at the end of this file
- */
+/* styled as POT */
 [id="calendar"] li.selected {
     font-weight: bold;
     padding: 0;
 }
 
-/* styled as pot in CUSTOM section
- * at the end of this file
- */
 [id="calendar"] > ol > li:hover {
-    border-color: var(--custom-5);
+    border-color: var(--custom-2);
     padding: 0;
+}
+
+[id="calendar"] svg {
+    height: auto;
+    width: 1.5em;
 }
 
 [id="calendar"] li + li {
@@ -408,10 +578,6 @@ footer {
     margin-bottom: auto;
 }
 
-[id="calendar"] + * {
-    margin-top: 5em;
-}
-
 /************************************/
 /*------- Meals --------------------*/
 /************************************/
@@ -431,22 +597,28 @@ footer {
     padding: 1em;
 }
 
-/* styled as pot in CUSTOM section
- * at the end of this file
- */
+/* styled as POT */
 [id="current-offer"] li.selected {
     border-color: var(--custom-1);
 }
 
 [id="current-offer"] li > *:last-child {
+    align-items: center;
     display: flex;
+    flex-direction: row;
     justify-content: flex-end;
     margin-top: auto;
     padding-top: 2em;
 }
 
+[id="current-offer"] input {
+    max-width: 50%;
+}
+
 [id="current-offer"] input + button {
+    flex-grow: 1;
     margin-left: 1em;
+    margin-top: 1em;
 }
 
 /************************************/
@@ -455,15 +627,22 @@ footer {
 
 /*-- BEGIN stuff attached by js --*/
 [id="main-navbar"].js {
+    position: absolute;
     transition: 0.25s;
     z-index: 1;
+}
+
+[id="main-navbar"].js + * {
+    margin-top: 5em;
 }
 
 [id="main-navbar"] button {
     font-size: 1.25em;
     font-weight: bold;
+    left: 1em;
     padding: 0.5em;
     position: relative;
+    top: 1em;
     z-index: 1;
 }
 
@@ -578,139 +757,10 @@ footer {
 [id="admin-menu"] li:first-child::before {
     display: block;
     position: absolute;
-    width:
 }
 
 [id="admin-menu"] a {
     padding: 0.2em 1.5em;
-}
-
-
-/************************************/
-/*------- Forms --------------------*/
-/************************************/
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-[type="submit"] {
-    border-color: var(--custom-4);
-    border-radius: 4px;
-    box-shadow: 0 0 2px 2px #fff;
-    margin-bottom: 1em;
-    margin-top: 2em;
-    position: relative; /* to position fancy border */
-    transition: 0.25s;
-}
-
-[type="submit"]::after {
-    border: 2px solid var(--custom-2);
-    border-radius: 6px;
-    bottom: -6px;
-    content: '';
-    left: -6px;
-    position: absolute;
-    right: -6px;
-    top: -6px;
-}
-
-[type="submit"]:hover,
-[type="submit"]:focus {
-    background: #fffcc8;
-    box-shadow: 0 0 2px 2px var(--gray);
-    text-shadow: -1px 0 0 #000;
-}
-
-input,
-select,
-textarea {
-    background-color: #fff;
-    border: 1px solid var(--custom-2);
-    border-radius: 5px;
-    padding: 0.5em;
-    font-size: 100%;
-}
-
-input:focus {
-    border-width: 2px;
-}
-
-label {
-    display: flex;
-    flex-direction: column;
-}
-
-[type="checkbox"],
-[type="radio"] {
-    height: 0;
-    opacity: 0;
-    position: absolute; /* remove from flow */
-    width: 0;
-}
-
-[type="checkbox"] + label,
-[type="radio"] + label {
-    padding-left: 1.5em;
-    position: relative;
-}
-
-[type="checkbox"] + label::before,
-[type="radio"] + label::before {
-    background: #fff;
-    border: 1px solid var(--custom-2);
-    content: "";
-    height: calc(1em - 2px);
-    left: 0;
-    position: absolute;
-    top: 3px;
-    width: calc(1em - 2px);
-}
-
-[type="checkbox"]:focus + label::before,
-[type="radio"]:focus + label::before {
-    outline: 2px dotted var(--custom-2);
-    outline-offset: 1px;
-}
-
-[type="radio"] + label::before {
-    border-radius: 50%;
-}
-
-[type="checkbox"]:checked + label::after {
-    content: "";
-    left: 0.35em;
-    position: absolute;
-    top: 0.25em;
-    width: 0.25em;
-    height: 0.625em;
-    border: solid var(--main-text-color);
-    border-width: 0 0.1855em 0.1855em 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-
-[type="radio"]:checked + label::after {
-    background: var(--main-text-color);
-    border-radius: 50%;
-    content: "";
-    height: calc(1em - 6px);
-    left: 3px;
-    position: absolute;
-    top: 3px;
-    width: calc(1em - 6px);
-}
-
-form button {
-    background: #fff;
-    border-color: var(--gray);
-    border-radius: 5px;
-    border-style: solid;
-    border-width: 2px;
-    font-size: 0.9em;
-    padding: 0.5em 1em;
 }
 
 /************************************/

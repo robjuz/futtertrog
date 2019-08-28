@@ -3,13 +3,7 @@
 @inject('orders', 'App\Repositories\OrdersRepository')
 @inject('meals', 'App\Repositories\MealsRepository')
 
-@section('content')
-    <h1>@lang('Order meal for :date', ['date' => $requestedDate->format(trans('futtertrog.date_format'))])</h1>
-
-    <a class="skip-link skip-calendar sr-only" href="#current-offer">
-        {{ __('Skip calendar') }}
-    </a>
-
+@section('before')
     <nav id="calendar">
         <a href="<?= route('meals.index', ['date' => $previousMonth->toDateString()]) ?>">
             <span aria-hidden="true">&larr;</span>
@@ -25,18 +19,18 @@
             @for($i = 1; $i <= $date->daysInMonth; $i++)
                 <li
                     class="
-                        @if($date->isWeekend())
-                                    weekend
-                        @endif
+                            @if($date->isWeekend())
+                                weekend
+                            @endif
 
-                        @if($date->isToday())
-                                    today
-                        @endif
+                            @if($date->isToday())
+                                today
+                            @endif
 
-                        @if($date->isSameDay($requestedDate))
-                                    selected
-                        @endif
-                        "
+                            @if($date->isSameDay($requestedDate))
+                                selected
+                            @endif
+                             "
                 >
 
                     <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
@@ -49,7 +43,7 @@
                             <ol class="ordered">
                                 @foreach($orders->userOrdersForDate($date) as $order)
                                     <li>
-                                        <svg role="presentation">
+                                        <svg role="presentation" viewBox="0 0 30 26">
                                             <path d="M5,10 h20 v8 a4,4 0,0,1, -4,4 h-12 a4,4 0,0,1, -4,-4 v-8 z"></path>
                                             <path d="M3,7 h11 a2,2 0,1,1 2,0 h11 v1 a1,1 0,0,1, -1,1 h-22 a1,1 0,0,1, -1,-1 v-1 z"></path>
                                         </svg>
@@ -74,6 +68,10 @@
             <span aria-hidden="true">&rarr;</span>
         </a>
     </nav>
+@endsection
+
+@section('content')
+    <h1>@lang('Order meal for :date', ['date' => $requestedDate->format(trans('futtertrog.date_format'))])</h1>
 
     <section id="current-offer" <?php /* keep id for skip link */ ?>>
 
