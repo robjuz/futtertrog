@@ -629,14 +629,15 @@ footer {
 [id="main-navbar"].js {
     position: absolute;
     transition: 0.25s;
-    z-index: 1;
+    /*width: 100%;
+    z-index: 1;*/
 }
 
 [id="main-navbar"].js + * {
     margin-top: 5em;
 }
 
-[id="main-navbar"] button {
+[id="main-navbar"].js button {
     font-size: 1.25em;
     font-weight: bold;
     left: 1em;
@@ -646,37 +647,20 @@ footer {
     z-index: 1;
 }
 
-[id="main-navbar"] ul {
-    --li-height: 4.5em;
-
+[id="main-navbar"].js ul {
+    float: unset;
+    margin-left: 1em;
     max-width: 300px;
     position: relative;
-    width: 90vw;
 }
 
-[id="main-navbar"] ul > li {
-    left: 0;
+[id="main-navbar"].js ul > li {
     opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0; /* position all elements to top and push down with margin */
 }
 
-[id="main-navbar"] [aria-expanded="true"] + ul > li {
+[id="main-navbar"].js [aria-expanded="true"] + ul > li {
     opacity: 1;
 }
-
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(1) { margin-top: 0; }
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(2) { margin-top: calc(1 * var(--li-height)); }
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(3) { margin-top: calc(2 * var(--li-height)); }
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(4) { margin-top: calc(3 * var(--li-height)); }
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(5) { margin-top: calc(4 * var(--li-height)); }
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(6) { margin-top: calc(5 * var(--li-height)); }
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(7) { margin-top: calc(6 * var(--li-height)); }
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(8) { margin-top: calc(7 * var(--li-height)); }
-[id="main-navbar"] [aria-expanded="true"] + ul > li:nth-child(9) { margin-top: calc(8 * var(--li-height)); }
-
-[id="main-navbar"] [aria-expanded="false"] + ul > li { margin-top: 0; }
 
 /*-- END stuff attached by js -*/
 
@@ -687,6 +671,7 @@ footer {
 [id="main-navbar"] ul {
     float: right;
     list-style-type: none;
+    margin-right: 1em;
 }
 
 [id="main-navbar"] button,

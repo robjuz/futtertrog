@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <main class="dashboard">
+    <div class="dashboard">
         <h1>{{ __('Dashboard') }}</h1>
 
         <section>
@@ -71,9 +71,10 @@
         <section>
             @include('partials.deposit_history')
         </section>
-
+<?php /*
         <section id="deposit-history">
             @include('partials.order_history', ['orders' => $ordersHistory])
         </section>
-    </main>
+*/?>
+    </div>
 @endsection
