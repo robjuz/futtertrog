@@ -25,13 +25,16 @@ class PotGeneratorController extends Controller
             'potColor' => ['regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/']
         ]);
 
+
+
+        if ($request->has('download')) {
+            return response(view('tools/pot')->with($data), 200, [
+                'Content-Type' => 'image/svg+xml',
+                'Content-Disposition' => 'attachment; filename="pot.svg"',
+            ]);
+        }
+
         return view('tools/pot')->with($data);
-
-
-        return response(view('tools/pot')->with($data), 200, [
-            'Content-Type' => 'image/svg+xml',
-            'Content-Disposition' => 'attachment; filename="pot.svg"',
-        ]);
 
     }
 }

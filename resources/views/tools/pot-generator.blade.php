@@ -46,5 +46,6 @@
         </fieldset>
 
         <button type="submit">{{__('Create')}}</button>
+        <input type="submit" value="{{__('Download')}}" name="download">
     </form>
 @endsection
