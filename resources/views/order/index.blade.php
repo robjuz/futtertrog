@@ -110,9 +110,10 @@
 
             <tfoot>
                 <tr>
-                    <td colspan="6">
+                    <td colspan="5">
                         {{ __('Sum') }}: {{ number_format($sum, 2, ',','.') }} €
                     </td>
+                    <td><?php /* intentionally left empty to align sum with prices */ ?></td>
                 </tr>
             </tfoot>
         </table>

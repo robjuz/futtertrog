@@ -23,6 +23,7 @@
     </form>
 @endcan
 
+
 @if($orderItem = $todayOrders->firstWhere('meal_id', $meal->id))
     <form onsubmit="toggleOrder(event)" action="{{ route('order_items.destroy', $orderItem) }}" method="post">
         @csrf
@@ -36,7 +37,8 @@
         <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
         <input type="hidden" name="meal_id" value="{{ $meal->id }}"/>
 
-        <input type="number" name="quantity" min="1" pattern="\d*" value="1">
+        <label for="amount-{{ $meal->id }}" class="sr-only">{{ __('Amount') }}</label>
+        <input type="number" name="quantity" min="1" value="1" id="amount-{{ $meal->id }}">
         <button type="submit">{{ __('Place order') }}</button>
     </form>
 @endif

@@ -9,22 +9,23 @@
     <form action="{{route('notification.store')}}" method="post">
         @csrf()
 
-        <p id="user_id-desc">
+        <label for="user_id">
             <span>{{ __('User') }}</span>
             @error('user_id')
                 <span>{{ $message }}</span>
             @enderror
-        </p>
+        </label>
 
-        @foreach ($users as $user)
-            <input type="checkbox"
-                   id="user_id-{{ $user->id }}"
-                   value="user_id[{{ $user->id }}]"
-                   {{ old('user_id') == $user->id ? 'checked' : ''}}
-                   aria-describedby="user_id-desc"
-            >
-            <label for="user_id-{{ $user->id }}">{{ $user->name }}</label>
-        @endforeach
+        <select id="user_id" name="user_id[]" multiple>
+            @foreach ($users as $user)
+                <option
+                    value="{{ $user->id }}"
+                    {{ old('source') == $user->id ? 'selected' : ''}}
+                >
+                    {{ $user->name }}
+                </option>
+            @endforeach
+        </select>
 
         <label for="subject">
             <span>{{ __('Subject') }}</span>
