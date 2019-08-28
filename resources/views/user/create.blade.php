@@ -42,6 +42,6 @@
                {{ old('is_admin') ? 'checked' : '' }}>
         <label for="is_admin">{{ __('Is admin') }}</label>
 
-        <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>
+        <button type="submit">{{ __('Create') }}</button>
     </form>
 @endsection

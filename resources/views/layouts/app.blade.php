@@ -85,7 +85,7 @@
 
 @yield('before')
 
-<main id="main" <?php /* keep this id for skip link */?>>
+<main id="main" class="@stack('main-classes')" <?php /* keep this id for skip link */?>>
     @yield('content')
 </main>
 

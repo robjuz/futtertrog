@@ -18,6 +18,8 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes(['register' => false]);
 
 Route::view('/', 'landing-page');
+Route::view('/pot-generator', 'tools/pot-generator');
+Route::post('/pot-generator', 'PotGeneratorController');
 
 Route::group(['middleware' => 'auth:web,api'], function () {
     Route::get('/dashboard', 'HomeController')->name('home');
