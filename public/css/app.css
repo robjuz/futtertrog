@@ -767,4 +767,18 @@ footer {
 }
 
 
+/************************************/
+/*------- Pot Generator ----------*/
+/************************************/
 
+[id="pot-form"] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+
+}
+
+[id="pot-form"] > output {
+    grid-column: 2;
+    grid-row: 1 / -1;
+}
