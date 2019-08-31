@@ -22,10 +22,8 @@ class PotGeneratorController extends Controller
             'potWidth' => 'numeric|min:50',
             'potHeight' => 'numeric|min:50',
             'potRadius' => 'numeric|min:10',
-            'potColor' => ['regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/']
+            'potColor' => ['regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'],
         ]);
-
-
 
         if ($request->has('download')) {
             return response(view('tools/pot')->with($data), 200, [
@@ -35,6 +33,5 @@ class PotGeneratorController extends Controller
         }
 
         return view('tools/pot')->with($data);
-
     }
 }
