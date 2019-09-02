@@ -1,29 +1,38 @@
 <h2>{{ __('Deposit history') }} </h2>
 
 @if( count($deposits->items()) > 0)
-    <ul>
+    <table>
+        <thead>
+            <tr>
+                <th>{{__('Betrag')}}</th>
+                <th>{{__('Datum')}}</th>
+                <th>{{__('Kommentar')}}</th>
+            </tr>
+        </thead>
         @foreach ($deposits as $deposit)
-            <li>
-                <h3 class="{{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
+            <tr>
+                <td class="{{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
                     {{ number_format($deposit->value, 2, ',','.') }} €
-                </h3>
-                <small title="{{ $deposit->created_at->format(__('futtertrog.datetime_format')) }}">{{ $deposit->created_at->diffForHumans() }}</small>
+                </td>
+                <td title="{{ $deposit->created_at->format(__('futtertrog.datetime_format')) }}">{{ $deposit->created_at->diffForHumans() }}</td>
 
-                <p> {{ $deposit->comment }} </p>
+                <td> {{ $deposit->comment }} </td>
 
                 @if(auth()->user()->is_admin AND !request()->routeIs('home'))
-                    <form action="{{ route('deposits.destroy', $deposit) }}" method="post">
-                        @csrf
-                        @method('delete')
+                    <td>
+                        <form action="{{ route('deposits.destroy', $deposit) }}" method="post">
+                            @csrf
+                            @method('delete')
 
-                        <button type="submit">
-                            {{ __('Delete') }}
-                        </button>
-                    </form>
+                            <button type="submit">
+                                {{ __('Delete') }}
+                            </button>
+                        </form>
+                    </td>
                 @endif
-            </li>
+            </tr>
         @endforeach
-    </ul>
+    </table>
 @else
     <p> {{ __('No results found') }}!</p>
 @endif
