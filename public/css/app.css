@@ -175,12 +175,18 @@ form {
     flex-direction: column;
 }
 
+legend {
+    padding: 0.25em 0.5em;
+}
+
 [type="submit"] {
     border-color: var(--custom-4);
     border-radius: 4px;
     box-shadow: 0 0 2px 2px #fff;
     margin-bottom: 1em;
+    margin-right: auto;
     margin-top: 2em;
+    max-width: max-content;
     position: relative; /* to position fancy border */
     transition: 0.25s;
 }
@@ -227,6 +233,11 @@ label {
     font-weight: bold;
 }
 
+label small {
+    font-weight: normal;
+    margin-top: 0.5em;
+}
+
 /* error messages */
 label > span:not(:first-child):last-child {
     color: var(--custom-1);
@@ -269,6 +280,7 @@ label > span:not(:first-child):last-child::after {
 
 [type="checkbox"] + label,
 [type="radio"] + label {
+    font-weight: normal;
     padding-left: 1.5em;
     position: relative;
 }
@@ -393,10 +405,11 @@ footer {
 
 .dashboard > section {
     margin: 3em auto 0;
+    max-width: max-content;
     width: 90%;
 }
 
-@media screen and (min-width: 700px) {
+@media screen and (min-width: 800px) {
     .dashboard {
         display: grid;
         grid-gap: 2vw;
@@ -410,21 +423,27 @@ footer {
         grid-row: 1;
     }
 
-    .dashboard > section:nth-of-type(2) {
+    .dashboard > section {
         align-self: end;
+        margin: unset;
+        width: auto;
+    }
+
+    .dashboard > section:nth-of-type(1) {
         justify-self: end;
     }
 
+    .dashboard > section:nth-of-type(2) {
+        justify-self: start;
+    }
+
     .dashboard > section:nth-of-type(3) {
+        align-self: start;
         justify-self: end;
     }
 
     .dashboard > section:nth-of-type(4) {
         align-self: end;
-    }
-
-    .dashboard > section:nth-of-type(5) {
-        grid-column: span 2;
     }
 }
 /*-- layout end --*/
@@ -433,18 +452,18 @@ footer {
     text-align: center;
 }
 
-.dashboard table td:first-child {
-    padding-right: 0;
-    text-align: right;
-    white-space: nowrap;
-}
-
-.dashboard table td:last-child {
-    white-space: nowrap;
-}
-
 .dashboard ul {
     list-style-type: none;
+}
+
+.dashboard [id="upcoming-orders"] * + li {
+    border-top: 2px solid var(--custom-3);
+    margin-top: 1em;
+    padding-top: 1em;
+}
+
+.dashboard [id="deposit-history"] td:first-child {
+    white-space: nowrap;
 }
 
 /* styled as POT */
@@ -467,12 +486,12 @@ footer {
 }
 
 [id="calendar"] > a:first-child {
-    align-items: start;
+    justify-self: start;
     grid-row: 1;
 }
 
 [id="calendar"] > a:last-child {
-    align-items: end;
+    justify-self: end;
     grid-row: 3;
 }
 
@@ -531,7 +550,7 @@ footer {
     width: 1.5em;
 }
 
-[id="calendar"] li + li {
+[id="calendar"] * + li {
     margin-left: 2px;
 }
 
@@ -571,7 +590,9 @@ footer {
 [id="calendar"] .order,
 [id="calendar"] .ordered {
     font-size: 0.6em;
+    margin-top: 0.5em;
     order: -1;
+    text-align: center;
 }
 
 [id="calendar"] a *:first-child {
@@ -629,8 +650,7 @@ footer {
 [id="main-navbar"].js {
     position: absolute;
     transition: 0.25s;
-    /*width: 100%;
-    z-index: 1;*/
+    z-index: 1;
 }
 
 [id="main-navbar"].js + * {
@@ -655,11 +675,11 @@ footer {
 }
 
 [id="main-navbar"].js ul > li {
-    opacity: 0;
+    display: none;
 }
 
 [id="main-navbar"].js [aria-expanded="true"] + ul > li {
-    opacity: 1;
+    display: block;
 }
 
 /*-- END stuff attached by js -*/
@@ -720,7 +740,7 @@ footer {
 /************************************/
 /*------- Admin navbar --------------*/
 /************************************/
-[id="admin-menu"] {
+/*[id="admin-menu"] {
     display: inline-flex;
 }
 
@@ -730,6 +750,7 @@ footer {
 }
 
 /* all custom colors used only here */
+/*
 [id="admin-menu"] li {
     background: linear-gradient(to top, #f6ebc0 35%, #eed282 85%,  #9e3d03);
     border: 1px solid #77310d;
@@ -747,6 +768,7 @@ footer {
 [id="admin-menu"] a {
     padding: 0.2em 1.5em;
 }
+*/
 
 /************************************/
 /*------- Form Customizations ------*/
@@ -773,12 +795,14 @@ footer {
 
 [id="pot-form"] {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-gap: 2vw;
     grid-template-rows: auto auto auto;
-
 }
 
 [id="pot-form"] > output {
+    align-self: start;
     grid-column: 2;
     grid-row: 1 / -1;
+    max-width: 90%;
+    width: 40em;
 }

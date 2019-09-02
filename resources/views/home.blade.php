@@ -38,7 +38,7 @@
         <p>{{ number_format($balance, 2, ',','.') }} €</p>
     </section>
 
-    <section>
+    <section id="upcoming-orders">
         <header>
             <h2 id="future-meals">{{ __('Your upcoming orders') }}</h2>
         </header>
@@ -71,7 +71,7 @@
             @endif
     </section>
 
-    <section>
+    <section id="deposit-history">
         @include('partials.deposit_history')
     </section>
 <?php /*
