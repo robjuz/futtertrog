@@ -173,9 +173,9 @@
                                     <input type="hidden" name="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}" value="0">
                                     <input type="checkbox"
                                            class="custom-control-input"
-                                           name="noOrderForNextDayNotification"
+                                           name="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
                                            id="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
-                                           {{ old('noOrderForNextDayNotification', $settings[\App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION] ?? false) ? 'checked' : '' }}
+                                           {{ old(\App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION, $settings[\App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION] ?? false) ? 'checked' : '' }}
                                            value="1"
                                            aria-describedby="noOrderForNextDayNotificationHelp"
                                     >
