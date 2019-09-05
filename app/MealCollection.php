@@ -12,13 +12,13 @@ class MealCollection extends Collection
             ->sortBy('id')
             ->sortByDesc(function ($meal) {
                 if ($meal->is_hated) {
-                    return -1;
+                    return -10 * $meal->id;
                 }
                 if ($meal->is_preferred) {
-                    return 1;
+                    return 10 * $meal->id;
                 }
 
-                return 0;
+                return -1 * $meal->id;
             });
     }
 }
