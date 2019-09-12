@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container flex-grow-1">
         <div class="row">
             <aside class="col-12 col-lg-3 mb-3">
                 @include('partials.user_menu')
             </aside>
 
             <main class="col-12 col-lg-9 user-index">
-                <div class="card mb-3">
-                    <div class="card-header">{{ __('New money transfer') }}</div>
+                <div class="card">
+                    <h1 class="card-header">{{ __('New money transfer') }}</h1>
 
                     <div class="card-body">
                         <form action="{{ route('deposits.transfer') }}" method="post" role="form">
