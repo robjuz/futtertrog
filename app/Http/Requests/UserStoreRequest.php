@@ -27,6 +27,7 @@ class UserStoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', Rule::unique('users')],
+            'phone_number' => ['sometimes', 'nullable', 'string'],
             'is_admin' => ['boolean'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ];

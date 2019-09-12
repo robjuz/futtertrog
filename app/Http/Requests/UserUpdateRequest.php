@@ -27,6 +27,7 @@ class UserUpdateRequest extends FormRequest
         $rules = [
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'string', 'email', Rule::unique('users')->ignoreModel($this->user)],
+            'phone_number' => ['sometimes', 'nullable', 'string'],
             'is_admin' => ['sometimes', 'boolean'],
         ];
 

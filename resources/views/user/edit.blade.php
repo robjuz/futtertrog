@@ -56,6 +56,23 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="phone_number" class="col-form-label-sm">
+                                {{ __('Phone number') }}
+                            </label>
+
+                            <input id="phone_number" type="text"
+                                   class="form-control{{ $errors->has('phone_number') ? ' is-invalid' : '' }}"
+                                   name="phone_number" value="{{ old('phone_number', $user->phone_number) }}"
+                            >
+
+                            @if ($errors->has('phone_number'))
+                                <div class="invalid-tooltip" role="alert">
+                                    <strong>{{ $errors->first('phone_number') }}</strong>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
                             <label for="password" class="col-form-label-sm">
                                 {{ __('Password') }}
                             </label>
