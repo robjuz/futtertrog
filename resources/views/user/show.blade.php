@@ -26,6 +26,5 @@
                 @include('partials.order_history')
             </div>
         </div>
-
-
+    </div>
 @endsection

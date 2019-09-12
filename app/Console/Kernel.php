@@ -3,7 +3,6 @@
 namespace App\Console;
 
 use App\ScheduledJobs\NoOrderForNextDayNotification;
-use App\ScheduledJobs\NoOrderForNextWeekNotification;
 use App\ScheduledJobs\NoOrderForTodayNotification;
 use App\ScheduledJobs\OpenOrdersForNextWeekNotification;
 use Illuminate\Console\Scheduling\Schedule;
