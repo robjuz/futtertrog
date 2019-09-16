@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-      image: hitalos/laravel:latest
+      build: ./
       ports:
           - 8001:80
       volumes:
