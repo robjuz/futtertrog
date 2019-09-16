@@ -50,7 +50,7 @@ class OpenOrders extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->subject(__('Open order', ['day' => $this->day]))
+        return (new MailMessage)->subject(__('Open order for', ['day' => $this->day]))
             ->line(__('This is a friendly reminder.'))
             ->line(__('There is an open order!', ['day' => $this->day]));
     }
