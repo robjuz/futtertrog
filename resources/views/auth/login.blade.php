@@ -33,11 +33,12 @@
         </label>
 
         <button type="submit">{{ __('Login') }}</button>
-    </form>
 
-    @if (Route::has('password.request'))
-        <a href="{{ route('password.request') }}">
-            {{ __('Forgot Your Password?') }}
-        </a>
-    @endif
+
+        @if (Route::has('password.request'))
+            <a href="{{ route('password.request') }}">
+                {{ __('Forgot Your Password?') }}
+            </a>
+        @endif
+    </form>
 @endsection

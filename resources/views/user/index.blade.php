@@ -26,7 +26,7 @@
 
                     <td>{{ $user->email }}</td>
 
-                    <td>
+                    <td class="money">
                         <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
                             {{ number_format($user->balance, 2, ',','.') }} €
                         </span>

@@ -11,8 +11,8 @@
         </thead>
         @foreach ($deposits as $deposit)
             <tr>
-                <td class="{{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
-                    {{ number_format($deposit->value, 2, ',','.') }} €
+                <td class="money {{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
+                    {{ number_format($deposit->value, 2, ',','.') }}€
                 </td>
                 <td title="{{ $deposit->created_at->format(__('futtertrog.datetime_format')) }}">{{ $deposit->created_at->diffForHumans() }}</td>
 
