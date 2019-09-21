@@ -5,28 +5,34 @@
 
     <a href="{{ route('order_items.create') }}"> {{ __('Create order') }}</a>
 
-    <form action="{{ route('orders.index') }}" method="get">
+    <form action="{{ route('orders.index') }}" method="get" class="orders-overview-filter">
 
-        <label for="from">{{ __('From') }}</label>
-        <input type="date" name="from" id="from" value="{{ $from->toDateString() }}">
+        <div>
+            <label for="from">{{ __('From') }}</label>
+            <input type="date" name="from" id="from" value="{{ $from->toDateString() }}">
+        </div>
 
-        <label for="to">{{ __('To') }}</label>
-        <input type="date" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
+        <div>
+            <label for="to">{{ __('To') }}</label>
+            <input type="date" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
+        </div>
 
-        <label for="user_id">{{ __('Filter by user') }}</label>
-        <select name="user_id" id="user_id">
-            <option value="" {{ request('user_id', null) == null ? ' selected' : '' }}>
-                {{ __('Filter by user') }}
-            </option>
-            @foreach($users as $user)
-                <option
-                    value="{{ $user->id }}"
-                    {{ request('user_id') == $user->id ? ' selected' : '' }}
-                >
-                    {{ $user->name }}
+        <div>
+            <label for="user_id">{{ __('Filter by user') }}</label>
+            <select name="user_id" id="user_id">
+                <option value="" {{ request('user_id', null) == null ? ' selected' : '' }}>
+                    {{ __('Filter by user') }}
                 </option>
-            @endforeach
-        </select>
+                @foreach($users as $user)
+                    <option
+                        value="{{ $user->id }}"
+                        {{ request('user_id') == $user->id ? ' selected' : '' }}
+                    >
+                        {{ $user->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
         <button type="submit">{{ __('Search') }}</button>
     </form>
@@ -37,18 +43,29 @@
             <thead>
                 <tr>
                     <th>{{__('Date')}}</th>
-                    <th>{{__('Status')}}</th>
-                    <th>{{__('Quantity')}}</th>
+                    <th class="collapsible">{{__('Status')}}</th>
+                    <th class="collapsible">{{__('Quantity')}}</th>
                     <th>{{__('Title')}}</th>
-                    <th>{{__('Price')}}</th>
+                    <th class="collapsible">{{__('Price')}}</th>
                     <th>{{__('Ordered by')}}</th>
                 </tr>
             </thead>
 
             <tbody>
+                @php $decoration = 'a'; @endphp
                 @foreach($orders as $order)
                     @foreach($order->orderItemsCompact() as $orderItem)
-                        <tr>
+                        <tr
+                            @if(count($order->orderItemsCompact()) == 1 OR $loop->first)
+                                @if($decoration == 'a')
+                                    class="decoration-a"
+                                    @php $decoration = 'b'; @endphp
+                                @else
+                                    class="decoration-b"
+                                    @php $decoration = 'a'; @endphp
+                                @endif
+                            @endif
+                        >
                             @if(count($order->orderItemsCompact()) == 1 OR $loop->first)
                                 <td
                                     @if(count($order->orderItemsCompact()) > 1)
@@ -59,13 +76,13 @@
                                     {{ $order->date->format(__('futtertrog.date_format')) }}
                                 </td>
 
-                                <td
+                                <td class="collapsible"
                                     @if(count($order->orderItemsCompact()) > 1)
                                     rowspan="{{count($order->orderItemsCompact())}}"
                                     @endif
                                 >
                                     {{ __('futtertrog.status.' . $order->status) }}
-
+<!--
                                     @if ($order->status === \App\Order::STATUS_OPEN)
                                         @can('update', $order)
                                             <form action="{{ route('orders.update', $order) }}" method="POST">
@@ -78,17 +95,18 @@
                                             </form>
                                         @endcan
                                     @endif
+                                        -->
                                 </td>
                             @endif
 
-                            <td>
+                            <td class="collapsible">
                                 {{ $orderItem->quantity }}
                             </td>
                             <td>
                                 {{ $orderItem->meal->title }}
                             </td>
 
-                            <td>
+                            <td class="money collapsible">
                                 {{ number_format($orderItem->meal->price, 2, ',','.') }} €
                             </td>
 
@@ -110,7 +128,7 @@
 
             <tfoot>
                 <tr>
-                    <td colspan="5">
+                    <td colspan="5" class="money">
                         {{ __('Sum') }}: {{ number_format($sum, 2, ',','.') }} €
                     </td>
                     <td><?php /* intentionally left empty to align sum with prices */ ?></td>

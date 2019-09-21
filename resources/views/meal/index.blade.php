@@ -38,20 +38,13 @@
                         <span class="day">{{ $date->day }}</span>
                         <span class="month">{{ $date->format('F') }}</span>
 
-
-                        @if($orders->userOrdersForDate($date)->isNotEmpty())
-                            <ol class="ordered">
-                                @foreach($orders->userOrdersForDate($date) as $order)
-                                    <li>
-                                        <svg role="presentation" viewBox="0 0 30 26">
-                                            <path d="M5,10 h20 v8 a4,4 0,0,1, -4,4 h-12 a4,4 0,0,1, -4,-4 v-8 z"></path>
-                                            <path d="M3,7 h11 a2,2 0,1,1 2,0 h11 v1 a1,1 0,0,1, -1,1 h-22 a1,1 0,0,1, -1,-1 v-1 z"></path>
-                                        </svg>
-                                    </li>
-                                @endforeach
-                            </ol>
-                        @elseif($meals->forDate($date)->count())
-                            <span class="order">{{ $meals->forDate($date)->count() }} Bestellmöglichkeiten</span>
+                        @if($meals->forDate($date)->count())
+                            <div class="order">
+                                @if($orders->userOrdersForDate($date)->isNotEmpty())
+                                    <p class="ordered">{{__('Schon bestellt!')}}</p>
+                                @endif
+                                <p>{{ $meals->forDate($date)->count() }} Bestellmöglichkeiten</p>
+                            </div>
                         @endif
 
                     </a>

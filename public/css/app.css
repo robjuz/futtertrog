@@ -50,7 +50,8 @@ body, main, br, li, dt, dd, th, td, option, .tabpanels {
 
 h1 {
     font-family: 'Caveat', cursive;
-    font-size: calc(2em + 2vw);
+    font-size: calc(2em + 3vw);
+    line-height: 1.15;
     text-transform: uppercase;
 }
 
@@ -166,6 +167,11 @@ tfoot tr {
     border-top: 2px solid var(--custom-2);
 }
 
+.money {
+    text-align: right;
+    white-space: nowrap;
+}
+
 /************************************/
 /*------- Forms --------------------*/
 /************************************/
@@ -173,6 +179,7 @@ tfoot tr {
 form {
     display: flex;
     flex-direction: column;
+    max-width: 300px;
 }
 
 legend {
@@ -223,7 +230,9 @@ textarea {
     font-size: 100%;
 }
 
-input:focus {
+input:focus,
+select:focus,
+textarea:focus {
     border-width: 2px;
 }
 
@@ -346,7 +355,10 @@ form button {
 /*------- Layout -------------------*/
 /************************************/
 body {
-    background: #fcfcfc;
+    background-color: #fcfcfc;
+    background-image: url("/images/background.jpg");
+    background-position: center;
+    background-size: cover;
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* necessary for sticky footer */
@@ -361,12 +373,15 @@ aside {
 }
 
 main {
-    display: block;
-    margin-bottom: 2em; /* exceptionally margin on bottom because of sticky footer */
-    margin-left: auto;
-    margin-right: auto;
+    align-items: center;
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 0 15px 10px #fff;
+    display: flex;
+    flex-direction: column;
+    margin: auto auto 2em; /* exceptionally margin on bottom because of sticky footer */
     min-width: 300px;
-    padding: 0 1em;
+    padding: 0 3vw;
+    width: 80%;
 }
 
 footer {
@@ -412,7 +427,7 @@ footer {
 @media screen and (min-width: 800px) {
     .dashboard {
         display: grid;
-        grid-gap: 2vw;
+        grid-gap: 3em;
         grid-template-columns: 1fr 1fr;
         margin: 0 20vw 1em;
         width: auto; /* undo default */
@@ -480,19 +495,25 @@ footer {
 /************************************/
 
 [id="calendar"] {
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 0 15px 10px #fff;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
+    margin-bottom: 3em;
+    padding: 0.5em 0;
 }
 
 [id="calendar"] > a:first-child {
     justify-self: start;
     grid-row: 1;
+    margin-left: 1em;
 }
 
 [id="calendar"] > a:last-child {
     justify-self: end;
     grid-row: 3;
+    margin-right: 1em;
 }
 
 [id="calendar"] ol {
@@ -587,12 +608,19 @@ footer {
     font-weight: bold;
 }
 
-[id="calendar"] .order,
-[id="calendar"] .ordered {
+[id="calendar"] .order{
     font-size: 0.6em;
-    margin-top: 0.5em;
+    margin-top: 1em;
     order: -1;
     text-align: center;
+}
+
+[id="calendar"] .ordered {
+    background: var(--custom-2);
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+    padding: 0.25em;
 }
 
 [id="calendar"] a *:first-child {
@@ -602,6 +630,10 @@ footer {
 /************************************/
 /*------- Meals --------------------*/
 /************************************/
+[id="current-offer"] {
+    width: 100%;
+}
+
 [id="current-offer"] ol {
     display: grid;
     grid-gap: 1em;
@@ -612,11 +644,21 @@ footer {
 
 [id="current-offer"] li {
     background: #fff;
+    border: 1px solid var(--custom-4);
     box-shadow: 0 0 3px 3px #eee;
     display: flex;
     flex-direction: column;
     padding: 1em;
 }
+
+[id="current-offer"] li:nth-child(2n + 1) {
+    border-color: var(--custom-2);
+}
+
+[id="current-offer"] li:nth-child(3n + 1) {
+    border-color: var(--custom-3);
+}
+
 
 /* styled as POT */
 [id="current-offer"] li.selected {
@@ -782,12 +824,36 @@ footer {
 /************************************/
 /*------- Orders Overview ----------*/
 /************************************/
+.orders-overview-filter {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.orders-overview-filter > * {
+    margin-top: 1em;
+}
+
+.orders-overview-filter > *:not(:last-child) {
+    margin-right: 1em;
+}
 
 .orders-overview ul {
     list-style-type: none;
     padding-left: 0;
 }
 
+/*.orders-overview .collapsible {
+    width: 1em;
+}*/
+
+.orders-overview .decoration-a {
+    background: #f2f2f2;
+}
+
+.orders-overview .decoration-b {
+    background: #fff;
+}
 
 /************************************/
 /*------- Pot Generator ----------*/
