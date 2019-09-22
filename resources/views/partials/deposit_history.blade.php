@@ -6,7 +6,10 @@
             <tr>
                 <th>{{__('Betrag')}}</th>
                 <th>{{__('Datum')}}</th>
-                <th>{{__('Kommentar')}}</th>
+                <th class="collapsible">{{__('Kommentar')}}</th>
+                @if(auth()->user()->is_admin AND !request()->routeIs('home'))
+                    <th></th>
+                @endif
             </tr>
         </thead>
         @foreach ($deposits as $deposit)
@@ -16,7 +19,7 @@
                 </td>
                 <td title="{{ $deposit->created_at->format(__('futtertrog.datetime_format')) }}">{{ $deposit->created_at->diffForHumans() }}</td>
 
-                <td> {{ $deposit->comment }} </td>
+                <td class="collapsible"> {{ $deposit->comment }} </td>
 
                 @if(auth()->user()->is_admin AND !request()->routeIs('home'))
                     <td>
