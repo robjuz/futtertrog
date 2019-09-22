@@ -1,35 +1,36 @@
-<div class="card">
-    <div class="card-header">
+<nav id="admin-menu">
+    <span>
         {{ __('Actions') }}
-    </div>
+    </span>
 
-    <ul class="nav flex-column">
-        <li class="nav-item">
+    <ul>
+        <li>
             <a href="{{ route('users.create') }}"
-               class="btn btn-link {{ request()->routeIs('users.create') ? ' active' : '' }}">
+               class="{{ request()->routeIs('users.create') ? ' active' : '' }}">
                 {{ __('New user') }}
             </a>
         </li>
 
-        <li class="nav-item">
+        <li>
             <a href="{{ route('deposits.create' )}}"
-               class="btn btn-link {{ request()->routeIs('deposits.create') ? ' active' : '' }}">
+               class="{{ request()->routeIs('deposits.create') ? ' active' : '' }}">
                 {{ __('New deposit') }}
             </a>
         </li>
 
-        <li class="nav-item">
+        <li>
             <a href="{{ route('deposits.transfer' )}}"
-               class="btn btn-link {{ request()->routeIs('deposits.transfer') ? ' active' : '' }}">
+               class="{{ request()->routeIs('deposits.transfer') ? ' active' : '' }}">
                 {{ __('New money transfer') }}
             </a>
         </li>
 
-        <li class="nav-item">
+        <li>
             <a href="{{ route('notifications.create' )}}"
-               class="btn btn-link {{ request()->routeIs('notifications.create') ? ' active' : '' }}">
+               class="{{ request()->routeIs('notifications.create') ? ' active' : '' }}">
                 {{ __('New notification') }}
             </a>
         </li>
     </ul>
-</div>
+</nav>
+

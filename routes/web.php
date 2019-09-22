@@ -17,12 +17,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes(['register' => false]);
 
+Route::view('/', 'landing-page');
+Route::view('/pot-generator', 'tools/pot-generator');
+Route::post('/pot-generator', 'PotGeneratorController');
+
 Route::group(['middleware' => 'auth:web,api'], function () {
-    Route::get('/', 'HomeController')->name('home');
+    Route::get('/dashboard', 'HomeController')->name('home');
 
     Route::get('meals/ical', 'IcalController')->name('meals.ical');
     Route::resource('meals', 'MealController');
-    Route::resource('orders', 'OrderController')->only(['index', 'update', 'destroy']);
+    Route::resource('orders', 'OrderController')->only(['index', 'edit', 'update', 'destroy']);
     Route::resource('order_items', 'OrderItemController')->only(['index', 'create', 'store', 'destroy']);
     Route::resource('users', 'UserController');
 

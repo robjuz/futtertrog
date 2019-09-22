@@ -1,77 +1,94 @@
 @extends('layouts.app')
 
 @inject('orders', 'App\Repositories\OrdersRepository')
+@inject('meals', 'App\Repositories\MealsRepository')
+
+@section('before')
+    <nav id="calendar">
+        <a href="<?= route('meals.index', ['date' => $previousMonth->toDateString()]) ?>">
+            <span aria-hidden="true">&larr;</span>
+            Bestellübersicht für {{ __('calendar.' . $previousMonth->format('F')) }} {{ $previousMonth->format('Y') }}
+        </a>
+
+        @php
+            $date = $requestedDate->clone()->startOfMonth();
+            $daysInMonth = $date->daysInMonth;
+        @endphp
+
+        <ol>
+            @for($i = 1; $i <= $date->daysInMonth; $i++)
+                <li
+                    class="
+                            @if($date->isWeekend())
+                                weekend
+                            @endif
+
+                            @if($date->isToday())
+                                today
+                            @endif
+
+                            @if($date->isSameDay($requestedDate))
+                                selected
+                            @endif
+                             "
+                >
+
+                    <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
+                        <span class="weekday">{{ $date->format('l') }}</span>
+                        <span class="day">{{ $date->day }}</span>
+                        <span class="month">{{ $date->format('F') }}</span>
+
+                        @if($meals->forDate($date)->count())
+                            <div class="order">
+                                @if($orders->userOrdersForDate($date)->isNotEmpty())
+                                    <p class="ordered">{{__('Schon bestellt!')}}</p>
+                                @endif
+                                <p>{{ $meals->forDate($date)->count() }} Bestellmöglichkeiten</p>
+                            </div>
+                        @endif
+
+                    </a>
+                </li>
+
+                @php
+                    $date->addDay();
+                @endphp
+            @endfor
+        </ol>
+
+        <a href="<?= route('meals.index', ['date' => $nextMonth->toDateString()]) ?>">
+            Bestellübersicht für {{ __('calendar.' . $nextMonth->format('F')) }} {{ $nextMonth->format('Y') }}
+            <span aria-hidden="true">&rarr;</span>
+        </a>
+    </nav>
+@endsection
 
 @section('content')
+    <h1>@lang('Order meal for :date', ['date' => $requestedDate->format(trans('futtertrog.date_format'))])</h1>
 
-    <main class="container-fluid flex-grow-1">
+    <section id="current-offer" <?php /* keep id for skip link */ ?>>
 
-        <h1 class="py-3">@lang('Order meal for :date', ['date' => $requestedDate->format(trans('futtertrog.date_format'))])</h1>
+        @if(!empty($todayMeals))
+            <ol>
+                @foreach($todayMeals as $meal)
+                    <li id="meal_{{ $meal->id }}"
+                        @if($todayOrders->firstWhere('meal_id', $meal->id))
+                            class="selected"
+                        @endif
+                    >
+                        @include('meal.meal')
+                    </li>
+                @endforeach
+            </ol>
 
-		<a class="skip-link skip-calendar" href="#current-offer">
-			{{ __('Skip calendar') }}
-		</a>
+            <a class="text-right" href="#current-offer">
+                Zurück zum Anfang der Liste
+            </a>
+        @else
+            <p>
+                {{ __('No items found') }}
+            </p>
+        @endif
 
-        <div class="row justify-content-center">
-
-            <div class="col-xs-12 col-auto">
-               @include('meal.calendar')
-            </div>
-
-            <section role="region" id="current-offer" class="col" aria-label="Bestellmöglichkeiten für {{ $requestedDate->format(trans('futtertrog.date_format')) }}">
-				@php
-					$date = \Illuminate\Support\Carbon::parse($requestedDate);
-				@endphp
-
-				<div class="row mb-2">
-					<div class="col">
-						<a href="<?= route('meals.index', ['date' => $date->addDay(-1)->toDateString()]) ?>">
-							<span aria-hidden="true">&lt;</span> {{ __('Previous day') }}
-						</a>
-					</div>
-					<div class="col-auto">
-						<a href="<?= route('meals.index', ['date' => $date->addDay(2)->toDateString()]) ?>">
-							{{ __('Next day') }} <span aria-hidden="true">&gt;</span>
-						</a>
-					</div>
-				</div>
-
-				@if(!empty($todayMeals))
-
-					<input type="radio" id="list" name="radio-group" class="meals-display-option"  {{ $listType === 'list' ? 'checked' : '' }}>
-					<label for="list" class="meals-list-option">
-						<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="list" class="svg-inline--fa fa-list fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M128 116V76c0-8.837 7.163-16 16-16h352c8.837 0 16 7.163 16 16v40c0 8.837-7.163 16-16 16H144c-8.837 0-16-7.163-16-16zm16 176h352c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H144c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h352c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H144c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zM16 144h64c8.837 0 16-7.163 16-16V64c0-8.837-7.163-16-16-16H16C7.163 48 0 55.163 0 64v64c0 8.837 7.163 16 16 16zm0 160h64c8.837 0 16-7.163 16-16v-64c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v64c0 8.837 7.163 16 16 16zm0 160h64c8.837 0 16-7.163 16-16v-64c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v64c0 8.837 7.163 16 16 16z"></path></svg>
-					</label>
-
-					<input type="radio" id="two-columns" name="radio-group" class="meals-display-option" {{ $listType === 'two-columns' ? 'checked' : '' }}>
-					<label for="two-columns" class="meals-two-columns-option">
-						<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="th-large" class="svg-inline--fa fa-th-large fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z"></path></svg>
-					</label>
-
-					<input type="radio" id="grid" name="radio-group" class="meals-display-option" {{ $listType === 'grid' ? 'checked' : '' }}>
-					<label for="grid" class="meals-grid-option">
-						<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="th" class="svg-inline--fa fa-th fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z"></path></svg>
-					</label>
-
-					<ol class="list-unstyled row flex-wrap">
-						@foreach($todayMeals as $meal)
-							<li id="meal_{{ $meal->id }}" class="col meal-container">
-								@include('meal.meal')
-							</li>
-						@endforeach
-					</ol>
-					<div>
-						<a class="text-right" href="#current-offer">
-							Zurück zum Anfang der Liste
-						</a>
-					</div>
-                @else
-                    <div class="alert alert-warning" role="alert">
-                        <strong>{{ __('No items found') }}</strong>
-                    </div>
-                @endif
-
-            </section>
-        </div>
-    </main>
+    </section>
 @endsection

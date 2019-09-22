@@ -1,132 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
-    <main class="container flex-grow-1">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <h1 class="card-header">{{ __('Edit Meal') }}</h1>
 
-                    <div class="card-body">
-                        <form action="{{ route('meals.update', $meal) }}" method="post">
-                            @method('put')
-                            @csrf
+    <h1>{{ __('Edit Meal') }}</h1>
 
-                            <div class="form-row">
-                                <div class="form-group col-12 col-md-8">
-                                    <label for="title" class="col-form-label-sm">
-                                        {{__('Title')}}
-                                    </label>
+    <form action="{{ route('meals.update', $meal) }}" method="post">
+        @method('put')
+        @csrf
 
-                                    <input
-                                        id="title"
-                                        class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}"
-                                        name="title"
-                                        type="text"
-                                        required
-                                        value="{{ old('title', $meal->title) }}"
-                                    >
+        <label for="title">
+            <span>{{__('Title')}}</span>
+            @if ($errors->has('title'))
+                <span>{{ $errors->first('title') }}</span>
+            @endif
+        </label>
 
-                                    @if ($errors->has('title'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('title') }}</strong>
-                                        </div>
-                                    @endif
-                                </div>
+        <input id="title" name="title" type="text" required
+            value="{{ old('title', $meal->title) }}">
 
-                                <div class="form-group col-12 col-md-4">
-                                    <label for="price" class="col-form-label-sm">
-                                        {{ __('Price') }}
-                                    </label>
+        <label for="price">
+            <span>{{ __('Price') }} (in €)</span>
+            @if ($errors->has('price'))
+                <span>{{ $errors->first('price') }}</span>
+            @endif
+        </label>
 
-                                    <div class="input-group">
-                                        <input type="number"
-                                               name="price"
-                                               id="price"
-                                               class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
-                                               pattern="\d*"
-                                               required
-                                               min="0"
-                                               step="0.01"
-                                               value="{{ old('price', $meal->price) }}"
-                                        >
+        <input type="number" name="price" id="price" pattern="\d*" required min="0" step="0.01"
+               value="{{ old('price', $meal->price) }}">
 
-                                        @if ($errors->has('price'))
-                                            <div class="invalid-tooltip" role="alert">
-                                                <strong>{{ $errors->first('price') }}</strong>
-                                            </div>
-                                        @endif
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">€</span>
-                                        </div>
-                                    </div>
+        <label for="date_from">
+            <span>{{ __('From') }}</span>
+            @if ($errors->has('date_from'))
+                <span>{{ $errors->first('date_from') }}</span>
+            @endif
+        </label>
 
-                                </div>
+        <input type="date" id="date_from" name="date_from" required
+               value="{{ old('date_from', $meal->date_from->toDateString()) }}">
 
+        <label for="date_to">
+            <span>{{ __('To') }}</span>
+            @if ($errors->has('date_to'))
+                <span>{{ $errors->first('date_to') }}</span>
+            @endif
+        </label>
 
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="date_from" class="col-form-label-sm">
-                                        {{ __('From') }}
-                                    </label>
+        <input type="date" id="date_to" name="date_to" required
+               value="{{ old('date_to', $meal->date_to->toDateString()) }}">
 
-                                    <input type="date"
-                                           id="date_from"
-                                           name="date_from"
-                                           class="form-control{{ $errors->has('date_from') ? ' is-invalid' : '' }}"
-                                           required
-                                           value="{{ old('date_from', $meal->date_from->toDateString()) }}"
-                                    >
+        <label for="description">
+            <span>{{ __('Description') }}</span>
+            @if ($errors->has('description'))
+                <span>{{ $errors->first('description') }}</span>
+            @endif
+        </label>
 
-                                    @if ($errors->has('date_from'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('date_from') }}</strong>
-                                        </div>
-                                    @endif
-                                </div>
+        <textarea name="description" id="description">
+            {{ old('description', $meal->description) }}
+        </textarea>
 
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="date_to" class="col-form-label-sm">
-                                        {{ __('To') }}
-                                    </label>
-
-                                    <input type="date"
-                                           id="date_to"
-                                           name="date_to"
-                                           class="form-control{{ $errors->has('date_to') ? ' is-invalid' : '' }}"
-                                           required
-                                           value="{{ old('date_to', $meal->date_to->toDateString()) }}"
-                                    >
-
-                                    @if ($errors->has('date_to'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('date_to') }}</strong>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <div class="form-group col-12">
-                                    <label for="description" class="col-form-label-sm">
-                                        {{ __('Description') }}
-                                    </label>
-
-                                    <textarea name="description"
-                                              id="description"
-                                              class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}"
-                                    >{{ old('description', $meal->description) }}</textarea>
-
-                                    @if ($errors->has('description'))
-                                        <div class="invalid-tooltip" role="alert">
-                                            <strong>{{ $errors->first('description') }}</strong>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+        <button type="submit">{{ __('Save') }}</button>
+    </form>
 @endsection()
