@@ -77,15 +77,15 @@
     </nav>
 @endauth
 
-@if (session('success'))
-    <p>
-        {{ session('success') }}
-    </p>
-@endif
-
 @yield('before')
 
 <main id="main" class="@stack('main-classes')" <?php /* keep this id for skip link */?>>
+    @if (session('success'))
+        <p class="success-message">
+            {{ session('success') }}
+        </p>
+    @endif
+
     @yield('content')
 </main>
 

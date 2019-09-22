@@ -55,25 +55,23 @@
                 @php $decoration = 'a'; @endphp
                 @foreach($orders as $order)
                     @foreach($order->orderItemsCompact() as $orderItem)
-                        <tr
-                            @if(count($order->orderItemsCompact()) == 1 OR $loop->first)
-                                @if($decoration == 'a')
-                                    class="decoration-a"
-                                    @php $decoration = 'b'; @endphp
-                                @else
-                                    class="decoration-b"
-                                    @php $decoration = 'a'; @endphp
-                                @endif
-                            @endif
-                        >
+                        @php if(count($order->orderItemsCompact()) == 1 OR $loop->first)
+                                $decoration == 'a' ? $decoration = 'b' : $decoration = 'a'; @endphp
+                        <tr class="decoration-{{$decoration}}">
                             @if(count($order->orderItemsCompact()) == 1 OR $loop->first)
                                 <td
                                     @if(count($order->orderItemsCompact()) > 1)
                                         rowspan="{{count($order->orderItemsCompact())}}"
                                     @endif
                                 >
-                                    {{ __('calendar.' . $order->date->englishDayOfWeek) }},
-                                    {{ $order->date->format(__('futtertrog.date_format')) }}
+                                    @can('update', $order)
+                                        <a href="{{ route('orders.edit', $order) }}">
+                                    @endcan
+                                        {{ __('calendar.' . $order->date->englishDayOfWeek) }},
+                                        {{ $order->date->format(__('futtertrog.date_format')) }}
+                                    @can('update', $order)
+                                        </a>
+                                    @endcan
                                 </td>
 
                                 <td class="collapsible"
@@ -82,20 +80,6 @@
                                     @endif
                                 >
                                     {{ __('futtertrog.status.' . $order->status) }}
-<!--
-                                    @if ($order->status === \App\Order::STATUS_OPEN)
-                                        @can('update', $order)
-                                            <form action="{{ route('orders.update', $order) }}" method="POST">
-                                                @method('put')
-                                                @csrf
-                                                <input type="hidden" name="status" value="{{ \App\Order::STATUS_ORDERED }}">
-                                                <button type="submit" class="btn btn-link p-0 text-left text-md-center">
-                                                    {{ __('Mark as ordered') }}
-                                                </button>
-                                            </form>
-                                        @endcan
-                                    @endif
-                                        -->
                                 </td>
                             @endif
 

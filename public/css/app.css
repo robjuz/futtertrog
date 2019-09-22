@@ -9,6 +9,7 @@ html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}main{display:b
     --disabled-text-color: #ddd;
 
     --gray: #aaa;
+    --green: #04ac2b;
 
     --custom-1: #bf0413;
     --custom-2: #4c6173;
@@ -127,7 +128,6 @@ html {
 /************************************/
 table {
     border-collapse: collapse;
-    width: 100%;
 }
 
 tr {
@@ -191,8 +191,9 @@ legend {
     border-radius: 4px;
     box-shadow: 0 0 2px 2px #fff;
     margin-bottom: 1em;
+    margin-left: 6px; /* because of pseudo elements */
     margin-right: auto;
-    margin-top: 2em;
+    margin-top: calc(1em + 6px); /* because of pseudo elements */
     max-width: max-content;
     position: relative; /* to position fancy border */
     transition: 0.25s;
@@ -380,7 +381,7 @@ main {
     flex-direction: column;
     margin: auto auto 2em; /* exceptionally margin on bottom because of sticky footer */
     min-width: 300px;
-    padding: 0 3vw;
+    padding: 0 3vw 3em;
     width: 80%;
 }
 
@@ -780,39 +781,6 @@ footer {
 }
 
 /************************************/
-/*------- Admin navbar --------------*/
-/************************************/
-/*[id="admin-menu"] {
-    display: inline-flex;
-}
-
-[id="admin-menu"] ul {
-    list-style-type: none;
-    padding: 1em;
-}
-
-/* all custom colors used only here */
-/*
-[id="admin-menu"] li {
-    background: linear-gradient(to top, #f6ebc0 35%, #eed282 85%,  #9e3d03);
-    border: 1px solid #77310d;
-    border-radius: 1em;
-    margin: 0;
-    position: relative;
-    text-align: center;
-}
-
-[id="admin-menu"] li:first-child::before {
-    display: block;
-    position: absolute;
-}
-
-[id="admin-menu"] a {
-    padding: 0.2em 1.5em;
-}
-*/
-
-/************************************/
 /*------- Form Customizations ------*/
 /************************************/
 
@@ -843,20 +811,65 @@ footer {
     padding-left: 0;
 }
 
-/*.orders-overview .collapsible {
-    width: 1em;
-}*/
+@media (max-width: 800px) {
+    .orders-overview .collapsible,
+    .orders-overview tfoot {
+        display: none;
+    }
+}
 
 .orders-overview .decoration-a {
     background: #f2f2f2;
+    border-top: 2px solid var(--custom-3);
 }
 
 .orders-overview .decoration-b {
     background: #fff;
+    border-top: 2px solid var(--custom-3);
 }
 
 /************************************/
-/*------- Pot Generator ----------*/
+/*------- Success message ----------*/
+/************************************/
+.success-message {
+    background: var(--green);
+    box-shadow: 0 0 3px 3px var(--green);
+    color: #fff;
+    font-weight: bold;
+    margin-top: 1em;
+    padding: 0.5em 1em 0.5em 3em;
+    position: relative;
+}
+
+.success-message::before {
+    border: solid #fff;
+    border-width: 0 0.2em 0.2em 0;
+    content: "";
+    height: 0.85em;
+    left: 0.8em;
+    position: absolute;
+    top: 0.6em;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    width: 0.4em;
+}
+
+.success-message::after {
+    border: 3px solid #fff;
+    border-radius: 50%;
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 1.5em;
+    left: 0.2em;
+    position: absolute;
+    top: 0.3em;
+    width: 1.5em;
+}
+
+/************************************/
+/*------- Pot Generator ------------*/
 /************************************/
 
 [id="pot-form"] {
