@@ -78,6 +78,7 @@ html {
 /************************************/
 
 /*-- POT BOTTOM --*/
+.user-show > section,
 .dashboard > section,
 [id="current-offer"] li.selected,
 [id="calendar"] li.selected {
@@ -92,6 +93,7 @@ html {
 }
 
 /*-- POT LID --*/
+.user-show > section::before,
 .dashboard > section::before,
 [id="current-offer"] li.selected::before,
 [id="calendar"] li.selected::before {
@@ -106,6 +108,7 @@ html {
 }
 
 /*-- POT LID HANDLE --*/
+.user-show > section::after,
 .dashboard > section::after,
 [id="current-offer"] li.selected::after,
 [id="calendar"] li.selected::after {
@@ -170,6 +173,12 @@ tfoot tr {
 .money {
     text-align: right;
     white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+    .collapsible {
+        display: none;
+    }
 }
 
 /************************************/
@@ -402,6 +411,7 @@ footer {
 
 .pagination {
     display: flex;
+    list-style-type: none;
 }
 
 .pagination > *:first-child {
@@ -413,12 +423,17 @@ footer {
 }
 
 
+.pagination li > * {
+    padding: 0.25em 0.5em;
+}
+
 /************************************/
-/*------- Dashboard ----------------*/
+/*------- Dashboard, User show------*/
 /************************************/
 
 /*-- layout --*/
 
+.user-show > section,
 .dashboard > section {
     margin: 3em auto 0;
     max-width: max-content;
@@ -426,6 +441,7 @@ footer {
 }
 
 @media screen and (min-width: 800px) {
+    .user-show,
     .dashboard {
         display: grid;
         grid-gap: 3em;
@@ -434,11 +450,13 @@ footer {
         width: auto; /* undo default */
     }
 
+    .user-show h1,
     .dashboard h1 {
         grid-column: 1 / span 2;
         grid-row: 1;
     }
 
+    .user-show > section,
     .dashboard > section {
         align-self: end;
         margin: unset;
@@ -446,6 +464,11 @@ footer {
     }
 
     .dashboard > section:nth-of-type(1) {
+        justify-self: end;
+        align-self: end;
+    }
+
+    .user-show > section:nth-of-type(1) {
         justify-self: end;
     }
 
@@ -459,7 +482,24 @@ footer {
     }
 
     .dashboard > section:nth-of-type(4) {
-        align-self: end;
+        align-self: start;
+    }
+
+    .user-show > section:nth-of-type(3),
+    .user-show > section:nth-of-type(4) {
+        grid-column: span 2;
+    }
+
+    .user-show > section:nth-of-type(4) {
+        justify-self: end;
+    }
+
+}
+
+@media (min-width: 1800px) {
+    .user-show > section:nth-of-type(3),
+    .user-show > section:nth-of-type(4) {
+        grid-column: span 1;
     }
 }
 /*-- layout end --*/
@@ -478,15 +518,22 @@ footer {
     padding-top: 1em;
 }
 
+.user-show td:first-child,
 .dashboard [id="deposit-history"] td:first-child {
     white-space: nowrap;
 }
 
+.user-show td:last-child {
+    min-width: 100px;
+}
+
 /* styled as POT */
+.user-show > section:nth-child(2n),
 .dashboard > section:nth-child(2n) {
     border-color: var(--custom-1);
 }
 
+.user-show > section:nth-child(3n),
 .dashboard > section:nth-child(3n) {
     border-color: var(--custom-3);
 }
@@ -812,7 +859,6 @@ footer {
 }
 
 @media (max-width: 800px) {
-    .orders-overview .collapsible,
     .orders-overview tfoot {
         display: none;
     }

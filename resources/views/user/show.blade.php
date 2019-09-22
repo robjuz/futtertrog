@@ -1,16 +1,28 @@
 @extends('layouts.app')
 
+@push('main-classes')
+    user-show
+@endpush
+
 @section('content')
     <h1>{{ $user->name }}</h1>
 
-    <a href="{{ route('users.edit', $user) }}">
-        {{ __('Edit') }}
-    </a>
+    <section>
+        <a href="{{ route('users.edit', $user) }}">
+            {{ __('Edit') }}
+        </a>
+    </section>
 
-    @include('user._balance')
+    <section>
+        @include('user._balance')
+    </section>
 
-    @include('partials.deposit_history')
+    <section>
+        @include('partials.deposit_history')
+    </section>
 
-    @include('partials.order_history')
+    <section>
+        @include('partials.order_history')
+    </section>
 
 @endsection

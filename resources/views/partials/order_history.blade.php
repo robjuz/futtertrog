@@ -12,9 +12,9 @@
             <tr>
                 <th><span class="sr-only">Anzahl</span></th>
                 <th>Menü</th>
-                <th class="hide-xs">Bestellt</th>
+                <th class="collapsible">Bestellt</th>
                 <th>Bestellt für</th>
-                <th>Preis</th>
+                <th class="collapsible">Preis</th>
                 @if(auth()->user()->is_admin AND !request()->routeIs('home'))
                     <th>Aktionen</th>
                 @endif
@@ -31,7 +31,7 @@
                      {{ $orderItem->meal->title }}
                 </td>
 
-                <td class="hide-xs">
+                <td class="collapsible">
                     <small title="{{ $orderItem->created_at->format(__('futtertrog.datetime_format')) }}">
                         {{ $orderItem->created_at->diffForHumans() }}
                     </small>
@@ -43,7 +43,7 @@
                     </date>
                 </td>
 
-                <td>
+                <td class="collapsible">
                     {{ number_format($orderItem->meal->price, 2, ',','.') }} €
                 </td>
 
