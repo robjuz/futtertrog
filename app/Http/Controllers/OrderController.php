@@ -72,6 +72,11 @@ class OrderController extends Controller
         return view('order.index', compact('orders', 'from', 'to', 'sum', 'users'));
     }
 
+    public function edit(Order $order)
+    {
+        return view('order.edit', compact('order'));
+    }
+
     /**
      * Update the specified resource in storage.
      *

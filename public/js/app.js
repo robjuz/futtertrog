@@ -2,7 +2,7 @@ class ExpandableMenu {
     constructor(nav) {
         this.nav = nav;
 
-        this.nav.setAttribute('class', 'js');
+        this.nav.classList.add('js');
         this.createToggleButton();
         this.updateLinks();
     }

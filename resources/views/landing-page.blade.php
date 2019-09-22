@@ -72,6 +72,7 @@
             letter-spacing: 1px;
             line-height: 1.6em;
             margin-left: 6vw; /* sync with h1,p */
+            margin-bottom: 2em;
             max-width: calc(88vw); /* 100wv - 2*6vw */
             padding: 1em 2.5em;
             position: relative;
@@ -99,19 +100,17 @@
 
 <main>
     <header>
-        <h1>Znowu głodny?</h1>
+        <h1>@lang('landing-page.title')</h1>
     </header>
 
     <p>
-        <strong>Futtertrog</strong> jest systemem do zarządzania zamówieniami z rozbudowanym systemem powiadomień.
-        Zapomniałeś zamówić coś na dziś? <b>Futtertrog</b> Ci o tym w porę przypomni. Chcesz wiedzieć, czy można już coś zamówić na
-        przyszły tydzień? <b>Futtertrog</b> da Ci znać.
+        @lang('landing-page.p1')
     </p>
     <p>
-        Chcesz się dowiedzieć, co jeszcze <b>Futtertrog</b> może zrobić dla Ciebie?
+        @lang('landing-page.p2')
     </p>
 
-    <a href="{{ route('login') }}">Przekonaj się sam!</a>
+    <a href="{{ route('login') }}">@lang('landing-page.link')</a>
 
 </main>
 </body>
