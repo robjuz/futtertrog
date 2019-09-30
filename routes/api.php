@@ -17,7 +17,6 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-
 /*
 |--------------------------------------------------------------------------
 | Laravel Passport Routes
