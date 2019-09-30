@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/app/{any?}', 'layouts.app')->where('any', '.*');
+Route::view('/app/{any?}', 'layouts.vue')->where('any', '.*');
 
 /*
 |--------------------------------------------------------------------------

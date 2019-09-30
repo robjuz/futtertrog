@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter);
 
-import App from './components/layout/App.vue'
+import App from '@/components/layout/App.vue'
 
 import Login from '@/components/auth/Login'
 import PasswordEmail from '@/components/auth/password/Email'

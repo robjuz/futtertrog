@@ -7,7 +7,7 @@ mix.webpackConfig({
         alias: {
               // Vendor
             vue$: 'vue/dist/vue.esm.js',
-            '@': path.resolve(__dirname, 'resources/js/'),
+            '@': path.resolve(__dirname, 'resources/vue/'),
         },
     },
     plugins:
@@ -27,9 +27,4 @@ mix.webpackConfig({
  |
  */
 
-mix.js('resources/js/index.js', 'public/js/index.js');
-mix.js('resources/js/app.js', 'public/js/app.js');
-
-mix.sass('resources/sass/light.scss', 'public/css/light.css');
-mix.sass('resources/sass/dark.scss', 'public/css/dark.css');
-mix.sass('resources/sass/app.scss', 'public/css/app.css');
+mix.js('resources/vue/index.js', 'public/js/vue.js');
