@@ -29,6 +29,6 @@ class LoginTest extends TestCase
     {
         $this->login()
             ->get(route('login'))
-            ->assertRedirect('/');
+            ->assertRedirect(route('home'));
     }
 }

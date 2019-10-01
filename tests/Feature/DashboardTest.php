@@ -19,7 +19,7 @@ class DashboardTest extends TestCase
             'value' => 10
         ]);
 
-        $this->actingAs($user)->get('/')->assertSee('10,00 €');
+        $this->actingAs($user)->get(route('home'))->assertSee('10,00 €');
     }
 
     /** @test */
@@ -36,7 +36,7 @@ class DashboardTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $response = $this->login($user)->get('/');
+        $response = $this->login($user)->get(route('home'));
         foreach ($orderItems as $orderItem) {
             $response->assertSee($orderItem->meal->title);
         }
@@ -57,7 +57,7 @@ class DashboardTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $response = $this->login($user)->get('/');
+        $response = $this->login($user)->get(route('home'));
         foreach ($orderItems as $orderItem) {
             $response->assertSee($orderItem->meal->title);
         }

@@ -102,7 +102,7 @@ class CustomNotificationTest extends TestCase
     }
 
     /** @test */
-    public function it_shows_an__admin_a_create_form()
+    public function it_shows_an_admin_a_create_form()
     {
         $this->login()
             ->withExceptionHandling()
