@@ -55,7 +55,7 @@
             @endif
         </label>
 
-        <textarea name="description" id="description">
+        <textarea name="description" id="description" rows="5">
             {{ old('description', $meal->description) }}
         </textarea>
 

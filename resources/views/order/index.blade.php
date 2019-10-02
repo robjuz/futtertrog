@@ -87,7 +87,11 @@
                                 {{ $orderItem->quantity }}
                             </td>
                             <td>
-                                {{ $orderItem->meal->title }}
+                                @can('edit', $orderItem->meal)
+                                    <a href="{{ route('meals.edit', $orderItem->meal) }}">{{ $orderItem->meal->title }}</a>
+                                @else
+                                    {{ $orderItem->meal->title }}
+                                @endcan
                             </td>
 
                             <td class="money collapsible">
