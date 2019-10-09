@@ -512,6 +512,7 @@ footer {
     list-style-type: none;
 }
 
+.dashboard [id="today-orders"] * + li,
 .dashboard [id="upcoming-orders"] * + li {
     border-top: 2px solid var(--custom-3);
     margin-top: 1em;

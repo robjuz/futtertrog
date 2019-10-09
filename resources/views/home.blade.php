@@ -7,7 +7,7 @@
 @section('content')
     <h1>{{ __('Dashboard') }}</h1>
 
-    <section>
+    <section id="today-orders">
         <header>
             <h2>{{ __('Your order for today') }}</h2>
         </header>

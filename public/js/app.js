@@ -44,3 +44,23 @@ class ExpandableMenu {
 if(!!document.getElementById('main-navbar')) {
     new ExpandableMenu(document.getElementById('main-navbar'));
 }
+
+class ScrollIntoView extends HTMLElement {
+    constructor() {
+        super();
+        this.current = this.querySelector('.selected');
+        this.scrollIntoView();
+
+        window.addEventListener('resize', this.scrollIntoView.bind(this));
+
+    }
+
+    scrollIntoView() {
+        const halfWindow = window.innerWidth/2;
+        const currentElementWidth = this.current.getBoundingClientRect().width;
+        this.current.parentElement.scrollLeft += this.current.getBoundingClientRect().left - halfWindow + currentElementWidth/2;
+    }
+
+}
+
+customElements.define('scroll-into-view', ScrollIntoView);

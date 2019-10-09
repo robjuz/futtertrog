@@ -4,6 +4,7 @@
 @inject('meals', 'App\Repositories\MealsRepository')
 
 @section('before')
+    <scroll-into-view>
     <nav id="calendar">
         <a href="<?= route('meals.index', ['date' => $previousMonth->toDateString()]) ?>">
             <span aria-hidden="true">&larr;</span>
@@ -61,6 +62,7 @@
             <span aria-hidden="true">&rarr;</span>
         </a>
     </nav>
+    </scroll-into-view>
 @endsection
 
 @section('content')
