@@ -5,7 +5,7 @@
 
     @if ($order->status === \App\Order::STATUS_OPEN)
         @can('update', $order)
-            <form class="collapsible" action="{{ route('orders.update', $order) }}" method="POST">
+            <form action="{{ route('orders.update', $order) }}" method="POST">
                 @method('put')
                 @csrf
                 <input type="hidden" name="status" value="{{ \App\Order::STATUS_ORDERED }}">
