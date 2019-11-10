@@ -41,13 +41,10 @@ class HomeController extends Controller
         $ordersHistory->appends('future_meals_page', $request->future_meals_page);
 
         $futureOrders = $user->orderItems()
-            ->with(['order', 'meal'])
-            ->whereHas(
-                'order',
-                function ($query) {
-                    $query->whereDate('date', '>', today());
-                }
-            )
+            ->with(['meal'])
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('date', '>', today())
+            ->orderBy('date')
             ->simplePaginate(5, ['*'], 'future_meals_page');
 
         $futureOrders->fragment('future-meals');

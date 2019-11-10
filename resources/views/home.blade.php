@@ -45,7 +45,7 @@
 
             @if($futureOrders->count())
                 <ul>
-                    @foreach($futureOrders->groupBy(function($orderItem) { return $orderItem->order->date->format(__('futtertrog.date_format')); }) as $date => $orders)
+                    @foreach($futureOrders->groupBy(function($orderItem) { return $orderItem->date->format(__('futtertrog.date_format')); }) as $date => $orders)
                         <li>
                             <h3>{{ $date }}</h3>
 
