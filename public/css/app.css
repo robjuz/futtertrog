@@ -51,8 +51,9 @@ body, main, br, li, dt, dd, th, td, option, .tabpanels {
 
 h1 {
     font-family: 'Caveat', cursive;
-    font-size: calc(2em + 3vw);
+    font-size: calc(2em + 2.5vw);
     line-height: 1.15;
+    margin: 0.25em 0 0.67em 0;
     text-transform: uppercase;
 }
 
@@ -99,7 +100,7 @@ html {
 [id="calendar"] li.selected::before {
     border-bottom: 7px solid;
     border-bottom-color: inherit;
-    border-radius: 50%;
+    border-radius: 999px;
     content: "";
     left: -10px;
     position: absolute;
@@ -201,7 +202,6 @@ legend {
     box-shadow: 0 0 2px 2px #fff;
     margin-bottom: 1em;
     margin-left: 6px; /* because of pseudo elements */
-    margin-right: auto;
     margin-top: calc(1em + 6px); /* because of pseudo elements */
     max-width: max-content;
     position: relative; /* to position fancy border */
@@ -236,6 +236,7 @@ textarea {
     background-color: #fff;
     border: 1px solid var(--custom-2);
     border-radius: 5px;
+    height: 2.5em;
     padding: 0.5em;
     font-size: 100%;
 }
@@ -553,26 +554,28 @@ footer {
     padding: 0.5em 0;
 }
 
-[id="calendar"] > a:first-child {
-    justify-self: start;
-    grid-row: 1;
-    margin-left: 1em;
-}
-
-[id="calendar"] > a:last-child {
-    justify-self: end;
-    grid-row: 3;
+[id="calendar"] > header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 1em;;
     margin-right: 1em;
+    text-align: center;
 }
 
+[id="calendar"] > header a {
+    white-space: nowrap;
+}
+
+[id="calendar"] > header h1 {
+   margin: 0;
+}
+
+/* 1, 2 - For nice effect on hover */
 [id="calendar"] ol {
     display: flex;
     list-style-type: none;
     overflow-x: auto;
-}
-
-/* 1, 2 - For nice effect on hover */
-[id="calendar"] > ol {
     grid-row: 2;
     margin-top: 0; /* 1 */
     padding-left: 0;
@@ -583,7 +586,9 @@ footer {
     background: #fff;
     border: 1px solid;
     border-color: var(--custom-4);
+    border-radius: 10px;
     display: block;
+    flex: 1 0 100px;
 }
 
 [id="calendar"] > ol > li:first-child {
@@ -605,6 +610,8 @@ footer {
 
 /* styled as POT */
 [id="calendar"] li.selected {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
     font-weight: bold;
     padding: 0;
 }
@@ -620,21 +627,22 @@ footer {
 }
 
 [id="calendar"] * + li {
-    margin-left: 2px;
+    margin-left: 0.25em;
+    margin-right: 0.25em;
 }
 
-[id="calendar"] ol a {
+[id="calendar"] ol li > * {
     align-items: center;
     display: flex;
     flex-direction: column-reverse;
     font-size: 1.15em;
     height: 100%;
-    padding: 0.5em 1em;
+    padding: 0.5em;
     text-decoration: none;
     width: 100%;
 }
 
-[id="calendar"] a > span {
+[id="calendar"] * > span {
     margin-top: 0;
 }
 
@@ -644,6 +652,7 @@ footer {
 
 [id="calendar"] .weekday {
     font-size: 0.6em;
+    margin-bottom: auto;
     text-transform: uppercase;
 }
 
@@ -654,13 +663,15 @@ footer {
 [id="calendar"] .day {
     font-size: 2em;
     font-weight: bold;
+    line-height: 1.2;
 }
 
-[id="calendar"] .order{
-    font-size: 0.6em;
-    margin-top: 1em;
+[id="calendar"] .order {
+    font-size: 0.7em;
     order: -1;
+    padding: 0.25em;
     text-align: center;
+    white-space: nowrap;
 }
 
 [id="calendar"] .ordered {
@@ -668,7 +679,11 @@ footer {
     border-radius: 5px;
     color: #fff;
     font-weight: bold;
+    font-size: 0.7em;
+    order: -1;
     padding: 0.25em;
+    text-align: center;
+    white-space: nowrap;
 }
 
 [id="calendar"] a *:first-child {
@@ -679,6 +694,9 @@ footer {
 /*------- Meals --------------------*/
 /************************************/
 [id="current-offer"] {
+    padding-top: 3em;
+    scroll-margin-top: 3em;
+    scroll-snap-type: y mandatory;
     width: 100%;
 }
 
@@ -840,12 +858,14 @@ footer {
 /*------- Orders Overview ----------*/
 /************************************/
 .orders-overview-filter {
+    align-items: flex-end;
     flex-direction: row;
     flex-wrap: wrap;
     max-width: 100%;
 }
 
 .orders-overview-filter > * {
+    margin-bottom: 0;
     margin-top: 1em;
 }
 

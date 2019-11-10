@@ -150,5 +150,7 @@
   "New notification": "Neue Benachrichtigung",
   "Subject": "Betreff",
   "Message": "Nachricht",
-  "Notification send": "Benachrichtigung wurde verschickt"
+  "Notification send": "Benachrichtigung wurde verschickt",
+  "Ordered": "Schon bestellt!",
+  ":count order possibilities": ":count Speisen"
 }
