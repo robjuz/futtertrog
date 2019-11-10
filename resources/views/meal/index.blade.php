@@ -51,7 +51,7 @@
 
     <section id="current-offer" <?php /* keep id for skip link */ ?>>
 
-        @if(!empty($todayMeals))
+        @if(($todayMeals)->isNotEmpty())
             <ol>
                 @foreach($todayMeals as $meal)
                     <li id="meal_{{ $meal->id }}"
