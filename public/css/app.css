@@ -428,6 +428,12 @@ footer {
     padding: 0.25em 0.5em;
 }
 
+.pagination .page-item + .page-item {
+    border: none;
+    margin-top: 0;
+    padding-top: 0;
+}
+
 /************************************/
 /*------- Dashboard, User show------*/
 /************************************/
