@@ -38,9 +38,9 @@
     </form>
 
     <section>
-    @if($orders->isNotEmpty())
-        <table class="orders-overview">
-            <thead>
+        @if($orders->isNotEmpty())
+            <table class="orders-overview">
+                <thead>
                 <tr>
                     <th>{{__('Date')}}</th>
                     <th class="collapsible">{{__('Status')}}</th>
@@ -48,10 +48,11 @@
                     <th>{{__('Title')}}</th>
                     <th class="collapsible">{{__('Price')}}</th>
                     <th>{{__('Ordered by')}}</th>
+                    <th class="collapsible">{{__('Actions')}}</th>
                 </tr>
-            </thead>
+                </thead>
 
-            <tbody>
+                <tbody>
                 @php $decoration = 'a'; @endphp
                 @foreach($orders as $order)
                     @foreach($order->orderItemsCompact() as $orderItem)
@@ -59,25 +60,20 @@
                                 $decoration == 'a' ? $decoration = 'b' : $decoration = 'a'; @endphp
                         <tr class="decoration-{{$decoration}}">
                             @if(count($order->orderItemsCompact()) == 1 OR $loop->first)
-                                <td
-                                    @if(count($order->orderItemsCompact()) > 1)
-                                        rowspan="{{count($order->orderItemsCompact())}}"
-                                    @endif
-                                >
+                                <td {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}>
                                     @can('update', $order)
                                         <a href="{{ route('orders.edit', $order) }}">
-                                    @endcan
-                                        {{ __('calendar.' . $order->date->englishDayOfWeek) }},
-                                        {{ $order->date->format(__('futtertrog.date_format')) }}
-                                    @can('update', $order)
+                                            @endcan
+                                            {{ __('calendar.' . $order->date->englishDayOfWeek) }},
+                                            {{ $order->date->format(__('futtertrog.date_format')) }}
+                                            @can('update', $order)
                                         </a>
                                     @endcan
                                 </td>
 
-                                <td class="collapsible"
-                                    @if(count($order->orderItemsCompact()) > 1)
-                                    rowspan="{{count($order->orderItemsCompact())}}"
-                                    @endif
+                                <td
+                                    class="collapsible"
+                                    {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
                                 >
                                     {{ __('futtertrog.status.' . $order->status) }}
                                 </td>
@@ -109,22 +105,39 @@
                                     @endforeach
                                 </ul>
                             </td>
+                            @if(count($order->orderItemsCompact()) > 1 && $loop->first )
+                                <td
+                                    class="collapsible"
+                                    {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
+                                >
+                                    @can('update', $order)
+                                        <form action="{{ route('orders.update', $order) }}" method="POST">
+                                            @method('put')
+                                            @csrf
+                                            <input type="hidden" name="status" value="{{ \App\Order::STATUS_ORDERED }}">
+                                            <button type="submit" class="btn btn-link p-0 text-left text-md-center">
+                                                {{ __('Mark as ordered') }}
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 @endforeach
-            </tbody>
+                </tbody>
 
-            <tfoot>
+                <tfoot>
                 <tr>
                     <td colspan="5" class="money">
                         {{ __('Sum') }}: {{ number_format($sum, 2, ',','.') }} €
                     </td>
                     <td><?php /* intentionally left empty to align sum with prices */ ?></td>
                 </tr>
-            </tfoot>
-        </table>
-    @else
-        <p> {{ __('No items found') }}</p>
-    @endif
+                </tfoot>
+            </table>
+        @else
+            <p> {{ __('No items found') }}</p>
+        @endif
     </section>
 @endsection
