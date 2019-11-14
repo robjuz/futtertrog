@@ -16,13 +16,13 @@
 @endif
 
 @if($orderItem = $todayOrders->firstWhere('meal_id', $meal->id))
-    <form onsubmit="toggleOrder(event)" action="{{ route('order_items.destroy', $orderItem) }}" method="post">
+    <form action="{{ route('order_items.destroy', $orderItem) }}" method="post">
         @csrf
         @method('delete')
         <button type="submit">{{ __('Delete order') }}</button>
     </form>
 @else
-   <form onsubmit="toggleOrder(event)" action="{{ route('order_items.store') }}" method="post">
+   <form action="{{ route('order_items.store') }}" method="post">
         @csrf
         <input type="hidden" name="date" value="{{ $requestedDate->toDateString() }}"/>
         <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>

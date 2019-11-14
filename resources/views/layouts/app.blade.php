@@ -8,6 +8,7 @@
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
     {{--@laravelPWA--}}
+    <link href="https://fonts.googleapis.com/css?family=Caveat|Livvic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <script>
@@ -17,9 +18,14 @@
             'csrf' => csrf_token()
         ]);
     </script>
-    <link href="https://fonts.googleapis.com/css?family=Caveat|Livvic&display=swap" rel="stylesheet">
 </head>
-<body>
+<body id="{{ Route::currentRouteName() }}">
+@if (session('success'))
+    <p class="success-message">
+        {{ session('success') }}
+    </p>
+@endif
+
 @auth()
     <a class="sr-only skip-link skip-navigation"
        href="#main" <?php /* keep this link synchronised with main's id */?>
@@ -31,18 +37,21 @@
         <ul>
             <li>
                 <a href="{{ route('home') }}#main" {{ request()->routeIs('home') ? 'aria-current="page"' : '' }}>
+                    @svg('solid/home', ['aria-hidden', 'focusable="false"'])
                     {{ __('Dashboard') }}
                 </a>
             </li>
 
             <li>
                 <a href="{{ route('meals.index') }}#main" {{ request()->routeIs('meals.index') ? 'aria-current="page"' : '' }}>
+                    @svg('solid/utensils')
                     {{ __('Place order') }}
                 </a>
             </li>
             @can('create', \App\Meal::class)
                 <li>
                     <a href="{{ route('meals.create') }}#main" {{ request()->routeIs('meals.create') ? 'aria-current="page"' : '' }}>
+                        @svg('solid/plus')
                         {{ __('New meal') }}
                     </a>
 
@@ -51,6 +60,7 @@
             @can('list', \App\Order::class)
                 <li>
                     <a href="{{ route('orders.index') }}#main" {{ request()->routeIs('orders.index') ? 'aria-current="page"' : '' }}>
+                        @svg('solid/tasks')
                         {{ __('Manage orders') }}
                     </a>
                 </li>
@@ -59,17 +69,20 @@
             @can('viewAny', \App\User::class)
                 <li>
                     <a href="{{ route('users.index') }}#main" {{ request()->routeIs('users.index') ? 'aria-current="page"' : '' }}>
+                        @svg('solid/users')
                         {{ __('Manage users') }}
                     </a>
                 </li>
             @endcan
             <li>
                 <a href="{{ route('settings.index') }}#main" {{ request()->routeIs('settings.index') ? 'aria-current="page"' : ''}}>
+                    @svg('solid/cogs')
                     {{ __('Settings') }}
                 </a>
             </li>
             <li>
                 <a href="{{ route('logout') }}">
+                    @svg('solid/sign-out-alt')
                     {{ __('Logout') }}
                 </a>
             </li>
@@ -80,12 +93,6 @@
 @yield('before')
 
 <main id="main" class="@stack('main-classes')" <?php /* keep this id for skip link */?>>
-    @if (session('success'))
-        <p class="success-message">
-            {{ session('success') }}
-        </p>
-    @endif
-
     @yield('content')
 </main>
 

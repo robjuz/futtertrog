@@ -2,9 +2,9 @@
 
 @section('content')
 
-    @include('partials.user_menu')
-
     <h1>{{ __('User index') }}</h1>
+
+    @include('partials.user_menu')
 
     <table>
         <thead>

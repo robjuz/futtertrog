@@ -12,7 +12,7 @@
                     {{ __('calendar.' . $previousMonth->format('F')) }} {{ $previousMonth->format('Y') }}
                 </a>
 
-                <h1>@lang('Order meal for :date', ['date' => $requestedDate->format(trans('futtertrog.date_format'))])</h1>
+                <h1>@lang('Order meal for :date', ['date' => trans('calendar.'. $requestedDate->englishDayOfWeek) . '&nbsp' . $requestedDate->format(trans('futtertrog.date_format'))])</h1>
 
                 <a href="<?= route('meals.index', ['date' => $nextMonth->toDateString()]) ?>">
                     {{ __('calendar.' . $nextMonth->format('F')) }} {{ $nextMonth->format('Y') }}
@@ -24,21 +24,21 @@
                     <li class="{{ $date->isWeekend() ? ' weekend' : '' }}{{ $date->isToday() ? ' today' : '' }}{{ $date->isSameDay($requestedDate) ? ' selected' : '' }}">
                         @if ($meals->forDate($date)->isEmpty())
                             <div>
-                        @else
-                            <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
-                        @endif
-                                <span class="weekday">{{ @trans('calendar.'.$date->format('l')) }}</span>
-                                <span class="day">{{ $date->day }}</span>
+                                @else
+                                    <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
+                                        @endif
+                                        <span class="weekday">{{ @trans('calendar.'.$date->format('l')) }}</span>
+                                        <span class="day">{{ $date->day }}</span>
 
-                                @if($orders->userOrdersForDate($date)->isNotEmpty())
-                                    <p class="ordered">{{__('Ordered')}}</p>
-                                @elseif($meals->forDate($date)->count())
-                                    <p class="order">{{ __(':count order possibilities', [ 'count' => $meals->forDate($date)->count()]) }}</p>
+                                        @if($orders->userOrdersForDate($date)->isNotEmpty())
+                                            <p class="ordered">{{__('Ordered')}}</p>
+                                        @elseif($meals->forDate($date)->count())
+                                            <p class="order">{{ __(':count order possibilities', [ 'count' => $meals->forDate($date)->count()]) }}</p>
                                 @endif
-                        @if ($meals->forDate($date)->isEmpty())
+                                @if ($meals->forDate($date)->isEmpty())
                             </div>
-                        @else
-                        </a>
+                            @else
+                            </a>
                         @endif
                     </li>
                 @endfor
@@ -49,10 +49,10 @@
 
 @section('content')
 
-    <section id="current-offer" <?php /* keep id for skip link */ ?>>
 
-        @if(($todayMeals)->isNotEmpty())
-            <ol>
+    @if(($todayMeals)->isNotEmpty())
+        <section id="current-offer" <?php /* keep id for skip link */ ?>>
+            <ol class="tiles">
                 @foreach($todayMeals as $meal)
                     <li id="meal_{{ $meal->id }}"
                         @if($todayOrders->firstWhere('meal_id', $meal->id))
@@ -63,11 +63,11 @@
                     </li>
                 @endforeach
             </ol>
-        @else
-            <p>
-                {{ __('No items found') }}
-            </p>
-        @endif
+        </section>
+    @else
+        <p id="current-offer">
+            {{ __('No items found') }}
+        </p>
+    @endif
 
-    </section>
 @endsection

@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
-    @include('partials.user_menu')
-
     <h1>{{ __('New money transfer') }}</h1>
 
     <form action="{{ route('deposits.transfer') }}" method="post">
