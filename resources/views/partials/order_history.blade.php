@@ -32,8 +32,8 @@
                 </td>
 
                 <td class="collapsible">
-                    <small title="{{ $orderItem->created_at->format(__('futtertrog.datetime_format')) }}">
-                        {{ $orderItem->created_at->diffForHumans() }}
+                    <small>
+                        {{ $orderItem->created_at->format(__('futtertrog.date_format')) }}
                     </small>
                 </td>
 

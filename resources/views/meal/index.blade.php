@@ -12,7 +12,7 @@
                     {{ __('calendar.' . $previousMonth->format('F')) }} {{ $previousMonth->format('Y') }}
                 </a>
 
-                <h1>@lang('Order meal for :date', ['date' => trans('calendar.'. $requestedDate->englishDayOfWeek) . '&nbsp' . $requestedDate->format(trans('futtertrog.date_format'))])</h1>
+                <h1>@lang('Order meal for :date', ['date' => trans('calendar.'. $requestedDate->englishDayOfWeek) . ' ' . $requestedDate->format(trans('futtertrog.date_format'))])</h1>
 
                 <a href="<?= route('meals.index', ['date' => $nextMonth->toDateString()]) ?>">
                     {{ __('calendar.' . $nextMonth->format('F')) }} {{ $nextMonth->format('Y') }}
