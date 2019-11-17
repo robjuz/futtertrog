@@ -1321,3 +1321,19 @@ footer {
     max-width: 90%;
     width: 40em;
 }
+
+/************************************/
+/*------- Offline Page -------------*/
+/************************************/
+#offline main {
+    flex-grow: 1;
+    text-align: center;
+}
+#offline h1 {
+    margin-bottom: 1em;
+}
+#offline svg {
+    height: auto;
+    margin: auto;
+    width: 80%;
+}
