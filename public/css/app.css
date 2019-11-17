@@ -250,6 +250,7 @@ html {
 /*-- POT BOTTOM --*/
 .user-show > section,
 .dashboard > section,
+[id="settings.index"] section,
 [id="current-offer"] li.selected,
 [id="calendar"] li.selected {
     background: #fff;
@@ -265,6 +266,7 @@ html {
 /*-- POT LID --*/
 .user-show > section::before,
 .dashboard > section::before,
+[id="settings.index"] section::before,
 [id="current-offer"] li.selected::before,
 [id="calendar"] li.selected::before {
     border-bottom: 7px solid;
@@ -280,6 +282,7 @@ html {
 /*-- POT LID HANDLE --*/
 .user-show > section::after,
 .dashboard > section::after,
+[id="settings.index"] section::after,
 [id="current-offer"] li.selected::after,
 [id="calendar"] li.selected::after {
     border: 0.4em solid;
@@ -643,13 +646,15 @@ footer {
 }
 
 /************************************/
-/*------- Dashboard, User show------*/
+/*------- Dashboard, User show -----*/
+/*------- Settings -----------------*/
 /************************************/
 
 /*-- layout --*/
 
 .user-show > section,
-.dashboard > section {
+.dashboard > section,
+[id="settings.index"] section {
     margin: 3em auto 0;
     max-width: max-content;
     width: 90%;
@@ -657,7 +662,8 @@ footer {
 
 @media screen and (min-width: 800px) {
     .user-show,
-    .dashboard {
+    .dashboard,
+    [id="settings.index"] form {
         display: grid;
         grid-gap: 3em;
         grid-template-columns: 1fr 1fr;
@@ -672,13 +678,17 @@ footer {
     }
 
     .user-show > section,
-    .dashboard > section {
+    .dashboard > section,
+    [id="settings.index"] section {
         align-self: end;
         margin: unset;
         width: auto;
     }
 
-    .dashboard > section:nth-of-type(1) {
+    .dashboard > section:nth-of-type(1),
+    .dashboard > section:nth-of-type(3),
+    [id="settings.index"] section:nth-of-type(1),
+    [id="settings.index"] section:nth-of-type(3) {
         align-self: end;
         justify-self: end;
     }
@@ -689,11 +699,6 @@ footer {
 
     .dashboard > section:nth-of-type(2) {
         justify-self: start;
-    }
-
-    .dashboard > section:nth-of-type(3) {
-        align-self: start;
-        justify-self: end;
     }
 
     .dashboard > section:nth-of-type(4) {
@@ -746,12 +751,14 @@ footer {
 
 /* styled as POT */
 .user-show > section:nth-child(2n),
-.dashboard > section:nth-child(2n) {
+.dashboard > section:nth-child(2n),
+[id="settings.index"] section:nth-of-type(2n){
     border-color: var(--custom-1);
 }
 
 .user-show > section:nth-child(3n),
-.dashboard > section:nth-child(3n) {
+.dashboard > section:nth-child(3n),
+[id="settings.index"] section:nth-child(3n) {
     border-color: var(--custom-3);
 }
 
@@ -956,8 +963,18 @@ footer {
 /************************************/
 /*------- Settings index -----------*/
 /************************************/
+[id="settings.index"] form {
+    margin: 1em auto;
+    max-width: 100%;
+}
+
 [id="settings.index"] section {
     padding: 1em;
+}
+
+[id="settings.index"] [type="submit"] {
+    align-self: center;
+    max-width: max-content;
 }
 
 
