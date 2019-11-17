@@ -41,9 +41,7 @@ class MealController extends Controller
 
         $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
 
-        $listType = $request->user()->settings[User::SETTING_MEALS_LIST_TYPE] ?? 'grid';
-
-        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate', 'previousMonth', 'startOfMonth', 'nextMonth', 'listType'));
+        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate', 'previousMonth', 'startOfMonth', 'nextMonth'));
     }
 
     /**

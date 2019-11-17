@@ -44,14 +44,14 @@
 
             <li>
                 <a href="{{ route('meals.index') }}#main" {{ request()->routeIs('meals.index') ? 'aria-current="page"' : '' }}>
-                    @svg('solid/utensils')
+                    @svg('solid/utensils', ['aria-hidden', 'focusable="false"'])
                     {{ __('Place order') }}
                 </a>
             </li>
             @can('create', \App\Meal::class)
                 <li>
                     <a href="{{ route('meals.create') }}#main" {{ request()->routeIs('meals.create') ? 'aria-current="page"' : '' }}>
-                        @svg('solid/plus')
+                        @svg('solid/plus', ['aria-hidden', 'focusable="false"'])
                         {{ __('New meal') }}
                     </a>
 
@@ -60,7 +60,7 @@
             @can('list', \App\Order::class)
                 <li>
                     <a href="{{ route('orders.index') }}#main" {{ request()->routeIs('orders.index') ? 'aria-current="page"' : '' }}>
-                        @svg('solid/tasks')
+                        @svg('solid/tasks', ['aria-hidden', 'focusable="false"'])
                         {{ __('Manage orders') }}
                     </a>
                 </li>
@@ -69,20 +69,20 @@
             @can('viewAny', \App\User::class)
                 <li>
                     <a href="{{ route('users.index') }}#main" {{ request()->routeIs('users.index') ? 'aria-current="page"' : '' }}>
-                        @svg('solid/users')
+                        @svg('solid/users', ['aria-hidden', 'focusable="false"'])
                         {{ __('Manage users') }}
                     </a>
                 </li>
             @endcan
             <li>
                 <a href="{{ route('settings.index') }}#main" {{ request()->routeIs('settings.index') ? 'aria-current="page"' : ''}}>
-                    @svg('solid/cogs')
+                    @svg('solid/cogs', ['aria-hidden', 'focusable="false"'])
                     {{ __('Settings') }}
                 </a>
             </li>
             <li>
                 <a href="{{ route('logout') }}">
-                    @svg('solid/sign-out-alt')
+                    @svg('solid/sign-out-alt', ['aria-hidden', 'focusable="false"'])
                     {{ __('Logout') }}
                 </a>
             </li>
@@ -100,7 +100,6 @@
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 </footer>
 @stack('scripts')
-<!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
 <script src="{{ asset('js/app.js') }}" async defer></script>
 </body>
 </html>

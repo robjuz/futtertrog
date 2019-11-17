@@ -18,16 +18,6 @@
         <section>
             <h2>{{ __('General') }}</h2>
 
-            <input type="checkbox"
-                   name="darkMode"
-                   id="darkMode"
-                   {{ old('darkMode', $settings['darkMode'] ?? false) ? 'checked' : '' }}
-                   value="1"
-            >
-            <label for="darkMode">
-                {{ __('Dark mode') }}
-            </label>
-
             <label for="language">{{ __('Language') }}</label>
             <select name="language" id="language">
                 @foreach(config('app.supported_locale') as $locale)
@@ -41,6 +31,7 @@
         <section>
             <h2>{{ __('Surprise me') }}</h2>
 
+            <input type="hidden" name="hideDashboardMealDescription" value="0">
             <input type="checkbox"
                    name="hideDashboardMealDescription"
                    id="hideDashboardMealDescription"
@@ -51,6 +42,7 @@
                 {{ __('Hide meal description on dashboard') }}
             </label>
 
+            <input type="hidden" name="hideOrderingMealDescription" value="0">
             <input type="checkbox"
                    name="hideOrderingMealDescription"
                    id="hideOrderingMealDescription"
@@ -65,6 +57,7 @@
         <section>
             <h2>{{ __('Notifications') }}</h2>
 
+            <input type="hidden" name="newOrderPossibilityNotification" value="0">
             <input type="checkbox"
                    name="newOrderPossibilityNotification"
                    id="newOrderPossibilityNotification"
@@ -75,6 +68,7 @@
                 {{ __('New order possibility notification') }}
             </label>
 
+            <input type="hidden" name="noOrderNotification" value="0">
             <input type="checkbox"
                    name="noOrderNotification"
                    id="noOrderNotification"
@@ -90,6 +84,7 @@
                 </small>
             </label>
 
+            <input type="hidden" name="noOrderForNextDayNotification" value="0">
             <input type="checkbox"
                    name="noOrderForNextDayNotification"
                    id="noOrderForNextDayNotification"
@@ -105,8 +100,9 @@
                 </small>
             </label>
 
+            <input type="hidden" name="noOrderForNextWeekNotification" value="0">
             <input type="checkbox"
-                   name="noOrderForNextDayNotification"
+                   name="noOrderForNextWeekNotification"
                    id="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
                    {{ old('noOrderForNextDayNotification', $settings[\App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION] ?? false) ? 'checked' : '' }}
                    value="1"

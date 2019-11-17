@@ -989,6 +989,20 @@ footer {
     width: 100%;
 }
 
+[id="current-offer"] h4 {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+[id="current-offer"] h4 * + * {
+   margin-left: 1em;
+}
+
+[id="current-offer"] h4 > *:first-child {
+    margin-right: auto;
+}
+
 [id="current-offer"] li:nth-child(2n + 1) {
     border-color: var(--custom-2);
 }

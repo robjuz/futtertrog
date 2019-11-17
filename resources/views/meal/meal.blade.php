@@ -2,14 +2,22 @@
 <h4>
     @can('update', $meal)
         <a href="{{ route('meals.edit', $meal) }}">
-    @endcan
-        {{ $meal->title }}
-    @can('update', $meal)
+            {{ $meal->title }}
         </a>
+    @else
+        <span>
+            {{ $meal->title }}
+        </span>
     @endcan
+
+    @if($meal->isHated)
+        @svg('solid/skull-crossbones')
+    @elseif($meal->isPreferred)
+        @svg('solid/heart')
+    @endif
 </h4>
 
-<small>{{ number_format($meal->price, 2, ',', '.') }} €</small>
+<small class="money">{{ number_format($meal->price, 2, ',', '.') }} €</small>
 
 @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION] ?? false))
     <p>{{ $meal->description }}</p>
