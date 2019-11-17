@@ -376,7 +376,6 @@ legend {
     margin-bottom: 1em;
     margin-left: 6px; /* because of pseudo elements */
     margin-top: calc(1em + 6px); /* because of pseudo elements */
-    max-width: max-content;
     position: relative; /* to position fancy border */
     transition: 0.25s;
 }
@@ -419,6 +418,10 @@ input:focus,
 select:focus,
 textarea:focus {
     border-width: 2px;
+}
+
+textarea {
+    min-height: 8em;
 }
 
 label {
@@ -615,6 +618,7 @@ footer {
 }
 
 .pagination {
+    align-items: center;
     display: flex;
     list-style-type: none;
 }
@@ -769,8 +773,8 @@ footer {
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin-left: 1em;;
-    margin-right: 1em;
+    padding-left: 1em;;
+    padding-right: 1em;
     text-align: center;
 }
 
@@ -914,8 +918,7 @@ footer {
 }
 
 [id="current-offer"] li,
-[id="orders.edit"] li,
-[id="users.index"] header > * {
+[id="orders.edit"] ol > li {
     background: #fff;
     border: 1px solid var(--custom-4);
     box-shadow: 0 0 3px 3px #eee;
@@ -923,6 +926,40 @@ footer {
     flex-direction: column;
     padding: 1em;
 }
+
+/************************************/
+/*------- User index ---------------*/
+/************************************/
+
+.user-menu {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 1000px) {
+    .user-menu {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.user-menu > * {
+    background: #fff;
+    border: 1px solid var(--custom-4);
+    box-shadow: 0 0 3px 3px #eee;
+    margin-top: 1em;
+    padding: 1em;
+}
+
+/************************************/
+/*------- Settings index -----------*/
+/************************************/
+[id="settings.index"] section {
+    padding: 1em;
+}
+
 
 /************************************/
 /*------- Meals --------------------*/
@@ -1166,6 +1203,10 @@ footer {
     border-top: 2px solid var(--custom-3);
 }
 
+.orders-overview button {
+    max-width: max-content;
+}
+
 /************************************/
 /*------- Order Detail ----------*/
 /************************************/
@@ -1176,6 +1217,18 @@ footer {
 
 [id="order-detail"] article {
     margin-top: 0;
+}
+
+/************************************/
+/*------- Order Edit ---------------*/
+/************************************/
+
+[id="orders.edit"] ul {
+    padding-left: 2em;
+}
+
+[id="orders.edit"] ol > li {
+    max-width: 40ch;
 }
 
 /************************************/

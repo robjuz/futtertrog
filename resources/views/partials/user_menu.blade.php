@@ -1,4 +1,4 @@
-<header>
+<nav class="user-menu">
 
     <a href="{{ route('users.create') }}"
         {{ request()->routeIs('users.create') ? ' aria-current="page"' : '' }}
@@ -25,5 +25,5 @@
     >
         {{ __('New notification') }}
     </a>
-</header>
+</nav>
 

@@ -14,7 +14,7 @@
                 <th>Menü</th>
                 <th class="collapsible">Bestellt</th>
                 <th>Bestellt für</th>
-                <th class="collapsible">Preis</th>
+                <th class="money collapsible">Preis</th>
                 @if(auth()->user()->is_admin AND !request()->routeIs('home'))
                     <th>Aktionen</th>
                 @endif
@@ -43,7 +43,7 @@
                     </date>
                 </td>
 
-                <td class="collapsible">
+                <td class="money collapsible">
                     {{ number_format($orderItem->meal->price, 2, ',','.') }} €
                 </td>
 
