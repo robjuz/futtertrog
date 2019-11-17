@@ -2,9 +2,6 @@
 
 @section('content')
 
-
-    @include('partials.user_menu')
-
     <h1>{{ __('New deposit') }}</h1>
 
     <form action="{{route('deposits.store')}}" method="post">
