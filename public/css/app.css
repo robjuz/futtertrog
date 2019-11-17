@@ -1,21 +1,179 @@
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
-html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}main{display:block}h1{font-size:2em;margin:.67em 0}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace,monospace;font-size:1em}a{background-color:transparent}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}img{border-style:none}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{border-style:none;padding:0}[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring,button:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:.35em .75em .625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{vertical-align:baseline}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details{display:block}summary{display:list-item}template{display:none}[hidden]{display:none}
+html {
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%
+}
+
+body {
+    margin: 0
+}
+
+main {
+    display: block
+}
+
+h1 {
+    font-size: 2em;
+    margin: .67em 0
+}
+
+hr {
+    box-sizing: content-box;
+    height: 0;
+    overflow: visible
+}
+
+pre {
+    font-family: monospace, monospace;
+    font-size: 1em
+}
+
+a {
+    background-color: transparent;
+    display: inline-block;
+}
+
+abbr[title] {
+    border-bottom: none;
+    text-decoration: underline;
+    text-decoration: underline dotted
+}
+
+b, strong {
+    font-weight: bolder
+}
+
+code, kbd, samp {
+    font-family: monospace, monospace;
+    font-size: 1em
+}
+
+small {
+    font-size: 80%
+}
+
+sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline
+}
+
+sub {
+    bottom: -.25em
+}
+
+sup {
+    top: -.5em
+}
+
+img {
+    border-style: none
+}
+
+button, input, optgroup, select, textarea {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0
+}
+
+button, input {
+    overflow: visible
+}
+
+button, select {
+    text-transform: none
+}
+
+[type=button], [type=reset], [type=submit], button {
+    -webkit-appearance: button
+}
+
+[type=button]::-moz-focus-inner, [type=reset]::-moz-focus-inner, [type=submit]::-moz-focus-inner, button::-moz-focus-inner {
+    border-style: none;
+    padding: 0
+}
+
+[type=button]:-moz-focusring, [type=reset]:-moz-focusring, [type=submit]:-moz-focusring, button:-moz-focusring {
+    outline: 1px dotted ButtonText
+}
+
+fieldset {
+    padding: .35em .75em .625em
+}
+
+legend {
+    box-sizing: border-box;
+    color: inherit;
+    display: table;
+    max-width: 100%;
+    padding: 0;
+    white-space: normal
+}
+
+progress {
+    vertical-align: baseline
+}
+
+textarea {
+    overflow: auto
+}
+
+[type=checkbox], [type=radio] {
+    box-sizing: border-box;
+    padding: 0
+}
+
+[type=number]::-webkit-inner-spin-button, [type=number]::-webkit-outer-spin-button {
+    height: auto
+}
+
+[type=search] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px
+}
+
+[type=search]::-webkit-search-decoration {
+    -webkit-appearance: none
+}
+
+::-webkit-file-upload-button {
+    -webkit-appearance: button;
+    font: inherit
+}
+
+details {
+    display: block
+}
+
+summary {
+    display: list-item
+}
+
+template {
+    display: none
+}
+
+[hidden] {
+    display: none
+}
 
 /************************************/
 /*------- Variables ----------------*/
 /************************************/
 :root {
-    --main-text-color: #222;
-    --disabled-text-color: #ddd;
-
     --gray: #aaa;
     --green: #04ac2b;
 
     --custom-1: #bf0413;
     --custom-2: #4c6173;
+
     --custom-3: #95acbf;
     --custom-4: #f28705;
     --custom-5: #f20505;
+    --disabled-text-color: #ddd;
+    --main-text-color: #222;
 }
 
 /************************************/
@@ -38,9 +196,19 @@ body, main, br, li, dt, dd, th, td, option, .tabpanels {
     margin-top: 0;
 }
 
+.icon {
+    fill: currentColor;
+    display: inline-block;
+    font-size: inherit;
+    height: 1em;
+    overflow: visible;
+    vertical-align: -.125em;
+    margin: 0;
+}
+
 .sr-only {
     border: 0;
-    clip: rect(0,0,0,0);
+    clip: rect(0, 0, 0, 0);
     height: 1px;
     margin: -1px;
     overflow: hidden;
@@ -67,11 +235,12 @@ h3 {
  */
 html {
     color: var(--main-text-color);
-    font-size: 100%;
     font-family: 'Livvic', Arial, sans-serif;
+    font-size: 100%;
     line-height: 1.5;
     -webkit-text-size-adjust: 100%; /* 1 */
 }
+
 /************************************/
 /*------- Custom -------------------*/
 /*- Keep this section here to allow-*/
@@ -81,6 +250,7 @@ html {
 /*-- POT BOTTOM --*/
 .user-show > section,
 .dashboard > section,
+[id="settings.index"] section,
 [id="current-offer"] li.selected,
 [id="calendar"] li.selected {
     background: #fff;
@@ -96,6 +266,7 @@ html {
 /*-- POT LID --*/
 .user-show > section::before,
 .dashboard > section::before,
+[id="settings.index"] section::before,
 [id="current-offer"] li.selected::before,
 [id="calendar"] li.selected::before {
     border-bottom: 7px solid;
@@ -111,6 +282,7 @@ html {
 /*-- POT LID HANDLE --*/
 .user-show > section::after,
 .dashboard > section::after,
+[id="settings.index"] section::after,
 [id="current-offer"] li.selected::after,
 [id="calendar"] li.selected::after {
     border: 0.4em solid;
@@ -132,6 +304,7 @@ html {
 /************************************/
 table {
     border-collapse: collapse;
+    width: 100%;
 }
 
 tr {
@@ -158,8 +331,8 @@ th {
     text-align: left;
 }
 
-td {
-    padding: 0.25em;
+th, td {
+    padding: 0.5em 1em;
 }
 
 tfoot {
@@ -190,6 +363,9 @@ form {
     display: flex;
     flex-direction: column;
     max-width: 300px;
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 legend {
@@ -203,7 +379,6 @@ legend {
     margin-bottom: 1em;
     margin-left: 6px; /* because of pseudo elements */
     margin-top: calc(1em + 6px); /* because of pseudo elements */
-    max-width: max-content;
     position: relative; /* to position fancy border */
     transition: 0.25s;
 }
@@ -236,15 +411,20 @@ textarea {
     background-color: #fff;
     border: 1px solid var(--custom-2);
     border-radius: 5px;
+    font-size: 100%;
     height: 2.5em;
     padding: 0.5em;
-    font-size: 100%;
+    width: 100%;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     border-width: 2px;
+}
+
+textarea {
+    min-height: 8em;
 }
 
 label {
@@ -328,17 +508,17 @@ label > span:not(:first-child):last-child::after {
 }
 
 [type="checkbox"]:checked + label::after {
+    border: solid var(--main-text-color);
+    border-width: 0 0.1855em 0.1855em 0;
     content: "";
+    height: 0.625em;
     left: 0.35em;
     position: absolute;
     top: 0.25em;
-    width: 0.25em;
-    height: 0.625em;
-    border: solid var(--main-text-color);
-    border-width: 0 0.1855em 0.1855em 0;
-    -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
+    width: 0.25em;
 }
 
 [type="radio"]:checked + label::after {
@@ -384,8 +564,8 @@ aside {
 }
 
 main {
-    align-items: center;
-    background: rgba(255,255,255,0.85);
+    align-items: stretch;
+    background: rgba(255, 255, 255, 0.85);
     box-shadow: 0 0 15px 10px #fff;
     display: flex;
     flex-direction: column;
@@ -393,6 +573,36 @@ main {
     min-width: 300px;
     padding: 0 3vw 3em;
     width: 80%;
+}
+
+main > h1 {
+    margin-bottom: 0;
+}
+
+header {
+    align-items: flex-end;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* single item should be centered */
+header > :first-child:last-child {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+header > * {
+    margin-bottom: 0;
+}
+
+header > * + * {
+    margin-top: 0;
+}
+
+section {
+    box-shadow: 0 0 5px 5px #ccc;
+    background: white;
 }
 
 footer {
@@ -411,6 +621,7 @@ footer {
 }
 
 .pagination {
+    align-items: center;
     display: flex;
     list-style-type: none;
 }
@@ -435,13 +646,15 @@ footer {
 }
 
 /************************************/
-/*------- Dashboard, User show------*/
+/*------- Dashboard, User show -----*/
+/*------- Settings -----------------*/
 /************************************/
 
 /*-- layout --*/
 
 .user-show > section,
-.dashboard > section {
+.dashboard > section,
+[id="settings.index"] section {
     margin: 3em auto 0;
     max-width: max-content;
     width: 90%;
@@ -449,7 +662,8 @@ footer {
 
 @media screen and (min-width: 800px) {
     .user-show,
-    .dashboard {
+    .dashboard,
+    [id="settings.index"] form {
         display: grid;
         grid-gap: 3em;
         grid-template-columns: 1fr 1fr;
@@ -464,15 +678,19 @@ footer {
     }
 
     .user-show > section,
-    .dashboard > section {
+    .dashboard > section,
+    [id="settings.index"] section {
         align-self: end;
         margin: unset;
         width: auto;
     }
 
-    .dashboard > section:nth-of-type(1) {
-        justify-self: end;
+    .dashboard > section:nth-of-type(1),
+    .dashboard > section:nth-of-type(3),
+    [id="settings.index"] section:nth-of-type(1),
+    [id="settings.index"] section:nth-of-type(3) {
         align-self: end;
+        justify-self: end;
     }
 
     .user-show > section:nth-of-type(1) {
@@ -481,11 +699,6 @@ footer {
 
     .dashboard > section:nth-of-type(2) {
         justify-self: start;
-    }
-
-    .dashboard > section:nth-of-type(3) {
-        align-self: start;
-        justify-self: end;
     }
 
     .dashboard > section:nth-of-type(4) {
@@ -509,6 +722,7 @@ footer {
         grid-column: span 1;
     }
 }
+
 /*-- layout end --*/
 
 .dashboard h2 {
@@ -537,12 +751,14 @@ footer {
 
 /* styled as POT */
 .user-show > section:nth-child(2n),
-.dashboard > section:nth-child(2n) {
+.dashboard > section:nth-child(2n),
+[id="settings.index"] section:nth-of-type(2n){
     border-color: var(--custom-1);
 }
 
 .user-show > section:nth-child(3n),
-.dashboard > section:nth-child(3n) {
+.dashboard > section:nth-child(3n),
+[id="settings.index"] section:nth-child(3n) {
     border-color: var(--custom-3);
 }
 
@@ -551,7 +767,7 @@ footer {
 /************************************/
 
 [id="calendar"] {
-    background: rgba(255,255,255,0.85);
+    background: rgba(255, 255, 255, 0.85);
     box-shadow: 0 0 15px 10px #fff;
     display: grid;
     grid-template-columns: 1fr;
@@ -564,8 +780,8 @@ footer {
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin-left: 1em;;
-    margin-right: 1em;
+    padding-left: 1em;;
+    padding-right: 1em;
     text-align: center;
 }
 
@@ -574,16 +790,16 @@ footer {
 }
 
 [id="calendar"] > header h1 {
-   margin: 0;
+    margin: 0;
 }
 
 /* 1, 2 - For nice effect on hover */
 [id="calendar"] ol {
     display: flex;
-    list-style-type: none;
-    overflow-x: auto;
     grid-row: 2;
+    list-style-type: none;
     margin-top: 0; /* 1 */
+    overflow-x: auto;
     padding-left: 0;
     padding-top: 2em; /* 2 */
 }
@@ -684,8 +900,8 @@ footer {
     background: var(--custom-2);
     border-radius: 5px;
     color: #fff;
-    font-weight: bold;
     font-size: 0.7em;
+    font-weight: bold;
     order: -1;
     padding: 0.25em;
     text-align: center;
@@ -697,16 +913,10 @@ footer {
 }
 
 /************************************/
-/*------- Meals --------------------*/
+/*------- Tiles list  --------------*/
 /************************************/
-[id="current-offer"] {
-    padding-top: 3em;
-    scroll-margin-top: 3em;
-    scroll-snap-type: y mandatory;
-    width: 100%;
-}
-
-[id="current-offer"] ol {
+[id="current-offer"] ol,
+[id="orders.edit"] ol {
     display: grid;
     grid-gap: 1em;
     grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
@@ -714,13 +924,83 @@ footer {
     padding: 0 1em;
 }
 
-[id="current-offer"] li {
+[id="current-offer"] li,
+[id="orders.edit"] ol > li {
     background: #fff;
     border: 1px solid var(--custom-4);
     box-shadow: 0 0 3px 3px #eee;
     display: flex;
     flex-direction: column;
     padding: 1em;
+}
+
+/************************************/
+/*------- User index ---------------*/
+/************************************/
+
+.user-menu {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 1000px) {
+    .user-menu {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.user-menu > * {
+    background: #fff;
+    border: 1px solid var(--custom-4);
+    box-shadow: 0 0 3px 3px #eee;
+    margin-top: 1em;
+    padding: 1em;
+}
+
+/************************************/
+/*------- Settings index -----------*/
+/************************************/
+[id="settings.index"] form {
+    margin: 1em auto;
+    max-width: 100%;
+}
+
+[id="settings.index"] section {
+    padding: 1em;
+}
+
+[id="settings.index"] [type="submit"] {
+    align-self: center;
+    max-width: max-content;
+}
+
+
+/************************************/
+/*------- Meals --------------------*/
+/************************************/
+[id="current-offer"] {
+    padding-bottom: 3em;
+    padding-top: 3em;
+    scroll-margin-top: 3em;
+    scroll-snap-type: y mandatory;
+    width: 100%;
+}
+
+[id="current-offer"] h4 {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+[id="current-offer"] h4 * + * {
+   margin-left: 1em;
+}
+
+[id="current-offer"] h4 > *:first-child {
+    margin-right: auto;
 }
 
 [id="current-offer"] li:nth-child(2n + 1) {
@@ -750,10 +1030,11 @@ footer {
     max-width: 50%;
 }
 
-[id="current-offer"] input + button {
+[id="current-offer"] input:not([type="hidden"]) + button {
     flex-grow: 1;
     margin-left: 1em;
     margin-top: 1em;
+    max-width: initial;
 }
 
 /************************************/
@@ -798,8 +1079,8 @@ footer {
 
 /*-- END stuff attached by js -*/
 
-[id="main-navbar"] {
-    margin-top: 0;
+[id="main-navbar"] .icon {
+    margin-right: 0.75em;
 }
 
 [id="main-navbar"] ul {
@@ -832,23 +1113,73 @@ footer {
     transform: rotate(0);
 }
 
-[id="main-navbar"] li:nth-child(5n + 1){ border-color: var(--custom-1); }
-[id="main-navbar"] li:nth-child(5n + 2){ border-color: var(--custom-2); }
-[id="main-navbar"] li:nth-child(5n + 3){ border-color: var(--custom-3); }
-[id="main-navbar"] li:nth-child(5n + 4){ border-color: var(--custom-4); }
-[id="main-navbar"] li:nth-child(5n)    { border-color: var(--custom-5); }
+[id="main-navbar"] li:nth-child(5n + 1) {
+    border-color: var(--custom-1);
+}
+
+[id="main-navbar"] li:nth-child(5n + 2) {
+    border-color: var(--custom-2);
+}
+
+[id="main-navbar"] li:nth-child(5n + 3) {
+    border-color: var(--custom-3);
+}
+
+[id="main-navbar"] li:nth-child(5n + 4) {
+    border-color: var(--custom-4);
+}
+
+[id="main-navbar"] li:nth-child(5n) {
+    border-color: var(--custom-5);
+}
 
 [id="main-navbar"] a {
-    display: block; /* for top and bottom padding */
-    font-size: 1.25em;
+    align-items: center;
+    display: flex; /* for top and bottom padding */
     font-weight: bold;
-    padding: 0.75em 3em;
+    justify-content: space-between;
+    padding: 0.75em 1em;
     text-align: center;
     text-transform: uppercase;
 }
 
 [id="main-navbar"] li:hover a {
     text-decoration-style: double;
+}
+
+@media screen and (min-width: 1000px) {
+    #main-navbar {
+        position: static;
+    }
+
+    #main-navbar + * {
+        margin-top: 0;
+    }
+
+    #main-navbar > button {
+     display: none;
+    }
+
+    #main-navbar > ul {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 100%;
+        justify-content: space-between
+    }
+
+    #main-navbar > ul > li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1em;
+    }
+
+     #main-navbar > ul > li:not(:last-child) {
+         margin-left:1em;
+     }
+
+     #main-navbar > ul > li:last-child {
+         margin-left:auto;
+     }
 }
 
 /************************************/
@@ -868,11 +1199,14 @@ footer {
     flex-direction: row;
     flex-wrap: wrap;
     max-width: 100%;
+    padding: 0 1em 1em 1em;
+    width: 100%;
 }
 
 .orders-overview-filter > * {
     margin-bottom: 0;
     margin-top: 1em;
+    flex-grow: 1;
 }
 
 .orders-overview-filter > *:not(:last-child) {
@@ -900,6 +1234,34 @@ footer {
     border-top: 2px solid var(--custom-3);
 }
 
+.orders-overview button {
+    max-width: max-content;
+}
+
+/************************************/
+/*------- Order Detail ----------*/
+/************************************/
+[id="order-detail"] {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
+}
+
+[id="order-detail"] article {
+    margin-top: 0;
+}
+
+/************************************/
+/*------- Order Edit ---------------*/
+/************************************/
+
+[id="orders.edit"] ul {
+    padding-left: 2em;
+}
+
+[id="orders.edit"] ol > li {
+    max-width: 40ch;
+}
+
 /************************************/
 /*------- Success message ----------*/
 /************************************/
@@ -908,9 +1270,11 @@ footer {
     box-shadow: 0 0 3px 3px var(--green);
     color: #fff;
     font-weight: bold;
-    margin-top: 1em;
-    padding: 0.5em 1em 0.5em 3em;
-    position: relative;
+    padding: 0.5em 2em 0.5em 4em;
+    position: fixed;
+    right: 1em;
+    top: 1.25em;
+    z-index: 10;
 }
 
 .success-message::before {
@@ -918,11 +1282,11 @@ footer {
     border-width: 0 0.2em 0.2em 0;
     content: "";
     height: 0.85em;
-    left: 0.8em;
+    left: 1.2em;
     position: absolute;
     top: 0.6em;
-    -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
     width: 0.4em;
 }
@@ -934,7 +1298,7 @@ footer {
     content: '';
     display: block;
     height: 1.5em;
-    left: 0.2em;
+    left: 0.6em;
     position: absolute;
     top: 0.3em;
     width: 1.5em;

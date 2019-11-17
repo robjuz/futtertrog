@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "203fb3b4acfc0ef2cda76c7294b09068",
+    "content-hash": "79b105509da6b8693cbbf7badf6490b3",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1813,6 +1813,56 @@
             "time": "2019-05-25T20:07:01+00:00"
         },
         {
+            "name": "nothingworks/blade-svg",
+            "version": "v0.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adamwathan/blade-svg.git",
+                "reference": "5ed76bbff36a3d0025c7ee8ea1e260c3e2bc1671"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adamwathan/blade-svg/zipball/5ed76bbff36a3d0025c7ee8ea1e260c3e2bc1671",
+                "reference": "5ed76bbff36a3d0025c7ee8ea1e260c3e2bc1671",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/filesystem": "^5.3|^6.0",
+                "illuminate/support": "^5.3|^6.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.5",
+                "phpunit/phpunit": "^5.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "BladeSvg\\BladeSvgServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BladeSvg\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adam Wathan",
+                    "email": "adam.wathan@gmail.com"
+                }
+            ],
+            "time": "2019-08-22T13:44:02+00:00"
+        },
+        {
             "name": "opis/closure",
             "version": "3.3.1",
             "source": {
@@ -3597,7 +3647,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",

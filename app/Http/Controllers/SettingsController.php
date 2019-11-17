@@ -44,9 +44,7 @@ class SettingsController extends Controller
             User::SETTING_MEAL_AVERSION => ['nullable', 'string'],
             User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => ['required', 'boolean'],
             User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION => ['required', 'boolean'],
-            User::SETTING_DARK_MODE => ['required', 'boolean'],
             User::SETTING_LANGUAGE => ['required', Rule::in(config('app.supported_locale'))],
-            User::SETTING_MEALS_LIST_TYPE => ['required', Rule::in(['list', 'two-columns', 'grid'])],
         ]);
 
         $user = $request->user();

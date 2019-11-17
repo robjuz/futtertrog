@@ -8,7 +8,7 @@ class ExpandableMenu {
     }
 
     createToggleButton() {
-        if(!!this.nav.getElementsByTagName('ul')[0]){
+        if (!!this.nav.getElementsByTagName('ul')[0]) {
             this.toggleButton = document.createElement('button');
             this.toggleButton.innerHTML = this.nav.getAttribute('data-button');
             this.toggleButton.setAttribute('aria-haspopup', 'true');
@@ -20,14 +20,14 @@ class ExpandableMenu {
     }
 
     updateLinks() {
-        this.nav.querySelectorAll('a').forEach(function(link) {
+        this.nav.querySelectorAll('a').forEach(function (link) {
             let href = link.getAttribute('href');
-           link.setAttribute('href', href.substring(0 , href.indexOf('#')));
+            link.setAttribute('href', href.substring(0, href.indexOf('#')));
         });
     }
 
     onButtonClick() {
-        if(this.isExpanded()) {
+        if (this.isExpanded()) {
             this.toggleButton.setAttribute('aria-expanded', 'false');
         } else {
             this.toggleButton.setAttribute('aria-expanded', 'true');
@@ -41,9 +41,16 @@ class ExpandableMenu {
 }
 
 /* Initialising instances */
-if(!!document.getElementById('main-navbar')) {
+if (!!document.getElementById('main-navbar')) {
     new ExpandableMenu(document.getElementById('main-navbar'));
 }
+
+/* auto hide success message */
+window.onload = function() {
+    setTimeout(function () {
+        Array.from(document.querySelectorAll('.success-message')).forEach(node => node.remove());
+    }, 3000);
+};
 
 class ScrollIntoView extends HTMLElement {
     constructor() {
@@ -56,9 +63,9 @@ class ScrollIntoView extends HTMLElement {
     }
 
     scrollIntoView() {
-        const halfWindow = window.innerWidth/2;
+        const halfWindow = window.innerWidth / 2;
         const currentElementWidth = this.current.getBoundingClientRect().width;
-        this.current.parentElement.scrollLeft += this.current.getBoundingClientRect().left - halfWindow + currentElementWidth/2;
+        this.current.parentElement.scrollLeft += this.current.getBoundingClientRect().left - halfWindow + currentElementWidth / 2;
     }
 
 }

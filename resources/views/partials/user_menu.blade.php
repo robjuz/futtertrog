@@ -1,36 +1,29 @@
-<nav id="admin-menu">
-    <span>
-        {{ __('Actions') }}
-    </span>
+<nav class="user-menu">
 
-    <ul>
-        <li>
-            <a href="{{ route('users.create') }}"
-               class="{{ request()->routeIs('users.create') ? ' active' : '' }}">
-                {{ __('New user') }}
-            </a>
-        </li>
+    <a href="{{ route('users.create') }}"
+        {{ request()->routeIs('users.create') ? ' aria-current="page"' : '' }}
+    >
+        {{ __('New user') }}
+    </a>
 
-        <li>
-            <a href="{{ route('deposits.create' )}}"
-               class="{{ request()->routeIs('deposits.create') ? ' active' : '' }}">
-                {{ __('New deposit') }}
-            </a>
-        </li>
+    <a
+        href="{{ route('deposits.create' )}}"
+        {{ request()->routeIs('deposits.create') ? ' aria-current="page"' : '' }}
+    >
+        {{ __('New deposit') }}
+    </a>
 
-        <li>
-            <a href="{{ route('deposits.transfer' )}}"
-               class="{{ request()->routeIs('deposits.transfer') ? ' active' : '' }}">
-                {{ __('New money transfer') }}
-            </a>
-        </li>
+    <a
+        href="{{ route('deposits.transfer' )}}"
+        {{ request()->routeIs('deposits.transfer') ? ' aria-current="page"' : '' }}
+    >
+        {{ __('New money transfer') }}
+    </a>
 
-        <li>
-            <a href="{{ route('notifications.create' )}}"
-               class="{{ request()->routeIs('notifications.create') ? ' active' : '' }}">
-                {{ __('New notification') }}
-            </a>
-        </li>
-    </ul>
+    <a href="{{ route('notifications.create' )}}"
+        {{ request()->routeIs('notifications.create') ? ' aria-current="page"' : '' }}
+    >
+        {{ __('New notification') }}
+    </a>
 </nav>
 

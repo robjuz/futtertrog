@@ -1,41 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>{{ __('Order index') }}</h1>
+    <header>
+        <h1>{{ __('Order index') }}</h1>
 
-    <a href="{{ route('order_items.create') }}"> {{ __('Create order') }}</a>
+        <a href="{{ route('order_items.create') }}"> {{ __('Create order') }}</a>
+    </header>
 
-    <form action="{{ route('orders.index') }}" method="get" class="orders-overview-filter">
+    <section>
+        <form action="{{ route('orders.index') }}" method="get" class="orders-overview-filter">
 
-        <div>
-            <label for="from">{{ __('From') }}</label>
-            <input type="date" name="from" id="from" value="{{ $from->toDateString() }}">
-        </div>
+            <div>
+                <label for="from">{{ __('From') }}</label>
+                <input type="date" name="from" id="from" value="{{ $from->toDateString() }}">
+            </div>
 
-        <div>
-            <label for="to">{{ __('To') }}</label>
-            <input type="date" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
-        </div>
+            <div>
+                <label for="to">{{ __('To') }}</label>
+                <input type="date" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
+            </div>
 
-        <div>
-            <label for="user_id">{{ __('Filter by user') }}</label>
-            <select name="user_id" id="user_id">
-                <option value="" {{ request('user_id', null) == null ? ' selected' : '' }}>
-                    {{ __('Filter by user') }}
-                </option>
-                @foreach($users as $user)
-                    <option
-                        value="{{ $user->id }}"
-                        {{ request('user_id') == $user->id ? ' selected' : '' }}
-                    >
-                        {{ $user->name }}
+            <div>
+                <label for="user_id">{{ __('Filter by user') }}</label>
+                <select name="user_id" id="user_id">
+                    <option value="" {{ request('user_id', null) == null ? ' selected' : '' }}>
+                        {{ __('Filter by user') }}
                     </option>
-                @endforeach
-            </select>
-        </div>
+                    @foreach($users as $user)
+                        <option
+                            value="{{ $user->id }}"
+                            {{ request('user_id') == $user->id ? ' selected' : '' }}
+                        >
+                            {{ $user->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        <button type="submit">{{ __('Search') }}</button>
-    </form>
+            <button type="submit">{{ __('Search') }}</button>
+        </form>
+    </section>
 
     <section>
         @if($orders->isNotEmpty())
@@ -44,11 +48,10 @@
                 <tr>
                     <th>{{__('Date')}}</th>
                     <th class="collapsible">{{__('Status')}}</th>
+                    <th class="collapsible">{{__('Actions')}}</th>
                     <th class="collapsible">{{__('Quantity')}}</th>
                     <th>{{__('Title')}}</th>
-                    <th class="collapsible">{{__('Price')}}</th>
-                    <th>{{__('Ordered by')}}</th>
-                    <th class="collapsible">{{__('Actions')}}</th>
+                    <th class="money collapsible">{{__('Price')}}</th>
                 </tr>
                 </thead>
 
@@ -63,11 +66,12 @@
                                 <td {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}>
                                     @can('update', $order)
                                         <a href="{{ route('orders.edit', $order) }}">
-                                            @endcan
-                                            {{ __('calendar.' . $order->date->englishDayOfWeek) }},
+                                            {{ __('calendar.' . $order->date->englishDayOfWeek) }}<br>
                                             {{ $order->date->format(__('futtertrog.date_format')) }}
-                                            @can('update', $order)
                                         </a>
+                                    @else
+                                        {{ __('calendar.' . $order->date->englishDayOfWeek) }}<br>
+                                        {{ $order->date->format(__('futtertrog.date_format')) }}
                                     @endcan
                                 </td>
 
@@ -76,6 +80,41 @@
                                     {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
                                 >
                                     {{ __('futtertrog.status.' . $order->status) }}
+                                </td>
+                            @endif
+
+                            @if($loop->first )
+                                <td
+                                    class="collapsible"
+                                    {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
+                                >
+                                    @can('update', $order)
+                                        <form action="{{ route('orders.update', $order) }}" method="POST">
+                                            @method('put')
+                                            @csrf
+                                            @if($order->status === \App\Order::STATUS_ORDERED)
+                                                <input
+                                                    type="hidden"
+                                                    name="status"
+                                                    value="{{ \App\Order::STATUS_OPEN }}"
+                                                >
+                                                <button type="submit" title="{{ __('Mark as open') }}">
+                                                    <span class="sr-only">{{ __('Mark as open') }}</span>
+                                                    @svg('solid/times')
+                                                </button>
+                                            @else
+                                                <input
+                                                    type="hidden"
+                                                    name="status"
+                                                    value="{{ \App\Order::STATUS_ORDERED }}"
+                                                >
+                                                <button type="submit" title="{{ __('Mark as ordered') }}">
+                                                    <span class="sr-only">{{ __('Mark as ordered') }}</span>
+                                                    @svg('solid/check')
+                                                </button>
+                                            @endif
+                                        </form>
+                                    @endcan
                                 </td>
                             @endif
 
@@ -93,35 +132,6 @@
                             <td class="money collapsible">
                                 {{ number_format($orderItem->meal->price, 2, ',','.') }} €
                             </td>
-
-                            <td>
-                                <ul>
-                                    @foreach($orderItem->users as $user)
-                                        <li>
-                                            <a href="{{ route('users.show', $user) }}">
-                                                {{ $user->name }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </td>
-                            @if(count($order->orderItemsCompact()) > 1 && $loop->first )
-                                <td
-                                    class="collapsible"
-                                    {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
-                                >
-                                    @can('update', $order)
-                                        <form action="{{ route('orders.update', $order) }}" method="POST">
-                                            @method('put')
-                                            @csrf
-                                            <input type="hidden" name="status" value="{{ \App\Order::STATUS_ORDERED }}">
-                                            <button type="submit" class="btn btn-link p-0 text-left text-md-center">
-                                                {{ __('Mark as ordered') }}
-                                            </button>
-                                        </form>
-                                    @endcan
-                                </td>
-                            @endif
                         </tr>
                     @endforeach
                 @endforeach
@@ -129,10 +139,9 @@
 
                 <tfoot>
                 <tr>
-                    <td colspan="5" class="money">
+                    <td colspan="6" class="money">
                         {{ __('Sum') }}: {{ number_format($sum, 2, ',','.') }} €
                     </td>
-                    <td><?php /* intentionally left empty to align sum with prices */ ?></td>
                 </tr>
                 </tfoot>
             </table>

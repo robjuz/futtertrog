@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
-    @include('partials.user_menu')
-
     <h1>{{ __('New user') }}</h1>
 
     <form method="POST" action="{{ route('users.store') }}">
