@@ -125,6 +125,6 @@ class OrderController extends Controller
             return response(null, Response::HTTP_NO_CONTENT);
         }
 
-        return back()->with('success', __('Success'));
+        return redirect()->route('orders.index')->with('success', __('Success'));
     }
 }

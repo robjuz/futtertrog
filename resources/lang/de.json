@@ -153,5 +153,6 @@
   "Message": "Nachricht",
   "Notification send": "Benachrichtigung wurde verschickt",
   "Ordered": "Schon bestellt!",
-  ":count order possibilities": ":count Speisen"
+  ":count order possibilities": ":count Speisen",
+  "Delete orders": "Alle Bestellungen löschen"
 }

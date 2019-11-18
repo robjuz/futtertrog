@@ -48,9 +48,9 @@
                 <tr>
                     <th>{{__('Date')}}</th>
                     <th class="collapsible">{{__('Status')}}</th>
-                    <th class="collapsible">{{__('Actions')}}</th>
                     <th class="collapsible">{{__('Quantity')}}</th>
                     <th>{{__('Title')}}</th>
+                    <th class="collapsible">{{__('Ordered by')}}</th>
                     <th class="money collapsible">{{__('Price')}}</th>
                 </tr>
                 </thead>
@@ -79,15 +79,7 @@
                                     class="collapsible"
                                     {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
                                 >
-                                    {{ __('futtertrog.status.' . $order->status) }}
-                                </td>
-                            @endif
 
-                            @if($loop->first )
-                                <td
-                                    class="collapsible"
-                                    {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
-                                >
                                     @can('update', $order)
                                         <form action="{{ route('orders.update', $order) }}" method="POST">
                                             @method('put')
@@ -99,8 +91,9 @@
                                                     value="{{ \App\Order::STATUS_OPEN }}"
                                                 >
                                                 <button type="submit" title="{{ __('Mark as open') }}">
+                                                    {{ __('futtertrog.status.' . $order->status) }}
+
                                                     <span class="sr-only">{{ __('Mark as open') }}</span>
-                                                    @svg('solid/times')
                                                 </button>
                                             @else
                                                 <input
@@ -109,24 +102,39 @@
                                                     value="{{ \App\Order::STATUS_ORDERED }}"
                                                 >
                                                 <button type="submit" title="{{ __('Mark as ordered') }}">
+                                                    {{ __('futtertrog.status.' . $order->status) }}
+
                                                     <span class="sr-only">{{ __('Mark as ordered') }}</span>
-                                                    @svg('solid/check')
                                                 </button>
                                             @endif
                                         </form>
+                                    @else
+                                        {{ __('futtertrog.status.' . $order->status) }}
                                     @endcan
                                 </td>
                             @endif
-
                             <td class="collapsible">
                                 {{ $orderItem->quantity }}
                             </td>
+
                             <td>
                                 @can('edit', $orderItem->meal)
                                     <a href="{{ route('meals.edit', $orderItem->meal) }}">{{ $orderItem->meal->title }}</a>
                                 @else
                                     {{ $orderItem->meal->title }}
                                 @endcan
+                            </td>
+
+                            <td>
+                                <ul>
+                                    @foreach($orderItem->users as $user)
+                                        <li>
+                                            <a href="{{ route('users.show', $user) }}">
+                                                {{ $user->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </td>
 
                             <td class="money collapsible">
