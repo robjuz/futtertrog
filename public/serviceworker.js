@@ -1,4 +1,4 @@
-const version = '20191121_1';
+const version = '20191122_1';
 
 let staticCacheName = "futtertrog_" + version;
 const filesToCache = [
@@ -22,6 +22,7 @@ self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(staticCacheName)
             .then(cache => cache.addAll(filesToCache))
+            .then(() => self.skipWaiting())
             .catch(error => console.error(error))
     )
 });
@@ -29,14 +30,16 @@ self.addEventListener("install", event => {
 // Clear cache on activate
 self.addEventListener('activate', event => {
     event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames
-                    .filter(cacheName => (cacheName.startsWith("futtertrog_")))
-                    .filter(cacheName => (cacheName !== staticCacheName))
-                    .map(cacheName => caches.delete(cacheName))
-            );
-        })
+        caches.keys()
+            .then(cacheNames => {
+                return Promise.all(
+                    cacheNames
+                        .filter(cacheName => (cacheName.startsWith("futtertrog_")))
+                        .filter(cacheName => (cacheName !== staticCacheName))
+                        .map(cacheName => caches.delete(cacheName))
+                );
+            })
+            .then(() => self.clients.claim())
     );
 });
 

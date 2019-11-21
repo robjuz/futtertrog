@@ -26,6 +26,8 @@
                     </option>
                 @endforeach
             </select>
+
+            <a href="{{ route('meals.ical', ['api_token' => auth()->user()->api_token]) }}">{{ __('Download as iCal') }}</a>
         </section>
 
         <section>
