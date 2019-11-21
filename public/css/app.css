@@ -592,6 +592,7 @@ header {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 /* single item should be centered */
