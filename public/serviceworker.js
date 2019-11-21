@@ -6,13 +6,15 @@ const filesToCache = [
     '/css/app.css',
     '/js/app.js',
     // '/images/icons/icon-72x72.png',
-    '/images/icons/icon-96x96.png',
+    // '/images/icons/icon-96x96.png',
     // '/images/icons/icon-128x128.png',
-    // '/images/icons/icon-144x144.png',
+    '/images/icons/icon-144x144.png',
     // '/images/icons/icon-152x152.png',
     // '/images/icons/icon-192x192.png',
     // '/images/icons/icon-384x384.png',
     // '/images/icons/icon-512x512.png',
+    '/images/landing-page.jpg',
+    '/images/background.jpg'
 ];
 
 // Cache on install
@@ -69,7 +71,7 @@ const WebPush = {
         // https://developer.mozilla.org/en-US/docs/Web/API/PushMessageData
         if (event.data) {
             event.waitUntil(
-                this.sendNotification(event.data.json())
+                this.sendNotification(event.data)
             );
         }
     },
@@ -110,6 +112,7 @@ const WebPush = {
      * @param {PushMessageData|Object} data
      */
     sendNotification(data) {
+        data = data.json();
         return self.registration.showNotification(data.title, data);
     },
 

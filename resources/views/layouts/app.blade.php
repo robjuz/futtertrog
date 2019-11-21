@@ -17,6 +17,10 @@
             'vapidPublicKey' => config('webpush.vapid.public_key'),
             'csrf' => csrf_token()
         ]);
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+        }
     </script>
 </head>
 <body id="{{ Route::currentRouteName() }}">
