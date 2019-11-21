@@ -104,6 +104,6 @@
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 </footer>
 @stack('scripts')
-<script src="{{ asset('js/app.js') }}" async defer></script>
+<script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
