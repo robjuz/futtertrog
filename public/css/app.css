@@ -177,6 +177,33 @@ template {
 }
 
 /************************************/
+/*------- Fonts --------------------*/
+/************************************/
+
+/* caveat-regular - latin-ext */
+/* caveat-regular - latin-ext */
+@font-face {
+    font-family: 'Caveat';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/caveat-v7-latin-ext-regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('/fonts/caveat-v7-latin-ext-regular.woff') format('woff'); /* Modern Browsers */
+}
+
+
+/* livvic-regular - latin-ext */
+@font-face {
+    font-family: 'Livvic';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/livvic-v3-latin-ext-regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('/fonts/livvic-v3-latin-ext-regular.woff') format('woff'); /* Modern Browsers */
+}
+
+
+
+
+/************************************/
 /*------- Basics -------------------*/
 /************************************/
 * {
@@ -227,8 +254,6 @@ button .icon {
 
 h1 {
     font-family: 'Caveat', cursive;
-    font-size: calc(2em + 2.5vw);
-    line-height: 1.15;
     margin: 0.25em 0 0.67em 0;
     text-transform: uppercase;
 }

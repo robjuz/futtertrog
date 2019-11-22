@@ -1,4 +1,4 @@
-const version = '20191122_1';
+const version = '20191122_12';
 
 let staticCacheName = "futtertrog_" + version;
 const filesToCache = [
@@ -14,7 +14,11 @@ const filesToCache = [
     // '/images/icons/icon-384x384.png',
     // '/images/icons/icon-512x512.png',
     '/images/landing-page.jpg',
-    '/images/background.jpg'
+    '/images/background.jpg',
+    '/fonts/caveat-v7-latin-ext-regular.woff',
+    '/fonts/caveat-v7-latin-ext-regular.woff2',
+    '/fonts/livvic-v3-latin-ext-regular.woff',
+    '/fonts/livvic-v3-latin-ext-regular.woff2',
 ];
 
 // Cache on install

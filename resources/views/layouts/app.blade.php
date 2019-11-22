@@ -8,7 +8,6 @@
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
     @laravelPWA
-    <link href="https://fonts.googleapis.com/css?family=Caveat|Livvic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <script>
@@ -105,5 +104,8 @@
 </footer>
 @stack('scripts')
 <script src="{{ asset('js/app.js') }}"></script>
+<style>
+    #main-navbar {display: block;}
+</style>
 </body>
 </html>
