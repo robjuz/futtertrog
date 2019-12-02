@@ -13,9 +13,7 @@
                 <span>{{ $errors->first('name') }}</span>
             @endif
         </label>
-
-        <input id="name" type="text" name="name" required autofocus
-               value="{{ old('name', $user->name) }}">
+        <input id="name" type="text" name="name" required autofocus value="{{ old('name', $user->name) }}">
 
         <label for="email">
             <span>{{ __('E-Mail Address') }}</span>
@@ -23,9 +21,15 @@
                 <span>{{ $errors->first('email') }}</span>
             @endif
         </label>
+        <input id="email" type="email" name="email" required value="{{ old('email', $user->email) }}">
 
-        <input id="email" type="email" name="email" required
-               value="{{ old('email', $user->email) }}">
+        <label for="phone_number">
+            <span>  {{ __('Phone number') }}</span>
+            @if ($errors->has('phone_number'))
+                <span>{{ $errors->first('phone_number') }}</span>
+            @endif
+        </label>
+        <input id="phone_number" type="tel" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}">
 
         <label for="password">
             <span>{{ __('Password') }}</span>

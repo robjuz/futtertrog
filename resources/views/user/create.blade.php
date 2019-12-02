@@ -22,6 +22,14 @@
         </label>
         <input id="email" type="email" name="email" value="{{ old('email') }}" required>
 
+        <label for="phone_number">
+            <span>  {{ __('Phone number') }}</span>
+            @if ($errors->has('phone_number'))
+                <span>{{ $errors->first('phone_number') }}</span>
+            @endif
+        </label>
+        <input id="phone_number" type="tel" name="phone_number" value="{{ old('phone_number') }}">
+
         <label for="password">
             <span>{{ __('Password') }}</span>
             @if ($errors->has('password'))

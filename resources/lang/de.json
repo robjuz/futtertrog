@@ -154,5 +154,6 @@
   "Notification send": "Benachrichtigung wurde verschickt",
   "Ordered": "Schon bestellt!",
   ":count order possibilities": ":count Speisen",
-  "Delete orders": "Alle Bestellungen löschen"
+  "Delete orders": "Alle Bestellungen löschen",
+  "Phone number": "Telefonnummer"
 }
