@@ -40,7 +40,7 @@ class ExpandableMenu {
     updateLinks() {
         this.nav.querySelectorAll('a').forEach(function (link) {
             let href = link.getAttribute('href');
-            link.setAttribute('href', href.substring(0, href.indexOf('#')));
+            link.setAttribute('href', href.split('#')[0]);
         });
     }
 
