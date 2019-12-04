@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use App\Meal;
-use App\Services\HolzkeService;
+use App\Services\CallAPizzaService;
 use Illuminate\Support\ServiceProvider;
 
-class HolzkeServiceServiceProvider extends ServiceProvider
+class CallAPizzaServiceServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -16,16 +16,16 @@ class HolzkeServiceServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(
-            HolzkeService::class,
+            CallAPizzaService::class,
             function () {
-                return new HolzkeService();
+                return new CallAPizzaService();
             }
         );
 
         $this->app->singleton(
-            Meal::PROVIDER_HOLZKE.'_service',
+            Meal::PROVIDER_CALL_A_PIZZA.'_service',
             function () {
-                return new HolzkeService();
+                return new CallAPizzaService();
             }
         );
     }

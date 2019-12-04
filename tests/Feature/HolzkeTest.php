@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\NewOrderPossibility;
 use App\Meal;
-use App\Services\HolzkeService;
+use App\Services\CallAPizzaService;
 use Illuminate\Support\Facades\Event;
 use Ixudra\Curl\Facades\Curl;
 use Mockery;
@@ -19,7 +19,7 @@ class HolzkeTest extends TestCase
     {
         Event::fake();
 
-        $holzkeServiceMock = Mockery::mock(HolzkeService::class);
+        $holzkeServiceMock = Mockery::mock(CallAPizzaService::class);
         $holzkeServiceMock->shouldReceive('getMealsForDate')
             ->withAnyArgs()
             ->andReturn('<article class="articleGrid meal"><div class="cHead"><h2>Menü 1 blank (3,05 €)</h2></div>
@@ -37,7 +37,7 @@ class HolzkeTest extends TestCase
 
 
 
-        $this->app->instance(HolzkeService::class, $holzkeServiceMock);
+        $this->app->instance(CallAPizzaService::class, $holzkeServiceMock);
 
         $this->artisan('import:holzke');
 
@@ -49,7 +49,7 @@ class HolzkeTest extends TestCase
     /** @test */
     public function it_resolves_a_holzke_provider_from_app_container()
     {
-        $this->assertInstanceOf(HolzkeService::class, app(HolzkeService::class));
-        $this->assertSame(app(HolzkeService::class), app(HolzkeService::class));
+        $this->assertInstanceOf(CallAPizzaService::class, app(CallAPizzaService::class));
+        $this->assertSame(app(CallAPizzaService::class), app(CallAPizzaService::class));
     }
 }

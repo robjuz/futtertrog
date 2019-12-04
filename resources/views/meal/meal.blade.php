@@ -19,6 +19,10 @@
 
 <small class="money">{{ number_format($meal->price, 2, ',', '.') }} €</small>
 
+@if($meal->image)
+    <img src="{{ $meal->image }}" alt="">
+@endif
+
 @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION] ?? false))
     <p>{{ $meal->description }}</p>
 @endif

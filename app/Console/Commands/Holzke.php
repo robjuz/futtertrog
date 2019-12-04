@@ -5,8 +5,6 @@ namespace App\Console\Commands;
 use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\Services\HolzkeService;
-use DiDom\Document;
-use DiDom\Element;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
@@ -56,9 +54,9 @@ class Holzke extends Command
         do {
             $createdMeals = false;
 
-            $meals = $this->parseResponse($holzke->getMealsForDate($date));
+            $meals = $holzke->getMealsForDate($date);
 
-            foreach ($meals as $mealElement) {
+            foreach ( $meals as $mealElement) {
                 $meal = $this->createOrUpdateMeal($mealElement, $date);
 
                 if ($meal->wasRecentlyCreated) {
@@ -75,39 +73,23 @@ class Holzke extends Command
     }
 
     /**
-     * @param \DiDom\Element $mealElement
      * @param \Illuminate\Support\Carbon $date
      * @return \App\Meal
      */
-    public function createOrUpdateMeal(Element $mealElement, Carbon $date): Meal
+    public function createOrUpdateMeal($mealElement, Carbon $date): Meal
     {
-        $title = $mealElement->find('h2')[0]->text();
-
-        preg_match('/^[\w\s]*/mu', $title, $titleMatch);
-        preg_match('/\((\S*)/', $title, $priceMatch);
 
         return Meal::updateOrCreate(
             [
-                'title' => trim($titleMatch[0]),
+                'title' => $mealElement['title'],
                 'date_from' => $date->toDateString(),
                 'date_to' => $date->toDateString(),
                 'provider' => Meal::PROVIDER_HOLZKE,
             ],
             [
-                'description' => trim($mealElement->find('.cBody')[0]->removeChildren()[0]->text()),
-                'price' => floatval(str_replace(',', '.', $priceMatch[1])),
+                'description' => $mealElement['description'],
+                'price' => $mealElement['price'],
             ]
         );
-    }
-
-    /**
-     * @param $response
-     * @return \DiDom\Element[]|\DOMElement[]
-     */
-    public function parseResponse($response)
-    {
-        $meals = (new Document($response))->find('.meal');
-
-        return $meals;
     }
 }

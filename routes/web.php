@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth:web,api'], function () {
     Route::get('/dashboard', 'HomeController')->name('home');
 
     Route::get('meals/ical', 'IcalController')->name('meals.ical');
+    Route::post('meals/import', 'MealImportController')->name('meals.import');
     Route::resource('meals', 'MealController');
     Route::resource('orders', 'OrderController')->only(['index', 'edit', 'update', 'destroy']);
     Route::resource('order_items', 'OrderItemController')->only(['index', 'create', 'store', 'destroy']);

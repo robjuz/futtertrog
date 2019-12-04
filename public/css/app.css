@@ -68,7 +68,10 @@ sup {
 }
 
 img {
-    border-style: none
+    border-style: none;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
 }
 
 button, input, optgroup, select, textarea {
@@ -1069,6 +1072,19 @@ footer {
     margin-left: 1em;
     margin-top: 1em;
     max-width: initial;
+}
+
+/************************************/
+/*------- Meals Create -------------*/
+/************************************/
+
+[id="meals.create"] main {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+}
+
+[id="meals.create"] h1 {
+    grid-column: 1/-1;
 }
 
 /************************************/

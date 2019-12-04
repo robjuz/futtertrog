@@ -51,4 +51,9 @@ return [
         'password' => env('HOLZKE_PASSWORD'),
         'schedule' => env('HOLZKE_SCHEDULE'),
     ],
+
+    'call_a_pizza' => [
+        'location' => env('CALL_A_PIZZA_LOCATION', 'dresden_loebtau_sued'),
+        'meals' => env('CALL_A_PIZZA_MEALS', ['pizza', 'burger']),
+    ],
 ];

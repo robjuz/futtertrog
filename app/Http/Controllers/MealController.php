@@ -77,10 +77,10 @@ class MealController extends Controller
         }
 
         if ($request->has('saveAndNew')) {
-            return redirect()->route('meals.create');
+            return redirect()->route('meals.create')->with('success', __('Saved'));
         }
 
-        return redirect()->route('meals.index');
+        return redirect()->route('meals.index')->with('success', __('Saved'));
     }
 
     /**
@@ -134,7 +134,7 @@ class MealController extends Controller
             return response()->json($meal);
         }
 
-        return redirect()->route('meals.index');
+        return redirect()->route('meals.index')->with('success', __('Saved'));
     }
 
     /**
