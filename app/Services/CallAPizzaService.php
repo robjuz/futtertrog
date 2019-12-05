@@ -27,7 +27,7 @@ class CallAPizzaService
         foreach ($this->meals as $meal) {
             $response = Curl::to("https://www.call-a-pizza.de/{$this->location}/{$meal}")
                 ->get();
-            $meals += $this->parseResponse($response);
+            $meals = array_merge($meals, $this->parseResponse($response));
         }
 
         return $meals;
@@ -51,11 +51,11 @@ class CallAPizzaService
 
             $descriptionNode = $mealElement->first('.description');
 
-            $description = $descriptionNode->innerHtml();
-            $description = preg_replace('/<sup.*<\/sup>/', '', $description);
-            $description = preg_replace('/<a.*<\/a>/', '', $description);
-            $description = preg_replace('/<br>/', '', $description);
-            $description = trim($description);
+            foreach ($descriptionNode->children() as $childNode) {
+                if ($childNode->isElementNode()) {
+                    $childNode->remove();
+                }
+            }
 
             $image = $mealElement->first('.product-img img');
 
@@ -68,7 +68,7 @@ class CallAPizzaService
 
                 $meals[] = [
                     'title' => $name.'('.$priceTitle.')',
-                    'description' => $description,
+                    'description' => trim($descriptionNode->innerHtml()),
                     'price' => floatval($priceText),
                     'image' => $image->getAttribute('src') ?: $image->getAttribute('data-src'),
                 ];

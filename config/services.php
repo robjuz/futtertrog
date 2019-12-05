@@ -54,6 +54,6 @@ return [
 
     'call_a_pizza' => [
         'location' => env('CALL_A_PIZZA_LOCATION', 'dresden_loebtau_sued'),
-        'meals' => env('CALL_A_PIZZA_MEALS', ['pizza', 'burger']),
+        'meals' => env('CALL_A_PIZZA_MEALS', ['pizza/pizza-klassiker', 'burger']),
     ],
 ];
