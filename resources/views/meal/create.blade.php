@@ -6,6 +6,19 @@
     <form action="{{ route('meals.store') }}" method="post">
         @csrf
 
+        <label for="provider">
+            <span>{{ __('Provider') }}</span>
+            @error('provider')
+            <span>{{ $message }}</span>
+            @enderror
+        </label>
+        <select id="provider" name="provider">
+            <option value="">---</option>
+            @foreach(\App\Meal::$providers as $provider)
+                <option value="{{ $provider }}">{{ $provider }}</option>
+            @endforeach
+        </select>
+
         <label for="title">
             <span>{{__('Title')}}</span>
             @error('title')
@@ -70,6 +83,18 @@
     <form action="{{ route('meals.import') }}" method="post">
         @csrf
 
+        <label for="import_provider">
+            <span>{{ __('Provider') }}</span>
+            @error('provider')
+            <span>{{ $message }}</span>
+            @enderror
+        </label>
+        <select id="import_provider" name="provider" required>
+            @foreach(\App\Meal::$providers as $provider)
+                <option value="{{ $provider }}">{{ $provider }}</option>
+            @endforeach
+        </select>
+
         <label for="date">
             <span>{{ __('Date') }}</span>
             @error('date')
@@ -78,22 +103,10 @@
         </label>
         <input id="date" type="date" name="date" required value="{{ old('date') }}">
 
-        <label for="provider">
-            <span>{{ __('Provider') }}</span>
-            @error('provider')
-            <span>{{ $message }}</span>
-            @enderror
-        </label>
-        <select id="provider" name="provider" required>
-            @foreach(\App\Meal::$providers as $provider)
-                <option value="{{ $provider }}">{{ $provider }}</option>
-            @endforeach
-        </select>
-
-        <input id="notify" name="notify" type="checkbox"
+        <input id="import_notify" name="notify" type="checkbox"
             {{ old('notify') ? 'checked' : '' }}>
 
-        <label for="notify">
+        <label for="import_notify">
             {{ __('Notify users') }}
         </label>
 

@@ -61,4 +61,14 @@
 
         <button type="submit">{{ __('Save') }}</button>
     </form>
+
+    <form action="{{ route('meals.destroy', $meal) }}" method="POST">
+        @method('delete')
+        @csrf
+
+        <button type="submit">
+            @svg('solid/trash')
+            {{  __('Delete') }}
+        </button>
+    </form>
 @endsection()

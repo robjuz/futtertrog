@@ -47,6 +47,7 @@
                 <thead>
                 <tr>
                     <th>{{__('Date')}}</th>
+                    <th class="collapsible">{{__('Provider')}}</th>
                     <th class="collapsible">{{__('Status')}}</th>
                     <th class="collapsible">{{__('Quantity')}}</th>
                     <th>{{__('Title')}}</th>
@@ -73,6 +74,13 @@
                                         {{ __('calendar.' . $order->date->englishDayOfWeek) }}<br>
                                         {{ $order->date->format(__('futtertrog.date_format')) }}
                                     @endcan
+                                </td>
+
+                                <td
+                                    class="collapsible"
+                                    {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
+                                >
+                                    {{ $order->provider }}
                                 </td>
 
                                 <td
