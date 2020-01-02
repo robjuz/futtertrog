@@ -77,7 +77,7 @@
                    {{ old('noOrderNotification', $settings['noOrderNotification'] ?? false) ? 'checked' : '' }}
                    value="1"
             >
-            <label>
+            <label for="noOrderNotification">
                 <span>
                     {{ __('No order for today notification') }}
                 </span>
