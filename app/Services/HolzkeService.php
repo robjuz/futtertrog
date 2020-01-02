@@ -15,6 +15,7 @@ class HolzkeService
     public function __construct()
     {
         $this->cookieJar = storage_path('holtzke_cookie.txt');
+
         $this->login();
     }
 
@@ -36,12 +37,21 @@ class HolzkeService
      */
     public function getMealsForDate(Carbon $date)
     {
-        $response =  Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
+        $response =  $this->getHtml($date);
+
+        return $this->parseResponse($response);
+    }
+
+    /**
+     * @param \Illuminate\Support\Carbon $date
+     * @return string
+     */
+    public function getHtml(Carbon $date)
+    {
+        return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
             ->withData(['t' => $date->timestamp])
             ->setCookieFile(storage_path('holtzke_cookie.txt'))
             ->get();
-
-        return $this->parseResponse($response);
     }
 
     /**
