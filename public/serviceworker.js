@@ -1,4 +1,4 @@
-const version = '20200102_6';
+const version = '20200102_11';
 
 let staticCacheName = "futtertrog_" + version;
 const filesToCache = [
@@ -54,6 +54,10 @@ self.addEventListener("fetch", event => {
             .then(response => response || fetch(event.request))
             .catch(() => caches.match('offline'))
     );
+});
+
+addEventListener('message', messageEvent => {
+    if (messageEvent.data === 'skipWaiting') return skipWaiting();
 });
 
 const WebPush = {

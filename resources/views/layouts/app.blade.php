@@ -18,7 +18,28 @@
         ]);
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/serviceworker.js')
+            navigator.serviceWorker.register('/serviceworker.js').then(function(reg) {
+                listenForWaitingServiceWorker(reg, promptUserToRefresh);
+            });
+
+            function listenForWaitingServiceWorker(reg, callback) {
+                function awaitStateChange() {
+                    reg.installing.addEventListener('statechange', function() {
+                        if (this.state === 'installed') callback(reg);
+                    });
+                }
+                if (!reg) return;
+                if (reg.waiting) return callback(reg);
+                if (reg.installing) awaitStateChange();
+                reg.addEventListener('updatefound', awaitStateChange);
+            }
+
+            function promptUserToRefresh() {
+                if (window.confirm("New version available! OK to refresh?")) {
+                    window.location.reload();
+                }
+            }
+
         }
     </script>
 </head>
