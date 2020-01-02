@@ -174,3 +174,11 @@ window.onload = function() {
         Array.from(document.querySelectorAll('.success-message')).forEach(node => node.remove());
     }, 3000);
 };
+
+/* disable submit button on form submit */
+document.addEventListener('submit', function(e) {
+    if (e.target.matches('form')) {
+        let submitButton = e.target.querySelector('[type="submit"]');
+        submitButton.disabled = true;
+    }
+});

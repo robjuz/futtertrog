@@ -1063,15 +1063,28 @@ footer {
     padding-top: 2em;
 }
 
+[id="current-offer"] [name="_method"][value="delete"] ~ p {
+    margin-top: 0;
+}
+
 [id="current-offer"] input {
     max-width: 50%;
 }
 
-[id="current-offer"] input:not([type="hidden"]) + button {
+[id="current-offer"] :not([type="hidden"]) + [type="submit"] {
     flex-grow: 1;
     margin-left: 1em;
     margin-top: 1em;
     max-width: initial;
+}
+
+[id="current-offer"] [type="submit"]:disabled {
+    cursor: not-allowed;
+    animation: 1s loading infinite;
+}
+
+@keyframes loading {
+    50% { background: var(--custom-4); }
 }
 
 /************************************/

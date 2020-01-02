@@ -31,6 +31,7 @@
     <form action="{{ route('order_items.destroy', $orderItem) }}" method="post">
         @csrf
         @method('delete')
+        <p> {{ trans_choice('futtertrog.portions_ordered', $orderItem->quantity) }}</p>
         <button type="submit">{{ __('Delete order') }}</button>
     </form>
 @else
