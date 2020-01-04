@@ -13,12 +13,14 @@ class OpenOrdersForNextWeekNotification
     {
         $nextMonday = today()->addWeek()->startOfWeek();
         $nextSunday = today()->addWeek()->endOfWeek();
-        Order::whereStatus(Order::STATUS_OPEN)
+
+        if (Order::whereStatus(Order::STATUS_OPEN)
              ->whereBetween('date', [$nextMonday, $nextSunday])
-             ->get();
+             ->exists()
+        ) {
+            $users = User::whereIsAdmin(true)->get();
 
-        $users = User::whereIsAdmin(true)->get();
-
-        Notification::send($users, new OpenOrders(__('Next week')));
+            Notification::send($users, new OpenOrders(__('Next week')));
+        }
     }
 }

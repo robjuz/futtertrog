@@ -3,12 +3,15 @@
 namespace Tests\Feature;
 
 use App\Events\NewOrderPossibility;
+use App\Meal;
 use App\Notifications\CustomNotification;
 use App\Notifications\NewOrderPossibility as NewOrderPossibilityNotification;
 use App\Notifications\NoOrder;
+use App\Notifications\OpenOrders;
 use App\ScheduledJobs\NoOrderForNextDayNotification;
 use App\ScheduledJobs\NoOrderForNextWeekNotification;
 use App\ScheduledJobs\NoOrderForTodayNotification;
+use App\ScheduledJobs\OpenOrdersForNextWeekNotification;
 use App\User;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Mail;
@@ -32,18 +35,18 @@ class NotificationsTest extends TestCase
         (new NoOrderForTodayNotification)();
 
         Notification::assertNotSentTo($john, NoOrder::class);
-        Notification::assertSentTo($tom, NoOrder::class, function($message, $channels, $notifialble) {
+        Notification::assertSentTo($tom, NoOrder::class, function ($message, $channels, $notifialble) {
             $toArray =  $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
 
             $day = __('calendar.today');
 
             return $toArray['title'] === __('This is a friendly reminder.')
-                && $toArray['body'] === __('You have ordered no food for!', ['day' => $day] )
+                && $toArray['body'] === __('You have ordered no food for!', ['day' => $day])
 
                 && $toMail->subject === __('No order for', ['day' => $day])
                 && in_array(__('This is a friendly reminder.'), $toMail->introLines)
-                && in_array(__('You have ordered no food for!', ['day' => $day] ), $toMail->introLines);
+                && in_array(__('You have ordered no food for!', ['day' => $day]), $toMail->introLines);
         });
 
         $this->assertTrue(true);
@@ -64,18 +67,18 @@ class NotificationsTest extends TestCase
         (new NoOrderForNextDayNotification())();
 
         Notification::assertNotSentTo($john, NoOrder::class);
-        Notification::assertSentTo($tom, NoOrder::class, function($message, $channels, $notifialble) {
+        Notification::assertSentTo($tom, NoOrder::class, function ($message, $channels, $notifialble) {
             $toArray =  $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
 
-            $day = __('calendar.'.today()->addWeekdays()->englishDayOfWeek);
+            $day = __('calendar.' . today()->addWeekdays()->englishDayOfWeek);
 
             return $toArray['title'] === __('This is a friendly reminder.')
-                && $toArray['body'] === __('You have ordered no food for!', ['day' => $day] )
+                && $toArray['body'] === __('You have ordered no food for!', ['day' => $day])
 
                 && $toMail->subject === __('No order for', ['day' => $day])
                 && in_array(__('This is a friendly reminder.'), $toMail->introLines)
-                && in_array(__('You have ordered no food for!', ['day' => $day] ), $toMail->introLines);
+                && in_array(__('You have ordered no food for!', ['day' => $day]), $toMail->introLines);
         });
     }
 
@@ -94,19 +97,54 @@ class NotificationsTest extends TestCase
         (new NoOrderForNextWeekNotification())();
 
         Notification::assertNotSentTo($john, NoOrder::class);
-        Notification::assertSentTo($tom, NoOrder::class, function($message, $channels, $notifialble) {
+        Notification::assertSentTo($tom, NoOrder::class, function ($message, $channels, $notifialble) {
             $toArray =  $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
 
             $day = __('Next week');
 
             return $toArray['title'] === __('This is a friendly reminder.')
-                && $toArray['body'] === __('You have ordered no food for!', ['day' => $day] )
+                && $toArray['body'] === __('You have ordered no food for!', ['day' => $day])
 
                 && $toMail->subject === __('No order for', ['day' => $day])
                 && in_array(__('This is a friendly reminder.'), $toMail->introLines)
-                && in_array(__('You have ordered no food for!', ['day' => $day] ), $toMail->introLines);
+                && in_array(__('You have ordered no food for!', ['day' => $day]), $toMail->introLines);
         });
+    }
+
+    /** @test */
+    public function it_sent_a_open_order_for_next_week_notification_to_all_admins()
+    {
+        Notification::fake();
+
+        $john = factory(User::class)->state('admin')->create();
+
+
+        // (new OpenOrdersForNextWeekNotification())();
+
+        Notification::assertNotSentTo($john, OpenOrders::class);
+
+
+        $nextMonday = today()->addWeek()->startOfWeek();
+
+        $meal = factory(Meal::class)->create([
+            'date_from' => $nextMonday,
+            'date_to' => $nextMonday
+        ]);
+
+        $this->actingAs($john)
+            ->postJson(route('order_items.store'), [
+                'date' => $nextMonday->toDateString(),
+                'user_id' => $john->id,
+                'quantity' => 1,
+                'meal_id' => $meal->id,
+            ]);
+
+
+
+        (new OpenOrdersForNextWeekNotification())();
+
+        Notification::assertSentTo($john, OpenOrders::class);
     }
 
     /** @test */
@@ -127,7 +165,7 @@ class NotificationsTest extends TestCase
 
         Notification::assertNotSentTo($john, NewOrderPossibilityNotification::class);
 
-        Notification::assertSentTo($tom, NewOrderPossibilityNotification::class, function($message, $channels, $notifialble) use ($today) {
+        Notification::assertSentTo($tom, NewOrderPossibilityNotification::class, function ($message, $channels, $notifialble) use ($today) {
             $toArray =  $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
 

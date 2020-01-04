@@ -79,7 +79,6 @@ class OrderItemController extends Controller
             'date' => 'required|date',
             'user_id' => 'sometimes|exists:users,id',
             'quantity' => 'sometimes|numeric|min:1,max:10',
-            'status' => 'sometimes|string|max:30',
             'meal_id' => 'required|exists:meals,id',
         ];
 
