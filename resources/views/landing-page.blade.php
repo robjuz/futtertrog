@@ -95,6 +95,14 @@
         }
 
     </style>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js').then(function(reg) {
+                listenForWaitingServiceWorker(reg, promptUserToRefresh);
+            });
+        }
+    </script>
 </head>
 <body>
 
