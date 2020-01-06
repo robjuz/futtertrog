@@ -21,7 +21,7 @@ class CreateOrderItemsTable extends Migration
             $table->tinyInteger('quantity')->default(1);
             $table->timestamps();
 
-            $table->foreign('order_id')->references('id')->on('orders');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('meal_id')->references('id')->on('meals');
         });

@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
  * @property string $title
  * @property string|null $description
  * @property string|null $provider
- * @property float $price
+ * @property integer $price
  * @property \Illuminate\Support\Carbon $date_from
  * @property \Illuminate\Support\Carbon $date_to
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -37,10 +37,12 @@ class Meal extends Model
 {
     const PROVIDER_HOLZKE = 'Holzke';
     const PROVIDER_CALL_A_PIZZA = 'Call A Pizza';
+    const PROVIDER_TEST_SUPLIER = 'Test Suplier';
 
     public static $providers = [
         self::PROVIDER_HOLZKE,
         self::PROVIDER_CALL_A_PIZZA,
+        self::PROVIDER_TEST_SUPLIER,
     ];
 
     protected $guarded = [];
@@ -59,6 +61,17 @@ class Meal extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Set the price in cent
+     *
+     * @param  integer  $value
+     * @return void
+     */
+    public function setPriceAttribute($value)
+    {
+        $this->attributes['price'] = intval(100 * $value);
     }
 
     public function getIsPreferredAttribute()

@@ -26,7 +26,7 @@
         </label>
 
         <input type="number" name="price" id="price" pattern="\d*" required min="0" step="0.01"
-               value="{{ old('price', $meal->price) }}">
+               value="{{ old('price', 0.01 * $meal->price) }}">
 
         <label for="date_from">
             <span>{{ __('From') }}</span>
