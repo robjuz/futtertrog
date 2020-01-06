@@ -35,7 +35,7 @@
             <h2>{{ __('Your balance') }}</h2>
         </header>
 
-        <p>{{ number_format($balance, 2, ',','.') }} €</p>
+        <p>{{ number_format( 0.01 * $balance, 2, ',','.') }} €</p>
     </section>
 
     <section id="upcoming-orders">
