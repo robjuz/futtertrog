@@ -69,7 +69,7 @@ class Meal extends Model
      */
     public function setPriceAttribute($value)
     {
-        $this->attributes['price'] = intval(100 * $value);
+        $this->attributes['price'] = is_float($value) ? intval(100 * $value) : $value;
     }
 
     public function getIsPreferredAttribute()
