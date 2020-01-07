@@ -32,4 +32,15 @@ class Deposit extends Model
 
     const STATUS_PROCESSING = 'processing';
     const STATUS_OK = 'ok';
+
+    /**
+     * Set the value in cent
+     *
+     * @param  integer  $value
+     * @return void
+     */
+    public function setValueAttribute($value)
+    {
+        $this->attributes['value'] = is_float($value) ? intval(100 * $value) : $value;
+    }
 }
