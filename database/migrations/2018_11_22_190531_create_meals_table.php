@@ -18,7 +18,7 @@ class CreateMealsTable extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('provider')->nullable();
-            $table->integer('price');
+            $table->float('price');
             $table->date('date_from')->index();
             $table->date('date_to')->index();
             $table->timestamps();
