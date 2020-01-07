@@ -146,7 +146,7 @@
                             </td>
 
                             <td class="money collapsible">
-                                {{ number_format( 0.01 * $orderItem->meal->price, 2, ',','.') }} €
+                                @money($orderItem->meal->price)
                             </td>
                         </tr>
                     @endforeach
@@ -156,7 +156,7 @@
                 <tfoot>
                 <tr>
                     <td colspan="6" class="money">
-                        {{ __('Sum') }}: {{ number_format( 0.01 * $sum, 2, ',','.') }} €
+                        {{ __('Sum') }}: @money($sum)
                     </td>
                 </tr>
                 </tfoot>

@@ -10,8 +10,9 @@
     "require": {
         "php": "^7.2",
         "ext-dom": "*",
-        "ext-json": "*",
         "ext-fileinfo": "*",
+        "ext-json": "*",
+        "cknow/laravel-money": "^3.8",
         "dflydev/markdown": "^1.0",
         "eluceo/ical": "^0.15.0",
         "fideloper/proxy": "^4.0",

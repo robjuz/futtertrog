@@ -28,7 +28,7 @@
 
                     <td class="money">
                         <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
-                            {{ number_format(0.01 * $user->balance, 2, ',','.') }} €
+                            @money($user->balance)
                         </span>
                     </td>
                 </tr>

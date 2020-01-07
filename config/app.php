@@ -84,6 +84,8 @@ return [
 
     'supported_locale' => ['de', 'en'],
 
+    'currency' => 'EUR',
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale

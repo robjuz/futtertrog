@@ -17,7 +17,7 @@
     @endif
 </h4>
 
-<small class="money">{{ number_format(0.01 * $meal->price, 2, ',', '.') }} €</small>
+<small class="money">@money($meal->price)</small>
 
 @if($meal->image)
     <img src="{{ $meal->image }}" alt="">

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\User;
+use Cknow\Money\Money;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,6 +25,8 @@ class UserLocale
         }
 
         app()->setLocale($language);
+
+        Money::setLocale($language);
 
         return $next($request);
     }
