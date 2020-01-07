@@ -38,8 +38,8 @@ class UserTest extends TestCase
         $user = factory(User::class)->create();
 
         $user->deposits()->saveMany([
-            factory(Deposit::class)->make(['value' => 10]),
-            factory(Deposit::class)->make(['value' => 15]),
+            factory(Deposit::class)->make(['value' => 1000]),
+            factory(Deposit::class)->make(['value' => 1500]),
         ]);
 
         $meal = factory(Meal::class)->create([
@@ -57,7 +57,7 @@ class UserTest extends TestCase
             'quantity' => 2
         ]);
 
-        $this->assertEquals(14.10, $user->balance);
+        $this->assertEquals(1410, $user->balance);
     }
 
     /** @test */

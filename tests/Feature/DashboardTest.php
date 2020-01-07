@@ -16,7 +16,7 @@ class DashboardTest extends TestCase
         $user = factory(User::class)->create();
 
         $user->deposits()->create([
-            'value' => 10
+            'value' => 1000
         ]);
 
         $this->actingAs($user)->get(route('home'))->assertSee('10,00 €');
@@ -74,7 +74,7 @@ class DashboardTest extends TestCase
 
         $this->login($user)
             ->get(route('home'))
-            ->assertSee(number_format($deposit->value, 2, ',','.'));
+            ->assertSee(number_format(0.01 * $deposit->value, 2, ',','.'));
     }
 
     /** @test */

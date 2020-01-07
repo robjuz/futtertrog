@@ -94,7 +94,7 @@ class DepositTest extends TestCase
             'comment' => 'transfer'
         ]);
 
-        $this->assertEquals(-10.5, $user->balance);
-        $this->assertEquals(10.5, $otherUser->balance);
+        $this->assertEquals(-1050, $user->balance);
+        $this->assertEquals(1050, $otherUser->balance);
     }
 }

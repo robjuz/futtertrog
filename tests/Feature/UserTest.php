@@ -144,12 +144,12 @@ class UserTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $deposit = factory(Deposit::class)->make(['value' => 999]);
+        $deposit = factory(Deposit::class)->make(['value' => 9900]);
         $user->deposits()->save($deposit);
 
         $this->loginAsAdmin()
             ->get(route('users.show', $user))
-            ->assertSee($deposit->value);
+            ->assertSee(99);
     }
 
     /** @test */
