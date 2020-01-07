@@ -31,11 +31,7 @@
     </section>
 
     <section>
-        <header>
-            <h2>{{ __('Your balance') }}</h2>
-        </header>
-
-        <p>{{ number_format( 0.01 * $balance, 2, ',','.') }} €</p>
+        @include('user._balance')
     </section>
 
     <section id="upcoming-orders">
