@@ -66,9 +66,7 @@
             @enderror
         </label>
 
-        <textarea id="description" name="description">
-            {{ old('description') }}
-        </textarea>
+        <textarea id="description" name="description">{{ old('description') }}</textarea>
 
         <input id="notify" name="notify" type="checkbox"
             {{ old('notify') ? 'checked' : '' }}>

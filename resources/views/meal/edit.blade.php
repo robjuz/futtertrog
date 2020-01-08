@@ -55,9 +55,7 @@
             @endif
         </label>
 
-        <textarea name="description" id="description" rows="5">
-            {{ old('description', $meal->description) }}
-        </textarea>
+        <textarea name="description" id="description" rows="5">{{ old('description', $meal->description) }}</textarea>
 
         <button type="submit">{{ __('Save') }}</button>
     </form>
