@@ -47,7 +47,7 @@ class DepositTest extends TestCase
             ->post(route('deposits.store'), $deposit);
 
         $this->assertDatabaseHas('deposits', $deposit);
-        $this->assertEqual(10, $user->balance);
+        $this->assertEquals(10, $user->balance);
     }
 
     /** @test */
@@ -56,7 +56,7 @@ class DepositTest extends TestCase
         $deposit = factory(Deposit::class)->raw(['value' => -10]);
 
         $this->loginAsAdmin()
-            ->post(route('deposits.store'), $deposit);
+            ->postJson(route('deposits.store'), $deposit);
 
         $this->assertDatabaseHas('deposits', $deposit);
     }

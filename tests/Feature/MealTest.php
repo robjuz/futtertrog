@@ -56,8 +56,10 @@ class MealTest extends TestCase
 
         $attributes = [
             'title' => 'Changed title',
-            'description' => 'Changed description'
+            'description' => 'Changed description',
+            'price' => 100
         ];
+
 
         $this->login()->withExceptionHandling();
 
@@ -106,14 +108,12 @@ class MealTest extends TestCase
     /** @test */
     public function admin_can_create_a_meal_and_stay_on_the_create_page()
     {
-        $meal = factory(Meal::class)->make()->toArray();
+        $meal = factory(Meal::class)->raw();
 
         $this->loginAsAdmin();
 
         $this->post(route('meals.store'), $meal + ['saveAndNew' => 'saveAndNew'])
             ->assertRedirect(route('meals.create'));
-
-        $this->assertDatabaseHas('meals', $meal);
     }
 
     /** @test */
