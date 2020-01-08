@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
  * @property string $title
  * @property string|null $description
  * @property string|null $provider
- * @property float $price
+ * @property integer $price
  * @property \Illuminate\Support\Carbon $date_from
  * @property \Illuminate\Support\Carbon $date_to
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -59,6 +59,17 @@ class Meal extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Set the price in cent
+     *
+     * @param  integer  $value
+     * @return void
+     */
+    public function setPriceAttribute($value)
+    {
+        $this->attributes['price'] = is_float($value) ? intval(100 * $value) : $value;
     }
 
     public function getIsPreferredAttribute()

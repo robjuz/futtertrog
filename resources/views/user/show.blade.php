@@ -14,7 +14,7 @@
     </section>
 
     <section>
-        @include('user._balance')
+        @include('user._balance', ['balance' => $user->balance])
     </section>
 
     <section>

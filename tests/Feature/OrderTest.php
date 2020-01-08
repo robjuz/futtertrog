@@ -134,7 +134,7 @@ class OrderTest extends TestCase
         $meal = factory('App\Meal')->create([
             'date_from' => today(),
             'date_to' => today(),
-            'price' => 1.11
+            'price' => 111
         ]);
 
         $order->orderItems()->save(factory('App\OrderItem')->make([
@@ -144,7 +144,7 @@ class OrderTest extends TestCase
 
         $this->loginAsAdmin()
             ->get(route('orders.index'))
-            ->assertSee(number_format(2.22, 2, ',', '.'));
+            ->assertSee(money(222));
     }
 
     /** @test */

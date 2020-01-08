@@ -19,7 +19,7 @@ class DashboardTest extends TestCase
             'value' => 10
         ]);
 
-        $this->actingAs($user)->get(route('home'))->assertSee('10,00 €');
+        $this->actingAs($user)->get(route('home'))->assertSee(money(10));
     }
 
     /** @test */
@@ -74,7 +74,7 @@ class DashboardTest extends TestCase
 
         $this->login($user)
             ->get(route('home'))
-            ->assertSee(number_format($deposit->value, 2, ',','.'));
+            ->assertSee(money($deposit->value));
     }
 
     /** @test */
@@ -88,6 +88,6 @@ class DashboardTest extends TestCase
 
         $this->login($user)
             ->get(route('home'))
-            ->assertDontSee(number_format($deposit->value, 2, ',','.'));
+            ->assertDontSee(money($deposit->value));
     }
 }
