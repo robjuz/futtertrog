@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\NewOrderPossibilities;
+use App\Events\NewOrderPossibility;
+use App\Events\OrderReopened;
+use App\Listeners\SendNewOrderPossibilitiesNotification;
+use App\Listeners\SendNewOrderPossibilityNotification;
+use App\Listeners\SendOrderReopenedNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,11 +24,14 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        'App\Events\OrderReopened' => [
-            'App\Listeners\SendOrderReopenedNotification',
+       OrderReopened::class => [
+            SendOrderReopenedNotification::class,
         ],
-        'App\Events\NewOrderPossibility' => [
-            'App\Listeners\SendNewOrderPossibilityNotification',
+       NewOrderPossibility::class => [
+            SendNewOrderPossibilityNotification::class,
+        ],
+        NewOrderPossibilities::class => [
+            SendNewOrderPossibilitiesNotification::class,
         ],
     ];
 

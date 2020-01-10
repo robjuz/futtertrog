@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Events\NewOrderPossibility;
+use App\Events\NewOrderPossibilities;
 use App\Meal;
 use App\Services\HolzkeService;
 use Illuminate\Console\Command;
@@ -51,25 +51,23 @@ class Holzke extends Command
             $date->addWeekday();
         }
 
-        do {
-            $createdMeals = false;
+        $newOrderPossibilities = [];
 
+        do {
             $meals = $holzke->getMealsForDate($date);
 
             foreach ($meals as $mealElement) {
                 $meal = $this->createOrUpdateMeal($mealElement, $date);
 
                 if ($meal->wasRecentlyCreated) {
-                    $createdMeals = true;
+                    $newOrderPossibilities[] = $date->copy();
                 }
-            }
-
-            if ($createdMeals) {
-                event(new NewOrderPossibility($date));
             }
 
             $date->addWeekday();
         } while (count($meals));
+
+        event(new NewOrderPossibilities($newOrderPossibilities));
     }
 
     /**
