@@ -39,14 +39,26 @@ class MealPreferencesTest extends TestCase
             'date_to' => today(),
             'description' => 'meal_4'
         ]);
+        $meal5 = factory(Meal::class)->create([
+            'date_from' => today(),
+            'date_to' => today(),
+            'title' => 'pumpkin'
+        ]);
+        $meal6 = factory(Meal::class)->create([
+            'date_from' => today(),
+            'date_to' => today(),
+            'title' => 'pancake'
+        ]);
 
         $this->login($user)
             ->getJson(route('meals.index'))
             ->assertSeeInOrder([
                 $meal2->title,
+                $meal6->title,
                 $meal3->title,
                 $meal4->title,
                 $meal1->title,
+                $meal5->title,
             ]);
     }
 }

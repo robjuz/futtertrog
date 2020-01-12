@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
+ * @method static \App\MealCollection get($columns)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal query()
@@ -46,15 +47,6 @@ class Meal extends Model
     protected $guarded = [];
 
     protected $dates = ['date_from', 'date_to'];
-
-    /**
-     * @param array $columns
-     * @return \App\MealCollection
-     */
-    public static function get($columns = [])
-    {
-        return parent::get($columns);
-    }
 
     public function orderItems()
     {
@@ -120,22 +112,6 @@ class Meal extends Model
         }
 
         return $this->attributes['is_hated'];
-    }
-
-    public function getTitleClasses()
-    {
-        $classes = [];
-        if ($this->is_hated or $this->is_preferred) {
-            $classes[] = 'font-weight-bold';
-        }
-
-        if ($this->is_hated) {
-            $classes[] = 'text-danger';
-        } elseif ($this->is_preferred) {
-            $classes[] = 'text-success';
-        }
-
-        return implode(' ', $classes);
     }
 
     /**
