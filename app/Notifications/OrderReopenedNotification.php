@@ -118,6 +118,6 @@ class OrderReopenedNotification extends Notification
             // ->requireInteraction()
             // ->tag()
             // ->vibrate()
-;
+        ;
     }
 }
