@@ -110,34 +110,6 @@ class User extends Authenticatable
         return $this->attributes['balance'];
     }
 
-    /**
-     * @return array
-     */
-    public function getCheckoutData(): array
-    {
-        $deposit = $this->deposits()->whereStatus(Deposit::STATUS_PROCESSING)->firstOrFail();
-
-        return [
-            'items'               => [
-                [
-                    'name'  => trans('Futtertrog deposit'),
-                    'price' => $deposit->value,
-                    'qty'   => 1,
-                ],
-            ],
-            'invoice_description' => null,
-            'invoice_id'          => null,
-            'return_url'          => route('paypal.express_checkout_success'),
-            'cancel_url'          => url('/'),
-            'total'               => $deposit->value,
-        ];
-    }
-
-    public function gravatarUrl($size = 100)
-    {
-        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?s='.$size;
-    }
-
     public function markAsAdmin()
     {
         return $this->forceFill([
