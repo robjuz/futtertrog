@@ -148,10 +148,14 @@ class MealOrderingTest extends TestCase
                 $mailData = $notification->toMail($user);
                 $this->assertEquals(__('Order reopened'), $mailData->subject);
 
-                $arrayData = $notification->toArray($user);
-                $this->assertEquals($arrayData['date'], $order->date);
-                $this->assertEquals($arrayData['user'], $user->name);
-                $this->assertEquals($arrayData['meal'], $meal->title);
+                $toArray = $notification->toArray($user);
+                $this->assertEquals($toArray['date'], $order->date);
+                $this->assertEquals($toArray['user'], $user->name);
+                $this->assertEquals($toArray['meal'], $meal->title);
+
+                $toWebPush = $notification->toWebPush($user)->toArray();
+                $this->assertEquals($toWebPush['title'], __('The order for :date was reopened', ['date' => $order->date->format(trans('futtertrog.date_format')) ]));
+                $this->assertEquals($toWebPush['body'], __(':user updated :meal', ['user' => $user->name, 'meal' => $meal->title]));
 
                 return $notification->order->is($order)
                     && $notification->user->is($user)
@@ -200,7 +204,7 @@ class MealOrderingTest extends TestCase
             ->assertJsonFragment($orderItem->toArray())
             ->assertJsonMissingExact(['user_id' => $orderItem2->user_id]);
     }
-    
+
     /** @test */
     public function it_allows_to_delete_an_order_item()
     {

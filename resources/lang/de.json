@@ -129,7 +129,7 @@
   "Meal": "Essen",
   "Is admin": "Ist Admin",
   "Your orders for :date": "Deine Bestellung für <span class=\"text-primary\">:date</span>:",
-  "New order possibility for :day" : "Neue Bestellmöglichkeit für :day",
+  "New order possibility for :day": "Neue Bestellmöglichkeit für :day",
   "Notify users": "Benachrichtigung an Benutzer senden",
   "Skip navigation": "Menü überspringen",
   "Language": "Sprache",
@@ -155,5 +155,7 @@
   "Ordered": "Schon bestellt!",
   ":count order possibilities": ":count Speisen",
   "Delete orders": "Alle Bestellungen löschen",
-  "Phone number": "Telefonnummer"
+  "Phone number": "Telefonnummer",
+  "There is an open order!": "Die Bestellung für :day ist noch offen!",
+  "Open order for": "Offene Bestellung für :day"
 }

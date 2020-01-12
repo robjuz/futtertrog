@@ -67,12 +67,16 @@ class CustomNotificationTest extends TestCase
             $users,
             CustomNotification::class,
             function (CustomNotification $notification, $notifable) {
-                $notification = $notification->toMail($notifable);
+                $toMail = $notification->toMail($notifable);
+                $toArray = $notification->toArray($notifable);
+                $toWebPush = $notification->toWebPush($notifable)->toArray();
 
-                return $notification->subject == 'Notification' && in_array(
-                        'Notification message',
-                        $notification->introLines
-                    );
+                return $toMail->subject == 'Notification'
+                && in_array('Notification message', $toMail->introLines)
+                && $toArray['title'] === 'Notification'
+                && $toArray['body'] === 'Notification message'
+                && $toWebPush['title'] === 'Notification'
+                && $toWebPush['body'] === 'Notification message';
             }
         );
     }

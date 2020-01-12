@@ -62,7 +62,7 @@ class NewOrderPossibility extends Notification
             ->action(__('Click here for more details'), $url);
     }
 
-    public function toWebPush($notifiable, $notification)
+    public function toWebPush($notifiable)
     {
         $day = $this->date->format(trans('futtertrog.date_format'));
         $url = route('meals.index', [
@@ -74,16 +74,16 @@ class NewOrderPossibility extends Notification
             //->icon('/utensils.svg')
             ->body(__('New order possibility for :day', ['day' => $day]))
             ->action('Click here for more details', 'click')
-         ->data(['url' =>  $url])
-        // ->badge()
-        // ->dir()
-        // ->image('/utensils.svg')
-         ->lang(app()->getLocale())
-        // ->renotify()
-        // ->requireInteraction()
-        // ->tag()
-        // ->vibrate()
-;
+            ->data(['url' =>  $url])
+            // ->badge()
+            // ->dir()
+            // ->image('/utensils.svg')
+            ->lang(app()->getLocale())
+            // ->renotify()
+            // ->requireInteraction()
+            // ->tag()
+            // ->vibrate()
+        ;
     }
 
     /**

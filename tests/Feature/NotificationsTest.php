@@ -145,6 +145,23 @@ class NotificationsTest extends TestCase
         (new OpenOrdersForNextWeekNotification())();
 
         Notification::assertSentTo($john, OpenOrders::class);
+
+        Notification::assertSentTo($john, OpenOrders::class, function ($message, $channels, $notifiable) use ($nextMonday) {
+            $toArray =  $message->toArray($notifiable);
+            $toMail = $message->toMail($notifiable);
+            $toNexmo = $message->toNexmo($notifiable);
+
+
+            return $toArray['title'] === __('This is a friendly reminder.')
+                && $toArray['body'] === __('There is an open order!', ['day' => $nextMonday])
+
+                && $toMail->subject === __('Open order for', ['day' => $nextMonday])
+                && in_array(__('This is a friendly reminder.'), $toMail->introLines)
+                && in_array(__('There is an open order!', ['day' => $nextMonday]), $toMail->introLines)
+                // && $toMail->actionText === __('Click here for more details')
+
+                && $toNexmo->content === __('There is an open order!', ['day' => $nextMonday]);
+        });
     }
 
     /** @test */
@@ -168,7 +185,7 @@ class NotificationsTest extends TestCase
         Notification::assertSentTo($tom, NewOrderPossibilityNotification::class, function ($message, $channels, $notifialble) use ($today) {
             $toArray =  $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
-
+            $toWebPush = $message->toWebPush($notifialble)->toArray();
 
 
             $day = $today->format(trans('futtertrog.date_format'));
@@ -177,7 +194,10 @@ class NotificationsTest extends TestCase
 
                 && $toMail->subject === __('New order possibility for :day', ['day' => $day])
                 && in_array(__('New order possibility for :day', ['day' => $day]), $toMail->introLines)
-                && $toMail->actionText === __('Click here for more details');
+                && $toMail->actionText === __('Click here for more details')
+
+                && $toWebPush['title'] === __('New order possibility for :day', ['day' => $day])
+                && $toWebPush['body'] === __('New order possibility for :day', ['day' => $day]);
         });
     }
 }

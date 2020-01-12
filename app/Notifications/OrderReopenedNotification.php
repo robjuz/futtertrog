@@ -74,8 +74,10 @@ class OrderReopenedNotification extends Notification
 
         return (new MailMessage)
             ->subject(__('Order reopened'))
-            ->line(__('The order for :date was reopened',
-                ['date' => $this->order->date->format(trans('futtertrog.date_format'))]))
+            ->line(__(
+                'The order for :date was reopened',
+                ['date' => $this->order->date->format(trans('futtertrog.date_format'))]
+            ))
             ->line(__(':user updated :meal', ['user' => $this->user->name, 'meal' => $this->meal->title]))
             ->action(__('Click here for more details'), $url);
     }
@@ -92,7 +94,7 @@ class OrderReopenedNotification extends Notification
         return ['mail', WebPushChannel::class];
     }
 
-    public function toWebPush($notifiable, $notification)
+    public function toWebPush($notifiable)
     {
         $url = route('orders.index', [
             'from' => $this->order->date->toDateString(),
@@ -100,8 +102,10 @@ class OrderReopenedNotification extends Notification
         ]);
 
         return (new WebPushMessage())
-            ->title(__('The order for :date was reopened',
-                ['date' => $this->order->date->format(trans('futtertrog.date_format'))]))
+            ->title(__(
+                'The order for :date was reopened',
+                ['date' => $this->order->date->format(trans('futtertrog.date_format'))]
+            ))
             //->icon('/utensils.svg')
             ->body(__(':user updated :meal', ['user' => $this->user->name, 'meal' => $this->meal->title]))
             ->action('Click here for more details', 'click')
@@ -114,6 +118,6 @@ class OrderReopenedNotification extends Notification
             // ->requireInteraction()
             // ->tag()
             // ->vibrate()
-;
+        ;
     }
 }
