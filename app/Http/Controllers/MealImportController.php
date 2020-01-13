@@ -18,6 +18,8 @@ class MealImportController extends Controller
      */
     public function __invoke(Request $request)
     {
+        $this->authorize('create', Meal::class);
+
         $request->validate([
             'date' => 'required|date',
             'provider' => ['required', Rule::in(Meal::$providers)]
