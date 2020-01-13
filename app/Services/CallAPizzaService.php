@@ -64,12 +64,12 @@ class CallAPizzaService
                 $priceTitle = strip_tags($priceInfo->find('.price_box_title')[0]->text());
                 $priceText = $priceInfo->find('.price_box_price')[0]->text();
                 $priceText = preg_replace('/\D+$/', '', $priceText);
-                $priceText = str_replace(',', '.', $priceText);
+                $priceText = preg_replace('/[,\.]/', '', $priceText);
 
                 $meals[] = [
                     'title' => $name.'('.$priceTitle.')',
                     'description' => trim($descriptionNode->innerHtml()),
-                    'price' => floatval($priceText),
+                    'price' => intval($priceText),
                     'image' => $image->getAttribute('src') ?: $image->getAttribute('data-src'),
                 ];
             }
