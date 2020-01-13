@@ -56,7 +56,7 @@ class Holzke extends Command
 
             $meals = $holzke->getMealsForDate($date);
 
-            foreach ( $meals as $mealElement) {
+            foreach ($meals as $mealElement) {
                 $meal = $this->createOrUpdateMeal($mealElement, $date);
 
                 if ($meal->wasRecentlyCreated) {
@@ -78,7 +78,6 @@ class Holzke extends Command
      */
     public function createOrUpdateMeal($mealElement, Carbon $date): Meal
     {
-
         return Meal::updateOrCreate(
             [
                 'title' => $mealElement['title'],

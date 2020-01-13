@@ -8,7 +8,7 @@ use App\Http\Requests\MealUpdateRequest;
 use App\Meal;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
-use App\User;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -27,11 +27,11 @@ class MealController extends Controller
     public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {
         $requestedDate = Carbon::parse($request->query('date', today()));
-
         $previousMonth = $requestedDate->clone()->subMonthNoOverflow()->lastOfMonth();
         $nextMonth = $requestedDate->clone()->addMonthNoOverflow()->firstOfMonth();
 
         $startOfMonth = $requestedDate->clone()->startOfMonth();
+        $endOfMonth = $requestedDate->clone()->endOfMonth();
 
         $todayMeals = $meals->forDate($requestedDate)->sortByPreferences();
 
@@ -41,7 +41,11 @@ class MealController extends Controller
 
         $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
 
-        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate', 'previousMonth', 'startOfMonth', 'nextMonth'));
+        $date = $requestedDate->clone()->firstOfMonth();
+
+        $month = CarbonPeriod::create($startOfMonth, $endOfMonth);
+
+        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate', 'previousMonth', 'nextMonth', 'month'));
     }
 
     /**

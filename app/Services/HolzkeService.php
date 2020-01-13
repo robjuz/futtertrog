@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Meal;
 use DiDom\Document;
-use DiDom\Element;
 use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 
@@ -37,7 +35,7 @@ class HolzkeService
      */
     public function getMealsForDate(Carbon $date)
     {
-        $response =  $this->getHtml($date);
+        $response = $this->getHtml($date);
 
         return $this->parseResponse($response);
     }
@@ -62,7 +60,7 @@ class HolzkeService
     {
         $meals = [];
 
-        foreach((new Document($response))->find('.meal') as $mealElement) {
+        foreach ((new Document($response))->find('.meal') as $mealElement) {
             $title = $mealElement->find('h2')[0]->text();
 
             preg_match('/^[\w\s]*/mu', $title, $titleMatch);
@@ -74,6 +72,7 @@ class HolzkeService
                 'price' => intval(preg_replace('/[,\.]/', '', $priceMatch[1])),
             ];
         }
+
         return $meals;
     }
 }

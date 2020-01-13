@@ -22,7 +22,7 @@ class MealImportController extends Controller
 
         $request->validate([
             'date' => 'required|date',
-            'provider' => ['required', Rule::in(Meal::$providers)]
+            'provider' => ['required', Rule::in(Meal::$providers)],
         ]);
 
         $date = Carbon::parse($request->date);
@@ -32,7 +32,6 @@ class MealImportController extends Controller
         $meals = $providerService->getMealsForDate($date);
 
         foreach ($meals as $mealElement) {
-
             Meal::updateOrCreate(
                 [
                     'title' => $mealElement['title'],
@@ -43,7 +42,7 @@ class MealImportController extends Controller
                 [
                     'description' => $mealElement['description'],
                     'price' => $mealElement['price'],
-                    'image' => $mealElement['image'] ?? null
+                    'image' => $mealElement['image'] ?? null,
                 ]
             );
         }

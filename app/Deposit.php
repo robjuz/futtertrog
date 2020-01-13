@@ -34,9 +34,9 @@ class Deposit extends Model
     const STATUS_OK = 'ok';
 
     /**
-     * Set the value in cent
+     * Set the value in cent.
      *
-     * @param  integer  $value
+     * @param  int  $value
      * @return void
      */
     public function setValueAttribute($value)

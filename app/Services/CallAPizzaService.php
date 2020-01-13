@@ -43,7 +43,7 @@ class CallAPizzaService
 
         foreach ((new Document($response))->find('.item') as $mealElement) {
             $productText = $mealElement->first('.product-text');
-            if (! $productText OR ! ($name = $productText->first('.name a'))) {
+            if (! $productText or ! ($name = $productText->first('.name a'))) {
                 continue;
             }
 
@@ -60,7 +60,6 @@ class CallAPizzaService
             $image = $mealElement->first('.product-img img');
 
             foreach ($mealElement->find('.add-to-cart') as $priceInfo) {
-
                 $priceTitle = strip_tags($priceInfo->find('.price_box_title')[0]->text());
                 $priceText = $priceInfo->find('.price_box_price')[0]->text();
                 $priceText = preg_replace('/\D+$/', '', $priceText);

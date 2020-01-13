@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
  * @property string $title
  * @property string|null $description
  * @property string|null $provider
- * @property integer $price
+ * @property int $price
  * @property \Illuminate\Support\Carbon $date_from
  * @property \Illuminate\Support\Carbon $date_to
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -54,9 +54,9 @@ class Meal extends Model
     }
 
     /**
-     * Set the price in cent
+     * Set the price in cent.
      *
-     * @param  integer  $value
+     * @param  int  $value
      * @return void
      */
     public function setPriceAttribute($value)

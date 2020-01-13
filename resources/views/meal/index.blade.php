@@ -20,7 +20,7 @@
                 </a>
             </header>
             <ol>
-                @for($date = $requestedDate->clone()->startOfMonth(); $date->day <= $date->daysInMonth; $date->addDay())
+                @foreach($month as $date)
                     <li class="{{ $date->isWeekend() ? ' weekend' : '' }}{{ $date->isToday() ? ' today' : '' }}{{ $date->isSameDay($requestedDate) ? ' selected' : '' }}">
                         @if ($meals->forDate($date)->isEmpty())
                             <div>
@@ -41,7 +41,7 @@
                             </a>
                         @endif
                     </li>
-                @endfor
+                @endforeach
             </ol>
         </nav>
     </scroll-into-view>

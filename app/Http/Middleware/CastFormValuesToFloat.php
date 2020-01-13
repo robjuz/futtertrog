@@ -8,7 +8,7 @@ class CastFormValuesToFloat extends Middleware
 {
     /**
      * When the request is not a json request
-     * transform all numeric value to float
+     * transform all numeric value to float.
      *
      * @param  string  $key
      * @param  mixed  $value
@@ -18,7 +18,7 @@ class CastFormValuesToFloat extends Middleware
     {
         if (request()->isJson()) {
             return $value;
-        };
+        }
 
         return is_numeric($value) ? floatval($value) : $value;
     }
