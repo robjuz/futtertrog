@@ -20,7 +20,7 @@
                 </a>
             </header>
             <ol>
-                @for($date = $requestedDate->clone()->startOfMonth(); $date->day < $date->daysInMonth; $date->addDay())
+                @for($date = $requestedDate->clone()->startOfMonth(); $date->day <= $date->daysInMonth; $date->addDay())
                     <li class="{{ $date->isWeekend() ? ' weekend' : '' }}{{ $date->isToday() ? ' today' : '' }}{{ $date->isSameDay($requestedDate) ? ' selected' : '' }}">
                         @if ($meals->forDate($date)->isEmpty())
                             <div>
