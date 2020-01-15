@@ -24,10 +24,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-       OrderReopened::class => [
+        OrderReopened::class => [
             SendOrderReopenedNotification::class,
         ],
-       NewOrderPossibility::class => [
+        NewOrderPossibility::class => [
             SendNewOrderPossibilityNotification::class,
         ],
         NewOrderPossibilities::class => [

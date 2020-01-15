@@ -52,9 +52,9 @@ class NewOrderPossibilities extends Notification
      */
     public function toMail(User $notifiable)
     {
-        $message =  (new MailMessage)->subject(__('New order possibilities'));
+        $message = (new MailMessage)->subject(__('New order possibilities'));
 
-        foreach($this->dates as $date) {
+        foreach ($this->dates as $date) {
             $formatted = $date->locale($notifiable->settings[User::SETTING_LANGUAGE])->isoFormat('ddd MMM DD YYYY');
             $message->line(__('New order possibility for :day', ['day' => $formatted]));
         }
@@ -78,7 +78,7 @@ class NewOrderPossibilities extends Notification
             // ->requireInteraction()
             // ->tag()
             // ->vibrate()
-        ;
+;
     }
 
     /**
