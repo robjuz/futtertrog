@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Events\NewOrderPossibilities;
 use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\Notifications\NewOrderPossibilities as NewOrderPossibilitiesNotification;
@@ -96,5 +97,45 @@ class HolzkeTest extends TestCase
                 && in_array(__('New order possibility for :day', ['day' => $day]), $toMail->introLines)
                 && $toMail->actionText === __('Click here for more details');
         });
+    }
+
+    /** @test */
+    public function it_fires_a_event_when_new_meals_were_created()
+    {
+        Event::fake();
+
+        Carbon::setTestNow(today()->addWeekday()); //ensure we test over a weekday
+
+        $this->partialMock(HolzkeService::class, function (MockInterface $mock) {
+
+            $mock->shouldReceive('getHtml')
+                ->withAnyArgs()
+                ->andReturn('<div></div>')
+                ->once();
+        });
+
+        $this->artisan('import:holzke');
+
+        Event::assertNotDispatched(NewOrderPossibilities::class);
+
+        $this->partialMock(HolzkeService::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getHtml')
+                ->withAnyArgs()
+                ->andReturn('<div><article class="articleGrid meal"><div class="cHead"><h2>Menü 1 blank (3,05 €)</h2></div>
+							<div class="cBody grey">
+								Cremige Tomatensuppe mit Reiseinlage und Fleischklösschen dazu 1 Scheibe Weißbrot
+								<div class="infos clearfix"><span class="kcal">547.7 kcal</span><span class="be">5.9 BE</span><span class="zusatz"><a href="#zusatz" title="mit Farbstoff">1</a><a href="#zusatz" title="enth. Gluten">A</a><a href="#zusatz" title="enth. Ei">C</a><a href="#zusatz" title="Milch, Laktose">G</a><a href="#zusatz" title="enth. Sellerie">I</a><a href="#zusatz" title="enth. Senf">J</a><a href="#zusatz" title="enth. Weizen">A1</a></span></div>
+							</div>
+						</article></div>')
+                ->once();
+
+            $mock->shouldReceive('getHtml')
+                ->withAnyArgs()
+                ->andReturn('<div></div>')
+                ->once();
+        });
+
+        $this->artisan('import:holzke');
+
     }
 }
