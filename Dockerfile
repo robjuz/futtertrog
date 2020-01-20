@@ -1,23 +1,22 @@
-FROM hitalos/php:latest
-LABEL maintainer="hitalos <hitalos@gmail.com>"
+FROM php:alpine
 
-# Download and install NodeJS
-RUN mkdir -p /usr/local/lib/nodejs
-RUN echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
-RUN apk add -U nodejs@edge libuv@edge
+RUN apk update && apk upgrade
 
-# Install latest NPM
-RUN curl -s -0 -L npmjs.org/install.sh | sh
+RUN apk add gmp-dev libintl icu-dev
 
-# Install Yarn
-RUN npm i -g yarn
+RUN docker-php-ext-install \
+    intl \
+    pdo_mysql \
+    gmp
 
-# Install build dependencies
-RUN apk add autoconf automake g++ gcc libpng-dev libtool make nasm python
 
-#Install php gmp-ext
-RUN apk add --update --no-cache gmp gmp-dev \
-    && docker-php-ext-install gmp
+# Download trusted certs
+RUN mkdir -p /etc/ssl/certs && update-ca-certificates
+
+# Install composer
+RUN cd /tmp && php -r "readfile('https://getcomposer.org/installer');" | php && \
+    mv composer.phar /usr/bin/composer && \
+    chmod +x /usr/bin/composer
 
 WORKDIR /var/www
 CMD composer install && composer run-script post-root-package-install && composer run-script post-create-project-cmd && php ./artisan serve --port=80 --host=0.0.0.0

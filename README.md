@@ -9,3 +9,6 @@ Ein einfaches System um Essenbestellungen zu verwalten
 ## Entwicklungsumgebung
 `docker-compose up` danach im Webbrowser http://localhost:8001 besuchen.
 
+## DB und Admin Benutzer
+`docker exec futtertrog_web_1 php artisan migrate:fresh --seed` erstellt einen `admin@example.com` Benutzer mit Passwort `123456`
+
