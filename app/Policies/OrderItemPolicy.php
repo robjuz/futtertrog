@@ -51,7 +51,6 @@ class OrderItemPolicy
      */
     public function update(User $user, OrderItem $orderItem)
     {
-
         return $orderItem->user->is($user) && $orderItem->order->date->isAfter(today());
     }
 
