@@ -19,7 +19,10 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_can_order_a_meal_for_himself()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = factory(Meal::class)->create([
+            'date_from' => today()->addDay(),
+            'date_to' => today()->addDay()
+        ]);
 
         $this->login();
         $this->post(route('order_items.store'), [
@@ -38,19 +41,36 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_cannot_order_a_meal_for_other_users()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = factory(Meal::class)->state('in_future')->create();
 
         $user = factory(User::class)->create();
 
-        $this->login();
+        $this->login()
+            ->post(route('order_items.store'), [
+                'date' => $meal->date_from,
+                'user_id' => $user->id,
+                'meal_id' => $meal->id
+            ]);
 
-        $this->post(route('order_items.store'), [
-            'date' => $meal->date_from,
-            'user_id' => $user->id,
-            'meal_id' => $meal->id
+        $this->assertFalse($user->orderItems()->where('meal_id', $meal->id)->exists());
+        $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+    }
+
+    /** @test */
+    public function user_cannot_order_a_meal_located_in_the_past()
+    {
+        $meal = factory(Meal::class)->create([
+            'date_from' => today(),
+            'date_to' => today()
         ]);
 
-        $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+        $this->login()
+            ->withExceptionHandling()
+            ->post(route('order_items.store'), [
+                'date' => $meal->date_from,
+                'meal_id' => $meal->id
+            ])
+            ->assertForbidden();
     }
 
     /** @test */
@@ -78,13 +98,13 @@ class MealOrderingTest extends TestCase
         $this->withExceptionHandling();
 
         $this->post(route('order_items.store'))->assertRedirect(route('login'));
-        $this->postJson(route('order_items.store'))->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $this->postJson(route('order_items.store'))->assertUnauthorized();
     }
 
     /** @test */
     public function it_dispatches_an_event_when_an_order_was_reopened()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = factory(Meal::class)->state('in_future')->create();
         $user = factory(User::class)->create();
 
         // Given we have a closed order
@@ -115,7 +135,7 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function it_notifies_an_admin_when_an_closed_was_reopened()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = factory(Meal::class)->state('in_future')->create();
         $user = factory(User::class)->create();
 
         $admin = factory(User::class)->create(['is_admin' => true]);
@@ -154,14 +174,14 @@ class MealOrderingTest extends TestCase
                 $this->assertEquals($toArray['meal'], $meal->title);
 
                 $toWebPush = $notification->toWebPush($user)->toArray();
-                $this->assertEquals($toWebPush['title'], __('The order for :date was reopened', ['date' => $order->date->format(trans('futtertrog.date_format')) ]));
+                $this->assertEquals($toWebPush['title'], __('The order for :date was reopened', ['date' => $order->date->format(trans('futtertrog.date_format'))]));
                 $this->assertEquals($toWebPush['body'], __(':user updated :meal', ['user' => $user->name, 'meal' => $meal->title]));
 
                 return $notification->order->is($order)
                     && $notification->user->is($user)
                     && $notification->meal->is($meal);
-            });
-
+            }
+        );
     }
 
     /** @test */
@@ -209,7 +229,7 @@ class MealOrderingTest extends TestCase
     public function it_allows_to_delete_an_order_item()
     {
         $user = factory(User::class)->create();
-        $orderItem = factory(OrderItem::class)->make();
+        $orderItem = factory(OrderItem::class)->state('in_future')->make();
         $user->orderItems()->save($orderItem);
 
         $this->login($user)
@@ -218,7 +238,7 @@ class MealOrderingTest extends TestCase
 
         $this->assertDatabaseMissing('order_items', $orderItem->toArray());
 
-        $orderItem = factory(OrderItem::class)->make();
+        $orderItem = factory(OrderItem::class)->state('in_future')->make();
         $user->orderItems()->save($orderItem);
 
         $this->login($user)
@@ -226,6 +246,30 @@ class MealOrderingTest extends TestCase
             ->assertSuccessful();
 
         $this->assertDatabaseMissing('order_items', $orderItem->toArray());
+    }
 
+    /** @test */
+    public function it_disallows_to_delete_an_order_item_in_the_past()
+    {
+        $user = factory(User::class)->create();
+        $orderItem = factory(OrderItem::class)->state('in_past')->make();
+        $user->orderItems()->save($orderItem);
+
+        $this->withExceptionHandling();
+
+        $this->login($user)
+            ->delete(route('order_items.destroy', $orderItem))
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('order_items', $orderItem->toArray());
+
+        $orderItem = factory(OrderItem::class)->state('in_past')->make();
+        $user->orderItems()->save($orderItem);
+
+        $this->login($user)
+            ->deleteJson(route('order_items.destroy', $orderItem))
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('order_items', $orderItem->toArray());
     }
 }

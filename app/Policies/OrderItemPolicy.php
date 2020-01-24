@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\OrderItem;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Carbon;
 
 class OrderItemPolicy
 {
@@ -32,11 +33,12 @@ class OrderItemPolicy
      * Determine whether the user can create orders.
      *
      * @param  \App\User  $user
+     * @param  $date
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, $date)
     {
-        return true;
+        return Carbon::parse($date)->isAfter(today());
     }
 
     /**
@@ -49,7 +51,8 @@ class OrderItemPolicy
      */
     public function update(User $user, OrderItem $orderItem)
     {
-        return $orderItem->user->is($user);
+
+        return $orderItem->user->is($user) && $orderItem->order->date->isAfter(today());
     }
 
     /**
@@ -62,6 +65,6 @@ class OrderItemPolicy
      */
     public function delete(User $user, OrderItem $orderItem)
     {
-        return $orderItem->user->is($user);
+        return $orderItem->user->is($user) && $orderItem->order->date->isAfter(today());
     }
 }

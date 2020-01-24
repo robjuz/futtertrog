@@ -73,16 +73,14 @@ class OrderItemController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', OrderItem::class);
-
-        $rules = [
+        $attributes = $request->validate([
             'date' => 'required|date',
             'user_id' => 'sometimes|exists:users,id',
             'quantity' => 'sometimes|numeric|min:1,max:10',
             'meal_id' => 'required|exists:meals,id',
-        ];
+        ]);
 
-        $attributes = $request->validate($rules);
+        $this->authorize('create', [OrderItem::class, $request->date]);
 
         /** @var User $user */
         $user = $request->user();

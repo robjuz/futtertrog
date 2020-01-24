@@ -15,3 +15,13 @@ $factory->define(App\Meal::class, function (Faker $faker) {
         'provider' => Meal::$providers[array_rand(Meal::$providers)],
     ];
 });
+
+$factory->state(App\Meal::class, 'in_future', [
+    'date_from' => today()->addDay(),
+    'date_to' => today()->addDay(),
+]);
+
+$factory->state(App\Meal::class, 'in_past', [
+    'date_from' => today(),
+    'date_to' => today(),
+]);

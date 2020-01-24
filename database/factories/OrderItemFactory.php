@@ -17,3 +17,24 @@ $factory->define(
         ];
     }
 );
+
+$factory->state(App\OrderItem::class, 'in_future', function() {
+    $meal = factory('App\Meal')->state('in_future')->create();
+    return [
+        'order_id' => function () use ($meal) {
+            return factory('App\Order')->create(['date' => $meal->date_from])->id;
+        },
+        'meal_id' => $meal->id,
+    ];
+});
+
+
+$factory->state(App\OrderItem::class, 'in_past', function () {
+    $meal = factory('App\Meal')->state('in_past')->create();
+    return [
+        'order_id' => function () use ($meal) {
+            return factory('App\Order')->create(['date' => $meal->date_from])->id;
+        },
+        'meal_id' => $meal->id,
+    ];
+});
