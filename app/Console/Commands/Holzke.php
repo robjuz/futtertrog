@@ -67,6 +67,8 @@ class Holzke extends Command
             $date->addWeekday();
         } while (count($meals));
 
+        $newOrderPossibilities = array_unique($newOrderPossibilities);
+
         if (count($newOrderPossibilities) > 0) {
             event(new NewOrderPossibilities($newOrderPossibilities));
         }
