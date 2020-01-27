@@ -21,7 +21,7 @@
             <label for="language">{{ __('Language') }}</label>
             <select name="language" id="language">
                 @foreach(config('app.supported_locale') as $locale)
-                    <option value="{{ $locale }}" {{ old('language', ($settings['language'] ?? app()->getLocale()) == $locale) ? 'selected' : '' }}>
+                    <option value="{{ $locale }}" {{ old('language', ($settings['language'] ?? app()->getLocale())) == $locale ? 'selected' : '' }}>
                         @lang('futtertrog.locale.'. $locale)
                     </option>
                 @endforeach
