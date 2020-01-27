@@ -29,7 +29,7 @@ class UserStoreRequest extends FormRequest
             'email' => ['required', 'string', 'email', Rule::unique('users')],
             'phone_number' => ['sometimes', 'nullable', 'string'],
             'is_admin' => ['boolean'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'password' => ['required', 'min:6', 'confirmed'],
         ];
     }
 }
