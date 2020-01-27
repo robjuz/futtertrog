@@ -35,7 +35,7 @@
             <p> {{ trans_choice('futtertrog.portions_ordered', $orderItem->quantity) }}</p>
             <button type="submit">{{ __('Delete order') }}</button>
         </form>
-        @elsecan()
+        @else
         <p> {{ trans_choice('futtertrog.portions_ordered', $orderItem->quantity) }}</p>
     @endcan()
 @else
