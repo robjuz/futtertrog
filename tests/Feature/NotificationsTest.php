@@ -153,14 +153,13 @@ class NotificationsTest extends TestCase
 
 
             return $toArray['title'] === __('This is a friendly reminder.')
-                && $toArray['body'] === __('There is an open order!', ['day' => $nextMonday])
+                && $toArray['body'] === __('There is an open order!', ['day' => __('Next week')])
 
-                && $toMail->subject === __('Open order for', ['day' => $nextMonday])
+                && $toMail->subject === __('Open order for', ['day' => __('Next week')])
                 && in_array(__('This is a friendly reminder.'), $toMail->introLines)
-                && in_array(__('There is an open order!', ['day' => $nextMonday]), $toMail->introLines)
-                // && $toMail->actionText === __('Click here for more details')
+                && in_array(__('There is an open order!', ['day' => __('Next week')]), $toMail->introLines)
 
-                && $toNexmo->content === __('There is an open order!', ['day' => $nextMonday]);
+                && $toNexmo->content === __('There is an open order!', ['day' => __('Next week')]);
         });
     }
 
