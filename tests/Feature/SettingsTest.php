@@ -21,8 +21,24 @@ class SettingsTest extends TestCase
     /** @test */
     public function it_allows_to_store_settings()
     {
-        $this->withExceptionHandling();
+        // $this->withExceptionHandling();
         $data = [
+            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => 1,
+            User::SETTING_NO_ORDER_NOTIFICATION => 1,
+            User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => 1,
+            User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => 1,
+            User::SETTING_MEAL_PREFERENCES => 'meal1, meal2',
+            User::SETTING_MEAL_AVERSION => 'meal3, meal4',
+            User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION => 0,
+            User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => 0,
+            User::SETTING_LANGUAGE => 'de',
+        ];
+
+        $this->login()
+            ->post(route('settings.store'), $data)
+            ->assertRedirect();
+
+        $jsonData = [
             User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => true,
             User::SETTING_NO_ORDER_NOTIFICATION => true,
             User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => true,
@@ -33,8 +49,7 @@ class SettingsTest extends TestCase
             User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => false,
             User::SETTING_LANGUAGE => 'de',
         ];
-
-        $this->login()->post(route('settings.store'),$data)->assertRedirect();
-        $this->login()->postJson(route('settings.store'), $data)->assertJson($data);
+    
+        $this->login()->postJson(route('settings.store'), $jsonData)->assertJson($jsonData);
     }
 }
