@@ -15,6 +15,11 @@ use Illuminate\Support\Carbon;
 
 class MealController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('cast.float')->only(['store', 'update']);
+    }
     /**
      * Display a listing of the resource.
      *
