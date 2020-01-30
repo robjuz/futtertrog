@@ -133,7 +133,7 @@ class UserController extends Controller
 
         $user->fill($request->validated());
 
-        if ($request->has('password') && !is_null($request->input('password'))) {
+        if ($request->has('password') && ! is_null($request->input('password'))) {
             $user->password = Hash::make($request->input('password'));
         }
 
