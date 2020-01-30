@@ -42,8 +42,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(new NoOrderForNextDayNotification)->weekdays()->at('10:00');
 
         $schedule->call(new OpenOrdersForNextWeekNotification())
-                 ->thursdays()
-                 ->fridays()
+                 ->days([4,5])
                  ->at('10:00');
     }
 
