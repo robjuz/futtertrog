@@ -9,6 +9,11 @@ use App\User;
 
 class DepositsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('cast.float')->only(['store']);
+    }
+
     public function create()
     {
         $users = User::all();

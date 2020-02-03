@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class DepositTransferController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('cast.float')->only(['store']);
+    }
+
     public function create()
     {
         $users = User::all();
