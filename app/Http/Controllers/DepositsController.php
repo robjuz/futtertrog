@@ -6,12 +6,24 @@ use App\Deposit;
 use App\Http\Requests\DepositDestroyRequest;
 use App\Http\Requests\DepositRequest;
 use App\User;
+use Illuminate\Http\Request;
 
 class DepositsController extends Controller
 {
     public function __construct()
     {
         $this->middleware('cast.float')->only(['store']);
+    }
+
+    public function index(Request $request)
+    {
+        $deposits = Deposit::with('user')->latest()->paginate();
+
+        if ($request->wantsJson()) {
+            return $deposits;
+        }
+
+        return view('deposit.index', compact('deposits'));
     }
 
     public function create()

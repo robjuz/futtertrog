@@ -43,4 +43,9 @@ class Deposit extends Model
     {
         $this->attributes['value'] = is_float($value) ? intval(100 * $value) : $value;
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

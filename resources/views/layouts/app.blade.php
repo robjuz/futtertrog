@@ -98,6 +98,15 @@
                     </a>
                 </li>
             @endcan
+
+            @can('viewAny', \App\Deposit::class)
+                <li>
+                    <a href="{{ route('deposits.index') }}#main" {{ request()->routeIs('deposits.index') ? 'aria-current="page"' : '' }}>
+                        @svg('solid/euro-sign', ['aria-hidden', 'focusable="false"'])
+                        {{ __('Manage deposits') }}
+                    </a>
+                </li>
+            @endcan
             <li>
                 <a href="{{ route('settings.index') }}#main" {{ request()->routeIs('settings.index') ? 'aria-current="page"' : ''}}>
                     @svg('solid/cogs', ['aria-hidden', 'focusable="false"'])
@@ -125,6 +134,11 @@
 </footer>
 @stack('scripts')
 <script src="{{ asset('js/app.js') }}"></script>
+@auth()
+window.Futtertrog.pushNotifications.enable();
+@elseauth()
+    window.Futtertrog.pushNotifications.disable();
+@endauth
 <style>
     #main-navbar {display: block;}
 </style>

@@ -33,7 +33,7 @@ Route::group(['middleware' => 'auth:web,api'], function () {
 
     Route::get('deposits/transfer', 'DepositTransferController@create');
     Route::post('deposits/transfer', 'DepositTransferController@store')->name('deposits.transfer');
-    Route::resource('deposits', 'DepositsController')->only(['create', 'store', 'destroy']);
+    Route::resource('deposits', 'DepositsController')->only(['index', 'create', 'store', 'destroy']);
     Route::resource('settings', 'SettingsController')->only(['index', 'store']);
 
     Route::get('notifications/create', 'NotificationController@create')->name('notifications.create');

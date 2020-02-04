@@ -79,7 +79,7 @@
   "Mark as ordered": "Als bestellt markieren",
   "Deposit history": "Einzahlungshistorie",
   "Balance": "Guthaben",
-  "New deposit": "Neue Einzahlung",
+  "New deposit": "Neue Transaktion",
   "Value": "Wert",
   "Created at": "Erstellt am",
   "Comment": "Kommentar",
@@ -158,5 +158,7 @@
   "Delete orders": "Alle Bestellungen löschen",
   "Phone number": "Telefonnummer",
   "There is an open order!": "Die Bestellung für :day ist noch offen!",
-  "Open order for": "Offene Bestellung für :day"
+  "Open order for": "Offene Bestellung für :day",
+  "Manage deposits": "Guthaben verwalten",
+  "Deposit index" : "Guthaben Transaktionen"
 }
