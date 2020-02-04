@@ -160,5 +160,7 @@
   "There is an open order!": "Die Bestellung für :day ist noch offen!",
   "Open order for": "Offene Bestellung für :day",
   "Manage deposits": "Guthaben verwalten",
-  "Deposit index" : "Guthaben Transaktionen"
+  "Deposit index" : "Guthaben Transaktionen",
+  "There is a new version available. Please reload the page to see the changes.": "Eine neue Version ist verfügbar. Bitte laden Sie die Seite neu.",
+  "Reload": "Neu laden"
 }

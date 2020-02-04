@@ -59,7 +59,7 @@ class ExpandableMenu {
 }
 
 class PushNotifications {
-    constructor() {
+    enable() {
         this.headers = {
             'X-CSRF-TOKEN': window.Futtertrog.csrf,
             'X-Requested-With': 'XMLHttpRequest',
@@ -77,6 +77,14 @@ class PushNotifications {
                 .catch(err => console.error('Service Worker Error', err));
         } else {
             console.warn('Push messaging is not supported');
+        }
+    }
+
+    disable() {
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            navigator.serviceWorker.getRegistration()
+                .then( (swReg)  => this.unsubscribeUser(swReg))
+                .catch(err => console.error('Service Worker Error', err));
         }
     }
 

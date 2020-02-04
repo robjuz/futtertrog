@@ -1370,6 +1370,34 @@ footer {
 }
 
 /************************************/
+/*------- new version dialog--------*/
+/************************************/
+[id="newVersionDialog"] {
+    background: rgba(255, 255, 255, 0.9);
+    bottom: 1.25em;
+    box-shadow: 0 0 3px 3px var(--green);
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    justify-content: space-between;
+    min-width: 300px;
+    opacity: 0;
+    padding: 0.5em 2em 0.5em 4em;
+    position: fixed;
+    right: 1em;
+    width: 20%;
+    z-index: 10;
+    transition: opacity ease 1s;
+}
+
+[id="newVersionDialog"]:not([hidden]) {
+    opacity: 1;
+}
+
+[id="newVersionDialog"] p {
+    margin-bottom: 1rem;
+}
+/************************************/
 /*------- Pot Generator ------------*/
 /************************************/
 

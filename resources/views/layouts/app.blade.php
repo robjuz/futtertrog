@@ -18,16 +18,17 @@
         ]);
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/serviceworker.js').then(function(reg) {
+            navigator.serviceWorker.register('/serviceworker.js').then(function (reg) {
                 listenForWaitingServiceWorker(reg, promptUserToRefresh);
             });
 
             function listenForWaitingServiceWorker(reg, callback) {
                 function awaitStateChange() {
-                    reg.installing.addEventListener('statechange', function() {
+                    reg.installing.addEventListener('statechange', function () {
                         if (this.state === 'installed') callback(reg);
                     });
                 }
+
                 if (!reg) return;
                 if (reg.waiting) return callback(reg);
                 if (reg.installing) awaitStateChange();
@@ -35,9 +36,7 @@
             }
 
             function promptUserToRefresh() {
-                if (window.confirm("New version available! OK to refresh?")) {
-                    window.location.reload();
-                }
+                document.getElementById('newVersionDialog').removeAttribute('hidden');
             }
 
         }
@@ -132,15 +131,27 @@
 <footer id="mainFooter">
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 </footer>
+
+<div id="newVersionDialog" hidden>
+    <p>{{ __('There is a new version available. Please reload the page to see the changes.') }}</p>
+
+    <button onclick="window.location.reload()">
+        {{ __('Reload') }}
+    </button>
+</div>
 @stack('scripts')
 <script src="{{ asset('js/app.js') }}"></script>
-@auth()
-window.Futtertrog.pushNotifications.enable();
-@elseauth()
+<script>
+    @auth()
+    window.Futtertrog.pushNotifications.enable();
+    @elseauth()
     window.Futtertrog.pushNotifications.disable();
-@endauth
+    @endauth
+</script>
 <style>
-    #main-navbar {display: block;}
+    #main-navbar {
+        display: block;
+    }
 </style>
 </body>
 </html>
