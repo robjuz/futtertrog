@@ -78,6 +78,6 @@ class DepositsController extends Controller
     {
         $deposit->delete();
 
-        return back()->with('success', __('Success'));;
+        return back()->with('success', __('Success'));
     }
 }
