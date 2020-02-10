@@ -7,9 +7,6 @@
                 <th>{{__('Betrag')}}</th>
                 <th>{{__('Datum')}}</th>
                 <th class="collapsible">{{__('Kommentar')}}</th>
-                @if(auth()->user()->is_admin AND !request()->routeIs('home'))
-                    <th></th>
-                @endif
             </tr>
         </thead>
         @foreach ($deposits as $deposit)
@@ -20,19 +17,6 @@
                 <td>{{ $deposit->created_at->format(__('futtertrog.date_format')) }}</td>
 
                 <td class="collapsible"> {{ $deposit->comment }} </td>
-
-                @if(auth()->user()->is_admin AND !request()->routeIs('home'))
-                    <td>
-                        <form action="{{ route('deposits.destroy', $deposit) }}" method="post">
-                            @csrf
-                            @method('delete')
-
-                            <button type="submit">
-                                {{ __('Delete') }}
-                            </button>
-                        </form>
-                    </td>
-                @endif
             </tr>
         @endforeach
     </table>
