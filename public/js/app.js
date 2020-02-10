@@ -178,8 +178,5 @@ if (customElements && customElements.define) {
 
 /* disable submit button on form submit */
 document.addEventListener('submit', function(e) {
-    if (e.target.matches('form')) {
-        let submitButton = e.target.querySelector('[type="submit"]');
-        submitButton.disabled = true;
-    }
+    e.target.querySelector('[type="submit"]').disabled = true;
 });
