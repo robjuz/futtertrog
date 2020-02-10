@@ -80,6 +80,7 @@
   "Deposit history": "Einzahlungshistorie",
   "Balance": "Guthaben",
   "New deposit": "Neue Transaktion",
+  "Edit deposit": "Transaktion bearbeiten",
   "Value": "Wert",
   "Created at": "Erstellt am",
   "Comment": "Kommentar",
@@ -162,5 +163,6 @@
   "Manage deposits": "Guthaben verwalten",
   "Deposit index" : "Guthaben Transaktionen",
   "There is a new version available. Please reload the page to see the changes.": "Eine neue Version ist verfügbar. Bitte laden Sie die Seite neu.",
-  "Reload": "Neu laden"
+  "Reload": "Neu laden",
+  "Are you sure?": "Bist du sicher?"
 }

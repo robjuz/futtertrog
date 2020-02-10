@@ -11,11 +11,14 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <script>
-        window.Futtertrog = @json([
-            'user' => Auth::user(),
+        window.Futtertrog = {!!  json_encode([
+            'messages' => [
+                'are_you_sure' => __('Are you sure?'),
+]           ,
             'vapidPublicKey' => config('webpush.vapid.public_key'),
-            'csrf' => csrf_token()
-        ]);
+            'csrf' => csrf_token(),
+            'user' => auth()->id()
+        ]) !!};
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/serviceworker.js').then(function (reg) {

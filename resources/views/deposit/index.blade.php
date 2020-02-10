@@ -27,6 +27,7 @@
                 <th>{{__('Value')}}</th>
                 <th class="collapsible">{{__('Comment')}}</th>
                 <th>{{__('Created at')}}</th>
+                <th>{{__('Actions')}}</th>
             </tr>
         </thead>
 
@@ -34,13 +35,11 @@
             @foreach($deposits as $deposit)
                 <tr>
                     <td>
-                        <a href="{{ route('users.show', $deposit->user) }}">
-                            {{ $deposit->user->name }}
-                        </a>
+                        {{ $deposit->user->name }}
                     </td>
 
                     <td>
-                        <span class="{{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
+                        <span class="{{ $deposit->value > 0 ? 'positive-value' : 'negative-value' }}">
                             @money($deposit->value)
                         </span>
                     </td>
@@ -51,6 +50,21 @@
 
                     <td>
                         {{ $deposit->created_at }}
+                    </td>
+
+                    <td>
+                        <a href="{{route('deposits.edit', $deposit)}}">
+                            @svg('solid/pen', ['aria-hidden', 'focusable="false"'])
+                            <span class="sr-only">{{ __('Edit') }}</span>
+                        </a>
+                        <form method="post" action="{{ route('deposits.destroy', $deposit) }}">
+                            @csrf()
+                            @method('delete')
+                            <button type="submit">
+                                @svg('solid/trash', ['aria-hidden', 'focusable="false"'])
+                                <span class="sr-only">{{ __('Delete') }}</span>
+                            </button>
+                        </form>
                     </td>
                 </tr>
             @endforeach

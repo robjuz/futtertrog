@@ -83,7 +83,7 @@ class PushNotifications {
     disable() {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             navigator.serviceWorker.getRegistration()
-                .then( (swReg)  => this.unsubscribeUser(swReg))
+                .then((swReg) => this.unsubscribeUser(swReg))
                 .catch(err => console.error('Service Worker Error', err));
         }
     }
@@ -177,6 +177,19 @@ if (customElements && customElements.define) {
 }
 
 /* disable submit button on form submit */
-document.addEventListener('submit', function(e) {
+document.addEventListener('submit', function (e) {
     e.target.querySelector('[type="submit"]').disabled = true;
 });
+
+/* are you sure modal on delete form */
+var confirmDelete = function (e) {
+    if (e.target.querySelector('[name="_method"][value="delete"]')) {
+        if ((confirm(window.Futtertrog.messages.are_you_sure))) {
+            e.target.submit();
+        } else {
+            e.preventDefault();
+            e.target.querySelector('[type="submit"]').disabled = false;
+        }
+    }
+};
+document.addEventListener('submit', confirmDelete);

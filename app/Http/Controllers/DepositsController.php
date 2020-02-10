@@ -33,6 +33,13 @@ class DepositsController extends Controller
         return view('deposit.create', compact('users'));
     }
 
+    public function edit(Deposit $deposit)
+    {
+        $users = User::all();
+
+        return view('deposit.edit', compact('users', 'deposit'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -43,7 +50,20 @@ class DepositsController extends Controller
     {
         Deposit::create($request->validated());
 
-        return back()->with('success', __('Success'));
+        return redirect()->route('deposits.index')->with('success', __('Success'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param DepositRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(DepositRequest $request, Deposit $deposit)
+    {
+        $deposit->update($request->validated());
+
+        return redirect()->route('deposits.index')->with('success', __('Success'));
     }
 
     /**
@@ -58,6 +78,6 @@ class DepositsController extends Controller
     {
         $deposit->delete();
 
-        return back();
+        return back()->with('success', __('Success'));;
     }
 }

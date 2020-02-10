@@ -11,7 +11,7 @@
         </thead>
         @foreach ($deposits as $deposit)
             <tr>
-                <td class="money {{ $deposit->value > 0 ? 'text-success' : 'text-danger' }}">
+                <td class="money {{ $deposit->value > 0 ? 'positive-value' : 'negative-value' }}">
                     @money($deposit->value)
                 </td>
                 <td>{{ $deposit->created_at->format(__('futtertrog.date_format')) }}</td>

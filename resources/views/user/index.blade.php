@@ -27,7 +27,7 @@
                     <td class="collapsible">{{ $user->email }}</td>
 
                     <td class="money">
-                        <span class="{{ $user->balance > 0 ? 'text-success' : 'text-danger' }}">
+                        <span class="{{ $user->balance > 0 ? 'positive-value' : 'negative-value' }}">
                             @money($user->balance)
                         </span>
                     </td>
