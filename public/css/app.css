@@ -1329,17 +1329,34 @@ footer {
 
 /************************************/
 /*------- Success message ----------*/
-/************************************/
 .success-message {
+    animation-fill-mode: forwards;
+    animation-name: fade-in;
+    animation-duration: 4s;
     background: var(--green);
     box-shadow: 0 0 3px 3px var(--green);
     color: #fff;
     font-weight: bold;
+    opacity: 0;
     padding: 0.5em 2em 0.5em 4em;
     position: fixed;
     right: 1em;
     top: 1.25em;
     z-index: 10;
+}
+/************************************/
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    10%, 90% {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
 }
 
 .success-message::before {
