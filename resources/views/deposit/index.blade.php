@@ -4,7 +4,7 @@
 
     <h1>{{ __('Deposit index') }}</h1>
 
-    <nav class="user-menu">
+    <nav class="sub-menu">
         <a
             href="{{ route('deposits.create' )}}"
             {{ request()->routeIs('deposits.create') ? ' aria-current="page"' : '' }}

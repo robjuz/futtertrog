@@ -11,9 +11,9 @@
     @endcan
 
     @if($meal->isHated)
-        @svg('solid/skull-crossbones')
+        @svg('solid/skull-crossbones', ['aria-hidden', 'focusable="false"'])
     @elseif($meal->isPreferred)
-        @svg('solid/heart')
+        @svg('solid/heart', ['aria-hidden', 'focusable="false"'])
     @endif
 </h4>
 

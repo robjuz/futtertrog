@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <header>
-        <h1>{{ __('Order index') }}</h1>
+    <h1>{{ __('Order index') }}</h1>
 
+    <nav class="sub-menu">
         <a href="{{ route('order_items.create') }}"> {{ __('Create order') }}</a>
-    </header>
+    </nav>
 
     <section>
         <form action="{{ route('orders.index') }}" method="get" class="orders-overview-filter">
