@@ -12,7 +12,7 @@ class DepositsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('cast.float')->only(['store']);
+        $this->middleware('cast.float')->only(['store', 'update']);
     }
 
     public function index(Request $request)
