@@ -59,13 +59,17 @@ class ExpandableMenu {
 }
 
 class PushNotifications {
-    enable() {
+    constructor()
+    {
         this.headers = {
             'X-CSRF-TOKEN': window.Futtertrog.csrf,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
         };
+    }
 
+    enable() {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             let _this = this;
             navigator.serviceWorker.getRegistration()
@@ -146,7 +150,8 @@ class PushNotifications {
         swRegistration.pushManager.getSubscription()
             .then((subscription) => {
                 if (subscription) {
-                    subscription.unsubscribe().then(() => this.removeSubscriptionOnSever(subscription));
+                    this.removeSubscriptionOnSever(subscription);
+                    subscription.unsubscribe();
                 }
             })
             .catch(err => console.log('Error unsubscribing', err));

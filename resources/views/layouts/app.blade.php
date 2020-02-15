@@ -146,9 +146,9 @@
 <script src="{{ asset('js/app.js') }}"></script>
 <script>
     @auth()
-    window.Futtertrog.pushNotifications.enable();
-    @elseauth()
-    window.Futtertrog.pushNotifications.disable();
+        window.Futtertrog.pushNotifications.enable();
+    @else
+        window.Futtertrog.pushNotifications.disable();
     @endauth
 </script>
 <style>
