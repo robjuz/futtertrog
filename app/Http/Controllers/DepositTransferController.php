@@ -16,7 +16,7 @@ class DepositTransferController extends Controller
 
     public function create()
     {
-        $users = User::all();
+        $users = User::orderBy('name')->get();
 
         return view('deposit-transfer.create', compact('users'));
     }

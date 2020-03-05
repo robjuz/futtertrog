@@ -25,6 +25,7 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         $users = User::with('orderItems.meal')
+            ->orderBy('name')
             ->get();
 
         if ($request->wantsJson()) {

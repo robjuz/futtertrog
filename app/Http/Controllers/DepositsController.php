@@ -28,14 +28,14 @@ class DepositsController extends Controller
 
     public function create()
     {
-        $users = User::all();
+        $users = User::orderBy('name')->get();
 
         return view('deposit.create', compact('users'));
     }
 
     public function edit(Deposit $deposit)
     {
-        $users = User::all();
+        $users = User::orderBy('name')->get();
 
         return view('deposit.edit', compact('users', 'deposit'));
     }

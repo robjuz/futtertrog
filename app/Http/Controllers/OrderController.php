@@ -67,7 +67,7 @@ class OrderController extends Controller
 
         $sum = $orders->sum->subtotal;
 
-        $users = User::all();
+        $users = User::orderBy('name')->get();
 
         return view('order.index', compact('orders', 'from', 'to', 'sum', 'users'));
     }

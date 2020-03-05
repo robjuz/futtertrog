@@ -13,7 +13,7 @@ class NotificationController extends Controller
     {
         $this->authorize('create', CustomNotification::class);
 
-        $users = User::all('id', 'name');
+        $users = User::orderBy('name')->get();
 
         return view('notification.create', compact('users'));
     }

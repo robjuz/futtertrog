@@ -60,7 +60,7 @@ class OrderItemController extends Controller
             $meals = Meal::whereDate('date_from', '>=', $date)
                 ->whereDate('date_to', '<=', $date)
                 ->get();
-            $users = User::all();
+            $users = User::orderBy('name')->get();
 
             return view('user_order.create', compact('meals', 'users', 'date'));
         }
@@ -87,7 +87,7 @@ class OrderItemController extends Controller
         $meals = Meal::whereDate('date_from', '>=', $date)
             ->whereDate('date_to', '<=', $date)
             ->get();
-        $users = User::all();
+        $users = User::orderBy('name')->get();
 
         return view('user_order.edit', compact('orderItem', 'meals', 'users'));
     }
