@@ -69,7 +69,7 @@ class HolzkeService
             $meals[] = [
                 'title' => trim($titleMatch[0]),
                 'description' => trim($mealElement->find('.cBody')[0]->removeChildren()[0]->text()),
-                'price' => intval(preg_replace('/[,\.]/', '', $priceMatch[1])),
+                'price' => intval(preg_replace('/[,\.]/', '', $priceMatch[1] ?? 1)),
             ];
         }
 
