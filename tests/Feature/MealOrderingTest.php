@@ -252,6 +252,7 @@ class MealOrderingTest extends TestCase
     public function it_disallows_to_delete_an_order_item_in_the_past()
     {
         $user = factory(User::class)->create();
+        /** @var OrderItem $orderItem */
         $orderItem = factory(OrderItem::class)->state('in_past')->make();
         $user->orderItems()->save($orderItem);
 
@@ -261,7 +262,7 @@ class MealOrderingTest extends TestCase
             ->delete(route('order_items.destroy', $orderItem))
             ->assertForbidden();
 
-        $this->assertDatabaseHas('order_items', $orderItem->toArray());
+        $this->assertDatabaseHas('order_items', $orderItem->only(['order_id', 'user_id', 'meal_id', 'quantity']));
 
         $orderItem = factory(OrderItem::class)->state('in_past')->make();
         $user->orderItems()->save($orderItem);
@@ -270,6 +271,6 @@ class MealOrderingTest extends TestCase
             ->deleteJson(route('order_items.destroy', $orderItem))
             ->assertForbidden();
 
-        $this->assertDatabaseHas('order_items', $orderItem->toArray());
+        $this->assertDatabaseHas('order_items', $orderItem->only(['order_id', 'user_id', 'meal_id', 'quantity']));
     }
 }

@@ -63,6 +63,8 @@ class User extends Authenticatable
         'settings' => 'array',
     ];
 
+    protected $dates = ['email_verified_at'];
+
     /**
      * The attributes that are mass assignable.
      *

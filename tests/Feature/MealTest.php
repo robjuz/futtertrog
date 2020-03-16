@@ -20,7 +20,7 @@ class MealTest extends TestCase
     public function only_admin_can_create_a_meal()
     {
 
-        $meal = factory(Meal::class)->make()->toArray();
+        $meal = factory(Meal::class)->raw();
 
         $this->login()->withExceptionHandling();
 
@@ -44,7 +44,7 @@ class MealTest extends TestCase
             ->assertRedirect(route('meals.index'));
 
         $this->postJson(route('meals.store'), $meal)
-            ->assertJson($meal);
+            ->assertSuccessful();
 
         $this->assertDatabaseHas('meals', $meal);
     }

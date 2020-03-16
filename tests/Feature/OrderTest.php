@@ -52,7 +52,7 @@ class OrderTest extends TestCase
             $response->assertSee($order->provider);
 
             $jsonResponse->assertJsonFragment([
-                'date' => $order->date->toDateTimeString(),
+                'date' => $order->date,
                 'provider' => $order->provider,
                 'subtotal' => $order->subtotal
             ]);

@@ -59,18 +59,16 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_a_list_of_system_users()
     {
-        $users = factory(User::class, 5)->create();
+        $user = factory(User::class, )->create();
 
-        $this->loginAsAdmin();
+        $this->loginAsAdmin($user);
 
         $response = $this->get(route('users.index'));
         $jsonResponse = $this->getJson(route('users.index'));
 
-        foreach ($users as $user) {
-            $response->assertSee($user->name);
-        }
+        $response->assertSee($user->name);
 
-        $jsonResponse->assertJson($users->toArray());
+        $jsonResponse->assertJsonFragment($user->toArray());
     }
 
     /** @test */
