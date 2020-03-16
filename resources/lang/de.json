@@ -165,5 +165,7 @@
   "Deposit index" : "Guthaben Transaktionen",
   "There is a new version available. Please reload the page to see the changes.": "Eine neue Version ist verfügbar. Bitte laden Sie die Seite neu.",
   "Reload": "Neu laden",
-  "Are you sure?": "Bist du sicher?"
+  "Are you sure?": "Bist du sicher?",
+  "Filter by user": "Nach Benutzer filtern",
+  "All users": "Alle Benutzer"
 }

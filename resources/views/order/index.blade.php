@@ -24,7 +24,7 @@
                 <label for="user_id">{{ __('Filter by user') }}</label>
                 <select name="user_id" id="user_id">
                     <option value="" {{ request('user_id', null) == null ? ' selected' : '' }}>
-                        {{ __('Filter by user') }}
+                        {{ __('All users') }}
                     </option>
                     @foreach($users as $user)
                         <option
