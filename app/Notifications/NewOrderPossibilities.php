@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
 use NotificationChannels\WebPush\WebPushChannel;
 use NotificationChannels\WebPush\WebPushMessage;
+use Traversable;
 
 class NewOrderPossibilities extends Notification
 {
@@ -21,10 +22,9 @@ class NewOrderPossibilities extends Notification
 
     /**
      * Create a new notification instance.
-     *
-     * @param Carbon $date
+     * @param Traversable $dates
      */
-    public function __construct(array $dates)
+    public function __construct(Traversable $dates)
     {
         $this->dates = $dates;
     }
@@ -32,7 +32,7 @@ class NewOrderPossibilities extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param mixed $notifiable
      *
      * @return array
      */
@@ -46,9 +46,9 @@ class NewOrderPossibilities extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param mixed $notifiable
      *
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail(User $notifiable)
     {
@@ -69,7 +69,7 @@ class NewOrderPossibilities extends Notification
             //->icon('/utensils.svg')
             ->body(__('New order possibilities'))
             ->action('Click here for more details', 'click')
-            ->data(['url' =>  route('meals.index')])
+            ->data(['url' => route('meals.index')])
             // ->badge()
             // ->dir()
             // ->image('/utensils.svg')
@@ -78,13 +78,13 @@ class NewOrderPossibilities extends Notification
             // ->requireInteraction()
             // ->tag()
             // ->vibrate()
-;
+            ;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed $notifiable
+     * @param mixed $notifiable
      *
      * @return array
      */

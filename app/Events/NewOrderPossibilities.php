@@ -2,12 +2,11 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Traversable;
 
 class NewOrderPossibilities
 {
@@ -21,9 +20,9 @@ class NewOrderPossibilities
     /**
      * Create a new event instance.
      *
-     * @param Carbon $date
+     * @param Traversable $dates
      */
-    public function __construct(array $dates)
+    public function __construct(Traversable $dates)
     {
         $this->dates = $dates;
     }

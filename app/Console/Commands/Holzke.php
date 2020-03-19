@@ -7,6 +7,7 @@ use App\Meal;
 use App\Services\HolzkeService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * Class Holzke.
@@ -47,11 +48,12 @@ class Holzke extends Command
     {
         //get data
         $date = today();
+
         if ($date->isWeekend()) {
             $date->addWeekday();
         }
 
-        $newOrderPossibilities = [];
+        $newOrderPossibilities = new Collection();
 
         do {
             $meals = $holzke->getMealsForDate($date);
@@ -60,16 +62,14 @@ class Holzke extends Command
                 $meal = $this->createOrUpdateMeal($mealElement, $date);
 
                 if ($meal->wasRecentlyCreated) {
-                    $newOrderPossibilities[] = $date->copy();
+                    $newOrderPossibilities->add($date->copy());
                 }
             }
 
             $date->addWeekday();
         } while (count($meals));
 
-        $newOrderPossibilities = array_unique($newOrderPossibilities);
-
-        if (count($newOrderPossibilities) > 0) {
+        if (count($newOrderPossibilities->unique()) > 0) {
             event(new NewOrderPossibilities($newOrderPossibilities));
         }
     }
