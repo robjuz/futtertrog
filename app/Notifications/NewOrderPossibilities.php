@@ -78,7 +78,7 @@ class NewOrderPossibilities extends Notification
             // ->requireInteraction()
             // ->tag()
             // ->vibrate()
-            ;
+;
     }
 
     /**
