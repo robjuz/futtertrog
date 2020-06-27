@@ -53,7 +53,7 @@ class Holzke extends Command
             $date->addWeekday();
         }
 
-        $newOrderPossibilities = new Collection();
+        $newOrderPossibilitiesDates = new Collection();
 
         do {
             $meals = $holzke->getMealsForDate($date);
@@ -62,15 +62,22 @@ class Holzke extends Command
                 $meal = $this->createOrUpdateMeal($mealElement, $date);
 
                 if ($meal->wasRecentlyCreated) {
-                    $newOrderPossibilities->add($date->copy());
+                    $newOrderPossibilitiesDates->add(clone($date));
                 }
             }
 
             $date->addWeekday();
         } while (count($meals));
 
-        if (count($newOrderPossibilities->unique()) > 0) {
-            event(new NewOrderPossibilities($newOrderPossibilities));
+        $newOrderPossibilitiesDates = $newOrderPossibilitiesDates->unique();
+
+        if (count($newOrderPossibilitiesDates) > 0) {
+            event(new NewOrderPossibilities($newOrderPossibilitiesDates));
+        }
+
+        /** @var Carbon $date */
+        foreach ($newOrderPossibilitiesDates as $date) {
+            $this->info(__('New order possibility for :day', ['day' => $date->toDateString()]));
         }
     }
 
