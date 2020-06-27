@@ -62,7 +62,7 @@ class Holzke extends Command
                 $meal = $this->createOrUpdateMeal($mealElement, $date);
 
                 if ($meal->wasRecentlyCreated) {
-                    $newOrderPossibilitiesDates->add(clone($date));
+                    $newOrderPossibilitiesDates->add(clone $date);
                 }
             }
 
