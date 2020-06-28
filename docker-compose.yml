@@ -1,24 +1,40 @@
 version: '3'
 
 services:
-  web:
-      build: ./
-      ports:
-          - 8001:80
-      volumes:
-          - ./:/var/www
-      links:
-          - db
-      environment:
-          DB_HOST: db
-          DB_DATABASE: futtertrog
-          DB_USERNAME: futtertrog
-          DB_PASSWORD: futter-4z5n9wz4-trog
-          DB_CONNECTION: mysql
+  futtertrog:
+    container_name: futtertrog
+    image: thecodingmachine/php:7.2-v3-apache
+    ports:
+      - 8001:80
+    volumes:
+      - ./:/var/www/html:delegated
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      DB_DATABASE: futtertrog
+      DB_USERNAME: futtertrog
+      DB_PASSWORD: futtertrog
+
+      APACHE_DOCUMENT_ROOT: public/
+
+      PHP_EXTENSION_XDEBUG: 1
+      PHP_EXTENSION_INTL: 1
+      PHP_EXTENSION_GMP: 1
+
+      PHP_INI_XDEBUG__REMOTE_AUTOSTART: 1
   db:
-      image: mariadb
-      environment:
-          MYSQL_DATABASE: futtertrog
-          MYSQL_USER: futtertrog
-          MYSQL_PASSWORD: futter-4z5n9wz4-trog
-          MYSQL_RANDOM_ROOT_PASSWORD: 1
+    container_name: futtertrog_db
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: futtertrog
+      MYSQL_USER: futtertrog
+      MYSQL_PASSWORD: futtertrog
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  mysql:
+    driver: local

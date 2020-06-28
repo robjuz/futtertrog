@@ -12,4 +12,4 @@ Ein einfaches System um Essenbestellungen zu verwalten
 
 ## DB und Admin Benutzer
 
-`docker exec futtertrog_web_1 php artisan migrate:fresh --seed` erstellt einen `admin@example.com` Benutzer mit Passwort `123456`
+`docker exec futtertrog php artisan migrate:fresh --seed` erstellt einen `admin@example.com` Benutzer mit Passwort `123456`
