@@ -4,7 +4,7 @@ use App\Meal;
 use Faker\Generator as Faker;
 
 $factory->define(App\Meal::class, function (Faker $faker) {
-    $date = $faker->dateTimeThisMonth->format('Y-m-d H:i:s');
+    $date = $faker->dateTimeThisMonth->format('Y-m-d');
 
     return [
         'price' => $faker->randomNumber('3'),

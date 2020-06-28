@@ -59,7 +59,7 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_a_list_of_system_users()
     {
-        $user = factory(User::class, )->create();
+        $user = factory(User::class )->create();
 
         $this->loginAsAdmin($user);
 
