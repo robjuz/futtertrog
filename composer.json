@@ -29,6 +29,8 @@
         "silviolleite/laravelpwa": "^1.0"
     },
     "require-dev": {
+        "ext-sqlite3": "*",
+        "ext-pdo_sqlite": "*",
         "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-ide-helper": "^2.5",
         "beyondcode/laravel-dump-server": "^1.0",
