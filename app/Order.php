@@ -16,6 +16,7 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $subtotal
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
+ * @property-read int|null $order_items_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order query()

@@ -51,4 +51,16 @@
 
         <button type="submit">{{ __('Save') }}</button>
     </form>
+
+    @can('delete', $user)
+        <form action="{{ route('users.destroy', $user) }}" method="POST">
+            @method('delete')
+            @csrf
+
+            <button type="submit">
+                @svg('solid/trash', ['aria-hidden', 'focusable="false"'])
+                {{  __('Delete') }}
+            </button>
+        </form>
+    @endcan
 @endsection

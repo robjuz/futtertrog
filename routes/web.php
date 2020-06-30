@@ -29,6 +29,8 @@ Route::group(['middleware' => 'auth:web,api'], function () {
     Route::resource('meals', 'MealController');
     Route::resource('orders', 'OrderController')->only(['index', 'edit', 'update', 'destroy']);
     Route::resource('order_items', 'OrderItemController')->except(['show']);
+
+    Route::post('users/{user}/restore', 'UserController@restore')->name('users.restore');
     Route::resource('users', 'UserController');
 
     Route::get('deposits/transfer', 'DepositTransferController@create');

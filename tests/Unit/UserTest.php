@@ -70,4 +70,12 @@ class UserTest extends TestCase
         $this->assertTrue($user->fresh()->is_admin);
     }
 
+    /** @test */
+    public function admin_cannot_delete_his_own_account()
+    {
+        /** @var User $user */
+        $user = factory(User::class)->create(['is_admin' => true]);
+
+        $this->assertTrue($user->cannot('delete', $user));
+    }
 }

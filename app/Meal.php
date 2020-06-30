@@ -18,8 +18,14 @@ use Illuminate\Support\Str;
  * @property \Illuminate\Support\Carbon $date_to
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $image
+ * @property-read mixed $is_hated
+ * @property-read mixed $is_preferred
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
- * @method static \App\MealCollection get($columns)
+ * @property-read int|null $order_items_count
+ * @method static \App\MealCollection|static[] all($columns = ['*'])
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal forDate($date)
+ * @method static \App\MealCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal query()
@@ -28,6 +34,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDateTo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereProvider($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereTitle($value)

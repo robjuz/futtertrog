@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $user_id
- * @property float $value
+ * @property int $value
  * @property string|null $comment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $status
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit query()

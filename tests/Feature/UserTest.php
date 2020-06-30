@@ -116,7 +116,7 @@ class UserTest extends TestCase
         ]);
 
         $this->delete(route('users.destroy', $user))->assertRedirect();
-        $this->assertDatabaseMissing('users', ['name' => 'John']);
+        $this->assertNull(User::find($user->id));
 
         $user = factory(User::class)->create(['is_admin' => true]);
         $this->deleteJson(route('users.destroy', $user))->assertStatus(Response::HTTP_NO_CONTENT);
@@ -161,5 +161,41 @@ class UserTest extends TestCase
         $this->loginAsAdmin()
             ->get(route('users.show', $user))
             ->assertSee(20);
+    }
+
+    /** @test */
+    public function admin_can_delete_a_user()
+    {
+        $this->withExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        // no admin user is not allowed to delete users
+        $this->login()->delete(route('users.destroy', $user))->assertForbidden();
+
+
+        $this->loginAsAdmin()->delete(route('users.destroy', $user))->assertRedirect(route('users.index'));
+        $this->assertFalse(User::all()->contains($user));
+
+        $user = factory(User::class)->create();
+        $this->loginAsAdmin()->deleteJson(route('users.destroy', $user))->assertSuccessful();
+        $this->assertFalse(User::all()->contains($user));
+
+    }
+
+    /** @test */
+    public function admin_can_restore_a_user()
+    {
+        $this->withExceptionHandling();
+
+        $user = factory(User::class)->create();
+        $user->delete();
+
+        // no admin user is not allowed to restore users
+        $this->login()->post(route('users.restore', $user))->assertForbidden();
+
+        $this->loginAsAdmin()->postJson(route('users.restore', $user))->assertSuccessful();
+
+        $this->assertTrue(User::all()->contains($user));
     }
 }

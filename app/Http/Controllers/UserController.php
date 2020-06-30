@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+//        $this->authorizeResource(User::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,9 +27,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', User::class);
-
-        $users = User::with('orderItems.meal')
+        $users = User::withTrashed()
+            ->with('orderItems.meal')
             ->orderBy('name')
             ->get();
 
@@ -43,8 +47,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', User::class);
-
         return view('user.create');
     }
 
@@ -58,8 +60,6 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        $this->authorize('create', User::class);
-
         $user = User::make($request->validated());
         $user->password = Hash::make($request->input('password'));
 
@@ -83,8 +83,6 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        $this->authorize('view', $user);
-
         if ($request->wantsJson()) {
             return response()->json($user);
         }
@@ -114,8 +112,6 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $this->authorize('update', $user);
-
         return view('user.edit', compact('user'));
     }
 
@@ -130,8 +126,6 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        $this->authorize('update', $user);
-
         $user->fill($request->validated());
 
         if ($request->has('password') && ! is_null($request->input('password'))) {
@@ -159,8 +153,6 @@ class UserController extends Controller
      */
     public function destroy(Request $request, User $user)
     {
-        $this->authorize('delete', $user);
-
         $user->delete();
 
         if ($request->wantsJson()) {
@@ -168,5 +160,18 @@ class UserController extends Controller
         }
 
         return redirect()->route('users.index');
+    }
+
+    public function restore(Request $request, $user)
+    {
+        User::withTrashed()->findOrFail($user)->restore();
+
+        $this->authorize('restore', $user);
+
+        if ($request->wantsJson()) {
+            return response()->json($user);
+        }
+
+        return redirect()->route('users.show', $user);
     }
 }

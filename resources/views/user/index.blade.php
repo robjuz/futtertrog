@@ -27,6 +27,7 @@
                 <th>{{__('Name')}}</th>
                 <th class="collapsible">{{__('Email')}}</th>
                 <th class="money">{{__('Balance')}}</th>
+                <th>{{ __('Actions') }}</th>
             </tr>
         </thead>
 
@@ -34,9 +35,13 @@
             @foreach($users as $user)
                 <tr>
                     <td>
-                        <a href="{{ route('users.show', $user) }}">
+                        @if($user->deleted_at)
                             {{ $user->name }}
-                        </a>
+                        @else
+                            <a href="{{ route('users.show', $user) }}">
+                                {{ $user->name }}
+                            </a>
+                        @endif
                     </td>
 
                     <td class="collapsible">{{ $user->email }}</td>
@@ -45,6 +50,29 @@
                         <span class="{{ $user->balance > 0 ? 'positive-value' : 'negative-value' }}">
                             @money($user->balance)
                         </span>
+                    </td>
+
+                    <td>
+                        @if($user->deleted_at)
+                            <form action="{{ route('users.restore', $user) }}" method="POST">
+                                @csrf
+
+                                <button type="submit">
+                                    @svg('solid/trash-restore', ['aria-hidden', 'focusable="false"'])
+                                    {{  __('Restore') }}
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('users.destroy', $user) }}" method="POST">
+                                @method('delete')
+                                @csrf
+
+                                <button type="submit">
+                                    @svg('solid/trash', ['aria-hidden', 'focusable="false"'])
+                                    {{  __('Delete') }}
+                                </button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @endforeach

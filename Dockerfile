@@ -1,4 +1,4 @@
-ARG PHP_EXTENSIONS="bcmath mysqli pdo_mysql pdo_pgsql intl gmp"
+ARG PHP_EXTENSIONS="bcmath mysqli pdo_mysql pdo_pgsql pdo_sqlite intl gmp"
 
 
 FROM thecodingmachine/php:7.2-v3-slim-apache
