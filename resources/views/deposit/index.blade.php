@@ -71,5 +71,5 @@
         </tbody>
     </table>
 
-    {{ $deposit->paginate() }}
+    {{ $deposits->links() }}
 @endsection
