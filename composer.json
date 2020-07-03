@@ -26,7 +26,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "nothingworks/blade-svg": "^0.3.2",
-        "silviolleite/laravelpwa": "^1.0"
+        "silviolleite/laravelpwa": "^2.0"
     },
     "require-dev": {
         "ext-sqlite3": "*",
