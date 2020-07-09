@@ -164,15 +164,23 @@ class UserTest extends TestCase
     }
 
     /** @test */
+    public function user_cannot_delete_another_user()
+    {
+        $this->withExceptionHandling();
+
+        $user = factory(User::class)->create();
+        $this->login()->delete(route('users.destroy', $user))->assertForbidden();
+
+        $user = factory(User::class)->create();
+        $this->login()->deleteJson(route('users.destroy', $user))->assertForbidden();
+    }
+
+    /** @test */
     public function admin_can_delete_a_user()
     {
         $this->withExceptionHandling();
 
         $user = factory(User::class)->create();
-
-        // no admin user is not allowed to delete users
-        $this->login()->delete(route('users.destroy', $user))->assertForbidden();
-
 
         $this->loginAsAdmin()->delete(route('users.destroy', $user))->assertRedirect(route('users.index'));
         $this->assertFalse(User::all()->contains($user));

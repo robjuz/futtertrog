@@ -27,8 +27,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::before(function ($user, $ability, $arguments) {
-            if ($user->is_admin and ! ($arguments[0] instanceof User) and $ability !== 'delete') {
+        Gate::after(function ($user) {
+
+            if ($user->is_admin) {
                 return true;
             }
         });
