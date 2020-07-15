@@ -25,6 +25,6 @@
             You are currently not connected to any networks.
         </h1>
 
-        @svg('solid/wifi', ['aria-hidden', 'focusable="false"'])
+        @svg('solid/wifi', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
     </main>
 </body>

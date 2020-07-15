@@ -54,14 +54,14 @@
 
                     <td>
                         <a href="{{route('deposits.edit', $deposit)}}">
-                            @svg('solid/pen', ['aria-hidden', 'focusable="false"'])
+                            @svg('solid/pen', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                             <span class="sr-only">{{ __('Edit') }}</span>
                         </a>
                         <form method="post" action="{{ route('deposits.destroy', $deposit) }}">
                             @csrf()
                             @method('delete')
                             <button type="submit">
-                                @svg('solid/trash', ['aria-hidden', 'focusable="false"'])
+                                @svg('solid/trash', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                                 <span class="sr-only">{{ __('Delete') }}</span>
                             </button>
                         </form>

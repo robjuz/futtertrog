@@ -167,7 +167,7 @@ template {
 /************************************/
 :root {
     --gray: #aaa;
-    --green: #04ac2b;
+    --green: #02681A;
     --red: #bf0413;
 
     --success: var(--green);
@@ -180,32 +180,6 @@ template {
     --disabled-text-color: #ddd;
     --main-text-color: #222;
 }
-
-/************************************/
-/*------- Fonts --------------------*/
-/************************************/
-
-/* caveat-regular - latin-ext */
-/* caveat-regular - latin-ext */
-@font-face {
-    font-family: 'Caveat';
-    font-style: normal;
-    font-weight: 400;
-    src: url('/fonts/caveat-v7-latin-ext-regular.woff2') format('woff2'), /* Super Modern Browsers */
-    url('/fonts/caveat-v7-latin-ext-regular.woff') format('woff'); /* Modern Browsers */
-}
-
-
-/* livvic-regular - latin-ext */
-@font-face {
-    font-family: 'Livvic';
-    font-style: normal;
-    font-weight: 400;
-    src: url('/fonts/livvic-v3-latin-ext-regular.woff2') format('woff2'), /* Super Modern Browsers */
-    url('/fonts/livvic-v3-latin-ext-regular.woff') format('woff'); /* Modern Browsers */
-}
-
-
 
 
 /************************************/

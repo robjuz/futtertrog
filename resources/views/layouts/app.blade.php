@@ -8,6 +8,8 @@
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
     @laravelPWA
+
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Livvic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <script>
@@ -63,21 +65,21 @@
         <ul>
             <li>
                 <a href="{{ route('home') }}#main" {{ request()->routeIs('home') ? 'aria-current="page"' : '' }}>
-                    @svg('solid/home', ['aria-hidden', 'focusable="false"'])
+                    @svg('solid/home', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                     {{ __('Dashboard') }}
                 </a>
             </li>
 
             <li>
                 <a href="{{ route('meals.index') }}#main" {{ request()->routeIs('meals.index') ? 'aria-current="page"' : '' }}>
-                    @svg('solid/utensils', ['aria-hidden', 'focusable="false"'])
+                    @svg('solid/utensils', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                     {{ __('Place order') }}
                 </a>
             </li>
             @can('create', \App\Meal::class)
                 <li>
                     <a href="{{ route('meals.create') }}#main" {{ request()->routeIs('meals.create') ? 'aria-current="page"' : '' }}>
-                        @svg('solid/plus', ['aria-hidden', 'focusable="false"'])
+                        @svg('solid/plus', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                         {{ __('New meal') }}
                     </a>
 
@@ -86,7 +88,7 @@
             @can('list', \App\Order::class)
                 <li>
                     <a href="{{ route('orders.index') }}#main" {{ request()->routeIs('orders.index') ? 'aria-current="page"' : '' }}>
-                        @svg('solid/tasks', ['aria-hidden', 'focusable="false"'])
+                        @svg('solid/tasks', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                         {{ __('Manage orders') }}
                     </a>
                 </li>
@@ -95,7 +97,7 @@
             @can('viewAny', \App\User::class)
                 <li>
                     <a href="{{ route('users.index') }}#main" {{ request()->routeIs('users.index') ? 'aria-current="page"' : '' }}>
-                        @svg('solid/users', ['aria-hidden', 'focusable="false"'])
+                        @svg('solid/users', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                         {{ __('Manage users') }}
                     </a>
                 </li>
@@ -104,20 +106,20 @@
             @can('viewAny', \App\Deposit::class)
                 <li>
                     <a href="{{ route('deposits.index') }}#main" {{ request()->routeIs('deposits.index') ? 'aria-current="page"' : '' }}>
-                        @svg('solid/euro-sign', ['aria-hidden', 'focusable="false"'])
+                        @svg('solid/euro-sign', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                         {{ __('Manage deposits') }}
                     </a>
                 </li>
             @endcan
             <li>
                 <a href="{{ route('settings.index') }}#main" {{ request()->routeIs('settings.index') ? 'aria-current="page"' : ''}}>
-                    @svg('solid/cogs', ['aria-hidden', 'focusable="false"'])
+                    @svg('solid/cogs', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                     {{ __('Settings') }}
                 </a>
             </li>
             <li>
                 <a href="{{ route('logout') }}">
-                    @svg('solid/sign-out-alt', ['aria-hidden', 'focusable="false"'])
+                    @svg('solid/sign-out-alt', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                     {{ __('Logout') }}
                 </a>
             </li>

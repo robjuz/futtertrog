@@ -6,7 +6,7 @@
     <header>
         @can('create', \App\OrderItem::class)
             <a href="{{ route('order_items.create', ['date' => $order->date->toDateString()]) }}">
-                @svg('solid/plus', ['aria-hidden', 'focusable="false"'])
+                @svg('solid/plus', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                 {{ __('Create order') }}
             </a>
         @endcan
@@ -28,7 +28,7 @@
                 @method('delete')
                 @csrf
                 <button type="submit">
-                    @svg('solid/trash', ['aria-hidden', 'focusable="false"'])
+                    @svg('solid/trash', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                     {{  __('Delete orders') }}
                 </button>
             </form>
@@ -53,14 +53,14 @@
 
                 <td>
                     <a href="{{route('order_items.edit', $orderItem)}}">
-                        @svg('solid/pen', ['aria-hidden', 'focusable="false"'])
+                        @svg('solid/pen', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                         <span class="sr-only">{{ __('Edit') }}</span>
                     </a>
                     <form method="post" action="{{ route('order_items.destroy', $orderItem) }}">
                         @csrf()
                         @method('delete')
                         <button type="submit">
-                            @svg('solid/trash', ['aria-hidden', 'focusable="false"'])
+                            @svg('solid/trash', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                             <span class="sr-only">{{ __('Delete') }}</span>
                         </button>
                     </form>

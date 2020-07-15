@@ -65,7 +65,7 @@
         @csrf
 
         <button type="submit">
-            @svg('solid/trash', ['aria-hidden', 'focusable="false"'])
+            @svg('solid/trash', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
             {{  __('Delete') }}
         </button>
     </form>
