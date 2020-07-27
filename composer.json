@@ -23,10 +23,12 @@
         "laravel-notification-channels/webpush": "^5.0",
         "laravel/framework": "^7.0",
         "laravel/nexmo-notification-channel": "^2.1",
+        "laravel/socialite": "^4.4",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "nothingworks/blade-svg": "^0.3.2",
-        "silviolleite/laravelpwa": "^2.0"
+        "silviolleite/laravelpwa": "^2.0",
+        "socialiteproviders/gitlab": "^3.1"
     },
     "require-dev": {
         "ext-sqlite3": "*",
@@ -48,7 +50,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+
+            ]
         }
     },
     "autoload": {

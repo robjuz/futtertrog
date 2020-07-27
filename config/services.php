@@ -46,6 +46,14 @@ return [
         'sms_from' => '15556666666',
     ],
 
+    'gitlab' => [
+        'enabled' => env('LOGIN_WITH_GITLAB', false),
+        'client_id' => env('GITLAB_CLIENT_ID'),
+        'client_secret' => env('GITLAB_CLIENT_SECRET'),
+        'instance_uri' => env('GITLAB_URL'),
+        'redirect' => '/login/gitlab/callback',
+    ],
+
     'holzke' => [
         'login' => env('HOLZKE_LOGIN'),
         'password' => env('HOLZKE_PASSWORD'),

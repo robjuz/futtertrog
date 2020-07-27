@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes(['register' => false]);
 
+Route::group(['middleware' => 'enableLoginWithGitlab'], function() {
+    Route::get('login/gitlab', 'Auth\LoginController@redirectToGitlab')->name('login.gitlab');
+    Route::get('login/gitlab/callback', 'Auth\LoginController@handleGitlabCallback');
+});
+
 Route::view('/', 'landing-page')->middleware('guest');
 Route::view('/pot-generator', 'tools/pot-generator');
 Route::post('/pot-generator', 'PotGeneratorController');

@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cast.float' => \App\Http\Middleware\CastFormValuesToFloat::class,
+        'enableLoginWithGitlab' => \App\Http\Middleware\enableLoginWithGitlab::class
     ];
 
     /**
