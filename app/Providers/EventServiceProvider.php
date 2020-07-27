@@ -33,6 +33,10 @@ class EventServiceProvider extends ServiceProvider
         NewOrderPossibilities::class => [
             SendNewOrderPossibilitiesNotification::class,
         ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            // add your listeners (aka providers) here
+            'SocialiteProviders\\GitLab\\GitLabExtendSocialite@handle',
+        ],
     ];
 
     /**

@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
 {
@@ -57,5 +62,44 @@ class LoginController extends Controller
     protected function loggedOut(Request $request)
     {
         return redirect()->route('login');
+    }
+
+    /**
+     * Redirect the user to the GitHub authentication page.
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function redirectToGitlab()
+    {
+        return Socialite::driver('gitlab')->redirect();
+    }
+
+    /**
+     * Obtain the user information from GitHub.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function handleGitlabCallback(Request $request)
+    {
+        $gitlabUser = Socialite::driver('gitlab')->user();
+
+        /** @var User $user */
+        $user = User::withTrashed()->firstOrNew(
+            [
+                'email' => $gitlabUser->getEmail(),
+            ],
+            [
+                'name' => $gitlabUser->getName(),
+                'password' => Hash::make($gitlabUser->getId()),
+            ]
+        );
+
+        abort_if($user->deleted_at !== null, Response::HTTP_UNAUTHORIZED);
+
+        $user->save();
+
+        Auth::login($user, true);
+
+        return $this->sendLoginResponse($request);
     }
 }
