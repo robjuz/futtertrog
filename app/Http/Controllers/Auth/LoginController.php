@@ -85,20 +85,20 @@ class LoginController extends Controller
 
         /** @var User $user */
         $user = User::withTrashed()->firstOrNew(
-            ['email' => $gitlabUser->getEmail()],
+            [
+                'email' => $gitlabUser->getEmail()
+            ],
             [
                 'name' => $gitlabUser->getName(),
                 'password' => Hash::make($gitlabUser->getId()),
             ]
         );
 
-        if ($user->deleted_at) {
-            abort(Response::HTTP_UNAUTHORIZED);
-        }
+        abort_if($user->deleted_at !== null, Response::HTTP_UNAUTHORIZED);
 
         $user->save();
 
-        Auth::login($user);
+        Auth::login($user, true);
 
         return $this->sendLoginResponse($request);
     }
