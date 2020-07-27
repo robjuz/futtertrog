@@ -7,16 +7,15 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Config;
 use Laravel\Socialite\Facades\Socialite;
 use Mockery;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Tests\TestCase;
 
 class LoginWithGitlabTest extends TestCase
 {
     use WithFaker;
 
-    protected function setUp(): void
+    protected function mockSocialite(): void
     {
-        parent::setUp();
-
         $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
 
         $abstractUser->shouldReceive('getId')
@@ -52,6 +51,8 @@ class LoginWithGitlabTest extends TestCase
     /** @test * */
     public function it_creates_a_new_user_from_gitlab_user()
     {
+        $this->mockSocialite();
+
         Config::set('services.gitlab.enabled', true);
 
         $this->assertDatabaseCount('users', 0);
@@ -67,6 +68,8 @@ class LoginWithGitlabTest extends TestCase
     /** @test * */
     public function it_logs_in_a_user_with_the_equivalent_gitlab_email()
     {
+        $this->mockSocialite();
+
         Config::set('services.gitlab.enabled', true);
 
         $user = factory(User::class)->create(
@@ -87,6 +90,8 @@ class LoginWithGitlabTest extends TestCase
     /** @test * */
     public function it_is_forbidden_to_login_in_with_deleted_account()
     {
+        $this->mockSocialite();
+
         Config::set('services.gitlab.enabled', true);
 
         $user = factory(User::class)->create(

@@ -67,12 +67,12 @@ class LoginController extends Controller
     /**
      * Redirect the user to the GitHub authentication page.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function redirectToGitlab()
     {
 
-        return Socialite::driver('gitlab')->stateless()->redirect();
+        return Socialite::driver('gitlab')->redirect();
     }
 
     /**
