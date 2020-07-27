@@ -19,7 +19,7 @@ Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'enableLoginWithGitlab'], function() {
     Route::get('login/gitlab', 'Auth\LoginController@redirectToGitlab')->name('login.gitlab');
-    Route::get('login/gitlab/callback', 'Auth\LoginController@handleGitlabCallback');
+    Route::get('login/gitlab/callback', 'Auth\LoginController@handleGitlabCallback')->name('login.gitlab-callback');
 });
 
 Route::view('/', 'landing-page')->middleware('guest');

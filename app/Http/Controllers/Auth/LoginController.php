@@ -72,7 +72,7 @@ class LoginController extends Controller
     public function redirectToGitlab()
     {
 
-        return Socialite::driver('gitlab')->redirect();
+        return Socialite::driver('gitlab')->stateless()->redirect();
     }
 
     /**
