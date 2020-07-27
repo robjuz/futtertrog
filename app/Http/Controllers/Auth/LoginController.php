@@ -71,7 +71,6 @@ class LoginController extends Controller
      */
     public function redirectToGitlab()
     {
-
         return Socialite::driver('gitlab')->redirect();
     }
 
@@ -89,11 +88,11 @@ class LoginController extends Controller
             ['email' => $gitlabUser->getEmail()],
             [
                 'name' => $gitlabUser->getName(),
-                'password' => Hash::make($gitlabUser->getId())
+                'password' => Hash::make($gitlabUser->getId()),
             ]
         );
 
-        if($user->deleted_at) {
+        if ($user->deleted_at) {
             abort(Response::HTTP_UNAUTHORIZED);
         }
 

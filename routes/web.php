@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes(['register' => false]);
 
-Route::group(['middleware' => 'enableLoginWithGitlab'], function() {
+Route::group(['middleware' => 'enableLoginWithGitlab'], function () {
     Route::get('login/gitlab', 'Auth\LoginController@redirectToGitlab')->name('login.gitlab');
     Route::get('login/gitlab/callback', 'Auth\LoginController@handleGitlabCallback')->name('login.gitlab-callback');
 });
