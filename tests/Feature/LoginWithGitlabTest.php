@@ -13,6 +13,24 @@ class LoginWithGitlabTest extends TestCase
 {
     use WithFaker;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
+
+        $abstractUser->shouldReceive('getId')
+            ->andReturn($this->faker->uuid)
+            ->shouldReceive('getName')
+            ->andReturn($this->faker->name)
+            ->shouldReceive('getEmail')
+            ->andReturn('test@example.com')
+            ->shouldReceive('getAvatar')
+            ->andReturn($this->faker->imageUrl());
+
+        Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
+    }
+
     /** @test */
     public function it_can_be_disabled()
     {
@@ -38,19 +56,6 @@ class LoginWithGitlabTest extends TestCase
 
         $this->assertDatabaseCount('users', 0);
 
-        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
-
-        $abstractUser->shouldReceive('getId')
-            ->andReturn($this->faker->uuid)
-            ->shouldReceive('getName')
-            ->andReturn($this->faker->name)
-            ->shouldReceive('getEmail')
-            ->andReturn('test@example.com')
-            ->shouldReceive('getAvatar')
-            ->andReturn($this->faker->imageUrl());
-
-        Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
-
         $this->get(route('login.gitlab-callback'));
 
         $this->assertDatabaseCount('users', 1);
@@ -60,7 +65,7 @@ class LoginWithGitlabTest extends TestCase
 
 
     /** @test * */
-    public function it_logs_in_a_user_with_the_same_gitlab_email()
+    public function it_logs_in_a_user_with_the_equivalent_gitlab_email()
     {
         Config::set('services.gitlab.enabled', true);
 
@@ -72,23 +77,28 @@ class LoginWithGitlabTest extends TestCase
 
         $this->assertDatabaseCount('users', 1);
 
-        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
-
-        $abstractUser->shouldReceive('getId')
-            ->andReturn($this->faker->uuid)
-            ->shouldReceive('getName')
-            ->andReturn($this->faker->name)
-            ->shouldReceive('getEmail')
-            ->andReturn('test@example.com')
-            ->shouldReceive('getAvatar')
-            ->andReturn($this->faker->imageUrl());
-
-        Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
-
         $this->get(route('login.gitlab-callback'));
 
         $this->assertDatabaseCount('users', 1);
 
         $this->assertAuthenticatedAs($user->first());
+    }
+
+    /** @test * */
+    public function it_is_forbidden_to_login_in_with_deleted_account()
+    {
+        Config::set('services.gitlab.enabled', true);
+
+        $user = factory(User::class)->create(
+            [
+                'email' => 'test@example.com'
+            ]
+        );
+
+        $user->delete();
+
+        $this->withExceptionHandling()
+            ->get(route('login.gitlab-callback'))
+            ->assertUnauthorized();
     }
 }
