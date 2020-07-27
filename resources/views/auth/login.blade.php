@@ -6,7 +6,6 @@
         <h1>{{ __('Login') }}</h1>
     </header>
 
-    <div class="login-form">
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
@@ -41,12 +40,14 @@
                     {{ __('Forgot Your Password?') }}
                 </a>
             @endif
-        </form>
 
-        @if (Route::has('login.gitlab'))
-            <form action="{{ route('login.gitlab') }}">
-                <button type="submit">{{ __('Login with GitLab') }}</button>
-            </form>
-        @endif
-    </div>
+            @if (config('services.gitlab.enabled'))
+                <div class="or-login-with"><span>{{ __('or') }}</span></div>
+
+                <a class="login-with-gitlab" href="{{ route('login.gitlab') }}">
+                    @svg('brands/gitlab', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
+                    {{ __('Login with GitLab') }}
+                </a>
+            @endif
+        </form>
 @endsection
