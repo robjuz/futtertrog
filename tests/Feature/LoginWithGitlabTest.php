@@ -2,18 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class LoginWithGitlabTest extends TestCase
 {
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
+    /** @test */
     public function it_can_be_disabled()
     {
         Config::set('services.gitlab.enabled', false);
@@ -23,14 +17,17 @@ class LoginWithGitlabTest extends TestCase
             ->assertNotFound();
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
+    /** @test */
     public function it_can_be_enabled()
     {
         Config::set('services.gitlab.enabled', true);
 
         $this->get(route('login.gitlab'))->assertRedirect();
+    }
+
+    /** @test * */
+    public function it_creates_a_new_user_from_gitlab_user()
+    {
+        $this->assertDatabaseCount('users', 0);
     }
 }

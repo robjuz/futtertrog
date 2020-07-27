@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class enableLoginWithGitlab
+class EnableLoginWithGitlab
 {
     /**
      * Handle an incoming request.
