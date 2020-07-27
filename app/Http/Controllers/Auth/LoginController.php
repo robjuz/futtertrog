@@ -86,7 +86,7 @@ class LoginController extends Controller
         /** @var User $user */
         $user = User::withTrashed()->firstOrNew(
             [
-                'email' => $gitlabUser->getEmail()
+                'email' => $gitlabUser->getEmail(),
             ],
             [
                 'name' => $gitlabUser->getName(),
