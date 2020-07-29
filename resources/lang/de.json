@@ -168,5 +168,7 @@
   "Are you sure?": "Bist du sicher?",
   "Filter by user": "Nach Benutzer filtern",
   "All users": "Alle Benutzer",
-  "Restore": "Wiederherstellen"
+  "Restore": "Wiederherstellen",
+  "or": "oder",
+  "Login with GitLab": "Mit Gitlab einloggen"
 }
