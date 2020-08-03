@@ -1,0 +1,14 @@
+.dockerignore
+.git
+.github
+.editorconfig
+.gitignore
+.gitattributes
+.phpstorm.meta.php
+.travis.yml
+.env.travis
+_ide_helper.php
+CODE_OF_CONDUCT.md
+codecov.yml
+docker-compose.yml
+Dockerfile
