@@ -17,7 +17,9 @@ class DepositsController extends Controller
 
     public function index(Request $request)
     {
-        $deposits = Deposit::with(['user' => function($q) {$q->withTrashed();}])->latest()->paginate();
+        $deposits = Deposit::with(['user' => function ($q) {
+            $q->withTrashed();
+        }])->latest()->paginate();
 
         if ($request->wantsJson()) {
             return $deposits;
