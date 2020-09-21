@@ -111,7 +111,7 @@ class Order extends Model
         }
 
         //Order was reopened.
-        if (!$this->created_at->isSameAs($this->updated_at)) {
+        if (! $this->created_at->isSameAs($this->updated_at)) {
             return false;
         }
 

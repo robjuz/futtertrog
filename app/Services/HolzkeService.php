@@ -76,7 +76,7 @@ class HolzkeService
                 'title' => trim($titleMatch[0]),
                 'description' => trim($mealElement->find('.cBody')[0]->removeChildren()[0]->text()),
                 'price' => intval(preg_replace('/[,\.]/', '', $priceMatch[1] ?? 1)),
-                'external_id' => $externalId
+                'external_id' => $externalId,
             ];
         }
 
@@ -93,7 +93,7 @@ class HolzkeService
         foreach ($orders as $order) {
             foreach ($order->orderItems as $orderItem) {
                 abort_if(
-                    !$orderItem->meal->external_id,
+                    ! $orderItem->meal->external_id,
                     Response::HTTP_BAD_REQUEST,
                     __('Unable to place order. Meal external ID missing')
                 );
@@ -116,12 +116,12 @@ class HolzkeService
                     'info1' => 'Eingang Paradiesgarten 4.OG',
                     'agb' => 1,
                     'zeit' => now()->timestamp,
-                    'is_send' => 'yes'
+                    'is_send' => 'yes',
                 ]
             )
             ->setCookieFile(storage_path('holtzke_cookie.txt'))
             ->post();
 
-       Order::whereKey($orders)->update(['status' => Order::STATUS_ORDERED]);
+        Order::whereKey($orders)->update(['status' => Order::STATUS_ORDERED]);
     }
 }

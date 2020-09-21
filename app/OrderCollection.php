@@ -10,7 +10,7 @@ class OrderCollection extends Collection
     {
         /** @var Order $order */
         foreach ($this->items as $order) {
-            if (!$order->canBeAutoOrderedByHolzke())  {
+            if (! $order->canBeAutoOrderedByHolzke()) {
                 return false;
             }
         }

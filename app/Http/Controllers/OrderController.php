@@ -6,7 +6,6 @@ use App\Order;
 use App\Repositories\OrdersRepository;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
