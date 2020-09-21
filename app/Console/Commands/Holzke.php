@@ -89,12 +89,13 @@ class Holzke extends Command
     {
         return Meal::updateOrCreate(
             [
-                'title' => $mealElement['title'],
+                'external_id' => $mealElement['external_id'],
                 'date_from' => $date->toDateString(),
                 'date_to' => $date->toDateString(),
                 'provider' => Meal::PROVIDER_HOLZKE,
             ],
             [
+                'title' => $mealElement['title'],
                 'description' => $mealElement['description'],
                 'price' => $mealElement['price'],
             ]

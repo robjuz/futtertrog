@@ -88,4 +88,15 @@ class Order extends Model
             return new OrderItemCompact($item['meal'], $item['users'], $item['quantity']);
         });
     }
+
+    /**
+     * Create a new Eloquent Collection instance.
+     *
+     * @param  array $models
+     * @return \App\MealCollection
+     */
+    public function newCollection(array $models = [])
+    {
+        return new OrderCollection($models);
+    }
 }
