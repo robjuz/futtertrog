@@ -6,19 +6,15 @@ use Illuminate\Database\Eloquent\Collection;
 
 class OrderCollection extends Collection
 {
-    public function sortByPreferences()
+    public function canBeAutoOrderedByHolzke()
     {
-        return $this
-            ->sortBy('id')
-            ->sortByDesc(function ($meal) {
-                if ($meal->is_hated) {
-                    return -10 * $meal->id;
-                }
-                if ($meal->is_preferred) {
-                    return 10 * $meal->id;
-                }
+        /** @var Order $order */
+        foreach ($this->items as $order) {
+            if (!$order->canBeAutoOrderedByHolzke())  {
+                return false;
+            }
+        }
 
-                return -1 * $meal->id;
-            });
+        return true;
     }
 }

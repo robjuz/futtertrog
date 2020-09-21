@@ -99,4 +99,22 @@ class Order extends Model
     {
         return new OrderCollection($models);
     }
+
+    public function canBeAutoOrderedByHolzke()
+    {
+        if ($this->provider !== Meal::PROVIDER_HOLZKE) {
+            return false;
+        }
+
+        if ($this->status === self::STATUS_ORDERED) {
+            return false;
+        }
+
+        //Order was reopened.
+        if (!$this->created_at->isSameAs($this->updated_at)) {
+            return false;
+        }
+
+        return true;
+    }
 }

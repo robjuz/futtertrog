@@ -31,6 +31,10 @@ class OrderController extends Controller
             return response()->json($orders);
         }
 
+        $from = Carbon::parse($request->query('from', today()));
+
+        $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
+
         $sum = $orders->sum->subtotal;
 
         $users = User::orderBy('name')->get();

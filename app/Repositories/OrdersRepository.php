@@ -6,7 +6,7 @@ use App\Order;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
 
 class OrdersRepository
 {
