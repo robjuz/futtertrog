@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Order;
 use DiDom\Document;
+use DiDom\Element;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -57,30 +58,52 @@ class HolzkeService
             ->get();
     }
 
+
     /**
      * @param $response
-     * @return \DiDom\Element[]|\DOMElement[]
+     * @return array[]
+     * @throws \DiDom\Exceptions\InvalidSelectorException
      */
     public function parseResponse($response)
     {
-        $meals = [];
-
-        foreach ((new Document($response))->find('.meal') as $mealElement) {
-            $title = $mealElement->first('h2')->text();
-            $externalId = $mealElement->first('input')->getAttribute('name');
-
-            preg_match('/^[\w\s]*/mu', $title, $titleMatch);
-            preg_match('/\((\S*)/', $title, $priceMatch);
-
-            $meals[] = [
-                'title' => trim($titleMatch[0]),
-                'description' => trim($mealElement->find('.cBody')[0]->removeChildren()[0]->text()),
-                'price' => intval(preg_replace('/[,\.]/', '', $priceMatch[1] ?? 1)),
-                'external_id' => $externalId,
+        return array_map(function($mealElement) {
+            return [
+                'title'         => $this->extractTitle($mealElement),
+                'description'   => $this->extractDescription($mealElement),
+                'price'         => $this->extractPrice($mealElement),
+                'external_id'   => $this->extractExternalId($mealElement)
             ];
-        }
+        }, (new Document($response))->find('.meal'));
+    }
 
-        return $meals;
+    private function extractTitle(Element $mealElement)
+    {
+        $title = $mealElement->first('h2')->text();
+        preg_match('/^[\w\s]*/mu', $title, $titleMatch);
+        return trim($titleMatch[0]);
+    }
+
+    private function extractExternalId(Element $mealElement)
+    {
+        $externalId = $mealElement->first('input');
+        $externalId ? $externalId->getAttribute('name') : null;
+        return trim($externalId);
+    }
+
+    private function extractDescription(Element $mealElement)
+    {
+        $description = $mealElement->first('.cBody');
+        $description->removeChildren();
+        $description = $description->text();
+        return trim($description);
+    }
+
+    private function extractPrice(Element $mealElement)
+    {
+        $title = $mealElement->first('h2')->text();
+        preg_match('/\((\S*)/', $title, $priceMatch);
+        $price = preg_replace('/[,\.]/', '', $priceMatch[1] ?? 1);
+        return intval($price);
     }
 
     /**
