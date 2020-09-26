@@ -179,7 +179,6 @@ class OrderItemController extends Controller
             }
         );
 
-
         if ($request->wantsJson()) {
             return response($orderItem, Response::HTTP_OK);
         }
@@ -211,7 +210,6 @@ class OrderItemController extends Controller
                 }
             }
         );
-
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);

@@ -56,6 +56,7 @@ class Order extends Model
     {
         return $this->hasManyThrough(Meal::class, OrderItem::class, 'order_id', 'id', 'id', 'meal_id');
     }
+
 //
 //    public function users()
 //    {
@@ -112,7 +113,7 @@ class Order extends Model
             return false;
         }
 
-        if (now()->isAfter( $this->date)) {
+        if (now()->isAfter($this->date)) {
             return false;
         }
 

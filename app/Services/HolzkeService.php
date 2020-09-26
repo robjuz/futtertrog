@@ -72,7 +72,7 @@ class HolzkeService
                     'title' => $this->extractTitle($mealElement),
                     'description' => $this->extractDescription($mealElement),
                     'price' => $this->extractPrice($mealElement),
-                    'external_id' => $this->extractExternalId($mealElement)
+                    'external_id' => $this->extractExternalId($mealElement),
                 ];
             },
             (new Document($response))->find('.meal')
@@ -83,6 +83,7 @@ class HolzkeService
     {
         $title = $mealElement->first('h2')->text();
         preg_match('/^[\w\s]*/mu', $title, $titleMatch);
+
         return trim($titleMatch[0]);
     }
 
@@ -96,6 +97,7 @@ class HolzkeService
         $title = $mealElement->first('h2')->text();
         preg_match('/\((\S*)/', $title, $priceMatch);
         $price = preg_replace('/[,\.]/', '', $priceMatch[1] ?? 1);
+
         return intval($price);
     }
 
@@ -103,6 +105,7 @@ class HolzkeService
     {
         $externalId = $mealElement->first('input');
         $externalId = $externalId ? $externalId->getAttribute('name') : null;
+
         return trim($externalId);
     }
 
@@ -115,13 +118,13 @@ class HolzkeService
 
         foreach ($orders as $order) {
             foreach ($order->orderItems as $orderItem) {
-                if (!isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
-                    $mealsToOrderExternalIds[ $orderItem->meal->external_id] = 0;
+                if (! isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
+                    $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
                 }
 
                 $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
             }
-        };
+        }
 
         foreach ($mealsToOrderExternalIds as $externalId => $count) {
             $this->updateMealCount($externalId, $count);
@@ -132,7 +135,7 @@ class HolzkeService
         Order::whereKey($orders)->update(
             [
                 'status' => Order::STATUS_ORDERED,
-                'external_id' => $this->getLastOrderId()
+                'external_id' => $this->getLastOrderId(),
             ]
         );
     }
@@ -169,7 +172,7 @@ class HolzkeService
 
         $orderChange = (new Document($response))->first('.orderChange');
 
-        abort_if(!$orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
+        abort_if(! $orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
 
         return $orderChange->getAttribute('data-id');
     }
