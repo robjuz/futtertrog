@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Meal;
 use App\Order;
+use App\OrderItem;
 use DiDom\Document;
 use DiDom\Element;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,22 +60,24 @@ class HolzkeService
             ->get();
     }
 
-
     /**
      * @param $response
      * @return array[]
      * @throws \DiDom\Exceptions\InvalidSelectorException
      */
-    public function parseResponse($response)
+    private function parseResponse($response)
     {
-        return array_map(function($mealElement) {
-            return [
-                'title'         => $this->extractTitle($mealElement),
-                'description'   => $this->extractDescription($mealElement),
-                'price'         => $this->extractPrice($mealElement),
-                'external_id'   => $this->extractExternalId($mealElement)
-            ];
-        }, (new Document($response))->find('.meal'));
+        return array_map(
+            function ($mealElement) {
+                return [
+                    'title' => $this->extractTitle($mealElement),
+                    'description' => $this->extractDescription($mealElement),
+                    'price' => $this->extractPrice($mealElement),
+                    'external_id' => $this->extractExternalId($mealElement)
+                ];
+            },
+            (new Document($response))->find('.meal')
+        );
     }
 
     private function extractTitle(Element $mealElement)
@@ -83,19 +87,9 @@ class HolzkeService
         return trim($titleMatch[0]);
     }
 
-    private function extractExternalId(Element $mealElement)
-    {
-        $externalId = $mealElement->first('input');
-        $externalId ? $externalId->getAttribute('name') : null;
-        return trim($externalId);
-    }
-
     private function extractDescription(Element $mealElement)
     {
-        $description = $mealElement->first('.cBody');
-        $description->removeChildren();
-        $description = $description->text();
-        return trim($description);
+        return trim($mealElement->first('.cBody')->firstChild()->text());
     }
 
     private function extractPrice(Element $mealElement)
@@ -106,33 +100,55 @@ class HolzkeService
         return intval($price);
     }
 
+    private function extractExternalId(Element $mealElement)
+    {
+        $externalId = $mealElement->first('input');
+        $externalId = $externalId ? $externalId->getAttribute('name') : null;
+        return trim($externalId);
+    }
+
     /**
      * @param Order[]|Collection $orders
      */
     public function placeOrder($orders)
     {
-        $mealsToOrder = [];
+        $mealsToOrderExternalIds = [];
 
         foreach ($orders as $order) {
             foreach ($order->orderItems as $orderItem) {
-                abort_if(
-                    ! $orderItem->meal->external_id,
-                    Response::HTTP_BAD_REQUEST,
-                    __('Unable to place order. Meal external ID missing')
-                );
+                if (!isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
+                    $mealsToOrderExternalIds[ $orderItem->meal->external_id] = 0;
+                }
 
-                $mealsToOrder[$orderItem->meal->external_id]++;
+                $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
             }
+        };
+
+        foreach ($mealsToOrderExternalIds as $externalId => $count) {
+            $this->updateMealCount($externalId, $count);
         }
 
-        foreach ($mealsToOrder as $meal => $count) {
-            Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
-                ->withData(compact('meal', 'count'))
-                ->returnResponseObject()
-                ->setCookieFile(storage_path('holtzke_cookie.txt'))
-                ->post();
-        }
+        $this->confirmOrder();
 
+        Order::whereKey($orders)->update(
+            [
+                'status' => Order::STATUS_ORDERED,
+                'external_id' => $this->getLastOrderId()
+            ]
+        );
+    }
+
+    private function updateMealCount($meal, $count): void
+    {
+        Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
+            ->withData(compact('meal', 'count'))
+            ->returnResponseObject()
+            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->post();
+    }
+
+    private function confirmOrder(): void
+    {
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-order.html')
             ->withData(
                 [
@@ -144,7 +160,42 @@ class HolzkeService
             )
             ->setCookieFile(storage_path('holtzke_cookie.txt'))
             ->post();
+    }
 
-        Order::whereKey($orders)->update(['status' => Order::STATUS_ORDERED]);
+    private function getLastOrderId()
+    {
+        $response = Curl::to('https://holzke-menue.de/de/meine-kundendaten/meine-bestellungen.html')
+            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->get();
+
+        $orderChange = (new Document($response))->first('.orderChange');
+
+        abort_if(!$orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
+
+        return $orderChange->getAttribute('data-id');
+    }
+
+    public function updateOrder(OrderItem $orderItem)
+    {
+        $order = $orderItem->order;
+        $meal = $orderItem->meal;
+
+        $this->setOrderForEdit($order->external_id);
+
+        $this->updateMealCount(
+            $meal->external_id,
+            $order->orderItems()->whereMealId($meal->id)->sum('quantity')
+        );
+
+        $this->confirmOrder();
+    }
+
+    private function setOrderForEdit(string $external_id): void
+    {
+        Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
+            ->withData(['vid' => $external_id])
+            ->returnResponseObject()
+            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->post();
     }
 }

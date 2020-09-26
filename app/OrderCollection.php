@@ -8,6 +8,10 @@ class OrderCollection extends Collection
 {
     public function canBeAutoOrderedByHolzke()
     {
+        if ($this->isEmpty()) {
+            return false;
+        }
+
         /** @var Order $order */
         foreach ($this->items as $order) {
             if (! $order->canBeAutoOrderedByHolzke()) {

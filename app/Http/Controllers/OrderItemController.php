@@ -6,11 +6,13 @@ use App\Events\OrderReopened;
 use App\Meal;
 use App\Order;
 use App\OrderItem;
+use App\Services\HolzkeService;
 use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class OrderItemController extends Controller
 {
@@ -73,7 +75,7 @@ class OrderItemController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @param \App\OrderItem           $orderItem
+     * @param \App\OrderItem $orderItem
      *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -147,7 +149,7 @@ class OrderItemController extends Controller
             );
 
         if ($order->wasChanged()) {
-            event(new OrderReopened($order, User::find($attributes['user_id']), $meal));
+            event(new OrderReopened($order, $orderItem->user, $meal));
         }
 
         if ($request->wantsJson()) {
@@ -157,17 +159,24 @@ class OrderItemController extends Controller
         return back()->with('success', __('Success'));
     }
 
-    public function update(Request $request, OrderItem $orderItem)
+    public function update(Request $request, OrderItem $orderItem, HolzkeService $holzkeService)
     {
-        $orderItem->update(
-            $request->validate(
-                [
-                    'user_id' => 'sometimes|exists:users,id',
-                    'quantity' => 'sometimes|numeric|min:1,max:10',
-                    'meal_id' => 'required|exists:meals,id',
-                ]
-            )
+        $data = $request->validate(
+            [
+                'user_id' => 'sometimes|exists:users,id',
+                'quantity' => 'sometimes|numeric|min:1,max:10',
+                'meal_id' => 'required|exists:meals,id',
+            ]
         );
+
+        DB::transaction(
+            function () use ($orderItem, $holzkeService, $data) {
+                $orderItem->update($data);
+
+                $holzkeService->updateOrder($orderItem);
+            }
+        );
+
 
         if ($request->wantsJson()) {
             return response($orderItem, Response::HTTP_OK);
@@ -176,7 +185,7 @@ class OrderItemController extends Controller
         return redirect()->route('orders.edit', $orderItem->order)->with('success', __('Success'));
     }
 
-    public function destroy(Request $request, OrderItem $orderItem)
+    public function destroy(Request $request, OrderItem $orderItem, HolzkeService $holzkeService)
     {
         $this->authorize('delete', $orderItem);
 
@@ -187,11 +196,18 @@ class OrderItemController extends Controller
             ]
         );
 
-        if ($order->wasChanged()) {
-            event(new OrderReopened($order, $orderItem->user, $orderItem->meal));
-        }
+//        if ($order->wasChanged()) {
+//            event(new OrderReopened($order, $orderItem->user, $orderItem->meal));
+//        }
 
-        $orderItem->delete();
+        DB::transaction(
+            function () use ($orderItem, $holzkeService) {
+                $orderItem->delete();
+
+                $holzkeService->updateOrder($orderItem);
+            }
+        );
+
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);

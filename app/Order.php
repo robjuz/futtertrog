@@ -17,6 +17,8 @@ use Illuminate\Support\Arr;
  * @property-read mixed $subtotal
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @property-read int|null $order_items_count
+ * @method static \App\OrderCollection|static[] all($columns = ['*'])
+ * @method static \App\OrderCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order query()
@@ -50,10 +52,10 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-//    public function meals()
-//    {
-//        return $this->hasManyThrough(Meal::class, OrderItem::class, 'order_id', 'id', 'id', 'meal_id');
-//    }
+    public function meals()
+    {
+        return $this->hasManyThrough(Meal::class, OrderItem::class, 'order_id', 'id', 'id', 'meal_id');
+    }
 //
 //    public function users()
 //    {
@@ -110,8 +112,7 @@ class Order extends Model
             return false;
         }
 
-        //Order was reopened.
-        if (! $this->created_at->isSameAs($this->updated_at)) {
+        if (now()->isAfter( $this->date)) {
             return false;
         }
 
