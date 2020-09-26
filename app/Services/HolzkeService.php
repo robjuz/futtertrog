@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Meal;
 use App\Order;
 use App\OrderItem;
 use DiDom\Document;
