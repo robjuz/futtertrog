@@ -173,7 +173,9 @@ class OrderItemController extends Controller
             function () use ($orderItem, $holzkeService, $data) {
                 $orderItem->update($data);
 
-                $holzkeService->updateOrder($orderItem);
+                if ($orderItem->order->canBeAutoOrderedByHolzke()) {
+                    $holzkeService->updateOrder($orderItem);
+                }
             }
         );
 
@@ -204,7 +206,9 @@ class OrderItemController extends Controller
             function () use ($orderItem, $holzkeService) {
                 $orderItem->delete();
 
-                $holzkeService->updateOrder($orderItem);
+                if ($orderItem->order->canBeAutoOrderedByHolzke()) {
+                    $holzkeService->updateOrder($orderItem);
+                }
             }
         );
 
