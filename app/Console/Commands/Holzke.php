@@ -95,6 +95,7 @@ class Holzke extends Command
                 'provider' => Meal::PROVIDER_HOLZKE,
             ],
             [
+                'external_id' => $mealElement['external_id'],
                 'description' => $mealElement['description'],
                 'price' => $mealElement['price'],
             ]

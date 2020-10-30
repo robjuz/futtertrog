@@ -32,6 +32,8 @@ Route::group(['middleware' => 'auth:web,api'], function () {
     Route::get('meals/ical', 'IcalController')->name('meals.ical');
     Route::post('meals/import', 'MealImportController')->name('meals.import');
     Route::resource('meals', 'MealController');
+
+    Route::post('orders/auto_order_by_holzke', 'HolzkeAutoOrderController')->name('orders.auto_order_by_holzke');
     Route::resource('orders', 'OrderController')->only(['index', 'edit', 'update', 'destroy']);
     Route::resource('order_items', 'OrderItemController')->except(['show']);
 

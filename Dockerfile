@@ -2,7 +2,6 @@ ARG PHP_EXTENSIONS="bcmath pdo_mysql intl gmp"
 
 FROM thecodingmachine/php:7.2-v3-slim-apache
 
-
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 ENV APACHE_DOCUMENT_ROOT=public/ \
@@ -16,6 +15,6 @@ COPY composer.* /var/www/html/
 
 RUN composer install --no-dev --no-scripts --no-autoloader
 
-COPY --chown=docker:www-data . /var/www/html/
+COPY --chown=www-data:www-data . /var/www/html/
 
 RUN composer dump-autoload --optimize

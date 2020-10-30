@@ -17,6 +17,8 @@ use Illuminate\Support\Arr;
  * @property-read mixed $subtotal
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @property-read int|null $order_items_count
+ * @method static \App\OrderCollection|static[] all($columns = ['*'])
+ * @method static \App\OrderCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order query()
@@ -50,10 +52,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-//    public function meals()
-//    {
-//        return $this->hasManyThrough(Meal::class, OrderItem::class, 'order_id', 'id', 'id', 'meal_id');
-//    }
+    public function meals()
+    {
+        return $this->hasManyThrough(Meal::class, OrderItem::class, 'order_id', 'id', 'id', 'meal_id');
+    }
+
 //
 //    public function users()
 //    {
@@ -87,5 +90,49 @@ class Order extends Model
         return collect($orderItemsGrouped)->map(function ($item) {
             return new OrderItemCompact($item['meal'], $item['users'], $item['quantity']);
         });
+    }
+
+    /**
+     * Create a new Eloquent Collection instance.
+     *
+     * @param  array $models
+     * @return \App\MealCollection
+     */
+    public function newCollection(array $models = [])
+    {
+        return new OrderCollection($models);
+    }
+
+    public function canBeAutoOrderedByHolzke()
+    {
+        if ($this->provider !== Meal::PROVIDER_HOLZKE) {
+            return false;
+        }
+
+        if ($this->status === self::STATUS_ORDERED) {
+            return false;
+        }
+
+        if (now()->isAfter($this->date)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function canBeUpdatedByHolzke()
+    {
+        return (bool) $this->external_id;
+    }
+
+    public function reopen()
+    {
+        $this->update(
+            [
+                'status' => Order::STATUS_OPEN,
+            ]
+        );
+
+        return $this;
     }
 }

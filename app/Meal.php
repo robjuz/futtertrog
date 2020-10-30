@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $image
+ * @property string|null $external_id
  * @property-read mixed $is_hated
  * @property-read mixed $is_preferred
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
@@ -33,6 +34,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDateFrom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDateTo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereExternalId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal wherePrice($value)

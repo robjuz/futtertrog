@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use App\Repositories\OrdersRepository;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
@@ -20,50 +20,19 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Request $request, OrdersRepository $ordersRepository)
     {
         $this->authorize('list', Order::class);
 
-        $from = Carbon::parse($request->query('from', today()));
-        $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
-
-        $orders = Order::with(['orderItems.meal'])
-            ->whereHas('orderItems.meal')
-            ->whereDate('date', '>=', $from->toDateString())
-            ->when(
-                ! empty($to),
-                function (Builder $query) use ($to) {
-                    $query->whereDate('date', '<=', $to->toDateString());
-                }
-            )
-            ->when(
-                $request->input('user_id', null),
-                function (Builder $query) use ($request) {
-                    $query->with(
-                        [
-                            'orderItems' => function ($query) use ($request) {
-                                $query->whereUserId($request->user_id);
-                            },
-                            'orderItems.user',
-                        ]
-                    );
-                    $query->whereHas(
-                        'orderItems',
-                        function (Builder $query) use ($request) {
-                            $query->whereUserId($request->user_id);
-                        }
-                    );
-                },
-                function (Builder $query) {
-                    $query->with(['orderItems.user']);
-                }
-            )
-            ->orderBy('date')
-            ->get();
+        $orders = $ordersRepository->get($request);
 
         if ($request->wantsJson()) {
             return response()->json($orders);
         }
+
+        $from = Carbon::parse($request->query('from', today()));
+
+        $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
 
         $sum = $orders->sum->subtotal;
 
