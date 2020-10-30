@@ -102,7 +102,7 @@ class OrderItemController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(Request $request)
+    public function store(Request $request, HolzkeService $holzkeService)
     {
         $attributes = $request->validate(
             [
@@ -139,6 +139,7 @@ class OrderItemController extends Controller
                 ]
             );
 
+        /** @var OrderItem $orderItem */
         $orderItem = $order->orderItems()
             ->create(
                 [
@@ -148,9 +149,7 @@ class OrderItemController extends Controller
                 ]
             );
 
-        if ($order->wasChanged()) {
-            event(new OrderReopened($order, $orderItem->user, $meal));
-        }
+        $this->updateOrder($holzkeService, $order, $orderItem);
 
         if ($request->wantsJson()) {
             return response($orderItem, Response::HTTP_CREATED);
@@ -169,13 +168,13 @@ class OrderItemController extends Controller
             ]
         );
 
+        $order = $orderItem->order;
+
         DB::transaction(
-            function () use ($orderItem, $holzkeService, $data) {
+            function () use ($order, $orderItem, $holzkeService, $data) {
                 $orderItem->update($data);
 
-                if ($orderItem->order->canBeAutoOrderedByHolzke()) {
-                    $holzkeService->updateOrder($orderItem);
-                }
+                $this->updateOrder($holzkeService, $order, $orderItem);
             }
         );
 
@@ -191,23 +190,11 @@ class OrderItemController extends Controller
         $this->authorize('delete', $orderItem);
 
         $order = $orderItem->order;
-        $order->update(
-            [
-                'status' => Order::STATUS_OPEN,
-            ]
-        );
-
-//        if ($order->wasChanged()) {
-//            event(new OrderReopened($order, $orderItem->user, $orderItem->meal));
-//        }
-
         DB::transaction(
-            function () use ($orderItem, $holzkeService) {
+            function () use ($order, $orderItem, $holzkeService) {
                 $orderItem->delete();
 
-                if ($orderItem->order->canBeAutoOrderedByHolzke()) {
-                    $holzkeService->updateOrder($orderItem);
-                }
+                $this->updateOrder($holzkeService, $order, $orderItem);
             }
         );
 
@@ -216,5 +203,23 @@ class OrderItemController extends Controller
         }
 
         return back(Response::HTTP_FOUND, [], route('order_items.index'))->with('success', __('Success'));
+    }
+
+    /**
+     * @param HolzkeService $holzkeService
+     * @param Order $order
+     * @param OrderItem $orderItem
+     */
+    public function updateOrder(HolzkeService $holzkeService, Order $order,  OrderItem $orderItem): void
+    {
+        if ($order->canBeAutoOrderedByHolzke() && $order->canBeUpdatedByHolzke()) {
+            $holzkeService->updateOrder($orderItem);
+        } else {
+            $order->reopen();
+
+            if ($order->wasChanged()) {
+                event(new OrderReopened($order, $orderItem->user, $orderItem->meal));
+            }
+        }
     }
 }

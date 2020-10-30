@@ -119,4 +119,21 @@ class Order extends Model
 
         return true;
     }
+
+
+    public function canBeUpdatedByHolzke()
+    {
+        return !!$this->external_id;
+    }
+
+    public function reopen()
+    {
+        $this->update(
+            [
+                'status' => Order::STATUS_OPEN,
+            ]
+        );
+
+        return $this;
+    }
 }
