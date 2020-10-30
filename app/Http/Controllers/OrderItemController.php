@@ -210,7 +210,7 @@ class OrderItemController extends Controller
      * @param Order $order
      * @param OrderItem $orderItem
      */
-    public function updateOrder(HolzkeService $holzkeService, Order $order,  OrderItem $orderItem): void
+    public function updateOrder(HolzkeService $holzkeService, Order $order, OrderItem $orderItem): void
     {
         if ($order->canBeAutoOrderedByHolzke() && $order->canBeUpdatedByHolzke()) {
             $holzkeService->updateOrder($orderItem);

@@ -120,10 +120,9 @@ class Order extends Model
         return true;
     }
 
-
     public function canBeUpdatedByHolzke()
     {
-        return !!$this->external_id;
+        return (bool) $this->external_id;
     }
 
     public function reopen()
