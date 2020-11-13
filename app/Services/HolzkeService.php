@@ -114,17 +114,7 @@ class HolzkeService
      */
     public function placeOrder($orders)
     {
-        $mealsToOrderExternalIds = [];
-
-        foreach ($orders as $order) {
-            foreach ($order->orderItems as $orderItem) {
-                if (! isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
-                    $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
-                }
-
-                $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
-            }
-        }
+        $mealsToOrderExternalIds = $this->extractMealIds($orders);
 
         foreach ($mealsToOrderExternalIds as $externalId => $count) {
             $this->updateMealCount($externalId, $count);
@@ -132,7 +122,7 @@ class HolzkeService
 
         $this->confirmOrder();
 
-        Order::whereKey($orders)->update(
+        Order::whereKey($orders->modelKeys())->update(
             [
                 'status' => Order::STATUS_ORDERED,
                 'external_id' => $this->getLastOrderId(),
@@ -199,5 +189,25 @@ class HolzkeService
             ->returnResponseObject()
             ->setCookieFile(storage_path('holtzke_cookie.txt'))
             ->post();
+    }
+
+    /**
+     * @param Collection $orders
+     * @return array
+     */
+    private function extractMealIds(Collection $orders): array
+    {
+        $mealsToOrderExternalIds = [];
+
+        foreach ($orders as $order) {
+            foreach ($order->orderItems as $orderItem) {
+                if (!isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
+                    $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
+                }
+
+                $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
+            }
+        }
+        return $mealsToOrderExternalIds;
     }
 }
