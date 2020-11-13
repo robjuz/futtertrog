@@ -201,13 +201,14 @@ class HolzkeService
 
         foreach ($orders as $order) {
             foreach ($order->orderItems as $orderItem) {
-                if (!isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
+                if (! isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
                     $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
                 }
 
                 $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
             }
         }
+
         return $mealsToOrderExternalIds;
     }
 }
