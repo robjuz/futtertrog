@@ -5,13 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
-
 use OpenApi\Annotations as OA;
 
 /**
@@ -173,7 +171,6 @@ class LoginController extends Controller
     {
         return redirect()->route('login');
     }
-
 
     /**
      * Send the response after the user was authenticated.

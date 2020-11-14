@@ -12,7 +12,6 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-
 use OpenApi\Annotations as OA;
 
 /**
@@ -45,7 +44,6 @@ use OpenApi\Annotations as OA;
  *
  *
  * Class MealController
- * @package App\Http\Controllers
  */
 class MealController extends Controller
 {
