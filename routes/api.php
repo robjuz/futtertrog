@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+Auth::routes(['register' => false]);
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('meals', 'MealController@index');
+});

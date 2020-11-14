@@ -9,6 +9,14 @@ use Illuminate\Support\Str;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
 /**
+ * @OA\Schema(
+ *      required={"password"},
+ *      @OA\Property(property="id", type="integer", readOnly="true", example="1"),
+ *      @OA\Property(property="email", type="string", readOnly="true", format="email", description="User unique email address", example="john@example.com"),
+ *      @OA\Property(property="name", type="string", readOnly="true", example="John"),
+ *      @OA\Property(property="api_token", type="string", readOnly="true"),
+ * )
+ *
  * App\User.
  *
  * @property int $id

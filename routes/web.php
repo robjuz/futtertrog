@@ -27,9 +27,12 @@ Route::view('/pot-generator', 'tools/pot-generator');
 Route::post('/pot-generator', 'PotGeneratorController');
 
 Route::group(['middleware' => 'auth:web,api'], function () {
+    Route::get('meals/ical', 'IcalController')->name('meals.ical');
+});
+
+Route::group(['middleware' => 'auth:web'], function () {
     Route::get('/dashboard', 'HomeController')->name('home');
 
-    Route::get('meals/ical', 'IcalController')->name('meals.ical');
     Route::post('meals/import', 'MealImportController')->name('meals.import');
     Route::resource('meals', 'MealController');
 

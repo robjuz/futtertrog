@@ -6,7 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
+use OpenApi\Annotations as OA;
+
 /**
+ * @OA\Schema(
+ *      allOf={
+ *          @OA\Schema( ref="#/components/schemas/Model" ),
+ *          @OA\Schema(
+ *              @OA\Property(property="title", type="string", readOnly="true"),
+ *              @OA\Property(property="description", type="string", readOnly="true"),
+ *              @OA\Property(property="price", type="number", format="currency", readOnly="true"),
+ *          )
+ *     }
+ * )
+ *
  * App\Meal.
  *
  * @property int $id
