@@ -14,6 +14,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
+use OpenApi\Annotations as OA;
+
 class OrderItemController extends Controller
 {
     /**
@@ -101,6 +103,38 @@ class OrderItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @OA\Post (
+     *      path="/api/place_order",
+     *      summary="Place order",
+     *      description="Order a given meal for a given date",
+     *      operationId="order_items.store",
+     *      security={ {"bearer": {} }},
+     *      tags={"order_items", "Futtertrog"},
+     *
+     *
+     *      @OA\RequestBody(
+     *          required=true,
+     *          description="Pass user credentials",
+     *          @OA\JsonContent(
+     *              required={"date","meal_id"},
+     *              @OA\Property( property="date", type="string", format="date", example="2020-02-02" ),
+     *              @OA\Property( property="quantity", type="integer", example="1", minimum="1" ),
+     *              @OA\Property( property="meal_id", ref="#/components/schemas/id" ),
+     *          ),
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              @OA\Schema(
+     *                  type="array",
+     *                  @OA\Items( type="object", ref="#/components/schemas/Meal" )
+     *              ),
+     *          ),
+     *      ),
+     * )
      */
     public function store(Request $request, HolzkeService $holzkeService)
     {

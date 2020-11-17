@@ -8,16 +8,21 @@ use Illuminate\Support\Str;
 use OpenApi\Annotations as OA;
 
 /**
- * @OA\Schema(
- *      allOf={
- *          @OA\Schema( ref="#/components/schemas/Model" ),
- *          @OA\Schema(
- *              @OA\Property(property="title", type="string", readOnly="true"),
- *              @OA\Property(property="description", type="string", readOnly="true"),
- *              @OA\Property(property="price", type="number", format="currency", readOnly="true"),
- *          )
- *     }
- * )
+ *  @OA\Schema(
+ *      required={"title", "description", "price"},
+ *      @OA\Property( property="id", ref="#/components/schemas/id" ),
+ *      @OA\Property( property="title", type="string", readOnly="true"),
+ *      @OA\Property( property="description", type="string", readOnly="true"),
+ *      @OA\Property( property="price", type="number", format="float"),
+ *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
+ *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
+ *  ),
+ *
+ *  @OA\Schema(
+ *      schema="Meals",
+ *      type="array",
+ *      @OA\Items( type="object", ref="#/components/schemas/Meal" )
+ *  ),
  *
  * App\Meal.
  *

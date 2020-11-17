@@ -46,7 +46,6 @@ use OpenApi\Annotations as OA;
  *                @OA\Property(
  *                   property="email",
  *                   type="array",
- *                   collectionFormat="multi",
  *                   @OA\Items(
  *                      type="string",
  *                      example={"The email field is required.","The email must be a valid email address."},

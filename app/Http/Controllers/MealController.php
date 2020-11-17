@@ -14,37 +14,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use OpenApi\Annotations as OA;
 
-/**
- * @OA\Get(
- *      path="/api/meals",
- *      summary="Meals for given date",
- *      description="Schows the meals for the current on given date",
- *      operationId="meals.index",
- *      security={ {"bearer": {} }},
- *      tags={"meals"},
- *
- *
- *      @OA\Parameter(
- *          name="date",
- *          in="query",
- *          @OA\Schema(type="string", format="date", default="today"),
- *      ),
- *
- *      @OA\Response(
- *          response=200,
- *          description="Success",
- *          @OA\JsonContent(
- *              @OA\Schema(
- *                  type="array",
- *                  @OA\Items( type="object", ref="#/components/schemas/Meal" )
- *              ),
- *          ),
- *      ),
- * )
- *
- *
- * Class MealController
- */
 class MealController extends Controller
 {
     public function __construct()
@@ -60,6 +29,28 @@ class MealController extends Controller
      * @param \App\Repositories\OrdersRepository $orders
      * @param \App\Repositories\MealsRepository $meals
      * @return \Illuminate\Http\Response
+     *
+     * @OA\Get(
+     *      path="/api/order_possibilities",
+     *      summary="Meals for given date",
+     *      description="Schows the meals for the current or given date",
+     *      operationId="meals.index",
+     *      security={ {"bearer": {} }},
+     *      tags={"meals", "Futtertrog"},
+     *
+     *
+     *      @OA\Parameter(
+     *          name="date",
+     *          in="query",
+     *          @OA\Schema(type="string", format="date"),
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Meals list",
+     *          @OA\JsonContent(  ref="#/components/schemas/Meals" ),
+     *      ),
+     * )
      */
     public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {

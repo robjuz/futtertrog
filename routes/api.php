@@ -15,5 +15,7 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('meals', 'MealController@index');
+    Route::get('order_possibilities', 'MealController@index');
+
+    Route::post('place_order', 'OrderItemController@store');
 });
