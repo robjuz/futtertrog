@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
 /**
- *
  * @OA\Schema(
  *      required={"password", "email", "name"},
  *      @OA\Property( property="id", ref="#/components/schemas/id" ),
