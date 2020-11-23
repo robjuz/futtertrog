@@ -3,9 +3,9 @@ version: '3'
 services:
   futtertrog:
     container_name: futtertrog
-    image: thecodingmachine/php:7.2-v3-apache
+    image: thecodingmachine/php:7.4-v3-apache
     ports:
-      - 8001:80
+      - 8080:80
     volumes:
       - ./:/var/www/html:delegated
     links:
@@ -13,9 +13,22 @@ services:
     depends_on:
       - db
     environment:
+      APP_NAME: Futtertor DEV
+      APP_ENV: local
+
+      LOG_CHANNEL: stderr
+
+      DB_HOST: db
       DB_DATABASE: futtertrog
       DB_USERNAME: futtertrog
       DB_PASSWORD: futtertrog
+
+      MAIL_DRIVER: smtp
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_USERNAME: null
+      MAIL_PASSWORD: null
+      MAIL_ENCRYPTION: null
 
       APACHE_DOCUMENT_ROOT: public/
 
@@ -26,6 +39,10 @@ services:
       PHP_EXTENSION_PDO_SQLITE: 1
 
       PHP_INI_XDEBUG__REMOTE_AUTOSTART: 1
+
+      STARTUP_COMMAND_1: composer install
+      STARTUP_COMMAND_2: php artisan migrate
+
   db:
     container_name: futtertrog_db
     image: mysql:5.7
@@ -36,6 +53,12 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: 1
     volumes:
       - mysql:/var/lib/mysql
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "8025:8025"
+
 
 volumes:
   mysql:
