@@ -124,7 +124,7 @@ class Order extends Model
     {
         return
             (bool) $this->external_id
-            AND self::where('external_id', '>', $this->external_id)
+            and self::where('external_id', '>', $this->external_id)
                 ->whereProvider($this->provider)
                 ->doesntExist();
     }
