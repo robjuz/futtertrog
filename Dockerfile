@@ -1,8 +1,6 @@
 ARG PHP_EXTENSIONS="bcmath pdo_mysql intl gmp"
 
-FROM thecodingmachine/php:7.2-v3-slim-apache
-
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+FROM thecodingmachine/php:7.3-v4-slim-apache
 
 ENV APACHE_DOCUMENT_ROOT=public/ \
     APACHE_RUN_USER=www-data \
@@ -11,10 +9,10 @@ ENV APACHE_DOCUMENT_ROOT=public/ \
     LOG_CHANNEL=errorlog \
     SESSION_DRIVER=cookie
 
-COPY composer.* /var/www/html/
+COPY composer.* ./
 
 RUN composer install --no-dev --no-scripts --no-autoloader
 
-COPY --chown=www-data:www-data . /var/www/html/
+COPY --chown=www-data:docker . .
 
 RUN composer dump-autoload --optimize
