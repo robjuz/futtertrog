@@ -6,14 +6,10 @@ services:
     ports:
       - 8001:80
     volumes:
-      - ./:/var/www/html:delegated
+      - ./:/var/www/html
     depends_on:
       - db
     environment:
-      DB_DATABASE: futtertrog
-      DB_USERNAME: futtertrog
-      DB_PASSWORD: futtertrog
-
       APACHE_DOCUMENT_ROOT: public/
 
       PHP_EXTENSION_XDEBUG: 1
@@ -22,8 +18,13 @@ services:
       PHP_EXTENSION_SQLITE3: 1
       PHP_EXTENSION_PDO_SQLITE: 1
 
+      PHP_INI_MEMORY_LIMIT: 100M
+
       STARTUP_COMMAND_1: composer install
       STARTUP_COMMAND_2: php artisan migrate --force
+
+      CRON_SCHEDULE: "* * * * *"
+      CRON_COMMAND: php artisan schedule:run
 
   db:
     image: mysql:5.7
