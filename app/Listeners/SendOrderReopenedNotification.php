@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\OrderReopened;
+use App\Events\OrderUpdated;
 use App\Notifications\OrderReopenedNotification;
 use App\User;
 use Illuminate\Support\Facades\Notification;
@@ -22,11 +22,13 @@ class SendOrderReopenedNotification
     /**
      * Handle the event.
      *
-     * @param  OrderReopened  $event
+     * @param  OrderUpdated  $event
      * @return void
      */
-    public function handle(OrderReopened $event)
+    public function handle(OrderUpdated $event)
     {
-        Notification::send(User::where('is_admin', true)->get(), new OrderReopenedNotification($event->order, $event->user, $event->meal));
+        if ($event->order->isOpen) {
+            Notification::send(User::where('is_admin', true)->get(), new OrderReopenedNotification($event->order, $event->user, $event->orderItem->meal));
+        }
     }
 }

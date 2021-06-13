@@ -137,4 +137,9 @@ class Order extends Model
 
         return $this;
     }
+
+    public function getIsOpenAttribute()
+    {
+     return $this->status === Order::STATUS_OPEN;
+    }
 }

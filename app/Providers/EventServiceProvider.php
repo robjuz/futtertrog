@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Events\NewOrderPossibilities;
 use App\Events\NewOrderPossibility;
-use App\Events\OrderReopened;
+use App\Events\OrderUpdated;
 use App\Listeners\SendNewOrderPossibilitiesNotification;
 use App\Listeners\SendNewOrderPossibilityNotification;
 use App\Listeners\SendOrderReopenedNotification;
@@ -24,7 +24,7 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        OrderReopened::class => [
+        OrderUpdated::class => [
             SendOrderReopenedNotification::class,
         ],
         NewOrderPossibility::class => [
