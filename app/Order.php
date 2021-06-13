@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * App\Order.
@@ -113,11 +115,7 @@ class Order extends Model
             return false;
         }
 
-        if (now()->isAfter($this->date)) {
-            return false;
-        }
-
-        return true;
+        return Auth::user()->can('create', [OrderItem::class, request()->date]);
     }
 
     public function canBeUpdatedByHolzke()

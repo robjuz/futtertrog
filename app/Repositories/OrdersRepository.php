@@ -41,7 +41,7 @@ class OrdersRepository
 
     public function get(Request $request)
     {
-        $from = Carbon::parse($request->query('from', today()));
+        $from = Carbon::parse($request->get('from', today()));
         $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
 
         return Order::with(['orderItems.meal'])
