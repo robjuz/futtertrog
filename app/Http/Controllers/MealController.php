@@ -36,8 +36,6 @@ class MealController extends Controller
      *      description="Schows the meals for the current or given date",
      *      operationId="meals.index",
      *      security={ {"bearer": {} }},
-     *      tags={"meals", "Futtertrog"},
-     *
      *
      *      @OA\Parameter(
      *          name="date",

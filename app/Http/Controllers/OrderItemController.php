@@ -109,8 +109,6 @@ class OrderItemController extends Controller
      *      description="Order a given meal for a given date",
      *      operationId="order_items.store",
      *      security={ {"bearer": {} }},
-     *      tags={"order_items", "Futtertrog"},
-     *
      *
      *      @OA\RequestBody(
      *          required=true,
@@ -126,12 +124,7 @@ class OrderItemController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Success",
-     *          @OA\JsonContent(
-     *              @OA\Schema(
-     *                  type="array",
-     *                  @OA\Items( type="object", ref="#/components/schemas/Meal" )
-     *              ),
-     *          ),
+     *          @OA\JsonContent( ref="#/components/schemas/Meal" ),
      *      ),
      * )
      */

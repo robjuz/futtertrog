@@ -18,7 +18,6 @@ use OpenApi\Annotations as OA;
  *      summary="Sign in",
  *      description="Login by email, password",
  *      operationId="login",
- *      tags={"auth"},
  *      @OA\RequestBody(
  *          required=true,
  *          description="Pass user credentials",
@@ -58,23 +57,24 @@ use OpenApi\Annotations as OA;
  * ),
  *
  * @OA\Post(
- * path="/api/logout",
- * summary="Logout",
- * description="Logout user",
- * operationId="logout",
- * tags={"auth"},
- * security={ {"bearer": {} }},
- * @OA\Response(
- *    response=200,
- *    description="Success"
- *     ),
- * @OA\Response(
- *    response=401,
- *    description="Returns when user is not authenticated",
- *    @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Not authorized"),
- *    )
- * )
+ *      path="/api/logout",
+ *      summary="Logout",
+ *      description="Logout user",
+ *      operationId="logout",
+ *      security={ {"bearer": {} }},
+ *
+ *      @OA\Response(
+ *         response=200,
+ *         description="Success"
+ *      ),
+ *
+ *      @OA\Response(
+ *         response=401,
+ *         description="Returns when user is not authenticated",
+ *         @OA\JsonContent(
+ *            @OA\Property(property="message", type="string", example="Not authorized"),
+ *         )
+ *      )
  * )
  */
 class LoginController extends Controller
