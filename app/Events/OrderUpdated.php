@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Meal;
 use App\Order;
 use App\OrderItem;
 use App\User;

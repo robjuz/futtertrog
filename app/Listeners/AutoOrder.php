@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Events\OrderUpdated;
 use App\Services\HolzkeService;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class AutoOrder
 {

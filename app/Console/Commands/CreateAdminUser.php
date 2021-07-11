@@ -43,23 +43,23 @@ class CreateAdminUser extends Command
      */
     public function handle()
     {
-        if (!$name = $this->input->getParameterOption('name')) {
+        if (! $name = $this->input->getParameterOption('name')) {
             $name = $this->ask('name');
         }
 
-        if (!$email = $this->input->getParameterOption('email')) {
-         $email = $this->ask('email');
+        if (! $email = $this->input->getParameterOption('email')) {
+            $email = $this->ask('email');
         }
 
-        if (!$password = $this->input->getParameterOption('password')) {
+        if (! $password = $this->input->getParameterOption('password')) {
             $password = $this->secret('password');
         }
 
         User::create([
-           'email' => $email,
+            'email' => $email,
             'name' => $name,
             'password' => Hash::make($password),
-            'is_admin' => true
+            'is_admin' => true,
         ]);
     }
 }

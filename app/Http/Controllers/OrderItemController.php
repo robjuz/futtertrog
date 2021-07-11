@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use OpenApi\Annotations as OA;
 
 class OrderItemController extends Controller
@@ -176,7 +175,6 @@ class OrderItemController extends Controller
             );
 
         event(new OrderUpdated($order, $orderItem->user, $orderItem));
-
 
         if ($request->wantsJson()) {
             return response($orderItem, Response::HTTP_CREATED);

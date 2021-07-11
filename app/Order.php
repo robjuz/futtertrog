@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 
 /**
  * App\Order.
@@ -140,6 +139,6 @@ class Order extends Model
 
     public function getIsOpenAttribute()
     {
-     return $this->status === Order::STATUS_OPEN;
+        return $this->status === Order::STATUS_OPEN;
     }
 }
