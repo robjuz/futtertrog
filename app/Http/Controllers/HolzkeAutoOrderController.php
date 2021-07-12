@@ -21,8 +21,6 @@ class HolzkeAutoOrderController extends Controller
     {
         $orders = $ordersRepository->get($request);
 
-        dd($orders);
-
         $holzkeService->placeOrder($orders);
 
         if ($request->wantsJson()) {
