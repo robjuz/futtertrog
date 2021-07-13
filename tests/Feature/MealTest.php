@@ -183,16 +183,19 @@ class MealTest extends TestCase
     /** @test */
     public function meals_can_be_filtered_down_by_date()
     {
+        /** @var Meal $meal1 */
         $meal1 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
         ]);
 
+        /** @var Meal $meal2 */
         $meal2 = factory(Meal::class)->create([
             'date_from' => Carbon::tomorrow(),
             'date_to' => Carbon::tomorrow(),
         ]);
 
+        /** @var Meal $meal3 */
         $meal3 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::tomorrow(),
@@ -209,16 +212,27 @@ class MealTest extends TestCase
     /** @test */
     public function is_shows_meals_for_the_current_day()
     {
+        /** @var Meal $meal1 */
         $meal1 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
         ]);
 
+        /** @var Meal $variant1 */
+        $variant1 = factory(Meal::class)->create([
+            'date_from' => Carbon::today(),
+            'date_to' => Carbon::today(),
+        ]);
+
+        $meal1->variants()->save($variant1);
+
+        /** @var Meal $meal2 */
         $meal2 = factory(Meal::class)->create([
             'date_from' => Carbon::today()->addWeekday(),
             'date_to' => Carbon::today()->addWeekday(),
         ]);
 
+        /** @var Meal $meal3 */
         $meal3 = factory(Meal::class)->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today()->addWeekday(),
@@ -228,13 +242,47 @@ class MealTest extends TestCase
 
         $this->get(route('meals.index'))
             ->assertSee($meal1->title)
+            ->assertSee($variant1->title)
             ->assertSee($meal3->title)
             ->assertDontSee($meal2->title);
 
         $this->getJson(route('meals.index'))
             ->assertSee($meal1->title)
+            ->assertSee($variant1->title)
             ->assertSee($meal3->title)
             ->assertDontSee($meal2->title);
+    }
+
+    /** @test */
+    public function meal_variants_are_listed_as_relations_in_json_response()
+    {
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->create([
+            'date_from' => Carbon::today(),
+            'date_to' => Carbon::today(),
+        ]);
+
+        /** @var Meal $variant */
+        $variant = factory(Meal::class)->create([
+            'date_from' => Carbon::today(),
+            'date_to' => Carbon::today(),
+            'parent_id' => $meal->id
+        ]);
+
+        $this->login();
+
+        $this->getJson(route('meals.index'))
+            ->assertJson([
+               [
+                   'title' => $meal->title,
+                   'variants' => [
+                       [
+                           'title' => $variant->title
+                       ]
+                   ]
+               ]
+            ])
+            ->assertJsonCount(1);
     }
 
     /** @test */

@@ -17,7 +17,9 @@
     @endif
 </h4>
 
+@if($meal->variants->isEmpty())
 <small class="money">@money($meal->price)</small>
+@endif
 
 @if($meal->image)
     <img src="{{ $meal->image }}" alt="">
@@ -44,8 +46,20 @@
             @csrf
             <input type="hidden" name="date" value="{{ $requestedDate->toDateString() }}"/>
             <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
-            <input type="hidden" name="meal_id" value="{{ $meal->id }}"/>
-
+            @if($meal->variants->isEmpty())
+                <input type="hidden" name="meal_id" value="{{ $meal->id }}"/>
+            @else
+                <fieldset class="variants">
+                    <legend>{{ __('Variants') }}</legend>
+                @foreach($meal->variants as $variant)
+                    <input type="radio" name="meal_id" value="{{ $variant->id }}" id="variant_{{ $variant->id }}"/>
+                    <label for="variant_{{ $variant->id }}">
+                        <span>{{ $variant->title }}</span>
+                        <small class="money">@money($variant->price)</small>
+                    </label>
+                @endforeach
+                </fieldset>
+            @endif
             <label for="amount-{{ $meal->id }}" class="sr-only">{{ __('Amount') }}</label>
             <input type="number" name="quantity" min="1" value="1" id="amount-{{ $meal->id }}">
             <button type="submit">{{ __('Place order') }}</button>

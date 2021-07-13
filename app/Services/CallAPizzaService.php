@@ -47,8 +47,6 @@ class CallAPizzaService
                 continue;
             }
 
-            $name = trim($name->text());
-
             $descriptionNode = $mealElement->first('.description');
 
             foreach ($descriptionNode->children() as $childNode) {
@@ -59,19 +57,26 @@ class CallAPizzaService
 
             $image = $mealElement->first('.product-img img');
 
+            $meal = [
+                'title' => trim($name->text()),
+                'description' => trim($descriptionNode->innerHtml()),
+                'image' => $image->getAttribute('src') ?: $image->getAttribute('data-src'),
+                'variants' => []
+            ];
+
             foreach ($mealElement->find('.add-to-cart') as $priceInfo) {
                 $priceTitle = strip_tags($priceInfo->find('.price_box_title')[0]->text());
                 $priceText = $priceInfo->find('.price_box_price')[0]->text();
                 $priceText = preg_replace('/\D+$/', '', $priceText);
                 $priceText = preg_replace('/[,\.]/', '', $priceText);
 
-                $meals[] = [
-                    'title' => $name.'('.$priceTitle.')',
-                    'description' => trim($descriptionNode->innerHtml()),
+                $meal['variants'][] = [
+                    'title' => '('.$priceTitle.')',
                     'price' => intval($priceText),
-                    'image' => $image->getAttribute('src') ?: $image->getAttribute('data-src'),
                 ];
             }
+
+            $meals[] = $meal;
         }
 
         return $meals;

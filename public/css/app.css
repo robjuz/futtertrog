@@ -1090,6 +1090,27 @@ footer {
     justify-content: flex-end;
     margin-top: auto;
     padding-top: 2em;
+
+    display: grid;
+    grid-template-areas:
+        "variants variants"
+        "submit   submit" ;
+}
+
+[id="current-offer"] li > *:last-child .variants {
+    grid-area: variants;
+    margin-bottom: auto;
+}
+
+[id="current-offer"] li > *:last-child .variants + * {
+    grid-area: submit;
+}
+
+.variants label {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
 [id="current-offer"] [name="_method"][value="delete"] ~ p {

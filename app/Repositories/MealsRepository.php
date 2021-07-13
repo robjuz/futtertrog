@@ -18,7 +18,7 @@ class MealsRepository
         $date = Carbon::parse($date);
 
         if (empty($this->cache[$date->timestamp])) {
-            $this->cache[$date->timestamp] = Meal::forDate($date)->get();
+            $this->cache[$date->timestamp] = Meal::doesntHave('parent')->forDate($date)->get();
         }
 
         return $this->cache[$date->timestamp];

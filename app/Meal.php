@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use OpenApi\Annotations as OA;
@@ -16,6 +18,8 @@ use OpenApi\Annotations as OA;
  *      @OA\Property( property="price", type="number", format="float"),
  *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
  *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
+ *      @OA\Property( property="variants",type="array", @OA\Items( type="object", ref="#/components/schemas/Meal" ), nullable=true ),
+ *      @OA\Property( property="parent", type="object", ref="#/components/schemas/Meal", nullable=true ),
  *  ),
  *
  *  @OA\Schema(
@@ -40,6 +44,8 @@ use OpenApi\Annotations as OA;
  * @property-read mixed $is_hated
  * @property-read mixed $is_preferred
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Meal[] $variants
+ * @property-read \App\Meal $parent
  * @property-read int|null $order_items_count
  * @method static \App\MealCollection|static[] all($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal forDate($date)
@@ -74,9 +80,21 @@ class Meal extends Model
 
     protected $dates = ['date_from', 'date_to'];
 
-    public function orderItems()
+    protected $with = ['variants'];
+
+    public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function variants(): HasMany
+    {
+        return $this->hasMany(Meal::class, 'parent_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Meal::class, 'parent_id');
     }
 
     /**
@@ -146,7 +164,7 @@ class Meal extends Model
      * @param  array $models
      * @return \App\MealCollection
      */
-    public function newCollection(array $models = [])
+    public function newCollection(array $models = []): MealCollection
     {
         return new MealCollection($models);
     }

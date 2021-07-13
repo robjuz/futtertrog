@@ -32,7 +32,8 @@ class MealImportController extends Controller
         $meals = $providerService->getMealsForDate($date);
 
         foreach ($meals as $mealElement) {
-            Meal::updateOrCreate(
+            /** @var Meal $meal */
+            $meal = Meal::updateOrCreate(
                 [
                     'title' => $mealElement['title'],
                     'date_from' => $date->toDateString(),
@@ -41,10 +42,26 @@ class MealImportController extends Controller
                 ],
                 [
                     'description' => $mealElement['description'],
-                    'price' => $mealElement['price'],
+                    'price' => $mealElement['price'] ?? null,
                     'image' => $mealElement['image'] ?? null,
                 ]
             );
+
+            foreach ($mealElement->varians ?? [] as $variantElement) {
+                $meal->variants()->updateOrCreate(
+                    [
+                        'title' => $variantElement['title'],
+                        'date_from' => $date->toDateString(),
+                        'date_to' => $date->toDateString(),
+                        'provider' => $provider,
+                    ],
+                    [
+                        'description' => $variantElement['description'],
+                        'price' => $variantElement['price'] ?? null,
+                        'image' => $variantElement['image'] ?? null,
+                    ]
+                );
+            }
         }
 
         if ($request->has('notify')) {
