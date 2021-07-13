@@ -61,7 +61,7 @@ class CallAPizzaService
                 'title' => trim($name->text()),
                 'description' => trim($descriptionNode->innerHtml()),
                 'image' => $image->getAttribute('src') ?: $image->getAttribute('data-src'),
-                'variants' => []
+                'variants' => [],
             ];
 
             foreach ($mealElement->find('.add-to-cart') as $priceInfo) {
