@@ -60,6 +60,7 @@ class MealController extends Controller
         $endOfMonth = $requestedDate->clone()->endOfMonth();
 
         $todayMeals = $meals->forDate($requestedDate)->sortByPreferences();
+        $todayMeals->load('variants');
 
         if ($request->wantsJson()) {
             return response()->json($todayMeals);

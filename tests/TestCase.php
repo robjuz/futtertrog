@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\DB;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, RefreshDatabase;
+    use CreatesApplication;
+    use RefreshDatabase;
 
     public function loginAsAdmin()
     {
@@ -27,7 +28,7 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->withoutExceptionHandling();
     }
 }
