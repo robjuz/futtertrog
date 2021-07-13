@@ -9,7 +9,10 @@ services:
     volumes:
       - ./:/var/www/html
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
     environment:
       APACHE_DOCUMENT_ROOT: public/
 
@@ -37,6 +40,13 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: 1
     volumes:
       - mysql:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin -ufuttertrog -pfuttertrog status
+      interval: 20s
+      start_period: 10s
+      timeout: 10s
+      retries: 3
+
 
   mailhog:
     image: mailhog/mailhog:latest
