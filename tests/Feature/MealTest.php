@@ -243,13 +243,13 @@ class MealTest extends TestCase
 
         $this->get(route('meals.index'))
             ->assertSee($meal1->title)
-            ->assertSee($variant1->title)
+            ->assertSee($variant1->variant_title)
             ->assertSee($meal3->title)
             ->assertDontSee($meal2->title);
 
         $this->getJson(route('meals.index'))
             ->assertSee($meal1->title)
-            ->assertSee($variant1->title)
+            ->assertSee($variant1->variant_title)
             ->assertSee($meal3->title)
             ->assertDontSee($meal2->title);
     }

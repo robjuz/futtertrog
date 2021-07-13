@@ -14,6 +14,7 @@ use OpenApi\Annotations as OA;
  *      required={"title", "description", "price"},
  *      @OA\Property( property="id", ref="#/components/schemas/id" ),
  *      @OA\Property( property="title", type="string", readOnly="true"),
+ *      @OA\Property( property="variant_title", type="string", readOnly="true"),
  *      @OA\Property( property="description", type="string", readOnly="true"),
  *      @OA\Property( property="price", type="number", format="float"),
  *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
@@ -32,6 +33,7 @@ use OpenApi\Annotations as OA;
  *
  * @property int $id
  * @property string $title
+ * @property string $variant_title
  * @property string|null $description
  * @property string|null $provider
  * @property int $price
@@ -80,7 +82,7 @@ class Meal extends Model
 
     protected $dates = ['date_from', 'date_to'];
 
-    protected $with = ['variants'];
+    protected $appends = ['variant_title'];
 
     public function orderItems(): HasMany
     {

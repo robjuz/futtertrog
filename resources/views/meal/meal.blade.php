@@ -41,7 +41,6 @@
         <p> {{ trans_choice('futtertrog.portions_ordered', $orderItem->quantity) }}</p>
     @endcan()
 @else
-    @can('create', [App\OrderItem::class, $requestedDate])
         <form action="{{ route('order_items.store') }}" method="post">
             @csrf
             <input type="hidden" name="date" value="{{ $requestedDate->toDateString() }}"/>
@@ -60,10 +59,11 @@
                 @endforeach
                 </fieldset>
             @endif
+    @can('create', [App\OrderItem::class, $requestedDate])
             <label for="amount-{{ $meal->id }}" class="sr-only">{{ __('Amount') }}</label>
             <input type="number" name="quantity" min="1" value="1" id="amount-{{ $meal->id }}">
             <button type="submit">{{ __('Place order') }}</button>
-        </form>
     @endcan
+        </form>
 @endif
 
