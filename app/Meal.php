@@ -189,4 +189,31 @@ class Meal extends Model
     {
         return $query->whereDate('date_from', '<=', $date)->whereDate('date_to', '>=', $date);
     }
+
+    public function order($userId, $date, $quantity = 1): OrderItem
+    {
+        /** @var Order $order */
+        $order =  Order::query()
+            ->updateOrCreate(
+                [
+                    'date' => $date,
+                    'provider' => $this->provider,
+                ],
+                [
+                    'status' => Order::STATUS_OPEN,
+                ]
+            );
+
+        /** @var OrderItem $orderItem */
+        $orderItem = $order->orderItems()
+            ->create(
+                [
+                    'meal_id' => $this->id,
+                    'user_id' => $userId,
+                    'quantity' => $quantity,
+                ]
+            );
+
+        return $orderItem;
+    }
 }

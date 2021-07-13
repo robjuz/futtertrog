@@ -152,29 +152,13 @@ class OrderItemController extends Controller
 
         $meal = Meal::find($attributes['meal_id']);
 
-        /** @var Order $order */
-        $order = Order::query()
-            ->updateOrCreate(
-                [
-                    'date' => $attributes['date'],
-                    'provider' => $meal->provider,
-                ],
-                [
-                    'status' => Order::STATUS_OPEN,
-                ]
-            );
+        $orderItem = $meal->order(
+            $user->id,
+            $attributes['date'],
+            $attributes['quantity'] ?? 1
+        );
 
-        /** @var OrderItem $orderItem */
-        $orderItem = $order->orderItems()
-            ->create(
-                [
-                    'meal_id' => $attributes['meal_id'],
-                    'user_id' => $attributes['user_id'],
-                    'quantity' => $attributes['quantity'] ?? 1,
-                ]
-            );
-
-        event(new OrderUpdated($order, $orderItem->user, $orderItem));
+        event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
             return response($orderItem, Response::HTTP_CREATED);
@@ -183,7 +167,7 @@ class OrderItemController extends Controller
         return back()->with('success', __('Success'));
     }
 
-    public function update(Request $request, OrderItem $orderItem, HolzkeService $holzkeService)
+    public function update(Request $request, OrderItem $orderItem)
     {
         $data = $request->validate(
             [
@@ -204,7 +188,7 @@ class OrderItemController extends Controller
         return redirect()->route('orders.edit', $orderItem->order)->with('success', __('Success'));
     }
 
-    public function destroy(Request $request, OrderItem $orderItem, HolzkeService $holzkeService)
+    public function destroy(Request $request, OrderItem $orderItem)
     {
         $this->authorize('delete', $orderItem);
 
