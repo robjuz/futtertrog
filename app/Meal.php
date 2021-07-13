@@ -192,7 +192,7 @@ class Meal extends Model
 
     public function scopeByProvider($query, $provider = null)
     {
-        if (!$provider) {
+        if (! $provider) {
             return $query;
         }
 
