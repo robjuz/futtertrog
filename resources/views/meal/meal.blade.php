@@ -54,7 +54,7 @@
                 @foreach($meal->variants as $variant)
                     <input type="radio" name="meal_id" value="{{ $variant->id }}" id="variant_{{ $variant->id }}"/>
                     <label for="variant_{{ $variant->id }}">
-                        <span>{{ $variant->title }}</span>
+                        <span>{{ $variant->variant_title }}</span>
                         <small class="money">@money($variant->price)</small>
                     </label>
                 @endforeach

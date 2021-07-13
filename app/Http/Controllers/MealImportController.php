@@ -47,7 +47,7 @@ class MealImportController extends Controller
                 ]
             );
 
-            foreach ($mealElement->varians ?? [] as $variantElement) {
+            foreach ($mealElement['variants'] ?? [] as $variantElement) {
                 $meal->variants()->updateOrCreate(
                     [
                         'title' => $variantElement['title'],
@@ -56,7 +56,7 @@ class MealImportController extends Controller
                         'provider' => $provider,
                     ],
                     [
-                        'description' => $variantElement['description'],
+                        'description' => $variantElement['description'] ?? null,
                         'price' => $variantElement['price'] ?? null,
                         'image' => $variantElement['image'] ?? null,
                     ]

@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class MealTest extends TestCase
@@ -334,5 +335,18 @@ class MealTest extends TestCase
 
         Notification::assertSentTo($john, \App\Notifications\NewOrderPossibility::class);
         Notification::assertNotSentTo($sara, \App\Notifications\NewOrderPossibility::class);
+    }
+
+    /**
+     * @test
+     */
+    public function variant_name_consist_of_parent_name_and_variant_name(){
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(factory(Meal::class)->make());
+
+        $this->assertTrue(Str::containsAll($variant->title, [$meal->title, $variant->title]));
     }
 }

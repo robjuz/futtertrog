@@ -108,6 +108,20 @@ class Meal extends Model
         $this->attributes['price'] = is_float($value) ? intval(100 * $value) : $value;
     }
 
+    public function getTitleAttribute($value)
+    {
+        if ($this->parent) {
+            return implode(' ', [$this->parent->title, $value]);
+        }
+
+        return $value;
+    }
+
+    public function getVariantTitleAttribute()
+    {
+        return $this->attributes['title'];
+    }
+
     public function getIsPreferredAttribute()
     {
         if (! isset($this->attributes['is_preferred'])) {
