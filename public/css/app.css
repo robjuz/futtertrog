@@ -988,6 +988,7 @@ footer {
     grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
     list-style-type: none;
     padding: 0 1em;
+    flex: 1;
 }
 
 [id="current-offer"] li,
@@ -1048,6 +1049,8 @@ footer {
 /*------- Meals --------------------*/
 /************************************/
 [id="current-offer"] {
+    display: flex;
+    flex-wrap: wrap;
     padding-bottom: 3em;
     padding-top: 3em;
     scroll-margin-top: 3em;
@@ -1128,10 +1131,19 @@ footer {
     max-width: initial;
 }
 
+[id="current-offer"] .filters form {
+    margin-top: 0;
+}
+
+[id="current-offer"] .filters [type="submit"] {
+    margin-left: 0;
+}
+
 [id="current-offer"] [type="submit"]:disabled {
     cursor: not-allowed;
     animation: 1s loading infinite;
 }
+
 
 @keyframes loading {
     50% { background: var(--custom-4); }

@@ -190,6 +190,15 @@ class Meal extends Model
         return $query->whereDate('date_from', '<=', $date)->whereDate('date_to', '>=', $date);
     }
 
+    public function scopeByProvider($query, $provider = null)
+    {
+        if (!$provider) {
+            return $query;
+        }
+
+        return $query->where('provider', $provider);
+    }
+
     public function order($userId, $date, $quantity = 1): OrderItem
     {
         /** @var Order $order */

@@ -171,5 +171,7 @@
   "Restore": "Wiederherstellen",
   "or": "oder",
   "Login with GitLab": "Mit Gitlab einloggen",
-  "Variants": "Varianten"
+  "Variants": "Varianten",
+  "Filters": "Filter",
+  "All": "Alle"
 }

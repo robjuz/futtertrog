@@ -274,14 +274,14 @@ class MealTest extends TestCase
 
         $this->getJson(route('meals.index'))
             ->assertJson([
-               [
-                   'title' => $meal->title,
-                   'variants' => [
-                       [
-                           'title' => $variant->title
-                       ]
-                   ]
-               ]
+                [
+                    'title' => $meal->title,
+                    'variants' => [
+                        [
+                            'title' => $variant->title
+                        ]
+                    ]
+                ]
             ])
             ->assertJsonCount(1);
     }
@@ -318,14 +318,18 @@ class MealTest extends TestCase
     public function it_can_send_a_notifications_when_a_new_meal_was_created_when_user_opted_in()
     {
         /** @var User $john */
-        $john = factory(User::class)->create(['settings' => [
-            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1"
-        ]]);
+        $john = factory(User::class)->create([
+            'settings' => [
+                User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1"
+            ]
+        ]);
 
         /** @var User $sara */
-        $sara = factory(User::class)->create(['settings' => [
-            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "0"
-        ]]);
+        $sara = factory(User::class)->create([
+            'settings' => [
+                User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "0"
+            ]
+        ]);
 
         Notification::fake();
 
@@ -337,10 +341,9 @@ class MealTest extends TestCase
         Notification::assertNotSentTo($sara, \App\Notifications\NewOrderPossibility::class);
     }
 
-    /**
-     * @test
-     */
-    public function variant_name_consist_of_parent_name_and_variant_name(){
+    /** @test */
+    public function variant_name_consist_of_parent_name_and_variant_name()
+    {
         /** @var Meal $meal */
         $meal = factory(Meal::class)->create();
 
@@ -348,5 +351,45 @@ class MealTest extends TestCase
         $variant = $meal->variants()->save(factory(Meal::class)->make());
 
         $this->assertTrue(Str::containsAll($variant->title, [$meal->title, $variant->title]));
+    }
+
+    /** @test */
+    public function meals_can_be_filtered_by_provider()
+    {
+        $date = today()->addDay()->toDateString();
+
+        /** @var Meal $meal1 */
+        $meal1 = factory(Meal::class)->create([
+            'provider' => 'provider_1',
+            'date_from' => $date,
+            'date_to' => $date
+        ]);
+
+        /** @var Meal $meal2 */
+        $meal2 = factory(Meal::class)->create([
+            'provider' => 'provider_2',
+            'date_from' => $date,
+            'date_to' => $date
+        ]);
+
+        $this->login()
+            ->get(route('meals.index', ['date' => $date]))
+            ->assertSee($meal1->title)
+            ->assertSee($meal2->title);
+
+        $this->login()
+            ->getJson(route('meals.index', ['date' => $date]))
+            ->assertSee($meal1->title)
+            ->assertSee($meal2->title);
+
+        $this->login()
+            ->get(route('meals.index', ['date' => $date, 'provider' => $meal1->provider]))
+            ->assertSee($meal1->title)
+            ->assertDontSee($meal2->title);
+
+        $this->login()
+            ->getJson(route('meals.index', ['date' => $date, 'provider' => $meal1->provider]))
+            ->assertSee($meal1->title)
+            ->assertDontSee($meal2->title);
     }
 }

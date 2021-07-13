@@ -59,16 +59,18 @@ class MealController extends Controller
         $startOfMonth = $requestedDate->clone()->startOfMonth();
         $endOfMonth = $requestedDate->clone()->endOfMonth();
 
-        $todayMeals = $meals->forDate($requestedDate)->sortByPreferences();
-        $todayMeals->load('variants');
+        $todayMeals = Meal::with(['variants'])
+            ->doesntHave('parent')
+            ->forDate($requestedDate)
+            ->byProvider($request->provider)
+            ->get()
+            ->sortByPreferences();
 
         if ($request->wantsJson()) {
             return response()->json($todayMeals);
         }
 
         $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
-
-        $date = $requestedDate->clone()->firstOfMonth();
 
         $month = CarbonPeriod::create($startOfMonth, $endOfMonth);
 
