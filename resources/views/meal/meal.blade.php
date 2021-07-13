@@ -29,7 +29,16 @@
     <p>{{ $meal->description }}</p>
 @endif
 
-@if($orderItem = $todayOrders->firstWhere('meal_id', $meal->id))
+@php
+$ids = $meal->variants->pluck('id')->merge([$meal->id]);
+
+$orderedMealsIds = $todayOrders->pluck('meal_id');
+$orderItemId = $orderedMealsIds->intersect($ids)->first();
+$orderItem = $todayOrders->firstWhere('meal_id', $orderItemId);
+
+@endphp
+
+@if($orderItem)
     @can('delete', $orderItem)
         <form action="{{ route('order_items.destroy', $orderItem) }}" method="post">
             @csrf
@@ -51,7 +60,7 @@
                 <fieldset class="variants">
                     <legend>{{ __('Variants') }}</legend>
                 @foreach($meal->variants as $variant)
-                    <input type="radio" name="meal_id" value="{{ $variant->id }}" id="variant_{{ $variant->id }}"/>
+                    <input type="radio" name="meal_id" value="{{ $variant->id }}" id="variant_{{ $variant->id }}" @if($loop->first) checked @endif />
                     <label for="variant_{{ $variant->id }}">
                         <span>{{ $variant->variant_title }}</span>
                         <small class="money">@money($variant->price)</small>

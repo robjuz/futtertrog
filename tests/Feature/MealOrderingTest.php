@@ -276,4 +276,51 @@ class MealOrderingTest extends TestCase
 
         $this->assertDatabaseHas('order_items', $orderItem->only(['order_id', 'user_id', 'meal_id', 'quantity']));
     }
+
+    /** @test */
+    public function it_shows_a_delete_order_button_for_a_ordered_meal()
+    {
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->state('in_future')->create();
+
+        /** @var User $user */
+        $user = factory(User::class)->create();
+
+        $this->login($user);
+
+        $this->get(route('meals.index'))
+            ->assertDontSee(__('Delete order'));
+
+        $meal->order($user->id, $meal->date_from);
+
+        $this->get(route('meals.index', ['date' => $meal->date_from->toDateString()]))
+            ->assertSee(__('Delete order'));
+    }
+
+
+    /** @test */
+    public function it_shows_a_delete_order_button_for_a_ordered_meal_variant()
+    {
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->state('in_future')->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(
+            factory(Meal::class)->state('in_future')->make()
+        );
+
+
+        /** @var User $user */
+        $user = factory(User::class)->create();
+
+        $this->login($user);
+
+        $this->get(route('meals.index'))
+            ->assertDontSee(__('Delete order'));
+
+        $variant->order($user->id, $meal->date_from);
+
+        $this->get(route('meals.index', ['date' => $variant->date_from->toDateString()]))
+            ->assertSee(__('Delete order'));
+    }
 }
