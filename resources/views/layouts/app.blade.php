@@ -41,7 +41,7 @@
             }
 
             function promptUserToRefresh() {
-                document.getElementById('newVersionDialog').removeAttribute('hidden');
+                document.getElementById('newVersionDialog').style.setProperty('display', 'block');
             }
 
         }
@@ -137,7 +137,7 @@
     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 </footer>
 
-<div id="newVersionDialog" hidden>
+<div id="newVersionDialog">
     <p>{{ __('There is a new version available. Please reload the page to see the changes.') }}</p>
 
     <button onclick="window.location.reload()">
@@ -156,6 +156,10 @@
 <style>
     #main-navbar {
         display: block;
+    }
+
+    #newVersionDialog {
+        display: none;
     }
 </style>
 </body>

@@ -6,15 +6,12 @@
     },
     "servers": [
         {
-            "url": "http://futtertrog.test"
+            "url": "http://localhost"
         }
     ],
     "paths": {
         "/api/login": {
             "post": {
-                "tags": [
-                    "auth"
-                ],
                 "summary": "Sign in",
                 "description": "Login by email, password",
                 "operationId": "login",
@@ -100,9 +97,6 @@
         },
         "/api/logout": {
             "post": {
-                "tags": [
-                    "auth"
-                ],
                 "summary": "Logout",
                 "description": "Logout user",
                 "operationId": "logout",
@@ -136,12 +130,8 @@
         },
         "/api/order_possibilities": {
             "get": {
-                "tags": [
-                    "meals",
-                    "Futtertrog"
-                ],
                 "summary": "Meals for given date",
-                "description": "Schows the meals for the current on given date",
+                "description": "Schows the meals for the current or given date",
                 "operationId": "meals.index",
                 "parameters": [
                     {
@@ -174,10 +164,6 @@
         },
         "/api/place_order": {
             "post": {
-                "tags": [
-                    "order_items",
-                    "Futtertrog"
-                ],
                 "summary": "Place order",
                 "description": "Order a given meal for a given date",
                 "operationId": "order_items.store",
@@ -218,7 +204,9 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
-                                "schema": {}
+                                "schema": {
+                                    "$ref": "#/components/schemas/Meal"
+                                }
                             }
                         }
                     }

@@ -180,6 +180,13 @@ class HolzkeService
         );
 
         $this->confirmOrder();
+
+        $order->update(
+            [
+                'status' => Order::STATUS_ORDERED,
+                'external_id' => $this->getLastOrderId(),
+            ]
+        );
     }
 
     private function setOrderForEdit(string $external_id): void

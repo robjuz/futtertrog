@@ -2,14 +2,14 @@
 
 namespace App\Events;
 
-use App\Meal;
 use App\Order;
+use App\OrderItem;
 use App\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderReopened
+class OrderUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     /**
@@ -21,22 +21,22 @@ class OrderReopened
      */
     public $user;
     /**
-     * @var Meal
+     * @var OrderItem
      */
-    public $meal;
+    public $orderItem;
 
     /**
      * Create a new event instance.
      *
      * @param Order $order
      * @param User $user
-     * @param Meal $meal
+     * @param OrderItem $orderItem
      */
-    public function __construct(Order $order, User $user, Meal $meal)
+    public function __construct(Order $order, User $user, OrderItem $orderItem)
     {
         $this->order = $order;
         $this->user = $user;
-        $this->meal = $meal;
+        $this->orderItem = $orderItem;
     }
 
 //    /*

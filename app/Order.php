@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * App\Order.
@@ -113,16 +114,16 @@ class Order extends Model
             return false;
         }
 
-        if (now()->isAfter($this->date)) {
-            return false;
-        }
-
-        return true;
+        return Auth::user()->can('create', [OrderItem::class, request()->date]);
     }
 
     public function canBeUpdatedByHolzke()
     {
-        return (bool) $this->external_id;
+        return
+            (bool) $this->external_id
+            and self::where('external_id', '>', $this->external_id)
+                ->whereProvider($this->provider)
+                ->doesntExist();
     }
 
     public function reopen()
@@ -134,5 +135,10 @@ class Order extends Model
         );
 
         return $this;
+    }
+
+    public function getIsOpenAttribute()
+    {
+        return $this->status === Order::STATUS_OPEN;
     }
 }

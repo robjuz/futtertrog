@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Events\OrderReopened;
+use App\Events\OrderUpdated;
 use App\Meal;
 use App\Notifications\OrderReopenedNotification;
 use App\Order;
@@ -108,6 +108,7 @@ class MealOrderingTest extends TestCase
         $user = factory(User::class)->create();
 
         // Given we have a closed order
+        /** @var Order $order */
         $order = factory(Order::class)->create([
             'date' => $meal->date_from,
             'status' => Order::STATUS_ORDERED,
@@ -124,11 +125,13 @@ class MealOrderingTest extends TestCase
             'meal_id' => $meal->id
         ]);
 
+        $orderItem = $order->orderItems()->whereMealId($meal->id)->first();
+
         // En event is dispatched
-        Event::assertDispatched(OrderReopened::class, function ($event) use ($order, $user, $meal) {
-            return $event->order->id === $order->id
-                && $event->user->id === $user->id
-                && $event->meal->id === $meal->id;
+        Event::assertDispatched(OrderUpdated::class, function ($event) use ($order, $user, $orderItem) {
+            return $event->order->is($order)
+                && $event->user->is($user)
+                && $event->orderItem->is($orderItem);
         });
     }
 

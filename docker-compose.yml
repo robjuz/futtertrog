@@ -3,33 +3,14 @@ version: '3'
 services:
   futtertrog:
     container_name: futtertrog
-    image: thecodingmachine/php:7.4-v3-apache
+    image: thecodingmachine/php:7.4-v4-apache
     ports:
-      - 8080:80
+      - ${APP_PORT:-8080}:80
     volumes:
-      - ./:/var/www/html:delegated
-    links:
-      - db
+      - ./:/var/www/html
     depends_on:
       - db
     environment:
-      APP_NAME: Futtertor DEV
-      APP_ENV: local
-
-      LOG_CHANNEL: stderr
-
-      DB_HOST: db
-      DB_DATABASE: futtertrog
-      DB_USERNAME: futtertrog
-      DB_PASSWORD: futtertrog
-
-      MAIL_DRIVER: smtp
-      MAIL_HOST: mailhog
-      MAIL_PORT: 1025
-      MAIL_USERNAME: null
-      MAIL_PASSWORD: null
-      MAIL_ENCRYPTION: null
-
       APACHE_DOCUMENT_ROOT: public/
 
       PHP_EXTENSION_XDEBUG: 1
@@ -38,10 +19,13 @@ services:
       PHP_EXTENSION_SQLITE3: 1
       PHP_EXTENSION_PDO_SQLITE: 1
 
-      PHP_INI_XDEBUG__REMOTE_AUTOSTART: 1
+      PHP_INI_MEMORY_LIMIT: 100M
 
       STARTUP_COMMAND_1: composer install
-      STARTUP_COMMAND_2: php artisan migrate
+      STARTUP_COMMAND_2: php artisan migrate --force
+
+      CRON_SCHEDULE: "* * * * *"
+      CRON_COMMAND: php artisan schedule:run
 
   db:
     container_name: futtertrog_db
