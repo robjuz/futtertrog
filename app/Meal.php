@@ -193,7 +193,7 @@ class Meal extends Model
     public function order($userId, $date, $quantity = 1): OrderItem
     {
         /** @var Order $order */
-        $order =  Order::query()
+        $order = Order::query()
             ->updateOrCreate(
                 [
                     'date' => $date,

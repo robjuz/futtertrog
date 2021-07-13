@@ -6,7 +6,6 @@ use App\Events\OrderUpdated;
 use App\Meal;
 use App\Order;
 use App\OrderItem;
-use App\Services\HolzkeService;
 use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
