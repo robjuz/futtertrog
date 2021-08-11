@@ -985,7 +985,7 @@ footer {
 [id="orders.edit"] ol {
     display: grid;
     grid-gap: 1em;
-    grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
     list-style-type: none;
     padding: 0 1em;
     flex: 1;
@@ -1129,6 +1129,10 @@ footer {
     margin-left: 1em;
     margin-top: 1em;
     max-width: initial;
+}
+
+[id="current-offer"] .filters {
+    height: initial;
 }
 
 [id="current-offer"] .filters form {
