@@ -61,7 +61,7 @@
 
                     <label for="provider">{{ __("Provider") }}</label>
                     <select id="provider" name="provider">
-                        <option>{{ __('All') }}</option>
+                        <option value="">{{ __('All') }}</option>
                         @foreach(\App\Meal::$providers as $provider)
                             <option value="{{ $provider }}" {{ request('provider') == $provider ? ' selected' : '' }}>{{ $provider }}</option>
                         @endforeach
