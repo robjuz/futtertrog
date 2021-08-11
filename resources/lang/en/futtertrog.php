@@ -13,4 +13,8 @@ return [
         'de' => 'German',
         'en' => 'English',
     ],
+    'status' => [
+        'open' => 'Not yet ordered from the supplier',
+        'orderen' => 'Ordered from supplier'
+    ]
 ];

@@ -62,4 +62,9 @@ class OrderItem extends Model
     {
         return $this->meal->price * $this->quantity;
     }
+
+    public function getStatusAttribute()
+    {
+        return $this->order->status;
+    }
 }

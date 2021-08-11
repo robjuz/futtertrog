@@ -13,4 +13,8 @@ return [
         'de' => 'Deutsch',
         'en' => 'Englisch',
     ],
+    'orderStatus' => [
+        'open' => 'Noch nicht beim Lieferanten bestellt',
+        'orderen' => 'Beim Lieferanten bestellt'
+    ]
 ];
