@@ -22,6 +22,7 @@
                         @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
                             <p>{{ $order->meal->description }}</p>
                         @endif
+                        <p class="orderStatus">{{ __('Status')}}: {{__('futtertrog.orderStatus.'. $order->status) }}</p>
                     </li>
                 @endforeach
             </ul>
@@ -53,6 +54,7 @@
                                 @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
                                     <p>{{ $order->meal->description }}</p>
                                 @endif
+                                <p class="orderStatus">{{ __('Status')}}: {{__('futtertrog.orderStatus.'. $order->status) }}</p>
                             @endforeach
                         </li>
                     @endforeach

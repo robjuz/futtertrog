@@ -39,6 +39,7 @@ class DashboardTest extends TestCase
         $response = $this->login($user)->get(route('home'));
         foreach ($orderItems as $orderItem) {
             $response->assertSee($orderItem->meal->title);
+            $response->assertSee(__('futtertrog.orderStatus.' . $orderItem->status));
         }
 
     }
@@ -60,6 +61,7 @@ class DashboardTest extends TestCase
         $response = $this->login($user)->get(route('home'));
         foreach ($orderItems as $orderItem) {
             $response->assertSee($orderItem->meal->title);
+            $response->assertSee(__('futtertrog.orderStatus.' . $orderItem->status));
         }
     }
 
