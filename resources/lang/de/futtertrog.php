@@ -15,6 +15,6 @@ return [
     ],
     'orderStatus' => [
         'open' => 'Noch nicht beim Lieferanten bestellt',
-        'orderen' => 'Beim Lieferanten bestellt',
+        'ordered' => 'Beim Lieferanten bestellt',
     ],
 ];

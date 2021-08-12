@@ -15,6 +15,6 @@ return [
     ],
     'status' => [
         'open' => 'Not yet ordered from the supplier',
-        'orderen' => 'Ordered from supplier',
+        'ordered' => 'Ordered from supplier',
     ],
 ];
