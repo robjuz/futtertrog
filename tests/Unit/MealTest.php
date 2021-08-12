@@ -14,9 +14,4 @@ class MealTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $meal->orderItems);
     }
-
-    /** @test */
-    public function it_knows_if_it_is_ordered() {
-
-    }
 }
