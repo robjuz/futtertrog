@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
 
     public function loginAsAdmin()
     {
-        return $this->login(factory('App\User')->create(['is_admin' => true]));
+        return $this->login(factory('App\User')->state('admin')->create());
     }
 
     public function login($user = null)
