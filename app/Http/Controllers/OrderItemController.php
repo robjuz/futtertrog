@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use OpenApi\Annotations as OA;
 
 class OrderItemController extends Controller
@@ -140,21 +141,19 @@ class OrderItemController extends Controller
         $this->authorize('create', [OrderItem::class, $request->date]);
 
         /** @var User $user */
-        $user = $request->user();
+        $userId = Auth::id();
 
         //admin can create orders for other users;
-        if ($user->is_admin) {
-            $attributes['user_id'] = $attributes['user_id'] ?: $user->id;
-        } else {
-            $attributes['user_id'] = $user->id;
+        if (Auth::user()->is_admin and $request->has('user_id')) {
+            $userId = $request->input('user_id');
         }
 
         $meal = Meal::find($attributes['meal_id']);
 
         $orderItem = $meal->order(
-            $user->id,
-            $attributes['date'],
-            $attributes['quantity'] ?? 1
+            $userId,
+            $request->input('date'),
+            $request->input('quantity',1)
         );
 
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
