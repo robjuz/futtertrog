@@ -17,5 +17,5 @@ return [
         'open' => 'Not yet ordered from the supplier',
         'ordered' => 'Ordered from supplier',
     ],
-    'calories' => 'Calories: :calories kcal'
+    'calories' => 'Calories: :calories kcal',
 ];

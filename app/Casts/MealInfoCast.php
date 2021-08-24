@@ -2,7 +2,6 @@
 
 namespace App\Casts;
 
-use App\Meal;
 use App\MealInfo;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use InvalidArgumentException;
@@ -45,7 +44,7 @@ class MealInfoCast implements CastsAttributes
         }
 
         return [
-            'info' => json_encode($value)
+            'info' => json_encode($value),
         ];
     }
 }

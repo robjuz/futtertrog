@@ -69,7 +69,6 @@ class HolzkeService
     {
         return array_map(
             function ($mealElement) {
-
                 $info = new MealInfo();
                 $info->calories = $this->extractCalories($mealElement);
 
@@ -78,7 +77,7 @@ class HolzkeService
                     'description' => $this->extractDescription($mealElement),
                     'price' => $this->extractPrice($mealElement),
                     'external_id' => $this->extractExternalId($mealElement),
-                    'info' => $info
+                    'info' => $info,
                 ];
             },
             (new Document($response))->find('.meal')

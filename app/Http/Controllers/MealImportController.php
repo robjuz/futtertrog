@@ -40,7 +40,7 @@ class MealImportController extends Controller
                     'date_to' => $date->toDateString(),
                     'provider' => $provider,
                 ],
-                $mealElement            );
+                $mealElement);
 
             foreach ($mealElement['variants'] ?? [] as $variantElement) {
                 $meal->variants()->updateOrCreate(
@@ -50,7 +50,7 @@ class MealImportController extends Controller
                         'date_to' => $date->toDateString(),
                         'provider' => $provider,
                     ],
-                    $mealElement                );
+                    $mealElement);
             }
         }
 

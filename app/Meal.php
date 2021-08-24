@@ -85,7 +85,7 @@ class Meal extends Model
     protected $appends = ['variant_title'];
 
     protected $casts = [
-        'info' => MealInfo::class
+        'info' => MealInfo::class,
     ];
 
     public function orderItems(): HasMany

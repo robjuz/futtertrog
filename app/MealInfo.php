@@ -18,9 +18,9 @@ class MealInfo implements Castable, Arrayable, JsonSerializable
 
     public function toArray()
     {
-       return [
-         'calories' => $this->calories
-       ];
+        return [
+            'calories' => $this->calories,
+        ];
     }
 
     public function jsonSerialize()

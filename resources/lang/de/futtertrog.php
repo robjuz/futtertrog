@@ -17,5 +17,5 @@ return [
         'open' => 'Noch nicht beim Lieferanten bestellt',
         'ordered' => 'Beim Lieferanten bestellt',
     ],
-    'calories' => 'Kalorien: :calories kcal'
+    'calories' => 'Kalorien: :calories kcal',
 ];

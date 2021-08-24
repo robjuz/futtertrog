@@ -153,7 +153,7 @@ class OrderItemController extends Controller
         $orderItem = $meal->order(
             $userId,
             $request->input('date'),
-            $request->input('quantity',1)
+            $request->input('quantity', 1)
         );
 
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
