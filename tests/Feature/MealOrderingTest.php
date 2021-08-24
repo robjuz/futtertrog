@@ -81,6 +81,10 @@ class MealOrderingTest extends TestCase
         /** @var \App\User $user */
         $user = factory(User::class)->create();
 
+        $this->loginAsAdmin();
+
+        $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+
         $this->loginAsAdmin()
             ->post(route('order_items.store'), [
                 'date' => $meal->date_from,

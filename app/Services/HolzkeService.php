@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\MealInfo;
 use App\Order;
 use App\OrderItem;
 use DiDom\Document;
@@ -68,11 +69,16 @@ class HolzkeService
     {
         return array_map(
             function ($mealElement) {
+
+                $info = new MealInfo();
+                $info->calories = $this->extractCalories($mealElement);
+
                 return [
                     'title' => $this->extractTitle($mealElement),
                     'description' => $this->extractDescription($mealElement),
                     'price' => $this->extractPrice($mealElement),
                     'external_id' => $this->extractExternalId($mealElement),
+                    'info' => $info
                 ];
             },
             (new Document($response))->find('.meal')
@@ -90,6 +96,11 @@ class HolzkeService
     private function extractDescription(Element $mealElement)
     {
         return trim($mealElement->first('.cBody')->firstChild()->text());
+    }
+
+    private function extractCalories(Element $mealElement)
+    {
+        return floatval($mealElement->first('.kcal')->firstChild()->text());
     }
 
     private function extractPrice(Element $mealElement)

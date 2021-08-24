@@ -29,6 +29,11 @@
     <p>{{ $meal->description }}</p>
 @endif
 
+@if($meal->info->calories)
+    <hr>
+    <p>{{ __('futtertrog.calories', ['calories' => $meal->info->calories]) }}</p>
+@endif
+
 @php
 $ids = $meal->variants->pluck('id')->merge([$meal->id]);
 
