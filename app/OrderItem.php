@@ -14,21 +14,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $quantity
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $status
  * @property-read mixed $subtotal
  * @property-read \App\Meal $meal
  * @property-read \App\Order $order
  * @property-read \App\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereMealId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereOrderId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereQuantity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereMealId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereUserId($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class OrderItem extends Model
 {

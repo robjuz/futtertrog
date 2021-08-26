@@ -15,21 +15,28 @@ use Illuminate\Support\Facades\Auth;
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $external_id
+ * @property-read mixed $is_open
  * @property-read mixed $subtotal
+ * @property-read \App\MealCollection|\App\Meal[] $meals
+ * @property-read int|null $meals_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @property-read int|null $order_items_count
  * @method static \App\OrderCollection|static[] all($columns = ['*'])
  * @method static \App\OrderCollection|static[] get($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereProvider($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereExternalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Order extends Model
 {

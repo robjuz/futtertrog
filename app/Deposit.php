@@ -15,17 +15,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $status
  * @property-read \App\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit whereComment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Deposit whereValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereValue($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Deposit extends Model
 {

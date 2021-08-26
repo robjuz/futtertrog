@@ -29,44 +29,51 @@ use OpenApi\Annotations as OA;
  *      @OA\Items( type="object", ref="#/components/schemas/Meal" )
  *  ),
  *
- * App\Meal.
  *
  * @property int $id
+ * @property int|null $parent_id
  * @property string $title
- * @property string $variant_title
  * @property string|null $description
  * @property string|null $provider
- * @property int $price
+ * @property int|null $price
  * @property \Illuminate\Support\Carbon $date_from
  * @property \Illuminate\Support\Carbon $date_to
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $image
  * @property string|null $external_id
+ * @property \App\MealInfo|null $info
  * @property-read mixed $is_hated
  * @property-read mixed $is_preferred
+ * @property-read mixed $variant_title
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Meal[] $variants
- * @property-read \App\Meal $parent
  * @property-read int|null $order_items_count
+ * @property-read Meal|null $parent
+ * @property-read \App\MealCollection|Meal[] $variants
+ * @property-read int|null $variants_count
  * @method static \App\MealCollection|static[] all($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal forDate($date)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal byProvider($provider = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal forDate($date)
  * @method static \App\MealCollection|static[] get($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDateFrom($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDateTo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereExternalId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereImage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereProvider($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Meal whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereDateFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereDateTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereExternalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereInfo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Meal whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Meal extends Model
 {
