@@ -144,11 +144,10 @@ class HolzkeService
      */
     private function extractAllergens(Element $mealElement): array
     {
-        return array_map(function(Element $element) {
+        return array_map(function (Element $element) {
             return $element->getAttribute('title');
         }, $mealElement->first('.zusatz')->children());
     }
-
 
     /**
      * @param  Element  $mealElement
@@ -198,9 +197,6 @@ class HolzkeService
             ->post();
     }
 
-    /**
-     *
-     */
     private function confirmOrder(): void
     {
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-order.html')

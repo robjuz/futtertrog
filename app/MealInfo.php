@@ -37,6 +37,6 @@ class MealInfo implements Castable, Arrayable, JsonSerializable
 
     public function isNotEmpty(): bool
     {
-        return !$this->isEmpty();
+        return ! $this->isEmpty();
     }
 }
