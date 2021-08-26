@@ -13,17 +13,19 @@ class MealInfoCast implements CastsAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
-     * @param  mixed  $value
+     * @param  mixed  $values
      * @param  array  $attributes
      * @return mixed
      */
-    public function get($model, $key, $value, $attributes)
+    public function get($model, $key, $values, $attributes)
     {
         $mealInfo = new MealInfo();
 
-        $value = json_decode($value);
-
-        $mealInfo->calories = $value->calories;
+        foreach (json_decode($values) as $property => $value) {
+            if (property_exists($mealInfo, $property)) {
+                $mealInfo->$property = $value;
+            }
+        }
 
         return $mealInfo;
     }

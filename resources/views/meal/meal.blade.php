@@ -29,10 +29,22 @@
     <p>{{ $meal->description }}</p>
 @endif
 
-@if($meal->info->calories)
+@if($meal->info->isNotEmpty())
     <hr>
-    <p>{{ __('futtertrog.calories', ['calories' => $meal->info->calories]) }}</p>
+    @if($meal->info->calories)
+        <p>{{ __('futtertrog.calories', ['calories' => $meal->info->calories]) }}</p>
+    @endif
+
+    @if($meal->info->allergens)
+    <details>
+        <summary>{{ __('Allergens') }}</summary>
+        @foreach($meal->info->allergens as $allergen)
+            {{ $allergen }}<br>
+        @endforeach
+    </details>
+    @endif
 @endif
+
 
 @php
 $ids = $meal->variants->pluck('id')->merge([$meal->id]);

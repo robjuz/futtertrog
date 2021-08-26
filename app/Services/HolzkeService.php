@@ -7,14 +7,18 @@ use App\Order;
 use App\OrderItem;
 use DiDom\Document;
 use DiDom\Element;
+use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
+use Symfony\Component\HttpFoundation\Response;
 
 class HolzkeService
 {
-    protected $cookieJar = '';
+    /**
+     * @var string
+     */
+    protected string $cookieJar = '';
 
     public function __construct()
     {
@@ -23,7 +27,7 @@ class HolzkeService
         $this->login();
     }
 
-    private function login()
+    private function login(): void
     {
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-login.html')
             ->withData(
@@ -38,10 +42,11 @@ class HolzkeService
     }
 
     /**
-     * @param \Illuminate\Support\Carbon $date
-     * @return mixed
+     * @param  Carbon  $date
+     * @return array[]
+     * @throws InvalidSelectorException
      */
-    public function getMealsForDate(Carbon $date)
+    public function getMealsForDate(Carbon $date): array
     {
         $response = $this->getHtml($date);
 
@@ -49,10 +54,10 @@ class HolzkeService
     }
 
     /**
-     * @param \Illuminate\Support\Carbon $date
+     * @param  Carbon  $date
      * @return string
      */
-    public function getHtml(Carbon $date)
+    public function getHtml(Carbon $date): string
     {
         return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
             ->withData(['t' => $date->timestamp])
@@ -63,14 +68,15 @@ class HolzkeService
     /**
      * @param $response
      * @return array[]
-     * @throws \DiDom\Exceptions\InvalidSelectorException
+     * @throws InvalidSelectorException
      */
-    private function parseResponse($response)
+    private function parseResponse($response): array
     {
         return array_map(
             function ($mealElement) {
                 $info = new MealInfo();
                 $info->calories = $this->extractCalories($mealElement);
+                $info->allergens = $this->extractAllergens($mealElement);
 
                 return [
                     'title' => $this->extractTitle($mealElement),
@@ -84,7 +90,12 @@ class HolzkeService
         );
     }
 
-    private function extractTitle(Element $mealElement)
+    /**
+     * @param  Element  $mealElement
+     * @return string
+     * @throws InvalidSelectorException
+     */
+    private function extractTitle(Element $mealElement): string
     {
         $title = $mealElement->first('h2')->text();
         preg_match('/^[\w\s]*/mu', $title, $titleMatch);
@@ -92,26 +103,59 @@ class HolzkeService
         return trim($titleMatch[0]);
     }
 
-    private function extractDescription(Element $mealElement)
+    /**
+     * @param  Element  $mealElement
+     * @return string
+     * @throws InvalidSelectorException
+     */
+    private function extractDescription(Element $mealElement): string
     {
         return trim($mealElement->first('.cBody')->firstChild()->text());
     }
 
-    private function extractCalories(Element $mealElement)
+    /**
+     * @param  Element  $mealElement
+     * @return float
+     * @throws InvalidSelectorException
+     */
+    private function extractCalories(Element $mealElement): float
     {
         return floatval($mealElement->first('.kcal')->firstChild()->text());
     }
 
-    private function extractPrice(Element $mealElement)
+    /**
+     * @param  Element  $mealElement
+     * @return int
+     * @throws InvalidSelectorException
+     */
+    private function extractPrice(Element $mealElement): int
     {
         $title = $mealElement->first('h2')->text();
         preg_match('/\((\S*)/', $title, $priceMatch);
-        $price = preg_replace('/[,\.]/', '', $priceMatch[1] ?? 1);
+        $price = preg_replace('/[,.]/', '', $priceMatch[1] ?? 1);
 
         return intval($price);
     }
 
-    private function extractExternalId(Element $mealElement)
+    /**
+     * @param  Element  $mealElement
+     * @return string[]
+     * @throws InvalidSelectorException
+     */
+    private function extractAllergens(Element $mealElement): array
+    {
+        return array_map(function(Element $element) {
+            return $element->getAttribute('title');
+        }, $mealElement->first('.zusatz')->children());
+    }
+
+
+    /**
+     * @param  Element  $mealElement
+     * @return string
+     * @throws InvalidSelectorException
+     */
+    private function extractExternalId(Element $mealElement): string
     {
         $externalId = $mealElement->first('input');
         $externalId = $externalId ? $externalId->getAttribute('name') : null;
@@ -120,7 +164,8 @@ class HolzkeService
     }
 
     /**
-     * @param Order[]|Collection $orders
+     * @param  Order[]|Collection  $orders
+     * @throws InvalidSelectorException
      */
     public function placeOrder($orders)
     {
@@ -140,6 +185,10 @@ class HolzkeService
         );
     }
 
+    /**
+     * @param $meal
+     * @param $count
+     */
     private function updateMealCount($meal, $count): void
     {
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
@@ -149,6 +198,9 @@ class HolzkeService
             ->post();
     }
 
+    /**
+     *
+     */
     private function confirmOrder(): void
     {
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-order.html')
@@ -164,7 +216,11 @@ class HolzkeService
             ->post();
     }
 
-    private function getLastOrderId()
+    /**
+     * @return string|null
+     * @throws InvalidSelectorException
+     */
+    private function getLastOrderId(): ?string
     {
         $response = Curl::to('https://holzke-menue.de/de/meine-kundendaten/meine-bestellungen.html')
             ->setCookieFile(storage_path('holtzke_cookie.txt'))
@@ -177,6 +233,10 @@ class HolzkeService
         return $orderChange->getAttribute('data-id');
     }
 
+    /**
+     * @param  OrderItem  $orderItem
+     * @throws InvalidSelectorException
+     */
     public function updateOrder(OrderItem $orderItem)
     {
         $order = $orderItem->order;
@@ -199,6 +259,9 @@ class HolzkeService
         );
     }
 
+    /**
+     * @param  string  $external_id
+     */
     private function setOrderForEdit(string $external_id): void
     {
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')

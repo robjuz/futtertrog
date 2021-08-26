@@ -10,6 +10,7 @@ use JsonSerializable;
 class MealInfo implements Castable, Arrayable, JsonSerializable
 {
     public ?float $calories = null;
+    public array $allergens = [];
 
     public static function castUsing()
     {
@@ -20,11 +21,22 @@ class MealInfo implements Castable, Arrayable, JsonSerializable
     {
         return [
             'calories' => $this->calories,
+            'allergens' => $this->allergens,
         ];
     }
 
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty(array_filter($this->toArray()));
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return !$this->isEmpty();
     }
 }
