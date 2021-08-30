@@ -179,8 +179,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        App\Providers\HolzkeServiceServiceProvider::class,
-        App\Providers\CallAPizzaServiceServiceProvider::class,
+        App\Providers\MealProvidersServiceProvider::class,
 
     ],
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\OrdersRepository;
-use App\Services\HolzkeService;
+use App\MealProviders\HolzkeMealProvider;
 use Illuminate\Http\Request;
 
 class HolzkeAutoOrderController extends Controller
@@ -15,9 +15,9 @@ class HolzkeAutoOrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function __invoke(
-        Request $request,
-        OrdersRepository $ordersRepository,
-        HolzkeService $holzkeService)
+        Request            $request,
+        OrdersRepository   $ordersRepository,
+        HolzkeMealProvider $holzkeService)
     {
         $orders = $ordersRepository->get($request);
 

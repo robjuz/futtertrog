@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\MealProviders;
 
 use DiDom\Document;
 use Ixudra\Curl\Facades\Curl;
 
-class CallAPizzaService
+class CallAPizzaService extends AbstractMealProvider
 {
     private $location;
 
@@ -20,7 +20,7 @@ class CallAPizzaService
     /**
      * @return array
      */
-    public function getMealsForDate($date = null)
+    public function getMealsForDate($date = null): array
     {
         $meals = [];
 
@@ -80,5 +80,10 @@ class CallAPizzaService
         }
 
         return $meals;
+    }
+
+    public function getName(): string
+    {
+        return 'Call a Pizza';
     }
 }

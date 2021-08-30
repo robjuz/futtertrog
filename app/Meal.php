@@ -85,7 +85,7 @@ class Meal extends Model
         self::PROVIDER_CALL_A_PIZZA,
     ];
 
-    protected $guarded = [];
+    protected $guarded = ['variants'];
 
     protected $dates = ['date_from', 'date_to'];
 

@@ -1,3 +1,4 @@
+@inject('providers', mealProviders')
 @extends('layouts.app')
 
 @section('content')
@@ -14,8 +15,8 @@
         </label>
         <select id="provider" name="provider">
             <option value="">---</option>
-            @foreach(\App\Meal::$providers as $provider)
-                <option value="{{ $provider }}">{{ $provider }}</option>
+            @foreach($providers as $provider => $name)
+                <option value="{{ $provider }}">{{ $name }}</option>
             @endforeach
         </select>
 
@@ -88,8 +89,8 @@
             @enderror
         </label>
         <select id="import_provider" name="provider" required>
-            @foreach(\App\Meal::$providers as $provider)
-                <option value="{{ $provider }}">{{ $provider }}</option>
+            @foreach($providers as $provider => $name)
+                <option value="{{ $provider }}">{{ $name }}</option>
             @endforeach
         </select>
 

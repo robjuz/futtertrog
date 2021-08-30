@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\MealProviders;
 
+use App\Meal;
 use App\MealInfo;
 use App\Order;
 use App\OrderItem;
@@ -13,18 +14,20 @@ use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 use Symfony\Component\HttpFoundation\Response;
 
-class HolzkeService
+class HolzkeMealProvider extends AbstractMealProvider
 {
-    /**
-     * @var string
-     */
-    protected string $cookieJar = '';
+    private string $cookieJar = '';
 
     public function __construct()
     {
-        $this->cookieJar = storage_path('holtzke_cookie.txt');
+        $this->cookieJar = storage_path('holzke_cookie.txt');
 
         $this->login();
+    }
+
+    public function getName(): string
+    {
+        return 'Holzke';
     }
 
     private function login(): void
@@ -43,14 +46,13 @@ class HolzkeService
 
     /**
      * @param  Carbon  $date
-     * @return array[]
      * @throws InvalidSelectorException
      */
     public function getMealsForDate(Carbon $date): array
     {
-        $response = $this->getHtml($date);
-
-        return $this->parseResponse($response);
+        return $this->parseResponse(
+            $this->getHtml($date)
+        );
     }
 
     /**

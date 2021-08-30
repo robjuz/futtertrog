@@ -42,14 +42,14 @@
 
         @if($orders->canBeAutoOrderedByHolzke())
 
-            <p>{{ __('Can be ordered by Holzke') }}</p>
+            <p>{{ __('Can be ordered by Inport') }}</p>
             <form action="{{ route('orders.auto_order_by_holzke') }}" method="post">
                 @csrf
                 <input type="hidden" name="from" value="{{ $from->toDateString() }}">
                 <input type="hidden" name="to" value="{{ $to ? $to->toDateString() : '' }}">
                 <input type="hidden" name="user_id" value="{{ request('user_id', null) }}">
 
-                <button type="submit">{{ __('Order by Holzke') }}</button>
+                <button type="submit">{{ __('Order by Inport') }}</button>
             </form>
         @endif
     </section>

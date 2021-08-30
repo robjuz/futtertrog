@@ -12,7 +12,7 @@ $factory->define(App\Meal::class, function (Faker $faker) {
         'description' => $faker->sentences(1, true),
         'date_from' => $date,
         'date_to' => $date,
-        'provider' => Meal::$providers[array_rand(Meal::$providers)],
+        'provider' => array_rand(app('mealProviders')),
     ];
 });
 

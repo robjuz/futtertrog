@@ -2,31 +2,32 @@
 
 namespace App\Console\Commands;
 
-use App\Events\NewOrderPossibilities;
-use App\Meal;
-use App\Services\HolzkeService;
+use App\MealProviders\HolzkeMealProvider;
+use App\Services\MealService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 /**
  * Class Holzke.
  */
 class Holzke extends Command
 {
+    private MealService $mealService;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'import:holzke';
+    protected $signature = 'import:holzke
+                            {--date= : Import meals just for a specific day}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Import coming meals from Holzke';
+    protected $description = 'Import meals from Holzke';
 
     /**
      * Create a new command instance.
@@ -41,60 +42,38 @@ class Holzke extends Command
     /**
      * Execute the console command.
      *
-     * @param \App\Services\HolzkeService $holzke
-     * @return mixed
+     * @param MealService $mealService
      */
-    public function handle(HolzkeService $holzke)
+    public function handle(MealService $mealService)
     {
-        //get data
+        $this->mealService = $mealService->setProvider(app(HolzkeMealProvider::class));
+
+        if ($this->hasOption('date')) {
+            $this->importForDate($this->option('date'));
+        } else {
+            $this->importAll();
+        }
+
+        if ($this->hasOption('notify')) {
+            $this->mealService->notify();
+        }
+    }
+
+
+    private function importAll() {
         $date = today();
 
         if ($date->isWeekend()) {
             $date->addWeekday();
         }
 
-        $newOrderPossibilitiesDates = new Collection();
-
-        do {
-            $meals = $holzke->getMealsForDate($date);
-
-            foreach ($meals as $mealElement) {
-                $meal = $this->createOrUpdateMeal($mealElement, $date);
-
-                if ($meal->wasRecentlyCreated) {
-                    $newOrderPossibilitiesDates->add(clone $date);
-                }
-            }
-
+        while($this->importForDate($date)) {
             $date->addWeekday();
-        } while (count($meals));
-
-        $newOrderPossibilitiesDates = $newOrderPossibilitiesDates->unique();
-
-        if (count($newOrderPossibilitiesDates) > 0) {
-            event(new NewOrderPossibilities($newOrderPossibilitiesDates));
         }
 
-        /** @var Carbon $date */
-        foreach ($newOrderPossibilitiesDates as $date) {
-            $this->info(__('New order possibility for :day', ['day' => $date->toDateString()]));
-        }
     }
 
-    /**
-     * @param \Illuminate\Support\Carbon $date
-     * @return \App\Meal
-     */
-    public function createOrUpdateMeal($mealElement, Carbon $date): Meal
-    {
-        return Meal::updateOrCreate(
-            [
-                'title' => $mealElement['title'],
-                'date_from' => $date->toDateString(),
-                'date_to' => $date->toDateString(),
-                'provider' => Meal::PROVIDER_HOLZKE,
-            ],
-            $mealElement
-        );
+    private function importForDate($date) {
+        return $this->mealService->getMealsForDate(Carbon::parse($date));
     }
 }
