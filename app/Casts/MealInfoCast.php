@@ -21,6 +21,10 @@ class MealInfoCast implements CastsAttributes
     {
         $mealInfo = new MealInfo();
 
+        if (!$values) {
+            return $mealInfo;
+        }
+
         foreach (json_decode($values) as $property => $value) {
             if (property_exists($mealInfo, $property)) {
                 $mealInfo->$property = $value;
