@@ -21,7 +21,7 @@ class MealInfoCast implements CastsAttributes
     {
         $mealInfo = new MealInfo();
 
-        if (!$values) {
+        if (! $values) {
             return $mealInfo;
         }
 
