@@ -2,7 +2,7 @@
 /public/hot
 /public/storage
 /storage/*.key
-/storage/holtzke_cookie.txt
+/storage/holzke_cookie.txt
 /vendor
 /.idea
 /.vscode
