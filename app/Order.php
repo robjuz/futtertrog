@@ -170,4 +170,9 @@ class Order extends Model
             return null;
         }
     }
+
+    public function toArray()
+    {
+        return array_merge(parent::toArray(), ['provider' => $this->provider->__toString()]);
+    }
 }

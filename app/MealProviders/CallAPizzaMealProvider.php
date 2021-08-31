@@ -3,6 +3,7 @@
 namespace App\MealProviders;
 
 use DiDom\Document;
+use Illuminate\Console\Scheduling\Schedule;
 use Ixudra\Curl\Facades\Curl;
 
 class CallAPizzaMealProvider extends AbstractMealProvider
@@ -20,7 +21,7 @@ class CallAPizzaMealProvider extends AbstractMealProvider
     /**
      * @return array
      */
-    public function getMealsForDate($date = null): array
+    public function getMealsDataForDate($date = null): array
     {
         $meals = [];
 
@@ -85,5 +86,20 @@ class CallAPizzaMealProvider extends AbstractMealProvider
     public function getName(): string
     {
         return 'Call a Pizza';
+    }
+
+    public function supportsAutoOrder(): bool
+    {
+        return false;
+    }
+
+    public function supportsOrderUpdate(): bool
+    {
+        return false;
+    }
+
+    public function configureSchedule(Schedule $schedule): void
+    {
+        // TODO: Implement configureSchedule() method.
     }
 }

@@ -2,13 +2,14 @@
 
 namespace App\MealProviders;
 
-use App\Meal;
 use App\MealInfo;
 use App\Order;
 use App\OrderItem;
+use App\Services\MealService;
 use DiDom\Document;
 use DiDom\Element;
 use DiDom\Exceptions\InvalidSelectorException;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
@@ -25,16 +26,6 @@ class HolzkeMealProvider extends AbstractMealProvider
         $this->login();
     }
 
-    public function getName(): string
-    {
-        return 'Holzke';
-    }
-
-    public function supportsAutoOrder()
-    {
-        return true;
-    }
-
     private function login(): void
     {
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-login.html')
@@ -49,27 +40,25 @@ class HolzkeMealProvider extends AbstractMealProvider
             ->post();
     }
 
+    public function getName(): string
+    {
+        return 'Holzke';
+    }
+
+    public function supportsAutoOrder(): bool
+    {
+        return true;
+    }
+
     /**
-     * @param  Carbon  $date
+     * @param Carbon $date
      * @throws InvalidSelectorException
      */
-    public function getMealsForDate(Carbon $date): array
+    public function getMealsDataForDate(Carbon $date): array
     {
         return $this->parseResponse(
             $this->getHtml($date)
         );
-    }
-
-    /**
-     * @param  Carbon  $date
-     * @return string
-     */
-    public function getHtml(Carbon $date): string
-    {
-        return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
-            ->withData(['t' => $date->timestamp])
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
-            ->get();
     }
 
     /**
@@ -98,7 +87,29 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
+     * @return float
+     * @throws InvalidSelectorException
+     */
+    private function extractCalories(Element $mealElement): float
+    {
+        return floatval($mealElement->first('.kcal')->firstChild()->text());
+    }
+
+    /**
+     * @param Element $mealElement
+     * @return string[]
+     * @throws InvalidSelectorException
+     */
+    private function extractAllergens(Element $mealElement): array
+    {
+        return array_map(function (Element $element) {
+            return $element->getAttribute('title');
+        }, $mealElement->first('.zusatz')->children());
+    }
+
+    /**
+     * @param Element $mealElement
      * @return string
      * @throws InvalidSelectorException
      */
@@ -111,7 +122,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return string
      * @throws InvalidSelectorException
      */
@@ -121,17 +132,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
-     * @return float
-     * @throws InvalidSelectorException
-     */
-    private function extractCalories(Element $mealElement): float
-    {
-        return floatval($mealElement->first('.kcal')->firstChild()->text());
-    }
-
-    /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return int
      * @throws InvalidSelectorException
      */
@@ -145,19 +146,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
-     * @return string[]
-     * @throws InvalidSelectorException
-     */
-    private function extractAllergens(Element $mealElement): array
-    {
-        return array_map(function (Element $element) {
-            return $element->getAttribute('title');
-        }, $mealElement->first('.zusatz')->children());
-    }
-
-    /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return string
      * @throws InvalidSelectorException
      */
@@ -170,7 +159,19 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Order[]|Collection  $orders
+     * @param Carbon $date
+     * @return string
+     */
+    public function getHtml(Carbon $date): string
+    {
+        return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
+            ->withData(['t' => $date->timestamp])
+            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->get();
+    }
+
+    /**
+     * @param Order[]|Collection $orders
      * @throws InvalidSelectorException
      */
     public function placeOrder($orders)
@@ -189,6 +190,27 @@ class HolzkeMealProvider extends AbstractMealProvider
                 'external_id' => $this->getLastOrderId(),
             ]
         );
+    }
+
+    /**
+     * @param Collection $orders
+     * @return array
+     */
+    private function extractMealIds(Collection $orders): array
+    {
+        $mealsToOrderExternalIds = [];
+
+        foreach ($orders as $order) {
+            foreach ($order->orderItems as $orderItem) {
+                if (!isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
+                    $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
+                }
+
+                $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
+            }
+        }
+
+        return $mealsToOrderExternalIds;
     }
 
     /**
@@ -231,13 +253,13 @@ class HolzkeMealProvider extends AbstractMealProvider
 
         $orderChange = (new Document($response))->first('.orderChange');
 
-        abort_if(! $orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
+        abort_if(!$orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
 
         return $orderChange->getAttribute('data-id');
     }
 
     /**
-     * @param  OrderItem  $orderItem
+     * @param OrderItem $orderItem
      * @throws InvalidSelectorException
      */
     public function updateOrder(OrderItem $orderItem)
@@ -263,7 +285,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  string  $external_id
+     * @param string $external_id
      */
     private function setOrderForEdit(string $external_id): void
     {
@@ -274,24 +296,35 @@ class HolzkeMealProvider extends AbstractMealProvider
             ->post();
     }
 
-    /**
-     * @param Collection $orders
-     * @return array
-     */
-    private function extractMealIds(Collection $orders): array
+    public function supportsOrderUpdate(): bool
     {
-        $mealsToOrderExternalIds = [];
+        return false;
+    }
 
-        foreach ($orders as $order) {
-            foreach ($order->orderItems as $orderItem) {
-                if (! isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
-                    $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
-                }
-
-                $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
-            }
+    public function configureSchedule(Schedule $schedule): void
+    {
+        if (!config('services.holzke.schedule')) {
+            return;
         }
 
-        return $mealsToOrderExternalIds;
+        $schedule->call($this->getAllUpcomingMeals)->dailyAt('10:00');
+    }
+
+    public function getAllUpcomingMeals()
+    {
+        $mealService = app(MealService::class);
+        $mealService->setProvider($this);
+
+        $date = today();
+
+        if ($date->isWeekend()) {
+            $date->addWeekday();
+        }
+
+        while ($mealService->getMealsForDate(Carbon::parse($date))) {
+            $date->addWeekday();
+        }
+
+        $mealService->notify();
     }
 }

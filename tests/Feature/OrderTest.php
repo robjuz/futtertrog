@@ -53,7 +53,7 @@ class OrderTest extends TestCase
 
             $jsonResponse->assertJsonFragment([
                 'date' => $order->date,
-                'provider' => $order->provider,
+                'provider' => $order->getAttributes()['provider'],
                 'subtotal' => $order->subtotal
             ]);
         }

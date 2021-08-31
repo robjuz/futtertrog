@@ -4,6 +4,7 @@ namespace App\MealProviders;
 
 use App\Meal;
 use App\Order;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -20,17 +21,13 @@ abstract class AbstractMealProvider
 
     abstract public function getName(): string;
 
-    abstract public function getMealsForDate(Carbon $date): array;
+    abstract public function getMealsDataForDate(Carbon $date): array;
 
-    public function supportsAutoOrder()
-    {
-        return false;
-    }
+    abstract public function supportsAutoOrder(): bool;
 
-    public function supportsOrderUpdate()
-    {
-        return false;
-    }
+    abstract public function supportsOrderUpdate(): bool;
+
+    abstract public function configureSchedule(Schedule $schedule): void;
 
     /**
      * @param  Order[]|Collection  $orders

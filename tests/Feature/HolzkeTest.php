@@ -36,7 +36,7 @@ class HolzkeTest extends TestCase
 						</article></div>')
             ->once();
 
-        $meals = $holzkeServiceMock->getMealsForDate(today());
+        $meals = $holzkeServiceMock->getMealsDataForDate(today());
 
         $this->assertCount(1, $meals);
     }
@@ -84,7 +84,7 @@ class HolzkeTest extends TestCase
             ->once();
         });
 
-        $this->artisan('import:holzke', ['--notify' => true]);
+       app(HolzkeMealProvider::class)->getAllUpcomingMeals();
 
         Notification::assertSentTo($tom, NewOrderPossibilitiesNotification::class, function ($message, $channels, $notifiable) use ($today) {
             $toArray =  $message->toArray($notifiable);
@@ -114,7 +114,7 @@ class HolzkeTest extends TestCase
                 ->once();
         });
 
-        $this->artisan('import:holzke');
+        app(HolzkeMealProvider::class)->getAllUpcomingMeals();
 
         Event::assertNotDispatched(NewOrderPossibilities::class);
 
@@ -135,7 +135,7 @@ class HolzkeTest extends TestCase
                 ->once();
         });
 
-        $this->artisan('import:holzke');
+        app(HolzkeMealProvider::class)->getAllUpcomingMeals();
 
     }
 }

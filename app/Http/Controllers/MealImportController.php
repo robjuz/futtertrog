@@ -30,8 +30,7 @@ class MealImportController extends Controller
 
         $date = Carbon::parse($request->date);
 
-        $mealService->setProvider(app($request->provider));
-        $mealService->getMealsForDate($date);
+        $mealService->setProvider(app($request->provider))->getMealsForDate($date);
 
         if ($request->has('notify')) {
             $mealService->notify();

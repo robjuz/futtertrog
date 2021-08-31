@@ -29,7 +29,7 @@ class MealService
      */
     public function getMealsForDate(Carbon $date): int
     {
-        $meals = $this->getProvider()->getMealsForDate($date);
+        $meals = $this->getProvider()->getMealsDataForDate($date);
         foreach ($meals as $data) {
             $meal = Meal::updateOrCreate(
                 [
