@@ -58,7 +58,7 @@ return [
         'login' => env('HOLZKE_LOGIN'),
         'password' => env('HOLZKE_PASSWORD'),
         'schedule' => env('HOLZKE_SCHEDULE'),
-        'order_info' => env('HOLZKE_ORDER_INFO')
+        'order_info' => env('HOLZKE_ORDER_INFO'),
     ],
 
     'call_a_pizza' => [
