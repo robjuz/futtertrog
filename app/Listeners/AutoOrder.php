@@ -27,7 +27,7 @@ class AutoOrder
     {
         $order = $event->order;
 
-        if ($order->canBeAutoOrderedByHolzke() && $order->canBeUpdatedByHolzke()) {
+        if ($order->canBeAutoOrderedByHolzke() && $order->canBeUpdated()) {
             $holzkeService->updateOrder($event->orderItem);
         }
     }

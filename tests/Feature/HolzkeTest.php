@@ -6,7 +6,7 @@ use App\Events\NewOrderPossibilities;
 use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\Notifications\NewOrderPossibilities as NewOrderPossibilitiesNotification;
-use App\MealProviders\CallAPizzaService;
+use App\MealProviders\CallAPizzaMealProvider;
 use App\MealProviders\HolzkeMealProvider;
 use App\User;
 use Illuminate\Support\Facades\Event;
@@ -84,7 +84,7 @@ class HolzkeTest extends TestCase
             ->once();
         });
 
-        $this->artisan('import:holzke');
+        $this->artisan('import:holzke', ['--notify' => true]);
 
         Notification::assertSentTo($tom, NewOrderPossibilitiesNotification::class, function ($message, $channels, $notifiable) use ($today) {
             $toArray =  $message->toArray($notifiable);

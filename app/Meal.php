@@ -77,14 +77,6 @@ use OpenApi\Annotations as OA;
  */
 class Meal extends Model
 {
-    const PROVIDER_HOLZKE = 'Holzke';
-    const PROVIDER_CALL_A_PIZZA = 'Call A Pizza';
-
-    public static $providers = [
-        self::PROVIDER_HOLZKE,
-        self::PROVIDER_CALL_A_PIZZA,
-    ];
-
     protected $guarded = ['variants'];
 
     protected $dates = ['date_from', 'date_to'];

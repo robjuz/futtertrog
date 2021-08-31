@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class OrderCollection extends Collection
 {
-    public function canBeAutoOrderedByHolzke()
+    public function canBeAutoOrdered()
     {
         if ($this->isEmpty()) {
             return false;
@@ -14,7 +14,7 @@ class OrderCollection extends Collection
 
         /** @var Order $order */
         foreach ($this->items as $order) {
-            if (! $order->canBeAutoOrderedByHolzke()) {
+            if (! $order->canBeAutoOrdered()) {
                 return false;
             }
         }

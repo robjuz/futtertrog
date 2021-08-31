@@ -20,7 +20,8 @@ class Holzke extends Command
      * @var string
      */
     protected $signature = 'import:holzke
-                            {--date= : Import meals just for a specific day}';
+                            {--date= : Import meals just for a specific day}
+                            {--notify : Send notifications}';
 
     /**
      * The console command description.
@@ -48,13 +49,13 @@ class Holzke extends Command
     {
         $this->mealService = $mealService->setProvider(app(HolzkeMealProvider::class));
 
-        if ($this->hasOption('date')) {
+        if ($this->option('date')) {
             $this->importForDate($this->option('date'));
         } else {
             $this->importAll();
         }
 
-        if ($this->hasOption('notify')) {
+        if ($this->option('notify')) {
             $this->mealService->notify();
         }
     }

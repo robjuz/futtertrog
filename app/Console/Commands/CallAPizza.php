@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\MealProviders\CallAPizzaService;
+use App\MealProviders\CallAPizzaMealProvider;
 use App\Services\MealService;
 use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Console\Command;
@@ -18,7 +18,9 @@ class CallAPizza extends Command
      *
      * @var string
      */
-    protected $signature = 'import:call-a-pizza {date=today}';
+    protected $signature = 'import:call-a-pizza
+                            {date=today}
+                            {--notify : Send notifications}';
 
     /**
      * The console command description.
@@ -41,19 +43,19 @@ class CallAPizza extends Command
      * Execute the console command.
      *
      * @param MealService $mealService
-     * @param CallAPizzaService $provider
+     * @param CallAPizzaMealProvider $provider
      */
     public function handle(MealService $mealService)
     {
         $mealService
-            ->setProvider(app(CallAPizzaService::class))
+            ->setProvider(app(CallAPizzaMealProvider::class))
             ->getMealsForDate(
                 Carbon::parse(
                     $this->argument('date')
                 )
             );
 
-        if ($this->hasOption('notify')) {
+        if ($this->option('notify')) {
             $mealService->notify();
         }
     }

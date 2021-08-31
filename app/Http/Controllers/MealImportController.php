@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\NewOrderPossibility;
 use App\Meal;
-use App\MealProviders\CallAPizzaService;
+use App\MealProviders\CallAPizzaMealProvider;
 use App\Services\MealService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -15,8 +15,9 @@ class MealImportController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function __invoke(Request $request, MealService $mealService)
     {

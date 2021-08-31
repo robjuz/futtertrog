@@ -2,6 +2,7 @@
 
 @inject('orders', 'App\Repositories\OrdersRepository')
 @inject('meals', 'App\Repositories\MealsRepository')
+@inject('providers', 'mealProviders')
 
 @section('before')
     <scroll-into-view>
@@ -62,8 +63,8 @@
                     <label for="provider">{{ __("Provider") }}</label>
                     <select id="provider" name="provider">
                         <option value="">{{ __('All') }}</option>
-                        @foreach(\App\Meal::$providers as $provider)
-                            <option value="{{ $provider }}" {{ request('provider') == $provider ? ' selected' : '' }}>{{ $provider }}</option>
+                        @foreach($providers as $provider => $name)
+                            <option value="{{ $provider }}" {{ request('provider') == $provider ? ' selected' : '' }}>{{ $name }}</option>
                         @endforeach
                     </select>
 

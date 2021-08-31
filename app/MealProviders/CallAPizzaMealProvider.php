@@ -5,7 +5,7 @@ namespace App\MealProviders;
 use DiDom\Document;
 use Ixudra\Curl\Facades\Curl;
 
-class CallAPizzaService extends AbstractMealProvider
+class CallAPizzaMealProvider extends AbstractMealProvider
 {
     private $location;
 

@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Console\Commands\CallAPizza;
 use App\Console\Commands\Holzke;
 use App\MealProviders\AbstractMealProvider;
-use App\MealProviders\CallAPizzaService;
+use App\MealProviders\CallAPizzaMealProvider;
 use App\MealProviders\HolzkeMealProvider;
 use App\Services\MealService;
 use Illuminate\Support\ServiceProvider;
@@ -14,7 +14,7 @@ class MealProvidersServiceProvider extends ServiceProvider
 {
     private array $bundledProviders = [
         HolzkeMealProvider::class,
-        CallAPizzaService::class
+        CallAPizzaMealProvider::class
     ];
 
     /**

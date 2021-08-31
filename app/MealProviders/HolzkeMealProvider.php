@@ -30,6 +30,11 @@ class HolzkeMealProvider extends AbstractMealProvider
         return 'Holzke';
     }
 
+    public function supportsAutoOrder()
+    {
+        return true;
+    }
+
     private function login(): void
     {
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-login.html')

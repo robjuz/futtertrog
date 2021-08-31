@@ -78,4 +78,9 @@ class OrdersRepository
             ->orderBy('date')
             ->get();
     }
+
+    public function getByProvider(Request $request)
+    {
+        return $this->get($request)->groupBy('provider');
+    }
 }

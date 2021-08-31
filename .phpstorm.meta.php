@@ -12,12 +12,12 @@ namespace PHPSTORM_META {
     */
     override(new \Illuminate\Contracts\Container\Container, map([
         '' => '@',
-        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaService::class,
+        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaMealProvider::class,
         'App\Services\HolzkeService' => \App\MealProviders\HolzkeMealProvider::class,
         'Asm89\Stack\CorsService' => \Asm89\Stack\CorsService::class,
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'BladeSvg\SvgFactory' => \BladeSvg\SvgFactory::class,
-        'Call A Pizza_service' => \App\MealProviders\CallAPizzaService::class,
+        'Call A Pizza_service' => \App\MealProviders\CallAPizzaMealProvider::class,
         'Curl' => \Ixudra\Curl\CurlService::class,
         'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
         'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -178,12 +178,12 @@ namespace PHPSTORM_META {
     ]));
     override(\Illuminate\Container\Container::makeWith(0), map([
         '' => '@',
-        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaService::class,
+        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaMealProvider::class,
         'App\Services\HolzkeService' => \App\MealProviders\HolzkeMealProvider::class,
         'Asm89\Stack\CorsService' => \Asm89\Stack\CorsService::class,
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'BladeSvg\SvgFactory' => \BladeSvg\SvgFactory::class,
-        'Call A Pizza_service' => \App\MealProviders\CallAPizzaService::class,
+        'Call A Pizza_service' => \App\MealProviders\CallAPizzaMealProvider::class,
         'Curl' => \Ixudra\Curl\CurlService::class,
         'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
         'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -344,12 +344,12 @@ namespace PHPSTORM_META {
     ]));
     override(\Illuminate\Contracts\Container\Container::make(0), map([
         '' => '@',
-        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaService::class,
+        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaMealProvider::class,
         'App\Services\HolzkeService' => \App\MealProviders\HolzkeMealProvider::class,
         'Asm89\Stack\CorsService' => \Asm89\Stack\CorsService::class,
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'BladeSvg\SvgFactory' => \BladeSvg\SvgFactory::class,
-        'Call A Pizza_service' => \App\MealProviders\CallAPizzaService::class,
+        'Call A Pizza_service' => \App\MealProviders\CallAPizzaMealProvider::class,
         'Curl' => \Ixudra\Curl\CurlService::class,
         'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
         'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -510,12 +510,12 @@ namespace PHPSTORM_META {
     ]));
     override(\Illuminate\Contracts\Container\Container::makeWith(0), map([
         '' => '@',
-        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaService::class,
+        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaMealProvider::class,
         'App\Services\HolzkeService' => \App\MealProviders\HolzkeMealProvider::class,
         'Asm89\Stack\CorsService' => \Asm89\Stack\CorsService::class,
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'BladeSvg\SvgFactory' => \BladeSvg\SvgFactory::class,
-        'Call A Pizza_service' => \App\MealProviders\CallAPizzaService::class,
+        'Call A Pizza_service' => \App\MealProviders\CallAPizzaMealProvider::class,
         'Curl' => \Ixudra\Curl\CurlService::class,
         'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
         'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -676,12 +676,12 @@ namespace PHPSTORM_META {
     ]));
     override(\App::make(0), map([
         '' => '@',
-        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaService::class,
+        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaMealProvider::class,
         'App\Services\HolzkeService' => \App\MealProviders\HolzkeMealProvider::class,
         'Asm89\Stack\CorsService' => \Asm89\Stack\CorsService::class,
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'BladeSvg\SvgFactory' => \BladeSvg\SvgFactory::class,
-        'Call A Pizza_service' => \App\MealProviders\CallAPizzaService::class,
+        'Call A Pizza_service' => \App\MealProviders\CallAPizzaMealProvider::class,
         'Curl' => \Ixudra\Curl\CurlService::class,
         'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
         'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -842,12 +842,12 @@ namespace PHPSTORM_META {
     ]));
     override(\App::makeWith(0), map([
         '' => '@',
-        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaService::class,
+        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaMealProvider::class,
         'App\Services\HolzkeService' => \App\MealProviders\HolzkeMealProvider::class,
         'Asm89\Stack\CorsService' => \Asm89\Stack\CorsService::class,
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'BladeSvg\SvgFactory' => \BladeSvg\SvgFactory::class,
-        'Call A Pizza_service' => \App\MealProviders\CallAPizzaService::class,
+        'Call A Pizza_service' => \App\MealProviders\CallAPizzaMealProvider::class,
         'Curl' => \Ixudra\Curl\CurlService::class,
         'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
         'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -1008,12 +1008,12 @@ namespace PHPSTORM_META {
     ]));
     override(\app(0), map([
         '' => '@',
-        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaService::class,
+        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaMealProvider::class,
         'App\Services\HolzkeService' => \App\MealProviders\HolzkeMealProvider::class,
         'Asm89\Stack\CorsService' => \Asm89\Stack\CorsService::class,
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'BladeSvg\SvgFactory' => \BladeSvg\SvgFactory::class,
-        'Call A Pizza_service' => \App\MealProviders\CallAPizzaService::class,
+        'Call A Pizza_service' => \App\MealProviders\CallAPizzaMealProvider::class,
         'Curl' => \Ixudra\Curl\CurlService::class,
         'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
         'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -1174,12 +1174,12 @@ namespace PHPSTORM_META {
     ]));
     override(\resolve(0), map([
         '' => '@',
-        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaService::class,
+        'App\Services\CallAPizzaService' => \App\MealProviders\CallAPizzaMealProvider::class,
         'App\Services\HolzkeService' => \App\MealProviders\HolzkeMealProvider::class,
         'Asm89\Stack\CorsService' => \Asm89\Stack\CorsService::class,
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'BladeSvg\SvgFactory' => \BladeSvg\SvgFactory::class,
-        'Call A Pizza_service' => \App\MealProviders\CallAPizzaService::class,
+        'Call A Pizza_service' => \App\MealProviders\CallAPizzaMealProvider::class,
         'Curl' => \Ixudra\Curl\CurlService::class,
         'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
         'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,

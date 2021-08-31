@@ -31,7 +31,7 @@ class MealStoreRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'provider' => ['nullable', Rule::in(Meal::$providers)],
+            'provider' => ['nullable', Rule::in(array_keys(app('mealProviders')))],
         ];
     }
 }
