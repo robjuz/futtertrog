@@ -114,11 +114,11 @@ class Order extends Model
 
     public function canBeAutoOrdered()
     {
-        if (!$this->provider) {
+        if (! $this->provider) {
             return false;
         }
 
-        if (!$this->provider->supportsAutoOrder() ?? false) {
+        if (! $this->provider->supportsAutoOrder() ?? false) {
             return false;
         }
 
@@ -131,11 +131,11 @@ class Order extends Model
 
     public function canBeUpdated()
     {
-        if (!$this->provider) {
+        if (! $this->provider) {
             return false;
         }
 
-        if (!$this->provider->supportsOrderUpdate() ?? false) {
+        if (! $this->provider->supportsOrderUpdate() ?? false) {
             return false;
         }
 

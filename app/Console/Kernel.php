@@ -34,7 +34,8 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
 
         foreach ($this->app->make('mealProviders') as $mealProvider => $name) {
-            $this->app->make($mealProvider)->configureSchedule($schedule);        }
+            $this->app->make($mealProvider)->configureSchedule($schedule);
+        }
 
         $schedule->call(new NoOrderForTodayNotification)->weekdays()->at('10:00');
 

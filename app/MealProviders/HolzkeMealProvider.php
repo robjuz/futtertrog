@@ -202,7 +202,7 @@ class HolzkeMealProvider extends AbstractMealProvider
 
         foreach ($orders as $order) {
             foreach ($order->orderItems as $orderItem) {
-                if (!isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
+                if (! isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
                     $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
                 }
 
@@ -253,7 +253,7 @@ class HolzkeMealProvider extends AbstractMealProvider
 
         $orderChange = (new Document($response))->first('.orderChange');
 
-        abort_if(!$orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
+        abort_if(! $orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
 
         return $orderChange->getAttribute('data-id');
     }
@@ -303,7 +303,7 @@ class HolzkeMealProvider extends AbstractMealProvider
 
     public function configureSchedule(Schedule $schedule): void
     {
-        if (!config('services.holzke.schedule')) {
+        if (! config('services.holzke.schedule')) {
             return;
         }
 

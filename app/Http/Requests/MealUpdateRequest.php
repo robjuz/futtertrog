@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Meal;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

@@ -2,7 +2,6 @@
 
 namespace App\MealProviders;
 
-use App\Meal;
 use App\Order;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
@@ -11,7 +10,6 @@ use Illuminate\Support\Carbon;
 
 abstract class AbstractMealProvider
 {
-
     public static function register(Application $app)
     {
         $app->singleton(static::class, function () {

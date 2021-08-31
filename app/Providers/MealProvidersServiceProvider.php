@@ -2,19 +2,15 @@
 
 namespace App\Providers;
 
-use App\Console\Commands\CallAPizza;
-use App\Console\Commands\Holzke;
-use App\MealProviders\AbstractMealProvider;
 use App\MealProviders\CallAPizzaMealProvider;
 use App\MealProviders\HolzkeMealProvider;
-use App\Services\MealService;
 use Illuminate\Support\ServiceProvider;
 
 class MealProvidersServiceProvider extends ServiceProvider
 {
     private array $bundledProviders = [
         HolzkeMealProvider::class,
-        CallAPizzaMealProvider::class
+        CallAPizzaMealProvider::class,
     ];
 
     /**
@@ -28,10 +24,10 @@ class MealProvidersServiceProvider extends ServiceProvider
             call_user_func([$provider, 'register'], $this->app);
         }
 
-        $this->app->bind('mealProviders', function($app) {
-           return collect($this->bundledProviders)->mapWithKeys(function ($provider) use ($app) {
-               return [$provider => $app->make($provider)->getName()];
-           })->all();
+        $this->app->bind('mealProviders', function ($app) {
+            return collect($this->bundledProviders)->mapWithKeys(function ($provider) use ($app) {
+                return [$provider => $app->make($provider)->getName()];
+            })->all();
         });
     }
 
@@ -44,5 +40,4 @@ class MealProvidersServiceProvider extends ServiceProvider
     {
         //
     }
-
 }

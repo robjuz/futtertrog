@@ -15,10 +15,9 @@ class AutoOrderController extends Controller
      * @return Response
      */
     public function __invoke(
-        Request          $request,
+        Request $request,
         OrdersRepository $ordersRepository
-    )
-    {
+    ) {
         $providerOrders = $ordersRepository->getByProvider($request);
 
         foreach ($providerOrders as $provider => $orders) {

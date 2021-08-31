@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewOrderPossibility;
 use App\Meal;
-use App\MealProviders\CallAPizzaMealProvider;
 use App\Services\MealService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
