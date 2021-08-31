@@ -166,7 +166,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     {
         return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
             ->withData(['t' => $date->timestamp])
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->get();
     }
 
@@ -222,7 +222,7 @@ class HolzkeMealProvider extends AbstractMealProvider
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
             ->withData(compact('meal', 'count'))
             ->returnResponseObject()
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->post();
     }
 
@@ -231,13 +231,13 @@ class HolzkeMealProvider extends AbstractMealProvider
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-order.html')
             ->withData(
                 [
-                    'info1' => 'Eingang Paradiesgarten 4.OG',
+                    'info1' => config('services.holzke.order_info'),
                     'agb' => 1,
                     'zeit' => now()->timestamp,
                     'is_send' => 'yes',
                 ]
             )
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->post();
     }
 
@@ -248,7 +248,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     private function getLastOrderId(): ?string
     {
         $response = Curl::to('https://holzke-menue.de/de/meine-kundendaten/meine-bestellungen.html')
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->get();
 
         $orderChange = (new Document($response))->first('.orderChange');
@@ -292,7 +292,7 @@ class HolzkeMealProvider extends AbstractMealProvider
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
             ->withData(['vid' => $external_id])
             ->returnResponseObject()
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->post();
     }
 
