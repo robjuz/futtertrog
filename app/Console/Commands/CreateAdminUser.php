@@ -43,15 +43,15 @@ class CreateAdminUser extends Command
      */
     public function handle()
     {
-        if (!$name = $this->argument('name')) {
+        if (! $name = $this->argument('name')) {
             $name = $this->ask('name');
         }
 
-        if (!$email = $this->argument('email')) {
+        if (! $email = $this->argument('email')) {
             $email = $this->ask('email');
         }
 
-        if (!$password = $this->argument('password')) {
+        if (! $password = $this->argument('password')) {
             $password = $this->secret('password');
         }
 
