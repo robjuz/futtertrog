@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\MealProviders\AbstractMealProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon $date
- * @property string|null $provider
+ * @property AbstractMealProvider|null $provider
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -111,9 +112,13 @@ class Order extends Model
         return new OrderCollection($models);
     }
 
-    public function canBeAutoOrderedByHolzke()
+    public function canBeAutoOrdered()
     {
-        if ($this->provider !== Meal::PROVIDER_HOLZKE) {
+        if (! $this->provider) {
+            return false;
+        }
+
+        if (! $this->provider->supportsAutoOrder() ?? false) {
             return false;
         }
 
@@ -124,8 +129,16 @@ class Order extends Model
         return Auth::user()->can('create', [OrderItem::class, request()->date]);
     }
 
-    public function canBeUpdatedByHolzke()
+    public function canBeUpdated()
     {
+        if (! $this->provider) {
+            return false;
+        }
+
+        if (! $this->provider->supportsOrderUpdate() ?? false) {
+            return false;
+        }
+
         return
             (bool) $this->external_id
             and self::where('external_id', '>', $this->external_id)
@@ -147,5 +160,19 @@ class Order extends Model
     public function getIsOpenAttribute()
     {
         return $this->status === Order::STATUS_OPEN;
+    }
+
+    public function getProviderAttribute($value)
+    {
+        try {
+            return app()->make($value);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    public function toArray()
+    {
+        return array_merge(parent::toArray(), ['provider' => $this->provider->__toString()]);
     }
 }

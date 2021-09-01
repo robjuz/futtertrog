@@ -1,28 +1,27 @@
 <?php
 
-namespace App\Services;
+namespace App\MealProviders;
 
 use App\MealInfo;
 use App\Order;
 use App\OrderItem;
+use App\Services\MealService;
 use DiDom\Document;
 use DiDom\Element;
 use DiDom\Exceptions\InvalidSelectorException;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 use Symfony\Component\HttpFoundation\Response;
 
-class HolzkeService
+class HolzkeMealProvider extends AbstractMealProvider
 {
-    /**
-     * @var string
-     */
-    protected string $cookieJar = '';
+    private string $cookieJar = '';
 
     public function __construct()
     {
-        $this->cookieJar = storage_path('holtzke_cookie.txt');
+        $this->cookieJar = storage_path('holzke_cookie.txt');
 
         $this->login();
     }
@@ -41,28 +40,25 @@ class HolzkeService
             ->post();
     }
 
-    /**
-     * @param  Carbon  $date
-     * @return array[]
-     * @throws InvalidSelectorException
-     */
-    public function getMealsForDate(Carbon $date): array
+    public function getName(): string
     {
-        $response = $this->getHtml($date);
+        return 'Holzke';
+    }
 
-        return $this->parseResponse($response);
+    public function supportsAutoOrder(): bool
+    {
+        return true;
     }
 
     /**
-     * @param  Carbon  $date
-     * @return string
+     * @param Carbon $date
+     * @throws InvalidSelectorException
      */
-    public function getHtml(Carbon $date): string
+    public function getMealsDataForDate(Carbon $date): array
     {
-        return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
-            ->withData(['t' => $date->timestamp])
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
-            ->get();
+        return $this->parseResponse(
+            $this->getHtml($date)
+        );
     }
 
     /**
@@ -91,7 +87,29 @@ class HolzkeService
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
+     * @return float
+     * @throws InvalidSelectorException
+     */
+    private function extractCalories(Element $mealElement): float
+    {
+        return floatval($mealElement->first('.kcal')->firstChild()->text());
+    }
+
+    /**
+     * @param Element $mealElement
+     * @return string[]
+     * @throws InvalidSelectorException
+     */
+    private function extractAllergens(Element $mealElement): array
+    {
+        return array_map(function (Element $element) {
+            return $element->getAttribute('title');
+        }, $mealElement->first('.zusatz')->children());
+    }
+
+    /**
+     * @param Element $mealElement
      * @return string
      * @throws InvalidSelectorException
      */
@@ -104,7 +122,7 @@ class HolzkeService
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return string
      * @throws InvalidSelectorException
      */
@@ -114,17 +132,7 @@ class HolzkeService
     }
 
     /**
-     * @param  Element  $mealElement
-     * @return float
-     * @throws InvalidSelectorException
-     */
-    private function extractCalories(Element $mealElement): float
-    {
-        return floatval($mealElement->first('.kcal')->firstChild()->text());
-    }
-
-    /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return int
      * @throws InvalidSelectorException
      */
@@ -138,19 +146,7 @@ class HolzkeService
     }
 
     /**
-     * @param  Element  $mealElement
-     * @return string[]
-     * @throws InvalidSelectorException
-     */
-    private function extractAllergens(Element $mealElement): array
-    {
-        return array_map(function (Element $element) {
-            return $element->getAttribute('title');
-        }, $mealElement->first('.zusatz')->children());
-    }
-
-    /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return string
      * @throws InvalidSelectorException
      */
@@ -163,7 +159,19 @@ class HolzkeService
     }
 
     /**
-     * @param  Order[]|Collection  $orders
+     * @param Carbon $date
+     * @return string
+     */
+    public function getHtml(Carbon $date): string
+    {
+        return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
+            ->withData(['t' => $date->timestamp])
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
+            ->get();
+    }
+
+    /**
+     * @param Order[]|Collection $orders
      * @throws InvalidSelectorException
      */
     public function placeOrder($orders)
@@ -185,6 +193,27 @@ class HolzkeService
     }
 
     /**
+     * @param Collection $orders
+     * @return array
+     */
+    private function extractMealIds(Collection $orders): array
+    {
+        $mealsToOrderExternalIds = [];
+
+        foreach ($orders as $order) {
+            foreach ($order->orderItems as $orderItem) {
+                if (! isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
+                    $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
+                }
+
+                $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
+            }
+        }
+
+        return $mealsToOrderExternalIds;
+    }
+
+    /**
      * @param $meal
      * @param $count
      */
@@ -193,7 +222,7 @@ class HolzkeService
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
             ->withData(compact('meal', 'count'))
             ->returnResponseObject()
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->post();
     }
 
@@ -202,13 +231,13 @@ class HolzkeService
         Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-order.html')
             ->withData(
                 [
-                    'info1' => 'Eingang Paradiesgarten 4.OG',
+                    'info1' => config('services.holzke.order_info'),
                     'agb' => 1,
                     'zeit' => now()->timestamp,
                     'is_send' => 'yes',
                 ]
             )
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->post();
     }
 
@@ -219,7 +248,7 @@ class HolzkeService
     private function getLastOrderId(): ?string
     {
         $response = Curl::to('https://holzke-menue.de/de/meine-kundendaten/meine-bestellungen.html')
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->get();
 
         $orderChange = (new Document($response))->first('.orderChange');
@@ -230,7 +259,7 @@ class HolzkeService
     }
 
     /**
-     * @param  OrderItem  $orderItem
+     * @param OrderItem $orderItem
      * @throws InvalidSelectorException
      */
     public function updateOrder(OrderItem $orderItem)
@@ -256,35 +285,46 @@ class HolzkeService
     }
 
     /**
-     * @param  string  $external_id
+     * @param string $external_id
      */
     private function setOrderForEdit(string $external_id): void
     {
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
             ->withData(['vid' => $external_id])
             ->returnResponseObject()
-            ->setCookieFile(storage_path('holtzke_cookie.txt'))
+            ->setCookieFile(storage_path('holzke_cookie.txt'))
             ->post();
     }
 
-    /**
-     * @param Collection $orders
-     * @return array
-     */
-    private function extractMealIds(Collection $orders): array
+    public function supportsOrderUpdate(): bool
     {
-        $mealsToOrderExternalIds = [];
+        return false;
+    }
 
-        foreach ($orders as $order) {
-            foreach ($order->orderItems as $orderItem) {
-                if (! isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
-                    $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
-                }
-
-                $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
-            }
+    public function configureSchedule(Schedule $schedule): void
+    {
+        if (! config('services.holzke.schedule')) {
+            return;
         }
 
-        return $mealsToOrderExternalIds;
+        $schedule->call('getAllUpcomingMeals')->dailyAt('10:00');
+    }
+
+    public function getAllUpcomingMeals()
+    {
+        $mealService = app(MealService::class);
+        $mealService->setProvider($this);
+
+        $date = today();
+
+        if ($date->isWeekend()) {
+            $date->addWeekday();
+        }
+
+        while ($mealService->getMealsForDate(Carbon::parse($date))) {
+            $date->addWeekday();
+        }
+
+        $mealService->notify();
     }
 }

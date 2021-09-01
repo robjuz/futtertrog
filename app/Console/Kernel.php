@@ -33,8 +33,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        if (config('services.holzke.schedule')) {
-            $schedule->command('import:holzke')->dailyAt('10:00');
+        foreach ($this->app->make('mealProviders') as $mealProvider => $name) {
+            $this->app->make($mealProvider)->configureSchedule($schedule);
         }
 
         $schedule->call(new NoOrderForTodayNotification)->weekdays()->at('10:00');

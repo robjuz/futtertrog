@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Meal;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -31,7 +30,7 @@ class MealUpdateRequest extends FormRequest
             'description' => 'nullable|string',
             'price' => 'sometimes|numeric|min:0',
             'can_be_ordered_until' => 'sometimes|date|after:date',
-            'provider' => ['sometimes', Rule::in(Meal::$providers)],
+            'provider' => ['sometimes', Rule::in(array_keys(app('mealProviders')))],
         ];
     }
 }

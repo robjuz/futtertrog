@@ -6,8 +6,8 @@ use App\Events\NewOrderPossibilities;
 use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\Notifications\NewOrderPossibilities as NewOrderPossibilitiesNotification;
-use App\Services\CallAPizzaService;
-use App\Services\HolzkeService;
+use App\MealProviders\CallAPizzaMealProvider;
+use App\MealProviders\HolzkeMealProvider;
 use App\User;
 use Illuminate\Support\Facades\Event;
 use Ixudra\Curl\Facades\Curl;
@@ -24,7 +24,7 @@ class HolzkeTest extends TestCase
     /** @test */
     public function it_can_create_meals_from_holzke_html()
     {
-        $holzkeServiceMock = Mockery::mock(HolzkeService::class)->makePartial();
+        $holzkeServiceMock = Mockery::mock(HolzkeMealProvider::class)->makePartial();
 
         $holzkeServiceMock->shouldReceive('getHtml')
             ->withAnyArgs()
@@ -36,7 +36,7 @@ class HolzkeTest extends TestCase
 						</article></div>')
             ->once();
 
-        $meals = $holzkeServiceMock->getMealsForDate(today());
+        $meals = $holzkeServiceMock->getMealsDataForDate(today());
 
         $this->assertCount(1, $meals);
     }
@@ -44,8 +44,8 @@ class HolzkeTest extends TestCase
     /** @test */
     public function it_resolves_a_holzke_provider_from_app_container()
     {
-        $this->assertInstanceOf(HolzkeService::class, app(HolzkeService::class));
-        $this->assertSame(app(HolzkeService::class), app(HolzkeService::class));
+        $this->assertInstanceOf(HolzkeMealProvider::class, app(HolzkeMealProvider::class));
+        $this->assertSame(app(HolzkeMealProvider::class), app(HolzkeMealProvider::class));
     }
 
     /** @test */
@@ -67,7 +67,7 @@ class HolzkeTest extends TestCase
             ]
         );
 
-        $this->partialMock(HolzkeService::class, function (MockInterface $mock) {
+        $this->partialMock(HolzkeMealProvider::class, function (MockInterface $mock) {
             $mock->shouldReceive('getHtml')
             ->withAnyArgs()
             ->andReturn('<div><article class="articleGrid meal"><div class="cHead"><h2>Menü 1 blank (3,05 €)</h2></div>
@@ -84,7 +84,7 @@ class HolzkeTest extends TestCase
             ->once();
         });
 
-        $this->artisan('import:holzke');
+       app(HolzkeMealProvider::class)->getAllUpcomingMeals();
 
         Notification::assertSentTo($tom, NewOrderPossibilitiesNotification::class, function ($message, $channels, $notifiable) use ($today) {
             $toArray =  $message->toArray($notifiable);
@@ -106,7 +106,7 @@ class HolzkeTest extends TestCase
 
         Carbon::setTestNow(today()->addWeekday()); //ensure we test over a weekday
 
-        $this->partialMock(HolzkeService::class, function (MockInterface $mock) {
+        $this->partialMock(HolzkeMealProvider::class, function (MockInterface $mock) {
 
             $mock->shouldReceive('getHtml')
                 ->withAnyArgs()
@@ -114,11 +114,11 @@ class HolzkeTest extends TestCase
                 ->once();
         });
 
-        $this->artisan('import:holzke');
+        app(HolzkeMealProvider::class)->getAllUpcomingMeals();
 
         Event::assertNotDispatched(NewOrderPossibilities::class);
 
-        $this->partialMock(HolzkeService::class, function (MockInterface $mock) {
+        $this->partialMock(HolzkeMealProvider::class, function (MockInterface $mock) {
             $mock->shouldReceive('getHtml')
                 ->withAnyArgs()
                 ->andReturn('<div><article class="articleGrid meal"><div class="cHead"><h2>Menü 1 blank (3,05 €)</h2></div>
@@ -135,7 +135,7 @@ class HolzkeTest extends TestCase
                 ->once();
         });
 
-        $this->artisan('import:holzke');
+        app(HolzkeMealProvider::class)->getAllUpcomingMeals();
 
     }
 }

@@ -53,7 +53,7 @@ class OrderTest extends TestCase
 
             $jsonResponse->assertJsonFragment([
                 'date' => $order->date,
-                'provider' => $order->provider,
+                'provider' => $order->getAttributes()['provider'],
                 'subtotal' => $order->subtotal
             ]);
         }
@@ -65,7 +65,6 @@ class OrderTest extends TestCase
         /** @var \Illuminate\Support\Collection|\App\Order[] $orders */
         $orders = factory(Order::class, 5)->create([
             'date' => today(),
-            'provider' => 'custom provider'
         ]);
 
         $this->loginAsAdmin();
