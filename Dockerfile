@@ -15,6 +15,6 @@ COPY composer.* ./
 
 RUN composer install --no-dev --no-scripts --no-autoloader
 
-COPY --chown=www-data:www-data . .
+COPY --chown=docker:www-data . .
 
 RUN composer dump-autoload --optimize
