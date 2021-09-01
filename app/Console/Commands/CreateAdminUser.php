@@ -14,9 +14,9 @@ class CreateAdminUser extends Command
      * @var string
      */
     protected $signature = 'futtertrog:create-admin
-                            {--email}
-                            --password
-                            --name
+                            {name}
+                            {email}
+                            {password}
     ';
 
     /**
@@ -43,15 +43,15 @@ class CreateAdminUser extends Command
      */
     public function handle()
     {
-        if (! $name = $this->input->getParameterOption('name')) {
+        if (! $name = $this->argument('name')) {
             $name = $this->ask('name');
         }
 
-        if (! $email = $this->input->getParameterOption('email')) {
+        if (! $email = $this->argument('email')) {
             $email = $this->ask('email');
         }
 
-        if (! $password = $this->input->getParameterOption('password')) {
+        if (! $password = $this->argument('password')) {
             $password = $this->secret('password');
         }
 
