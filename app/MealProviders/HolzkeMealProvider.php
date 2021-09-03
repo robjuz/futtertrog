@@ -307,7 +307,7 @@ class HolzkeMealProvider extends AbstractMealProvider
             return;
         }
 
-        $schedule->call(function() {
+        $schedule->call(function () {
             $this->getAllUpcomingMeals();
         })->dailyAt('10:00');
     }
