@@ -7,6 +7,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class OrdersRepository
 {
@@ -81,6 +82,8 @@ class OrdersRepository
 
     public function getByProvider(Request $request)
     {
-        return $this->get($request)->groupBy('provider');
+        return $this->get($request)->groupBy(function(Order $order) {
+            return $order->getAttributes()['provider'];
+        });
     }
 }
