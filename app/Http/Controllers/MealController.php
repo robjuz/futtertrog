@@ -53,11 +53,6 @@ class MealController extends Controller
     public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {
         $requestedDate = Carbon::parse($request->query('date', today()));
-        $previousMonth = $requestedDate->clone()->subMonthNoOverflow()->lastOfMonth();
-        $nextMonth = $requestedDate->clone()->addMonthNoOverflow()->firstOfMonth();
-
-        $startOfMonth = $requestedDate->clone()->startOfMonth();
-        $endOfMonth = $requestedDate->clone()->endOfMonth();
 
         $todayMeals = Meal::with(['variants'])
             ->doesntHave('parent')
@@ -72,9 +67,7 @@ class MealController extends Controller
 
         $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
 
-        $month = CarbonPeriod::create($startOfMonth, $endOfMonth);
-
-        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate', 'previousMonth', 'nextMonth', 'month'));
+        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate'));
     }
 
     /**
