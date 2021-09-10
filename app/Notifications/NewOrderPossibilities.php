@@ -54,8 +54,10 @@ class NewOrderPossibilities extends Notification
     {
         $message = (new MailMessage)->subject(__('New order possibilities'));
 
+        $locale = $notifiable->settings[User::SETTING_LANGUAGE] ?? config('app.locale');
+
         foreach ($this->dates as $date) {
-            $formatted = Carbon::parse($date)->locale($notifiable->settings[User::SETTING_LANGUAGE])->isoFormat('ddd MMM DD YYYY');
+            $formatted = Carbon::parse($date)->locale($locale)->isoFormat('ddd MMM DD YYYY');
             $message->line(__('New order possibility for :day', ['day' => $formatted]));
         }
 
@@ -64,6 +66,8 @@ class NewOrderPossibilities extends Notification
 
     public function toWebPush(User $notifiable, $notification)
     {
+        $locale = $notifiable->settings[User::SETTING_LANGUAGE] ?? config('app.locale');
+
         return (new WebPushMessage())
             ->title(__('New order possibilities'))
             //->icon('/utensils.svg')
@@ -73,7 +77,7 @@ class NewOrderPossibilities extends Notification
             // ->badge()
             // ->dir()
             // ->image('/utensils.svg')
-            ->lang($notifiable->settings[User::SETTING_LANGUAGE])
+            ->lang($locale)
             // ->renotify()
             // ->requireInteraction()
             // ->tag()

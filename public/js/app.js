@@ -71,12 +71,11 @@ class PushNotifications {
 
     enable() {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
-            let _this = this;
             navigator.serviceWorker.getRegistration()
-                .then(function (swReg) {
-                    _this.askPermission()
-                        .then(() => _this.subscribeUser(swReg))
-                        .catch(() => _this.unsubscribeUser(swReg))
+                .then((swReg) => {
+                    this.askPermission()
+                        .then(() => this.subscribeUser(swReg))
+                        .catch(() => this.unsubscribeUser(swReg))
                 })
                 .catch(err => console.error('Service Worker Error', err));
         } else {
@@ -142,7 +141,9 @@ class PushNotifications {
             userVisibleOnly: true,
             applicationServerKey: this.urlB64ToUint8Array(window.Futtertrog.vapidPublicKey)
         })
-            .then(subscription => this.updateSubscriptionOnServer(subscription))
+            .then(subscription => {
+                this.updateSubscriptionOnServer(subscription)
+            })
             .catch(err => console.log('Failed to subscribe the user: ', err));
     }
 

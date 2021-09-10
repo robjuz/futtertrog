@@ -77,6 +77,6 @@ class OpenOrders extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'nexmo'];
+        return ['nexmo', 'mail'];
     }
 }

@@ -39,7 +39,7 @@ class PushSubscriptionController extends Controller
     {
         $request->validate(['endpoint' => 'required']);
 
-        PushSubscription::whereEndpoint($request->endpoint)->delete();
+        PushSubscription::findByEndpoint($request->endpoint)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
