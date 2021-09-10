@@ -15,9 +15,9 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request, OrdersRepository $ordersRepository)
@@ -49,10 +49,10 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Order $order
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Order $order)
@@ -77,10 +77,10 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
-     * @param \App\Order $order
-     *
+     * @param  Request  $request
+     * @param  \App\Order  $order
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
+     *
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */

@@ -20,9 +20,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request)
@@ -43,6 +43,7 @@ class UserController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\View\View
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
@@ -53,9 +54,9 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param UserStoreRequest $request
-     *
+     * @param  UserStoreRequest  $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(UserStoreRequest $request)
@@ -75,10 +76,10 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Request $request
-     * @param \App\User $user
-     *
+     * @param  Request  $request
+     * @param  \App\User  $user
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Request $request, User $user)
@@ -105,9 +106,9 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\User $user
-     *
+     * @param  \App\User  $user
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(User $user)
@@ -118,10 +119,10 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UserUpdateRequest $request
-     * @param \App\User $user
-     *
+     * @param  UserUpdateRequest  $request
+     * @param  \App\User  $user
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(UserUpdateRequest $request, User $user)
@@ -144,10 +145,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
-     * @param \App\User $user
-     *
+     * @param  Request  $request
+     * @param  \App\User  $user
      * @return \Illuminate\Http\RedirectResponse|Response
+     *
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */

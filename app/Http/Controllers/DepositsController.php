@@ -45,7 +45,7 @@ class DepositsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param DepositRequest $request
+     * @param  DepositRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(DepositRequest $request)
@@ -58,7 +58,7 @@ class DepositsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param DepositRequest $request
+     * @param  DepositRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function update(DepositRequest $request, Deposit $deposit)
@@ -71,9 +71,10 @@ class DepositsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param DepositDestroyRequest $request
-     * @param Deposit $deposit
+     * @param  DepositDestroyRequest  $request
+     * @param  Deposit  $deposit
      * @return \Illuminate\Http\Response
+     *
      * @throws \Exception
      */
     public function destroy(DepositDestroyRequest $request, Deposit $deposit)

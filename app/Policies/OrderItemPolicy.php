@@ -26,9 +26,8 @@ class OrderItemPolicy
     /**
      * Determine whether the user can view the order.
      *
-     * @param  \App\User      $user
-     * @param  \App\OrderItem $orderItem
-     *
+     * @param  \App\User  $user
+     * @param  \App\OrderItem  $orderItem
      * @return mixed
      */
     public function view(User $user, OrderItem $orderItem)
@@ -51,9 +50,8 @@ class OrderItemPolicy
     /**
      * Determine whether the user can update the order.
      *
-     * @param  \App\User      $user
-     * @param  \App\OrderItem $orderItem
-     *
+     * @param  \App\User  $user
+     * @param  \App\OrderItem  $orderItem
      * @return mixed
      */
     public function update(User $user, OrderItem $orderItem)
@@ -64,9 +62,8 @@ class OrderItemPolicy
     /**
      * Determine whether the user can delete the order.
      *
-     * @param  \App\User      $user
-     * @param  \App\OrderItem $orderItem
-     *
+     * @param  \App\User  $user
+     * @param  \App\OrderItem  $orderItem
      * @return mixed
      */
     public function delete(User $user, OrderItem $orderItem)

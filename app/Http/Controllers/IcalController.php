@@ -12,8 +12,8 @@ class IcalController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param \App\Repositories\OrdersRepository $ordersRepository
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Repositories\OrdersRepository  $ordersRepository
      * @return void
      */
     public function __invoke(Request $request, OrdersRepository $ordersRepository)

@@ -29,7 +29,6 @@ use OpenApi\Annotations as OA;
  *      @OA\Items( type="object", ref="#/components/schemas/Meal" )
  *  ),
  *
- *
  * @property int $id
  * @property int|null $parent_id
  * @property string $title
@@ -51,6 +50,7 @@ use OpenApi\Annotations as OA;
  * @property-read Meal|null $parent
  * @property-read \App\MealCollection|Meal[] $variants
  * @property-read int|null $variants_count
+ *
  * @method static \App\MealCollection|static[] all($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|Meal byProvider($provider = null)
  * @method static \Illuminate\Database\Eloquent\Builder|Meal forDate($date)
@@ -180,7 +180,7 @@ class Meal extends Model
     /**
      * Create a new Eloquent Collection instance.
      *
-     * @param  array $models
+     * @param  array  $models
      * @return \App\MealCollection
      */
     public function newCollection(array $models = []): MealCollection

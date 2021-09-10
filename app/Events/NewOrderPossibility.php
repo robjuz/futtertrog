@@ -21,7 +21,7 @@ class NewOrderPossibility
     /**
      * Create a new event instance.
      *
-     * @param Carbon $date
+     * @param  Carbon  $date
      */
     public function __construct(Carbon $date)
     {

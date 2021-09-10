@@ -12,8 +12,7 @@ class SendNewOrderPossibilitiesNotification
     /**
      * Handle the event.
      *
-     * @param  NewOrderPossibilities $event
-     *
+     * @param  NewOrderPossibilities  $event
      * @return void
      */
     public function handle(NewOrderPossibilities $event)

@@ -23,8 +23,9 @@ class MealService
     }
 
     /**
-     * @param Carbon $date
+     * @param  Carbon  $date
      * @return int The number of imported meals
+     *
      * @throws \Exception
      */
     public function getMealsForDate(Carbon $date): int
@@ -62,6 +63,7 @@ class MealService
 
     /**
      * @return AbstractMealProvider
+     *
      * @throws \Exception
      */
     public function getProvider(): AbstractMealProvider
@@ -74,7 +76,7 @@ class MealService
     }
 
     /**
-     * @param AbstractMealProvider $provider
+     * @param  AbstractMealProvider  $provider
      */
     public function setProvider(AbstractMealProvider $provider): MealService
     {

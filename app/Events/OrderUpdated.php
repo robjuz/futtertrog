@@ -28,9 +28,9 @@ class OrderUpdated
     /**
      * Create a new event instance.
      *
-     * @param Order $order
-     * @param User $user
-     * @param OrderItem $orderItem
+     * @param  Order  $order
+     * @param  User  $user
+     * @param  OrderItem  $orderItem
      */
     public function __construct(Order $order, User $user, OrderItem $orderItem)
     {

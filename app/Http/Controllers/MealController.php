@@ -8,7 +8,6 @@ use App\Http\Requests\MealUpdateRequest;
 use App\Meal;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
-use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -24,10 +23,9 @@ class MealController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
-     *
-     * @param \App\Repositories\OrdersRepository $orders
-     * @param \App\Repositories\MealsRepository $meals
+     * @param  Request  $request
+     * @param  \App\Repositories\OrdersRepository  $orders
+     * @param  \App\Repositories\MealsRepository  $meals
      * @return \Illuminate\Http\Response
      *
      * @OA\Get(
@@ -74,6 +72,7 @@ class MealController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
@@ -86,8 +85,7 @@ class MealController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\MealStoreRequest $request
-     *
+     * @param  \App\Http\Requests\MealStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(MealStoreRequest $request)
@@ -112,10 +110,10 @@ class MealController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param  \App\Meal $meal
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Request $request, Meal $meal)
@@ -132,9 +130,9 @@ class MealController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Meal $meal
-     *
+     * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Meal $meal)
@@ -147,9 +145,8 @@ class MealController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\MealUpdateRequest $request
-     * @param  \App\Meal $meal
-     *
+     * @param  \App\Http\Requests\MealUpdateRequest  $request
+     * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
     public function update(MealUpdateRequest $request, Meal $meal)
@@ -166,10 +163,10 @@ class MealController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
-     * @param  \App\Meal $meal
-     *
+     * @param  Request  $request
+     * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Exception
      */

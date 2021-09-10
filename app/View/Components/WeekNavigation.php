@@ -22,11 +22,10 @@ class WeekNavigation extends Component
      * @return void
      */
     public function __construct(
-        Request          $request,
-        MealsRepository  $meals,
+        Request $request,
+        MealsRepository $meals,
         OrdersRepository $orders
-    )
-    {
+    ) {
         $this->requestedDate = Carbon::parse($request->query('date', today()));
         $this->meals = $meals;
         $this->orders = $orders;
@@ -46,7 +45,6 @@ class WeekNavigation extends Component
             $this->requestedDate->clone()->startOfWeek(),
             $this->requestedDate->clone()->endOfWeek()
         );
-
 
         return view('components.week-navigation', compact('previousWeek', 'nextWeek', 'period'));
     }

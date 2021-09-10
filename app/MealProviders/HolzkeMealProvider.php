@@ -51,7 +51,8 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Carbon $date
+     * @param  Carbon  $date
+     *
      * @throws InvalidSelectorException
      */
     public function getMealsDataForDate(Carbon $date): array
@@ -64,6 +65,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     /**
      * @param $response
      * @return array[]
+     *
      * @throws InvalidSelectorException
      */
     private function parseResponse($response): array
@@ -87,8 +89,9 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Element $mealElement
+     * @param  Element  $mealElement
      * @return float
+     *
      * @throws InvalidSelectorException
      */
     private function extractCalories(Element $mealElement): float
@@ -97,8 +100,9 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Element $mealElement
+     * @param  Element  $mealElement
      * @return string[]
+     *
      * @throws InvalidSelectorException
      */
     private function extractAllergens(Element $mealElement): array
@@ -109,8 +113,9 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Element $mealElement
+     * @param  Element  $mealElement
      * @return string
+     *
      * @throws InvalidSelectorException
      */
     private function extractTitle(Element $mealElement): string
@@ -122,8 +127,9 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Element $mealElement
+     * @param  Element  $mealElement
      * @return string
+     *
      * @throws InvalidSelectorException
      */
     private function extractDescription(Element $mealElement): string
@@ -132,8 +138,9 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Element $mealElement
+     * @param  Element  $mealElement
      * @return int
+     *
      * @throws InvalidSelectorException
      */
     private function extractPrice(Element $mealElement): int
@@ -146,8 +153,9 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Element $mealElement
+     * @param  Element  $mealElement
      * @return string
+     *
      * @throws InvalidSelectorException
      */
     private function extractExternalId(Element $mealElement): string
@@ -159,7 +167,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Carbon $date
+     * @param  Carbon  $date
      * @return string
      */
     public function getHtml(Carbon $date): string
@@ -171,7 +179,8 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Order[]|Collection $orders
+     * @param  Order[]|Collection  $orders
+     *
      * @throws InvalidSelectorException
      */
     public function placeOrder($orders)
@@ -193,7 +202,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param Collection $orders
+     * @param  Collection  $orders
      * @return array
      */
     private function extractMealIds(Collection $orders): array
@@ -243,6 +252,7 @@ class HolzkeMealProvider extends AbstractMealProvider
 
     /**
      * @return string|null
+     *
      * @throws InvalidSelectorException
      */
     private function getLastOrderId(): ?string
@@ -259,7 +269,8 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param OrderItem $orderItem
+     * @param  OrderItem  $orderItem
+     *
      * @throws InvalidSelectorException
      */
     public function updateOrder(OrderItem $orderItem)
@@ -285,7 +296,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param string $external_id
+     * @param  string  $external_id
      */
     private function setOrderForEdit(string $external_id): void
     {

@@ -13,8 +13,9 @@ class MealImportController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
      * @throws \Exception
      */
     public function __invoke(Request $request, MealService $mealService)

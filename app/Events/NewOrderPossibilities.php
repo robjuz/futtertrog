@@ -20,7 +20,7 @@ class NewOrderPossibilities
     /**
      * Create a new event instance.
      *
-     * @param Traversable $dates
+     * @param  Traversable  $dates
      */
     public function __construct(Traversable $dates)
     {

@@ -11,8 +11,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
     public function __invoke(Request $request)

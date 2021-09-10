@@ -12,7 +12,7 @@ class PushSubscriptionController extends Controller
     /**
      * Update user's subscription.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -32,7 +32,7 @@ class PushSubscriptionController extends Controller
     /**
      * Delete the specified subscription.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)

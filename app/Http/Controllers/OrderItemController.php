@@ -19,9 +19,9 @@ class OrderItemController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request)
@@ -48,9 +48,9 @@ class OrderItemController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create(Request $request)
@@ -73,11 +73,10 @@ class OrderItemController extends Controller
     /**
      * Show the form for editing a new resource.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @param \App\OrderItem $orderItem
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\OrderItem  $orderItem
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(OrderItem $orderItem)
@@ -97,9 +96,9 @@ class OrderItemController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      *
      * @OA\Post (
