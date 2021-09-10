@@ -12,8 +12,6 @@
         "ext-dom": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
-        "ext-pdo_sqlite": "*",
-        "ext-sqlite3": "*",
         "cknow/laravel-money": "^4.0",
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^2.10",
