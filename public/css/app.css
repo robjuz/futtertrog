@@ -843,12 +843,26 @@ footer {
 }
 
 [id="calendar"] > header {
+
+}
+
+[id="calendar"] > header {
     align-items: center;
     display: flex;
     justify-content: space-between;
     padding-left: 1em;;
     padding-right: 1em;
     text-align: center;
+}
+
+@media (min-width: 580px) {
+    [id="calendar"] > header {
+        flex-wrap: nowrap;
+    }
+    [id="calendar"] > header > a:first-of-type {
+        order: -1;
+    }
+
 }
 
 [id="calendar"] > header a {

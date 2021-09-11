@@ -1,12 +1,12 @@
 <scroll-into-view>
     <nav id="calendar">
         <header>
+            <h1>@lang('Order meal for :date', ['date' => trans('calendar.'. $requestedDate->englishDayOfWeek) . ' ' . $requestedDate->format(trans('futtertrog.date_format'))])</h1>
+
             <a href="<?= route('meals.index', ['date' => $previousWeek->toDateString()]) ?>">
                 <span aria-hidden="true">&larr;</span>
                 {{ __('calendar.WN') }} {{ $previousWeek->weekOfYear }}
             </a>
-
-            <h1>@lang('Order meal for :date', ['date' => trans('calendar.'. $requestedDate->englishDayOfWeek) . ' ' . $requestedDate->format(trans('futtertrog.date_format'))])</h1>
 
             <a href="<?= route('meals.index', ['date' => $nextWeek->toDateString()]) ?>">
                 {{ __('calendar.WN') }} {{ $nextWeek->weekOfYear }}
