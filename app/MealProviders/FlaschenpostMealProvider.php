@@ -2,11 +2,10 @@
 
 namespace App\MealProviders;
 
+use CJSON;
 use DiDom\Document;
-use DiDom\Query;
 use Illuminate\Console\Scheduling\Schedule;
 use Ixudra\Curl\Facades\Curl;
-use \CJSON;
 
 class FlaschenpostMealProvider extends AbstractMealProvider
 {
@@ -58,7 +57,7 @@ class FlaschenpostMealProvider extends AbstractMealProvider
 
         $scriptTag = (new Document($response))->first('.page_main > .page-container');
 
-        if (!$scriptTag) {
+        if (! $scriptTag) {
             return $meals;
         }
 
@@ -67,7 +66,7 @@ class FlaschenpostMealProvider extends AbstractMealProvider
         $productsText = [];
         preg_match("/\[{.*}]/", $scriptText, $productsText);
 
-        if (!isset($productsText[0])) {
+        if (! isset($productsText[0])) {
             return $meals;
         }
 
@@ -90,7 +89,6 @@ class FlaschenpostMealProvider extends AbstractMealProvider
 
             $meals[] = $meal;
         }
-
 
         return $meals;
     }
