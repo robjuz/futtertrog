@@ -3,6 +3,7 @@
 /public/storage
 /storage/*.key
 /storage/holzke_cookie.txt
+/storage/flaschenpost_cookie.txt
 /vendor
 /.idea
 /.vscode
