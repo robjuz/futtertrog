@@ -22,8 +22,9 @@ abstract class AbstractMealProvider
     abstract public function getName(): string;
 
     abstract public function getMealsDataForDate(Carbon $date): array;
-    public function createMealsDataForDate(Carbon $date): Collection {
 
+    public function createMealsDataForDate(Carbon $date): Collection
+    {
         $meals = collect();
 
         foreach ($this->getMealsDataForDate($date) as $data) {

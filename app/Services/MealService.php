@@ -24,7 +24,7 @@ class MealService
     }
 
     /**
-     * @param Carbon $date
+     * @param  Carbon  $date
      * @return int The number of imported meals
      *
      * @throws Exception
@@ -34,9 +34,8 @@ class MealService
         $meals = $this->getProvider()->createMealsDataForDate($date);
 
         $this->newOrderPossibilitiesDates = $meals
-            ->filter(fn(Meal $meal) => $meal->wasRecentlyCreated)
-            ->map(fn(Meal $meal) => $meal->date_from->toDateString());
-
+            ->filter(fn (Meal $meal) => $meal->wasRecentlyCreated)
+            ->map(fn (Meal $meal) => $meal->date_from->toDateString());
 
         return count($meals);
     }
@@ -56,7 +55,7 @@ class MealService
     }
 
     /**
-     * @param AbstractMealProvider $provider
+     * @param  AbstractMealProvider  $provider
      */
     public function setProvider(AbstractMealProvider $provider): MealService
     {
