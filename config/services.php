@@ -68,6 +68,6 @@ return [
 
     'flaschenpost' => [
         'zipcode' => env('FLASCHENPOST_ZIPCODE', '01159'),
-        'categories' => env('FLASCHENPOST_CATEGORIES', ['coca-cola/coca-cola']),
+        'categories' => env('FLASCHENPOST_CATEGORIES', ['limonade/cola']),
     ],
 ];

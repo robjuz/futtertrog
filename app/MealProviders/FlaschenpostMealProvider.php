@@ -2,6 +2,7 @@
 
 namespace App\MealProviders;
 
+use App\MealInfo;
 use CJSON;
 use DiDom\Document;
 use Illuminate\Console\Scheduling\Schedule;
@@ -12,6 +13,7 @@ class FlaschenpostMealProvider extends AbstractMealProvider
     private string $zipcode;
 
     private array $categories;
+    private string $cookieJar;
 
     public function __construct()
     {
@@ -64,30 +66,29 @@ class FlaschenpostMealProvider extends AbstractMealProvider
         $scriptText = $scriptTag->text();
 
         $productsText = [];
-        preg_match("/\[{.*}]/", $scriptText, $productsText);
+        preg_match_all("/\[{.*}]/", $scriptText, $productsText);
 
-        if (! isset($productsText[0])) {
+        if (! isset($productsText[0][1])) {
             return $meals;
         }
 
-        $products = collect(CJSON::decode($productsText[0]));
+        $products = collect(CJSON::decode($productsText[0][1]));
 
-        $brands = $products->groupBy('brand');
+        $products = $products->sortBy('name');
 
-        foreach ($brands as $brand => $products) {
-            $meal = [
-                'title' => $brand,
-                'variants' => [],
-            ];
+        foreach ($products as $product) {
+            foreach ($product['articles'] as $article) {
+                $info = new MealInfo();
+                $info->deposit = $article['deposit'];
 
-            foreach ($products as $product) {
-                $meal['variants'][] = [
+                $meals[] = [
                     'title' => $product['name'],
-                    'price' => $product['price'] + $product['metric4'],
+                    'description' => join('<br>' , [$article['shortDescription'], $article['pricePerUnit']]),
+                    'price' => $article['trackingNetPrice'] + $article['trackingPriceDuty'],
+                    'image' => $product['imagePath'] . $product['articleIdForImage'] . '.png',
+                    'info' => $info
                 ];
             }
-
-            $meals[] = $meal;
         }
 
         return $meals;

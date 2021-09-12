@@ -22,11 +22,15 @@
 @endif
 
 @if($meal->image)
-    <img src="{{ $meal->image }}" alt="">
+    <div>
+        <img src="{{ $meal->image }}" alt="">
+    </div>
 @endif
 
 @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION] ?? false))
-    <p>{{ $meal->description }}</p>
+    @if ($meal->description)
+        <p>{!! $meal->description !!}</p>
+    @endif
 @endif
 
 @if($meal->info->isNotEmpty())
