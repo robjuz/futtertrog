@@ -174,7 +174,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     {
         return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
             ->withData(['t' => $date->timestamp])
-            ->setCookieFile(storage_path('holzke_cookie.txt'))
+            ->setCookieFile($this->cookieJar)
             ->get();
     }
 
@@ -231,7 +231,7 @@ class HolzkeMealProvider extends AbstractMealProvider
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
             ->withData(compact('meal', 'count'))
             ->returnResponseObject()
-            ->setCookieFile(storage_path('holzke_cookie.txt'))
+            ->setCookieFile($this->cookieJar)
             ->post();
     }
 
@@ -246,7 +246,7 @@ class HolzkeMealProvider extends AbstractMealProvider
                     'is_send' => 'yes',
                 ]
             )
-            ->setCookieFile(storage_path('holzke_cookie.txt'))
+            ->setCookieFile($this->cookieJar)
             ->post();
     }
 
@@ -258,7 +258,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     private function getLastOrderId(): ?string
     {
         $response = Curl::to('https://holzke-menue.de/de/meine-kundendaten/meine-bestellungen.html')
-            ->setCookieFile(storage_path('holzke_cookie.txt'))
+            ->setCookieFile($this->cookieJar)
             ->get();
 
         $orderChange = (new Document($response))->first('.orderChange');
@@ -303,7 +303,7 @@ class HolzkeMealProvider extends AbstractMealProvider
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
             ->withData(['vid' => $external_id])
             ->returnResponseObject()
-            ->setCookieFile(storage_path('holzke_cookie.txt'))
+            ->setCookieFile($this->cookieJar)
             ->post();
     }
 

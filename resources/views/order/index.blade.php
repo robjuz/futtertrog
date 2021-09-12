@@ -80,7 +80,7 @@
                                     class="collapsible"
                                     {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
                                 >
-                                    {{ $order->provider }}
+                                    {{ $order->provider ? $order->provider->getName() : '' }}
                                 </td>
 
                                 <td

@@ -7,7 +7,7 @@ ENV APACHE_DOCUMENT_ROOT=public/ \
     APACHE_RUN_USER=www-data \
     APACHE_RUN_GROUP=www-data \
     TEMPLATE_PHP_INI=production \
-    LOG_CHANNEL=errorlog \
+    LOG_CHANNEL=stderr \
     SESSION_DRIVER=cookie\
     PHP_INI_MEMORY_LIMIT=100M
 
