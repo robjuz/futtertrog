@@ -2,11 +2,13 @@
 
 namespace App\MealProviders;
 
+use App\Meal;
 use App\Order;
+use Exception;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 abstract class AbstractMealProvider
 {
@@ -21,6 +23,40 @@ abstract class AbstractMealProvider
 
     abstract public function getMealsDataForDate(Carbon $date): array;
 
+    public function createMealsDataForDate(Carbon $date): Collection
+    {
+        $meals = collect();
+
+        foreach ($this->getMealsDataForDate($date) as $data) {
+            $meal = Meal::updateOrCreate(
+                [
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                    'date_from' => $date->toDateString(),
+                    'date_to' => $date->toDateString(),
+                    'provider' => get_class($this),
+                ],
+                $data
+            );
+
+            foreach ($data['variants'] ?? [] as $variantData) {
+                $meal->variants()->updateOrCreate(
+                    [
+                        'title' => $variantData['title'],
+                        'description' => $variantData['description'],
+                        'date_from' => $date->toDateString(),
+                        'date_to' => $date->toDateString(),
+                        'provider' => get_class($this),
+                    ],
+                    $variantData);
+            }
+
+            $meals->add($meal);
+        }
+
+        return $meals;
+    }
+
     abstract public function supportsAutoOrder(): bool;
 
     abstract public function supportsOrderUpdate(): bool;
@@ -32,7 +68,7 @@ abstract class AbstractMealProvider
      */
     public function placeOrder($orders)
     {
-        throw new \Exception('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     public function __toString()

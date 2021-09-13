@@ -72,6 +72,9 @@ img {
     width: 100%;
     max-width: 100%;
     height: auto;
+    max-height: 150px;
+    object-fit: contain;
+    object-position: center;
 }
 
 button, input, optgroup, select, textarea {

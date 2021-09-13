@@ -65,4 +65,9 @@ return [
         'location' => env('CALL_A_PIZZA_LOCATION', 'dresden_loebtau_sued'),
         'meals' => env('CALL_A_PIZZA_MEALS', ['pizza/pizza-klassiker', 'burger']),
     ],
+
+    'flaschenpost' => [
+        'zipcode' => env('FLASCHENPOST_ZIPCODE', '01159'),
+        'categories' => env('FLASCHENPOST_CATEGORIES', ['limonade/cola']),
+    ],
 ];
