@@ -15,6 +15,6 @@ COPY composer.* ./
 
 RUN composer install --no-dev --no-scripts --no-autoloader
 
-COPY --chown=docker:www-data . .
+COPY --chown=docker:www-data --chmod=776 . .
 
 RUN composer dump-autoload --optimize
