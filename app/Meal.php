@@ -209,7 +209,7 @@ class Meal extends Model
             ->updateOrCreate(
                 [
                     'date' => $date,
-                    'provider' => $this->getAttributes()['provider'],
+                    'provider' => get_class($this->provider),
                 ],
                 [
                     'status' => Order::STATUS_OPEN,
