@@ -43,7 +43,7 @@ abstract class AbstractMealProvider
                 $meal->variants()->updateOrCreate(
                     [
                         'title' => $variantData['title'],
-                        'description' => $variantData['description'],
+                        'description' => $variantData['description'] ?? null,
                         'date_from' => $date->toDateString(),
                         'date_to' => $date->toDateString(),
                         'provider' => get_class($this),
