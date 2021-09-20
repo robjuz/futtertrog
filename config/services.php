@@ -63,7 +63,7 @@ return [
 
     'call_a_pizza' => [
         'location' => env('CALL_A_PIZZA_LOCATION', 'dresden_loebtau_sued'),
-        'meals' => json_decode(env('CALL_A_PIZZA_CATEGORIES', "['pizza/pizza-klassiker', 'burger']")),
+        'meals' => json_decode(env('CALL_A_PIZZA_CATEGORIES', "[\"pizza/pizza-klassiker\", \"burger\"]")),
     ],
 
     'flaschenpost' => [

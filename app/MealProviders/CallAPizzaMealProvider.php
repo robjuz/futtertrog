@@ -66,8 +66,8 @@ class CallAPizzaMealProvider extends AbstractMealProvider
             ];
 
             foreach ($mealElement->find('.add-to-cart') as $priceInfo) {
-                $priceTitle = strip_tags($priceInfo->find('.price_box_title')[0]->text());
-                $priceText = $priceInfo->find('.price_box_price')[0]->text();
+                $priceTitle = strip_tags($priceInfo->first('.price_box_title')->text());
+                $priceText = $priceInfo->first('.price_box_price')->text();
                 $priceText = preg_replace('/\D+$/', '', $priceText);
                 $priceText = preg_replace('/[,\.]/', '', $priceText);
 
