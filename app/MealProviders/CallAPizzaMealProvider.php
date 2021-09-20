@@ -80,7 +80,10 @@ class CallAPizzaMealProvider extends AbstractMealProvider
                 }
             }
 
-            $meals[] = $meal;
+            // ignore entries with no variants (probably not available)
+            if ($meal['variants']) {
+                $meals[] = $meal;
+            }
         }
 
         return $meals;
