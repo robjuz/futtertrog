@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\OrderUpdated;
-use App\MealProviders\HolzkeMealProvider;
+use App\MealProviders\Holzke;
 
 class AutoOrder
 {
@@ -23,7 +23,7 @@ class AutoOrder
      * @param  OrderUpdated  $event
      * @return void
      */
-    public function handle(OrderUpdated $event, HolzkeMealProvider $holzkeService)
+    public function handle(OrderUpdated $event, Holzke $holzkeService)
     {
         $order = $event->order;
 

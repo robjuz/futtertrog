@@ -8,7 +8,7 @@ use DiDom\Document;
 use Illuminate\Console\Scheduling\Schedule;
 use Ixudra\Curl\Facades\Curl;
 
-class FlaschenpostMealProvider extends AbstractMealProvider
+class Flaschenpost extends AbstractMealProvider
 {
     private string $zipcode;
 
@@ -92,11 +92,6 @@ class FlaschenpostMealProvider extends AbstractMealProvider
         }
 
         return $meals;
-    }
-
-    public function getName(): string
-    {
-        return 'Flaschenpost';
     }
 
     public function supportsAutoOrder(): bool

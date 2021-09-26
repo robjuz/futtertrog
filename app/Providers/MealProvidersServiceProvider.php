@@ -2,17 +2,17 @@
 
 namespace App\Providers;
 
-use App\MealProviders\CallAPizzaMealProvider;
-use App\MealProviders\FlaschenpostMealProvider;
-use App\MealProviders\HolzkeMealProvider;
+use App\MealProviders\CallAPizza;
+use App\MealProviders\Flaschenpost;
+use App\MealProviders\Holzke;
 use Illuminate\Support\ServiceProvider;
 
 class MealProvidersServiceProvider extends ServiceProvider
 {
     private array $bundledProviders = [
-        HolzkeMealProvider::class,
-        CallAPizzaMealProvider::class,
-        FlaschenpostMealProvider::class,
+        Holzke::class,
+        CallAPizza::class,
+        Flaschenpost::class,
     ];
 
     /**
@@ -28,7 +28,7 @@ class MealProvidersServiceProvider extends ServiceProvider
 
         $this->app->bind('mealProviders', function ($app) {
             return collect($this->bundledProviders)->mapWithKeys(function ($provider) use ($app) {
-                return [$provider => $app->make($provider)->getName()];
+                return [class_basename($provider) => $app->make($provider)->getName()];
             })->all();
         });
     }

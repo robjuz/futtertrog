@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 use Symfony\Component\HttpFoundation\Response;
 
-class HolzkeMealProvider extends AbstractMealProvider
+class Holzke extends AbstractMealProvider
 {
     private string $cookieJar = '';
 
@@ -40,18 +40,18 @@ class HolzkeMealProvider extends AbstractMealProvider
             ->post();
     }
 
-    public function getName(): string
-    {
-        return 'Holzke';
-    }
-
     public function supportsAutoOrder(): bool
     {
         return true;
     }
 
+    public function supportsOrderUpdate(): bool
+    {
+        return false;
+    }
+
     /**
-     * @param  Carbon  $date
+     * @param Carbon $date
      *
      * @throws InvalidSelectorException
      */
@@ -89,7 +89,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return float
      *
      * @throws InvalidSelectorException
@@ -100,7 +100,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return string[]
      *
      * @throws InvalidSelectorException
@@ -113,7 +113,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return string
      *
      * @throws InvalidSelectorException
@@ -127,7 +127,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return string
      *
      * @throws InvalidSelectorException
@@ -138,7 +138,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return int
      *
      * @throws InvalidSelectorException
@@ -153,7 +153,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Element  $mealElement
+     * @param Element $mealElement
      * @return string
      *
      * @throws InvalidSelectorException
@@ -167,7 +167,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Carbon  $date
+     * @param Carbon $date
      * @return string
      */
     public function getHtml(Carbon $date): string
@@ -179,7 +179,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Order[]|Collection  $orders
+     * @param Order[]|Collection $orders
      *
      * @throws InvalidSelectorException
      */
@@ -202,7 +202,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  Collection  $orders
+     * @param Collection $orders
      * @return array
      */
     private function extractMealIds(Collection $orders): array
@@ -211,7 +211,7 @@ class HolzkeMealProvider extends AbstractMealProvider
 
         foreach ($orders as $order) {
             foreach ($order->orderItems as $orderItem) {
-                if (! isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
+                if (!isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
                     $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
                 }
 
@@ -263,13 +263,13 @@ class HolzkeMealProvider extends AbstractMealProvider
 
         $orderChange = (new Document($response))->first('.orderChange');
 
-        abort_if(! $orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
+        abort_if(!$orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
 
         return $orderChange->getAttribute('data-id');
     }
 
     /**
-     * @param  OrderItem  $orderItem
+     * @param OrderItem $orderItem
      *
      * @throws InvalidSelectorException
      */
@@ -296,7 +296,7 @@ class HolzkeMealProvider extends AbstractMealProvider
     }
 
     /**
-     * @param  string  $external_id
+     * @param string $external_id
      */
     private function setOrderForEdit(string $external_id): void
     {
@@ -307,14 +307,9 @@ class HolzkeMealProvider extends AbstractMealProvider
             ->post();
     }
 
-    public function supportsOrderUpdate(): bool
-    {
-        return false;
-    }
-
     public function configureSchedule(Schedule $schedule): void
     {
-        if (! config('services.holzke.schedule')) {
+        if (!config('services.holzke.schedule')) {
             return;
         }
 

@@ -17,9 +17,13 @@ abstract class AbstractMealProvider
         $app->singleton(static::class, function () {
             return new static();
         });
+
+        $app->alias(static::class, class_basename(static::class));
     }
 
-    abstract public function getName(): string;
+    public function getName(): string {
+        return class_basename($this);
+    }
 
     abstract public function getMealsDataForDate(Carbon $date): array;
 
@@ -34,7 +38,7 @@ abstract class AbstractMealProvider
                     'description' => $data['description'],
                     'date_from' => $date->toDateString(),
                     'date_to' => $date->toDateString(),
-                    'provider' => get_class($this),
+                    'provider' => class_basename($this),
                 ],
                 $data
             );
@@ -46,7 +50,7 @@ abstract class AbstractMealProvider
                         'description' => $variantData['description'] ?? null,
                         'date_from' => $date->toDateString(),
                         'date_to' => $date->toDateString(),
-                        'provider' => get_class($this),
+                        'provider' => class_basename($this),
                     ],
                     $variantData);
             }

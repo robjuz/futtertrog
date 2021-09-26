@@ -6,7 +6,7 @@ use DiDom\Document;
 use Illuminate\Console\Scheduling\Schedule;
 use Ixudra\Curl\Facades\Curl;
 
-class CallAPizzaMealProvider extends AbstractMealProvider
+class CallAPizza extends AbstractMealProvider
 {
     private $location;
 
