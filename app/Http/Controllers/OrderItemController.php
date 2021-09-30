@@ -89,6 +89,7 @@ class OrderItemController extends Controller
 
         $meals = Meal::whereDate('date_from', '>=', $date)
             ->whereDate('date_to', '<=', $date)
+            ->doesntHave('variants')
             ->get();
         $users = User::orderBy('name')->get();
 
