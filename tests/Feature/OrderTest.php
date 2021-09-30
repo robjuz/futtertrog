@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Meal;
 use App\Order;
 use App\OrderItem;
 use Illuminate\Http\Response;
@@ -38,7 +39,15 @@ class OrderTest extends TestCase
         ]);
 
         $orders->each(function($order) {
-            $order->orderItems()->save(factory(OrderItem::class)->make());
+            /** @var OrderItem $orderItem */
+            $orderItem = factory(OrderItem::class)->make();
+
+            /** @var Meal $meal */
+            $meal = factory(Meal::class)->create(['provider'=> $order->provider->getKey()]);
+
+            $orderItem->meal()->associate($meal);
+
+            $order->orderItems()->save($orderItem);
         });
 
         $this->loginAsAdmin();
@@ -53,7 +62,7 @@ class OrderTest extends TestCase
 
             $jsonResponse->assertJsonFragment([
                 'date' => $order->date,
-                'provider' => $order->getAttributes()['provider'],
+                'provider' => $order->provider->getKey(),
                 'subtotal' => $order->subtotal
             ]);
         }

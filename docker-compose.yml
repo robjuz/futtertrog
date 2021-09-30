@@ -8,6 +8,7 @@ services:
       - ${APP_PORT:-8080}:80
     volumes:
       - ./:/var/www/html
+      - ./storage/code-coverage:/opt/phpstorm-coverage
     depends_on:
       db:
         condition: service_healthy
@@ -56,4 +57,3 @@ services:
 
 volumes:
   mysql:
-    driver: local
