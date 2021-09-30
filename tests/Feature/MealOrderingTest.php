@@ -352,12 +352,35 @@ class MealOrderingTest extends TestCase
         $this
             ->withExceptionHandling()
             ->post(route('order_items.store'), [
-            'date' => $meal->date_from->toDateString(),
-            'meal_id' => $meal->id
-        ])
+                'date' => $meal->date_from->toDateString(),
+                'meal_id' => $meal->id
+            ])
             ->assertSessionHasErrors('meal_id');
 
         $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+    }
 
+    /** @test */
+    public function admin_can_see_only_meal_variants_in_order_item_create_form()
+    {
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->state('in_future')->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(
+            factory(Meal::class)->make([
+                    'date_from' => $meal->date_from,
+                    'date_to' => $meal->date_to
+                ]
+            )
+        );
+
+        $this->loginAsAdmin();
+
+        $this->get(route('order_items.create', [
+            'date' => $meal->date_from->toDateString(),
+        ]))
+            ->assertSee('<option value="'.$variant->id.'">', false)
+            ->assertDontSee('<option value="'.$meal->id.'">'.$meal->title, false);
     }
 }
