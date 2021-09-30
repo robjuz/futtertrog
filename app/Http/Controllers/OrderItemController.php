@@ -6,6 +6,7 @@ use App\Events\OrderUpdated;
 use App\Meal;
 use App\Order;
 use App\OrderItem;
+use App\Rules\MealWithoutVariants;
 use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -133,7 +134,7 @@ class OrderItemController extends Controller
                 'date' => 'required|date',
                 'user_id' => 'sometimes|exists:users,id',
                 'quantity' => 'sometimes|numeric|min:1,max:10',
-                'meal_id' => 'required|exists:meals,id',
+                'meal_id' => ['required','exists:meals,id', new MealWithoutVariants()],
             ]
         );
 

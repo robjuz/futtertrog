@@ -174,5 +174,6 @@
   "Variants": "Varianten",
   "Filters": "Filter",
   "All": "Alle",
-  "Allergens": "Allergene und Zusatzstoffe"
+  "Allergens": "Allergene und Zusatzstoffe",
+  "This meal has variants. You need to order a variant": "Dieses Essen hat Varianten. Bitte eine Variante bestellen"
 }
