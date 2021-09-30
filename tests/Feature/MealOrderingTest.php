@@ -8,7 +8,7 @@ use App\Notifications\OrderReopenedNotification;
 use App\Order;
 use App\OrderItem;
 use App\User;
-use Illuminate\Http\Response;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -78,7 +78,7 @@ class MealOrderingTest extends TestCase
     {
         $meal = factory(Meal::class)->create();
 
-        /** @var \App\User $user */
+        /** @var User $user */
         $user = factory(User::class)->create();
 
         $this->loginAsAdmin();
@@ -136,6 +136,60 @@ class MealOrderingTest extends TestCase
                 && $event->user->is($user)
                 && $event->orderItem->is($orderItem);
         });
+    }
+
+    /** @test */
+    public function it_notifies_an_admin_when_an_closed_was_reopened()
+    {
+        $meal = factory(Meal::class)->state('in_future')->create();
+        $user = factory(User::class)->create();
+
+        $admin = factory(User::class)->create(['is_admin' => true]);
+
+        // Given we have a closed order
+        $order = factory(Order::class)->create([
+            'date' => $meal->date_from,
+            'status' => Order::STATUS_ORDERED,
+            'provider' => $meal->provider
+        ]);
+
+
+        Notification::fake();
+        Mail::fake();
+
+        // When a user creates a new order item associated with this order
+        $this->login($user);
+        $this->post(route('order_items.store'), [
+            'date' => $meal->date_from,
+            'user_id' => $user->id,
+            'meal_id' => $meal->id
+        ]);
+
+        // Admin should be notified
+        Notification::assertSentTo(
+            $admin,
+            OrderReopenedNotification::class,
+            function ($notification, $channels) use ($user, $meal, $order) {
+                /** @var MailMessage $mailData */
+                $mailData = $notification->toMail($user);
+                $this->assertEquals(__('Order reopened'), $mailData->subject);
+
+                $toArray = $notification->toArray($user);
+                $this->assertEquals($toArray['date'], $order->date);
+                $this->assertEquals($toArray['user'], $user->name);
+                $this->assertEquals($toArray['meal'], $meal->title);
+
+                $toWebPush = $notification->toWebPush($user)->toArray();
+                $this->assertEquals($toWebPush['title'], __('The order for :date was reopened',
+                    ['date' => $order->date->format(trans('futtertrog.date_format'))]));
+                $this->assertEquals($toWebPush['body'],
+                    __(':user updated :meal', ['user' => $user->name, 'meal' => $meal->title]));
+
+                return $notification->order->is($order)
+                    && $notification->user->is($user)
+                    && $notification->meal->is($meal);
+            }
+        );
     }
 
     /** @test */
@@ -273,5 +327,37 @@ class MealOrderingTest extends TestCase
 
         $this->get(route('meals.index', ['date' => $variant->date_from->toDateString()]))
             ->assertSee(__('Delete order'));
+    }
+
+    /** @test */
+    public function it_only_allows_to_order_a_meal_variant_in_meal_with_variants()
+    {
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->state('in_future')->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(
+            factory(Meal::class)->state('in_future')->make()
+        );
+
+        $this->login();
+
+        $this->post(route('order_items.store'), [
+            'date' => $variant->date_from->toDateString(),
+            'meal_id' => $variant->id
+        ]);
+
+        $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $variant->id)->exists());
+
+        $this
+            ->withExceptionHandling()
+            ->post(route('order_items.store'), [
+            'date' => $meal->date_from->toDateString(),
+            'meal_id' => $meal->id
+        ])
+            ->assertSessionHasErrors('meal_id');
+
+        $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+
     }
 }
