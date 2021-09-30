@@ -9,6 +9,7 @@ use App\Order;
 use App\OrderItem;
 use App\User;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -380,7 +381,34 @@ class MealOrderingTest extends TestCase
         $this->get(route('order_items.create', [
             'date' => $meal->date_from->toDateString(),
         ]))
-            ->assertSee('<option value="'.$variant->id.'">', false)
-            ->assertDontSee('<option value="'.$meal->id.'">'.$meal->title, false);
+        ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
+            return $meals->contains($variant) && !$meals->contains($meal);
+        });
+    }
+
+    /** @test */
+    public function admin_can_see_only_meal_variants_in_order_item_edit_form()
+    {
+        $user = factory(User::class)->create();
+
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->state('in_future')->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(
+            factory(Meal::class)->make([
+                    'date_from' => $meal->date_from,
+                    'date_to' => $meal->date_to
+                ]
+            )
+        );
+
+        $orderItem = $variant->order($user->id, $variant->date_from);
+        $this->loginAsAdmin();
+
+        $this->get(route('order_items.edit', $orderItem))
+            ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
+                return $meals->contains($variant) && !$meals->contains($meal);
+            });
     }
 }
