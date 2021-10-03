@@ -25,6 +25,10 @@ abstract class AbstractMealProvider
         return class_basename($this);
     }
 
+    public function getKey(): string {
+        return class_basename($this);
+    }
+
     abstract public function getMealsDataForDate(Carbon $date): array;
 
     public function createMealsDataForDate(Carbon $date): Collection
@@ -38,7 +42,7 @@ abstract class AbstractMealProvider
                     'description' => $data['description'],
                     'date_from' => $date->toDateString(),
                     'date_to' => $date->toDateString(),
-                    'provider' => class_basename($this),
+                    'provider' => $this->getKey(),
                 ],
                 $data
             );
@@ -50,7 +54,7 @@ abstract class AbstractMealProvider
                         'description' => $variantData['description'] ?? null,
                         'date_from' => $date->toDateString(),
                         'date_to' => $date->toDateString(),
-                        'provider' => class_basename($this),
+                        'provider' => $this->getKey(),
                     ],
                     $variantData);
             }
