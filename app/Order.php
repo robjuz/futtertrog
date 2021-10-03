@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
  * @property \Illuminate\Support\Carbon $date
  * @property AbstractMealProvider|null $provider
  * @property string $status
+ * @property string $previous_status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $external_id
@@ -56,6 +57,15 @@ class Order extends Model
     protected $dates = ['date'];
 
     protected $appends = ['subtotal'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function (self $order) {
+            $order->previous_status = $order->original['status'] ?? null;
+        });
+    }
 
     public function orderItems()
     {
@@ -158,6 +168,18 @@ class Order extends Model
         return $this;
     }
 
+    public function markOrdered()
+    {
+        $this->update(
+            [
+                'status' => Order::STATUS_ORDERED,
+            ]
+        );
+
+        return $this;
+    }
+
+
     public function getIsOpenAttribute()
     {
         return $this->status === Order::STATUS_OPEN;
@@ -175,5 +197,10 @@ class Order extends Model
     public function toArray()
     {
         return array_merge(parent::toArray(), ['provider' => $this->provider->__toString()]);
+    }
+
+    public function wasReopened()
+    {
+        return $this->previous_status === self::STATUS_ORDERED and $this->status === self::STATUS_OPEN;
     }
 }

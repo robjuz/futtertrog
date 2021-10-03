@@ -27,8 +27,11 @@ class SendOrderReopenedNotification
      */
     public function handle(OrderUpdated $event)
     {
-        if ($event->order->isOpen) {
-            Notification::send(User::where('is_admin', true)->get(), new OrderReopenedNotification($event->order, $event->user, $event->orderItem->meal));
+        if ($event->order->wasReopened()) {
+            Notification::send(
+                User::where('is_admin', true)->get(),
+                new OrderReopenedNotification($event->order, $event->user, $event->orderItem->meal)
+            );
         }
     }
 }

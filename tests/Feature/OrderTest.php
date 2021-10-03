@@ -181,4 +181,18 @@ class OrderTest extends TestCase
             ->assertStatus(Response::HTTP_NO_CONTENT);
         $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
     }
+
+    /** @test */
+    public function it_stores_the_previous_status()
+    {
+        /** @var Order $order */
+        $order = factory(Order::class)->create(['status' => Order::STATUS_OPEN]);
+
+        $order->markOrdered();
+
+        $order->refresh();
+
+        $this->assertEquals(Order::STATUS_ORDERED, $order->status);
+        $this->assertEquals(Order::STATUS_OPEN, $order->previous_status);
+    }
 }

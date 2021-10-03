@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Events\OrderUpdated;
 use Illuminate\Database\Eloquent\Model;
 
 /**
