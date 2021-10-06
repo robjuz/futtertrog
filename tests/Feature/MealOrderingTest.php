@@ -140,60 +140,6 @@ class MealOrderingTest extends TestCase
     }
 
     /** @test */
-    public function it_notifies_an_admin_when_an_closed_was_reopened()
-    {
-        $meal = factory(Meal::class)->state('in_future')->create();
-        $user = factory(User::class)->create();
-
-        $admin = factory(User::class)->create(['is_admin' => true]);
-
-        // Given we have a closed order
-        $order = factory(Order::class)->create([
-            'date' => $meal->date_from,
-            'status' => Order::STATUS_ORDERED,
-            'provider' => $meal->provider
-        ]);
-
-
-        Notification::fake();
-        Mail::fake();
-
-        // When a user creates a new order item associated with this order
-        $this->login($user);
-        $this->post(route('order_items.store'), [
-            'date' => $meal->date_from,
-            'user_id' => $user->id,
-            'meal_id' => $meal->id
-        ]);
-
-        // Admin should be notified
-        Notification::assertSentTo(
-            $admin,
-            OrderReopenedNotification::class,
-            function ($notification, $channels) use ($user, $meal, $order) {
-                /** @var MailMessage $mailData */
-                $mailData = $notification->toMail($user);
-                $this->assertEquals(__('Order reopened'), $mailData->subject);
-
-                $toArray = $notification->toArray($user);
-                $this->assertEquals($toArray['date'], $order->date);
-                $this->assertEquals($toArray['user'], $user->name);
-                $this->assertEquals($toArray['meal'], $meal->title);
-
-                $toWebPush = $notification->toWebPush($user)->toArray();
-                $this->assertEquals($toWebPush['title'], __('The order for :date was reopened',
-                    ['date' => $order->date->format(trans('futtertrog.date_format'))]));
-                $this->assertEquals($toWebPush['body'],
-                    __(':user updated :meal', ['user' => $user->name, 'meal' => $meal->title]));
-
-                return $notification->order->is($order)
-                    && $notification->user->is($user)
-                    && $notification->meal->is($meal);
-            }
-        );
-    }
-
-    /** @test */
     public function it_provides_a_list_of_order_items()
     {
         $user = factory(User::class)->create();
