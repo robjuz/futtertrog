@@ -8,7 +8,8 @@ use App\Notifications\OrderReopenedNotification;
 use App\Order;
 use App\OrderItem;
 use App\User;
-use Illuminate\Http\Response;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -78,7 +79,7 @@ class MealOrderingTest extends TestCase
     {
         $meal = factory(Meal::class)->create();
 
-        /** @var \App\User $user */
+        /** @var User $user */
         $user = factory(User::class)->create();
 
         $this->loginAsAdmin();
@@ -273,5 +274,87 @@ class MealOrderingTest extends TestCase
 
         $this->get(route('meals.index', ['date' => $variant->date_from->toDateString()]))
             ->assertSee(__('Delete order'));
+    }
+
+    /** @test */
+    public function it_only_allows_to_order_a_meal_variant_in_meal_with_variants()
+    {
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->state('in_future')->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(
+            factory(Meal::class)->state('in_future')->make()
+        );
+
+        $this->login();
+
+        $this->post(route('order_items.store'), [
+            'date' => $variant->date_from->toDateString(),
+            'meal_id' => $variant->id
+        ]);
+
+        $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $variant->id)->exists());
+
+        $this
+            ->withExceptionHandling()
+            ->post(route('order_items.store'), [
+                'date' => $meal->date_from->toDateString(),
+                'meal_id' => $meal->id
+            ])
+            ->assertSessionHasErrors('meal_id');
+
+        $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+    }
+
+    /** @test */
+    public function admin_can_see_only_meal_variants_in_order_item_create_form()
+    {
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->state('in_future')->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(
+            factory(Meal::class)->make([
+                    'date_from' => $meal->date_from,
+                    'date_to' => $meal->date_to
+                ]
+            )
+        );
+
+        $this->loginAsAdmin();
+
+        $this->get(route('order_items.create', [
+            'date' => $meal->date_from->toDateString(),
+        ]))
+        ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
+            return $meals->contains($variant) && !$meals->contains($meal);
+        });
+    }
+
+    /** @test */
+    public function admin_can_see_only_meal_variants_in_order_item_edit_form()
+    {
+        $user = factory(User::class)->create();
+
+        /** @var Meal $meal */
+        $meal = factory(Meal::class)->state('in_future')->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(
+            factory(Meal::class)->make([
+                    'date_from' => $meal->date_from,
+                    'date_to' => $meal->date_to
+                ]
+            )
+        );
+
+        $orderItem = $variant->order($user->id, $variant->date_from);
+        $this->loginAsAdmin();
+
+        $this->get(route('order_items.edit', $orderItem))
+            ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
+                return $meals->contains($variant) && !$meals->contains($meal);
+            });
     }
 }

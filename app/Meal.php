@@ -202,7 +202,7 @@ class Meal extends Model
         return $query->where('provider', $provider);
     }
 
-    public function order($userId, $date, $quantity = 1): OrderItem
+    public function order(int $userId, $date, $quantity = 1): OrderItem
     {
         /** @var Order $order */
         $order = Order::query()
