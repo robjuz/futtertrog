@@ -32,4 +32,8 @@ jobs:
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
-      run: vendor/bin/phpunit
+      run: vendor/bin/phpunit --colors=never --stop-on-error --coverage-text --coverage-cobertura=coverage.xml
+    - uses: codecov/codecov-action@v2
+      with:
+        fail_ci_if_error: true # optional (default = false)
+        verbose: true # optional (default = false)
