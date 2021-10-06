@@ -342,18 +342,6 @@ class MealTest extends TestCase
     }
 
     /** @test */
-    public function variant_name_consist_of_parent_name_and_variant_name()
-    {
-        /** @var Meal $meal */
-        $meal = factory(Meal::class)->create();
-
-        /** @var Meal $variant */
-        $variant = $meal->variants()->save(factory(Meal::class)->make());
-
-        $this->assertTrue(Str::containsAll($variant->title, [$meal->title, $variant->title]));
-    }
-
-    /** @test */
     public function meals_can_be_filtered_by_provider()
     {
         $date = today()->addDay()->toDateString();

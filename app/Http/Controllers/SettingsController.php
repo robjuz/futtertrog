@@ -45,6 +45,7 @@ class SettingsController extends Controller
             User::SETTING_LANGUAGE => ['required', Rule::in(config('app.supported_locale'))],
         ]);
 
+        /** @var User $user */
         $user = $request->user();
         $user->settings = $settings;
         $user->save();

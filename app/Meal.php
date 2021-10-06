@@ -132,7 +132,7 @@ class Meal extends Model
         if (! isset($this->attributes['is_preferred'])) {
             $this->attributes['is_preferred'] = false;
 
-            if (Auth::check()) {
+            if (Auth::check() and !$this->is_hated) {
                 $preferences = Auth::user()->settings[User::SETTING_MEAL_PREFERENCES] ?? '';
                 $preferences = array_map('trim', explode(',', $preferences));
 
