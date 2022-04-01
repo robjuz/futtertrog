@@ -40,7 +40,7 @@
             @enderror
         </label>
 
-        <textarea id="comment" name="comment" value="{{ $deposit->comment }}"></textarea>
+        <textarea id="comment" name="comment">{{ $deposit->comment }}</textarea>
 
         <button type="submit">{{ __('Save') }}</button>
     </form>

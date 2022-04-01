@@ -97,4 +97,17 @@ class DepositTest extends TestCase
         $this->assertEquals(-1050, $user->balance);
         $this->assertEquals(1050, $otherUser->balance);
     }
+
+    /** @test  */
+    public function it_shows_the_description_in_edit_view()
+    {
+        /** @var Deposit $deposit */
+        $deposit = factory(Deposit::class)->create(['comment' => 'test description']);
+
+        $this->loginAsAdmin();
+
+            $this->get(route('deposits.edit', $deposit))
+            ->assertSeeText('test description');
+
+    }
 }
