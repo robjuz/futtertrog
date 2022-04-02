@@ -28,6 +28,8 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "nothingworks/blade-svg": "^0.3.2",
+        "sentry/sentry": "*",
+        "sentry/sentry-laravel": "^2.11",
         "silviolleite/laravelpwa": "^2.0",
         "socialiteproviders/gitlab": "^3.1"
     },
@@ -45,7 +47,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
     },
     "extra": {
         "laravel": {
