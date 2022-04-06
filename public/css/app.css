@@ -1582,3 +1582,24 @@ footer {
   margin: auto;
   width: 80%;
 }
+
+.deposit-list__item {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: baseline;
+  border-top: 2px solid var(--custom-2);
+  gap: .25rem;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.deposit-list__item:first-child {
+  margin: 0;
+  padding-top: 0;
+  border: none;
+}
+
+.deposit-list__item > * {
+  margin: 0;
+}
