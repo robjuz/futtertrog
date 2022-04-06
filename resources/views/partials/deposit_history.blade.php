@@ -1,6 +1,21 @@
 <h2>{{ __('Deposit history') }} </h2>
 
+
+
+
 @if( count($deposits->items()) > 0)
+
+<ul class="deposit-list">
+    @foreach ($deposits as $deposit)
+        <li class="deposit-list__item">
+            <h3>@money($deposit->value)</h3>
+            <span>{{ $deposit->comment }}</span>
+            <small>{{ $deposit->created_at->format(__('futtertrog.date_format')) }}</small>
+        </li>
+    @endforeach
+</ul>
+
+    {{--
     <table>
         <thead>
             <tr>
@@ -20,6 +35,10 @@
             </tr>
         @endforeach
     </table>
+
+    --}}
+
+
 @else
     <p> {{ __('No results found') }}!</p>
 @endif
