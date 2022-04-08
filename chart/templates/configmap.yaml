@@ -7,37 +7,57 @@ metadata:
     app.kubernetes.io/component: primary
 data:
 
-  {{- if .Values.services.gitlab.enabled}}
+  {{- if .Values.services.gitlab.enabled }}
   LOGIN_WITH_GITLAB: {{ .Values.services.gitlab.enabled | quote }}
+  {{- end }}
+  {{- if .Values.services.gitlab.url }}
   GITLAB_URL: {{ .Values.services.gitlab.url | quote }}
+  {{- end }}
+  {{- if .Values.services.gitlab.clientId }}
   GITLAB_CLIENT_ID: {{ .Values.services.gitlab.clientId | quote }}
   {{- end }}
 
-  {{- if .Values.mealProviders.holzke.enabled}}
+  {{- if .Values.mealProviders.holzke.login }}
   HOLZKE_LOGIN: {{ .Values.mealProviders.holzke.login | quote }}
+  {{- end }}
+  {{- if .Values.mealProviders.holzke.cronjob }}
   HOLZKE_SCHEDULE: {{ .Values.mealProviders.holzke.cronjob | quote }}
+  {{- end }}
+  {{- if .Values.mealProviders.holzke.orderInfo }}
   HOLZKE_ORDER_INFO: {{ .Values.mealProviders.holzke.orderInfo | quote }}
   {{- end }}
 
+  {{- if .Values.services.nexmo.key }}
   NEXMO_KEY: {{ .Values.services.nexmo.key | quote }}
+  {{- end }}
 
+  {{- if .Values.mealProviders.call_a_pizza.location }}
   CALL_A_PIZZA_LOCATION: {{ .Values.mealProviders.call_a_pizza.location | quote }}
+  {{- end }}
+  {{- if .Values.mealProviders.call_a_pizza.categories }}
   CALL_A_PIZZA_CATEGORIES: {{ .Values.mealProviders.call_a_pizza.categories | toJson | quote }}
+  {{- end }}
 
+  {{- if .Values.mealProviders.flaschenpost.zipcode }}
   FLASCHENPOST_ZIPCODE: {{ .Values.mealProviders.flaschenpost.zipcode | quote }}
+  {{- end }}
+  {{- if .Values.mealProviders.flaschenpost.categories }}
   FLASCHENPOST_CATEGORIES: {{ .Values.mealProviders.flaschenpost.categories | toJson | quote }}
+  {{- end }}
 
+  {{- if .Values.mail.driver }}
   MAIL_DRIVER: {{ .Values.mail.driver | quote }}
+  {{- end }}
 
   {{- if .Values.mail.host }}
   MAIL_HOST: {{ .Values.mail.host | quote }}
   {{- end }}
 
-  {{- if .Values.mail.port}}
+  {{- if .Values.mail.port }}
   MAIL_PORT: {{ .Values.mail.port | quote }}
   {{- end }}
 
-  {{- if .Values.mail.username}}
+  {{- if .Values.mail.username }}
   MAIL_USERNAME: {{ .Values.mail.username | quote }}
   {{- end }}
 
