@@ -1,0 +1,22 @@
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+
+test:
+  image: thecodingmachine/php:7.4-v4-cli
+  variables:
+    PHP_EXTENSION_XDEBUG: 1
+    PHP_EXTENSION_INTL: 1
+    PHP_EXTENSION_GMP: 1
+    PHP_EXTENSION_SQLITE3: 1
+    PHP_EXTENSION_PDO_SQLITE: 1
+  services: []
+  script:
+    - composer install
+    - cp .env.example .env
+    - php artisan key:gen
+    - vendor/bin/phpunit --colors=never --stop-on-error --coverage-clover=coverage.xml
+    
+production:
+  environment:
+    kubernetes:
+      namespace: futtertrog

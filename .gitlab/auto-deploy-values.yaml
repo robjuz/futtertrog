@@ -1,0 +1,42 @@
+ingress:
+  enabled: true
+  certManager: true
+  tls: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+
+mail:
+  driver: smtp
+
+services:
+  gitlab:
+    enabled: true
+    url: https://git.hw.ag/
+
+mealProviders:
+  holzke:
+    enabled: true
+    cronjob: true
+  call_a_pizza:
+    enabled: true
+    location: dresden_loebtau_sued
+    categories:
+      - pizza
+      - burger
+
+  flaschenpost:
+    zipcode: 01217
+    categories:
+      - wasser/spritzig
+      - wasser/medium
+      - wasser/still
+      - bier/alkoholfrei
+      - limonade/cola
+      - limonade/orangenlimonade
+      - limonade/zitronenlimonade
+      - limonade/spezi
+      - limonade/teegetraenke
+      - limonade/fassbrause
+      - limonade/mate
+      - limonade/bio
+      - limonade/sonstige-limos

@@ -1,5 +1,4 @@
 ARG PHP_EXTENSIONS="bcmath pdo_mysql intl gmp"
-ARG INSTALL_CRON=1
 
 FROM thecodingmachine/php:7.4-v4-slim-apache
 
