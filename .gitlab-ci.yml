@@ -14,7 +14,7 @@ test:
     - composer install
     - cp .env.example .env
     - php artisan key:gen
-    - vendor/bin/phpunit --colors=never --stop-on-error --coverage-clover=coverage.xml
+    - vendor/bin/phpunit --colors=never --stop-on-error --coverage-text
     
 production:
   environment:
