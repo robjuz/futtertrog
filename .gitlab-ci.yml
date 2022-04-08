@@ -4,11 +4,8 @@ include:
 test:
   image: thecodingmachine/php:7.4-v4-cli
   variables:
-    PHP_EXTENSION_XDEBUG: 1
-    PHP_EXTENSION_INTL: 1
-    PHP_EXTENSION_GMP: 1
-    PHP_EXTENSION_SQLITE3: 1
-    PHP_EXTENSION_PDO_SQLITE: 1
+    PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite xdebug"
+    XDEBUG_MODE: coverage
   services: []
   script:
     - composer install
