@@ -5,6 +5,10 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
 
+appKey: base64:LKHLsfBq98yz6oL/TARkVlwhKbKOfNnVgsQUoAQ22tE=
+
+extraEnvVars: []
+
 mail:
   driver: smtp
 
