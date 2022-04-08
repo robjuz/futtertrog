@@ -2,9 +2,9 @@
 
 An easy system to organize yours and your coworkers lunch orders.
 
-[![Build Status](https://travis-ci.org/robjuz/futtertrog.svg?branch=master)](https://travis-ci.org/robjuz/futtertrog)
-[![codecov](https://codecov.io/gh/robjuz/futtertrog/branch/master/graph/badge.svg)](https://codecov.io/gh/robjuz/futtertrog)
-[![StyleCI](https://github.styleci.io/repos/159231011/shield?branch=master)](https://github.styleci.io/repos/159231011)
+
+[![pipeline status](https://git.hw.ag/helmundwalter/futtertrog/badges/master/pipeline.svg)](https://git.hw.ag/helmundwalter/futtertrog/-/commits/master)
+[![coverage report](https://git.hw.ag/helmundwalter/futtertrog/badges/master/coverage.svg)](https://git.hw.ag/helmundwalter/futtertrog/-/commits/master)
 
 ## Installation
 
