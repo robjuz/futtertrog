@@ -31,6 +31,6 @@ spec:
                 - secretRef:
                     name: {{ template "common.names.fullname" . }}-secret
               {{- if .Values.resources }}
-              resources: {{- toYaml .Values.resources | nindent 16 }}
+              resources: {{- toYaml .Values.cron.resources | nindent 16 }}
               {{- end }}
           restartPolicy: Never
