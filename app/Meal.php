@@ -190,7 +190,7 @@ class Meal extends Model
 
     public function scopeForDate($query, $date)
     {
-        return $query->whereDate('date_from', '<=', $date)->whereDate('date_to', '>=', $date);
+        return $query->whereDate('date_from', '>=', $date)->whereDate('date_to', '<=', $date);
     }
 
     public function scopeByProvider($query, $provider = null)

@@ -21,42 +21,29 @@ class HomeController extends Controller
         $user = $request->user();
 
         $balance = $user->balance;
-        $todayOrders = $user->orderItems()
-            ->with('meal')
-            ->whereHas(
-                'order',
-                function ($query) {
-                    $query->whereDate('date', today());
-                }
-            )
-            ->get();
 
-        $ordersHistory = $user->orderItems()
-            ->with(['order', 'meal'])
-            ->latest()
-            ->simplePaginate(5, ['*'], 'meals_page');
-        $ordersHistory->fragment('order-history');
-        $ordersHistory->appends('deposits_page', $request->deposits_page);
-        $ordersHistory->appends('future_meals_page', $request->future_meals_page);
+        $todayOrders = $user->orderHistory()->today()->get();
 
-        $futureOrders = $user->orderItems()
-            ->with(['meal'])
-            ->join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->where('date', '>', today())
-            ->orderBy('date')
-            ->simplePaginate(5, ['*'], 'future_meals_page');
+        $ordersHistory = $user
+            ->orderHistory()
+            ->simplePaginate(5, ['*'], 'meals_page')
+            ->fragment('order-history')
+            ->appends('deposits_page', $request->deposits_page)
+            ->appends('future_meals_page', $request->future_meals_page);
 
-        $futureOrders->fragment('future-meals');
-        $futureOrders->appends('meals_page', $request->meals_page);
-        $futureOrders->appends('deposits_page', $request->deposits_page);
+        $futureOrders = $user
+            ->futureOrders()
+            ->simplePaginate(5, ['*'], 'future_meals_page')
+            ->fragment('future-meals')
+            ->appends('meals_page', $request->meals_page)
+            ->appends('deposits_page', $request->deposits_page);
 
         $deposits = $user->deposits()
             ->whereStatus(Deposit::STATUS_OK)
-            ->latest()
-            ->simplePaginate(5, ['*'], 'deposits_page');
-        $deposits->fragment('deposit-history');
-        $deposits->appends('meals_page', $request->meals_page);
-        $deposits->appends('future_meals_page', $request->future_meals_page);
+            ->simplePaginate(5, ['*'], 'deposits_page')
+            ->fragment('deposit-history')
+            ->appends('meals_page', $request->meals_page)
+            ->appends('future_meals_page', $request->future_meals_page);
 
         return view('home', compact('balance', 'ordersHistory', 'todayOrders', 'futureOrders', 'deposits', 'user'));
     }

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Events\OrderUpdated;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -71,5 +70,15 @@ class OrderItem extends Model
     public function getStatusAttribute()
     {
         return $this->order->status;
+    }
+
+    public function scopeToday($query)
+    {
+        return $query->whereHas(
+            'order',
+            function ($query) {
+                $query->whereDate('date', today());
+            }
+        );
     }
 }

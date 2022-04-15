@@ -53,7 +53,7 @@ class MealController extends Controller
         $requestedDate = Carbon::parse($request->query('date', today()));
 
         $todayMeals = Meal::with(['variants'])
-            ->doesntHave('parent')
+            ->whereNull('parent_id')
             ->forDate($requestedDate)
             ->byProvider($request->provider)
             ->get()

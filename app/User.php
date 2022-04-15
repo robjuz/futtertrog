@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -121,7 +122,7 @@ class User extends Authenticatable
 
     public function deposits()
     {
-        return $this->hasMany(Deposit::class);
+        return $this->hasMany(Deposit::class)->latest();
     }
 
     public function getBalanceAttribute()
@@ -159,6 +160,15 @@ class User extends Authenticatable
         return $this;
     }
 
+    public function futureOrders(): HasMany
+    {
+        return $this->orderItems()
+            ->with(['meal'])
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('date', '>', today())
+            ->orderBy('date');
+    }
+
     /**
      * Route notifications for the Nexmo channel.
      *
@@ -168,5 +178,12 @@ class User extends Authenticatable
     public function routeNotificationForNexmo($notification)
     {
         return $this->phone_number;
+    }
+
+    public function orderHistory(): HasMany
+    {
+        return $this->orderItems()
+        ->with(['order', 'meal'])
+        ->latest();
     }
 }
