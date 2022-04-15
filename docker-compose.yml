@@ -1,8 +1,7 @@
-version: '3'
+version: '3.8'
 
 services:
-  futtertrog:
-    container_name: futtertrog
+  app:
     image: thecodingmachine/php:7.4-v4-apache
     ports:
       - ${APP_PORT:-8080}:80
@@ -17,22 +16,18 @@ services:
     environment:
       APACHE_DOCUMENT_ROOT: public/
 
-      PHP_EXTENSION_XDEBUG: 1
-      PHP_EXTENSION_INTL: 1
-      PHP_EXTENSION_GMP: 1
-      PHP_EXTENSION_SQLITE3: 1
-      PHP_EXTENSION_PDO_SQLITE: 1
+      PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite xdebug"
 
       PHP_INI_MEMORY_LIMIT: 100M
 
-      STARTUP_COMMAND_1: composer install
-      STARTUP_COMMAND_2: php artisan migrate --force
+      STARTUP_COMMAND_1: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      STARTUP_COMMAND_2: composer install
+      STARTUP_COMMAND_3: php artisan migrate --force
 
       CRON_SCHEDULE: "* * * * *"
       CRON_COMMAND: php artisan schedule:run
 
   db:
-    container_name: futtertrog_db
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: futtertrog
@@ -48,12 +43,11 @@ services:
       timeout: 10s
       retries: 3
 
-
   mailhog:
     image: mailhog/mailhog:latest
-    ports:
-      - "8025:8025"
-
+    expose:
+      - 1025 # smtp
+      - 8025 # webUI
 
 volumes:
   mysql:
