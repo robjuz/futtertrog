@@ -15,17 +15,7 @@ test:
     - composer install
     - cp .env.example .env
     - php artisan key:gen
-    - vendor/bin/phpunit --colors=never --stop-on-error --coverage-text --coverage-cobertura=coverage.cobertura.xml
-  artifacts:
-    reports:
-      cobertura: coverage.cobertura.xml
-
-code_quality_html:
-  extends: code_quality
-  variables:
-    REPORT_FORMAT: html
-  artifacts:
-    paths: [gl-code-quality-report.html]
+    - vendor/bin/phpunit --colors=never --stop-on-error --coverage-text
 
 production:
   variables:
