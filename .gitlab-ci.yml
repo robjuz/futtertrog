@@ -24,6 +24,8 @@ code_quality_html:
     paths: [gl-code-quality-report.html]
 
 production:
+  variables:
+    HELM_RELEASE_NAME: futtertrog
   environment:
     kubernetes:
       namespace: futtertrog
