@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Meal $meal
  * @property-read \App\Order $order
  * @property-read \App\User $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem query()
@@ -33,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @noinspection PhpFullyQualifiedNameUsageInspection
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
+ * @mixin IdeHelperOrderItem
  */
 class OrderItem extends Model
 {

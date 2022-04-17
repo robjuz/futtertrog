@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
 /**
- * @OA\Schema(
+ * @OA\Schema (
  *      required={"password", "email", "name"},
  *      @OA\Property( property="id", ref="#/components/schemas/id" ),
  *      @OA\Property(property="email", type="string", format="email", description="User unique email address", example="john@example.com"),
@@ -19,7 +19,6 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
  *      @OA\Property( property="created_at",type="string", format="date-time" ),
  *      @OA\Property( property="updated_at",type="string", format="date-time" ),
  * )
- *
  * @property int $id
  * @property string $name
  * @property string $email
@@ -42,7 +41,6 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
  * @property-read int|null $order_items_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\NotificationChannels\WebPush\PushSubscription[] $pushSubscriptions
  * @property-read int|null $push_subscriptions_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
@@ -65,6 +63,7 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
  * @mixin \Eloquent
  * @noinspection PhpFullyQualifiedNameUsageInspection
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
+ * @mixin IdeHelperUser
  */
 class User extends Authenticatable
 {

@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Auth;
  * @property-read int|null $meals_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @property-read int|null $order_items_count
- *
  * @method static \App\OrderCollection|static[] all($columns = ['*'])
  * @method static \App\OrderCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
@@ -40,6 +39,7 @@ use Illuminate\Support\Facades\Auth;
  * @mixin \Eloquent
  * @noinspection PhpFullyQualifiedNameUsageInspection
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
+ * @mixin IdeHelperOrder
  */
 class Order extends Model
 {
