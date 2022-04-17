@@ -3,6 +3,10 @@ include:
 
 test:
   image: thecodingmachine/php:7.4-v4-cli
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - vendor/
   variables:
     PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite xdebug"
     XDEBUG_MODE: coverage
