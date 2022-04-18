@@ -17,7 +17,7 @@ test:
     - php artisan key:gen
     - vendor/bin/phpunit --colors=never --stop-on-error --coverage-text
 
-production:
+production_manual:
   variables:
     HELM_RELEASE_NAME: futtertrog
   environment:
