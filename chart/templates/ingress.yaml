@@ -17,8 +17,8 @@ spec:
     {{- if .Values.ingress.tls }}
     - hosts:
       - {{ template "hostname" .Values.service.url }}
-      {{- if .Values.ingress.additionalHosts }}
-      {{- range $host := .Values.ingress.additionalHosts }}
+      {{- if .Values.service.additionalHosts }}
+      {{- range $host := .Values.service.additionalHosts }}
       - {{ template "hostname" $host }}
       {{- end -}}
       {{- end }}
@@ -36,8 +36,8 @@ spec:
                 name: {{ include "common.names.fullname" . }}
                 port:
                   name: http
-    {{- if .Values.ingress.additionalHosts }}
-    {{- range $host := .Values.ingress.additionalHosts }}
+    {{- if .Values.service.additionalHosts }}
+    {{- range $host := .Values.service.additionalHosts }}
     - host: {{ template "hostname" $host }}
       http:
         <<: *httpRule
