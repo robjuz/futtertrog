@@ -1,3 +1,9 @@
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+
 ingress:
   enabled: true
   certManager: true
