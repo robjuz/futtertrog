@@ -13,10 +13,10 @@ class MealVariantsTest extends TestCase
     public function a_meal_can_have_variants()
     {
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         /** @var Meal $variant */
-        $variant = factory(Meal::class)->make();
+        $variant = Meal::factory()->make();
 
         $this->assertCount(0, $meal->fresh()->variants);
 
@@ -29,10 +29,10 @@ class MealVariantsTest extends TestCase
     public function a_variant_knows_his_parent()
     {
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         /** @var Meal $variant */
-        $variant = factory(Meal::class)->make();
+        $variant = Meal::factory()->make();
 
         $meal->variants()->save($variant);
 

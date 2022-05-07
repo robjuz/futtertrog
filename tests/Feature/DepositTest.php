@@ -27,7 +27,7 @@ class DepositTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $deposit = factory(Deposit::class)->create();
+        $deposit =  Deposit::factory()->create();
 
         $this->login()
             ->delete(route('deposits.destroy', $deposit))
@@ -37,9 +37,9 @@ class DepositTest extends TestCase
     /** #test */
     public function admin_can_create_a_new_deposit()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $deposit = factory(Deposit::class)->raw([
+        $deposit =  Deposit::factory()->raw([
             'user_id' => $user->id,
             'value' => 10,
         ]);
@@ -54,7 +54,7 @@ class DepositTest extends TestCase
     /** @test */
     public function admin_can_create_a_negative_deposit()
     {
-        $deposit = factory(Deposit::class)->raw(['value' => -10]);
+        $deposit =  Deposit::factory()->raw(['value' => -10]);
 
         $this->loginAsAdmin()
             ->postJson(route('deposits.store'), $deposit);
@@ -65,9 +65,9 @@ class DepositTest extends TestCase
     /** @test */
     public function admin_can_delete_a_deposit()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $deposit = factory(Deposit::class)->create([
+        $deposit =  Deposit::factory()->create([
             'user_id' => $user->id,
             'value' => 10,
         ]);
@@ -83,9 +83,9 @@ class DepositTest extends TestCase
     /** @test */
     public function it_allows_to_make_a_transfer_from_one_user_to_other_user()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $otherUser = factory(User::class)->create();
+        $otherUser = User::factory()->create();
 
         $this->loginAsAdmin()
         ->postJson(route('deposits.transfer'), [
@@ -103,7 +103,7 @@ class DepositTest extends TestCase
     public function it_shows_the_description_in_edit_view()
     {
         /** @var Deposit $deposit */
-        $deposit = factory(Deposit::class)->create(['comment' => 'test description']);
+        $deposit =  Deposit::factory()->create(['comment' => 'test description']);
 
         $this->loginAsAdmin();
 

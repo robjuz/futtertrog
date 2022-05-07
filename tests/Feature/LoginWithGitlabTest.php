@@ -72,7 +72,7 @@ class LoginWithGitlabTest extends TestCase
 
         Config::set('services.gitlab.enabled', true);
 
-        $user = factory(User::class)->create(
+        $user = User::factory()->create(
             [
                 'email' => 'test@example.com'
             ]
@@ -94,7 +94,7 @@ class LoginWithGitlabTest extends TestCase
 
         Config::set('services.gitlab.enabled', true);
 
-        $user = factory(User::class)->create(
+        $user = User::factory()->create(
             [
                 'email' => 'test@example.com'
             ]

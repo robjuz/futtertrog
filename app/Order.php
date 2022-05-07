@@ -4,6 +4,7 @@ namespace App;
 
 use App\MealProviders\AbstractMealProvider;
 use Cknow\Money\Money;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -44,6 +45,8 @@ use Illuminate\Support\Facades\Auth;
  */
 class Order extends Model
 {
+    use HasFactory;
+
     const STATUS_OPEN = 'open';
 
     const STATUS_ORDERED = 'ordered';

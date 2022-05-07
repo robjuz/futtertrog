@@ -34,16 +34,16 @@ class OrderTest extends TestCase
     public function it_provides_a_list_of_not_empty_orders()
     {
         /** @var \Illuminate\Support\Collection|\App\Order[] $orders */
-        $orders = factory(Order::class, 5)->create([
+        $orders = Order::factory()->count(5)->create([
             'date' => today()
         ]);
 
         $orders->each(function($order) {
             /** @var OrderItem $orderItem */
-            $orderItem = factory(OrderItem::class)->make();
+            $orderItem = OrderItem::factory()->make();
 
             /** @var Meal $meal */
-            $meal = factory(Meal::class)->create(['provider'=> $order->provider->getKey()]);
+            $meal = Meal::factory()->create(['provider'=> $order->provider->getKey()]);
 
             $orderItem->meal()->associate($meal);
 
@@ -72,7 +72,7 @@ class OrderTest extends TestCase
     public function it_dont_shows_empty_orders()
     {
         /** @var \Illuminate\Support\Collection|\App\Order[] $orders */
-        $orders = factory(Order::class, 5)->create([
+        $orders = Order::factory()->count(5)->create([
             'date' => today(),
         ]);
 
@@ -97,13 +97,13 @@ class OrderTest extends TestCase
     /** @test */
     public function it_shows_per_default_today_and_upcoming_orders()
     {
-        $yesterdayOrder = factory(Order::class)->create(['date' => today()->subDay()]);
-        $todayOrder = factory(Order::class)->create(['date' => today()]);
-        $tomorrowOrder = factory(Order::class)->create(['date' => today()->addDay()]);
+        $yesterdayOrder = Order::factory()->create(['date' => today()->subDay()]);
+        $todayOrder = Order::factory()->create(['date' => today()]);
+        $tomorrowOrder = Order::factory()->create(['date' => today()->addDay()]);
 
-        $yesterdayOrder->orderItems()->save(factory(OrderItem::class)->make());
-        $todayOrder->orderItems()->save(factory(OrderItem::class)->make());
-        $tomorrowOrder->orderItems()->save(factory(OrderItem::class)->make());
+        $yesterdayOrder->orderItems()->save(OrderItem::factory()->make());
+        $todayOrder->orderItems()->save(OrderItem::factory()->make());
+        $tomorrowOrder->orderItems()->save(OrderItem::factory()->make());
 
         $this->loginAsAdmin()
             ->get(route('orders.index'))
@@ -115,13 +115,13 @@ class OrderTest extends TestCase
     /** @test */
     public function it_allows_to_filter_orders_by_date_range()
     {
-        $yesterdayOrder = factory(Order::class)->create(['date' => today()->subDay()]);
-        $todayOrder = factory(Order::class)->create(['date' => today()]);
-        $tomorrowOrder = factory(Order::class)->create(['date' => today()->addDay()]);
+        $yesterdayOrder = Order::factory()->create(['date' => today()->subDay()]);
+        $todayOrder = Order::factory()->create(['date' => today()]);
+        $tomorrowOrder = Order::factory()->create(['date' => today()->addDay()]);
 
-        $yesterdayOrder->orderItems()->save(factory(OrderItem::class)->make());
-        $todayOrder->orderItems()->save(factory(OrderItem::class)->make());
-        $tomorrowOrder->orderItems()->save(factory(OrderItem::class)->make());
+        $yesterdayOrder->orderItems()->save(OrderItem::factory()->make());
+        $todayOrder->orderItems()->save(OrderItem::factory()->make());
+        $tomorrowOrder->orderItems()->save(OrderItem::factory()->make());
 
         $this->loginAsAdmin()
             ->get(route('orders.index', [
@@ -137,15 +137,15 @@ class OrderTest extends TestCase
     public function it_provides_a_sum_of_order_items_prices()
     {
         /** @var \App\Order $order */
-        $order = factory(Order::class)->create(['date' => today()]);
+        $order = Order::factory()->create(['date' => today()]);
 
-        $meal = factory('App\Meal')->create([
+        $meal = Meal::factory()->create([
             'date_from' => today(),
             'date_to' => today(),
             'price' => 111
         ]);
 
-        $order->orderItems()->save(factory('App\OrderItem')->make([
+        $order->orderItems()->save(OrderItem::factory()->make([
             'meal_id' => $meal->id,
             'quantity' => 2
         ]));
@@ -159,13 +159,13 @@ class OrderTest extends TestCase
     public function it_allows_to_update_order_status()
     {
         /** @var \App\Order $order */
-        $order = factory(Order::class)->create(['status' => Order::STATUS_OPEN]);
+        $order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
         $this->loginAsAdmin()
             ->put(route('orders.update', $order), ['status' => Order::STATUS_ORDERED])
             ->assertRedirect();
         $this->assertEquals(Order::STATUS_ORDERED, $order->fresh()->status);
 
-        $order = factory(Order::class)->create(['status' => Order::STATUS_OPEN]);
+        $order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
         $this->loginAsAdmin()
             ->putJson(route('orders.update', $order), ['status' => Order::STATUS_ORDERED])
             ->assertSuccessful()
@@ -177,14 +177,14 @@ class OrderTest extends TestCase
     public function it_allows_to_delete_a_order()
     {
         /** @var \App\Order $order */
-        $order = factory(Order::class)->create();
+        $order = Order::factory()->create();
         $this->loginAsAdmin()
             ->delete(route('orders.destroy', $order))
             ->assertRedirect();
         $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
 
         /** @var \App\Order $order */
-        $order = factory(Order::class)->create();
+        $order = Order::factory()->create();
         $this->loginAsAdmin()
             ->deleteJson(route('orders.destroy', $order))
             ->assertStatus(Response::HTTP_NO_CONTENT);
@@ -195,7 +195,7 @@ class OrderTest extends TestCase
     public function it_stores_the_previous_status()
     {
         /** @var Order $order */
-        $order = factory(Order::class)->create(['status' => Order::STATUS_OPEN]);
+        $order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
 
         $order->markOrdered();
 

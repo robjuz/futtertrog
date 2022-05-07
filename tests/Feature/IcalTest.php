@@ -13,9 +13,9 @@ class IcalTest extends TestCase
     /** @test */
     public function it_allows_to_export_users_order_history_to_ical()
     {
-        $user = factory(User::class)->create();
-        $meal = factory(Meal::class)->create(['title' => 'menu 1', 'description' => 'menu 1 desc']);
-        $orderItem = factory(OrderItem::class)->create(['user_id' => $user->id, 'meal_id' => $meal->id]);
+        $user = User::factory()->create();
+        $meal = Meal::factory()->create(['title' => 'menu 1', 'description' => 'menu 1 desc']);
+        $orderItem = OrderItem::factory()->create(['user_id' => $user->id, 'meal_id' => $meal->id]);
 
         $this->login($user)
             ->get(route('meals.ical'))
@@ -26,9 +26,9 @@ class IcalTest extends TestCase
     /** @test */
     public function it_can_be_filtered_out_by_date_range()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $todayMeal = factory(Meal::class)->create(
+        $todayMeal = Meal::factory()->create(
             [
                 'date_from' => today(),
                 'date_to' => today(),
@@ -36,7 +36,7 @@ class IcalTest extends TestCase
             ]
         );
 
-        $tomorrowMeal = factory(Meal::class)->create(
+        $tomorrowMeal = Meal::factory()->create(
             [
                 'date_from' => today()->addDay(),
                 'date_to' => today()->addDay(),
@@ -44,19 +44,19 @@ class IcalTest extends TestCase
             ]
         );
 
-        factory(OrderItem::class)->create(
+        OrderItem::factory()->create(
             [
                 'user_id' => $user->id,
                 'meal_id' => $todayMeal->id,
-                'order_id' => factory(Order::class)->create(['date' => $todayMeal->date_from])
+                'order_id' => Order::factory()->create(['date' => $todayMeal->date_from])
             ]
         );
 
-        factory(OrderItem::class)->create(
+        OrderItem::factory()->create(
             [
                 'user_id' => $user->id,
                 'meal_id' => $tomorrowMeal->id,
-                'order_id' => factory(Order::class)->create(['date' => $tomorrowMeal->date_from])
+                'order_id' => Order::factory()->create(['date' => $tomorrowMeal->date_from])
             ]
         );
 

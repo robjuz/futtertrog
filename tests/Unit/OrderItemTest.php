@@ -16,31 +16,31 @@ class OrderItemTest extends TestCase
 
     public function testUser()
     {
-        $orderItem = factory(OrderItem::class)->create();
+        $orderItem = OrderItem::factory()->create();
 
         $this->assertInstanceOf(User::class, $orderItem->user);
     }
 
     public function testMeal()
     {
-        $orderItem = factory(OrderItem::class)->create();
+        $orderItem = OrderItem::factory()->create();
 
         $this->assertInstanceOf(Meal::class, $orderItem->meal);
     }
 
     public function testOrder()
     {
-        $orderItem = factory(OrderItem::class)->create();
+        $orderItem = OrderItem::factory()->create();
 
         $this->assertInstanceOf(Order::class, $orderItem->order);
     }
 
     public function testGetSubtotalAttribute()
     {
-        $meal = factory(Meal::class)->create(['price' => 1]);
+        $meal = Meal::factory()->create(['price' => 1]);
 
         /** @var OrderItem $orderItem */
-        $orderItem = factory(OrderItem::class)->make(['quantity' => 2]);
+        $orderItem = OrderItem::factory()->make(['quantity' => 2]);
         $orderItem->meal()->associate($meal)->save();
 
         $this->assertEquals(Money::parse(2), $orderItem->subtotal);
@@ -49,7 +49,7 @@ class OrderItemTest extends TestCase
     public function testGetStatusAttribute() {
 
         /** @var OrderItem $orderItem */
-        $orderItem = factory(OrderItem::class)->create();
+        $orderItem = OrderItem::factory()->create();
 
         $this->assertNotNull($orderItem->status);
     }

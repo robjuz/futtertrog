@@ -11,7 +11,7 @@ class MealPreferencesTest extends TestCase
     /** @test */
     public function it_gives_preferred_meals_higher_priority_and_hated_meals_lover_priority()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $user->settings = [
             User::SETTING_MEAL_PREFERENCES => 'pancake',
@@ -19,32 +19,32 @@ class MealPreferencesTest extends TestCase
         ];
         $user->save();
 
-        $meal1 = factory(Meal::class)->create([
+        $meal1 = Meal::factory()->create([
             'date_from' => today(),
             'date_to' => today(),
             'description' => 'pumpkin'
         ]);
-        $meal2 = factory(Meal::class)->create([
+        $meal2 = Meal::factory()->create([
             'date_from' => today(),
             'date_to' => today(),
             'description' => 'pancake'
         ]);
-        $meal3 = factory(Meal::class)->create([
+        $meal3 = Meal::factory()->create([
             'date_from' => today(),
             'date_to' => today(),
             'description' => 'meal_3'
         ]);
-        $meal4 = factory(Meal::class)->create([
+        $meal4 = Meal::factory()->create([
             'date_from' => today(),
             'date_to' => today(),
             'description' => 'meal_4'
         ]);
-        $meal5 = factory(Meal::class)->create([
+        $meal5 = Meal::factory()->create([
             'date_from' => today(),
             'date_to' => today(),
             'title' => 'pumpkin'
         ]);
-        $meal6 = factory(Meal::class)->create([
+        $meal6 = Meal::factory()->create([
             'date_from' => today(),
             'date_to' => today(),
             'title' => 'pancake'

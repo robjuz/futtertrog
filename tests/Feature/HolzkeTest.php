@@ -58,7 +58,7 @@ class HolzkeTest extends TestCase
         $today = today();
 
 
-        $tom = factory(User::class)->create(
+        $tom = User::factory()->create(
             [
                 'settings' => [
                     User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1",

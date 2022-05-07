@@ -22,7 +22,7 @@ class MealTest extends TestCase
     public function only_admin_can_create_a_meal()
     {
 
-        $meal = factory(Meal::class)->raw();
+        $meal = Meal::factory()->raw();
 
         $this->login()->withExceptionHandling();
 
@@ -54,7 +54,7 @@ class MealTest extends TestCase
     /** @test */
     public function only_admin_can_update_a_meal()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         $attributes = [
             'title' => 'Changed title',
@@ -101,7 +101,7 @@ class MealTest extends TestCase
     /** @test */
     public function admin_can_delete_a_meal()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         $this->loginAsAdmin();
 
@@ -109,7 +109,7 @@ class MealTest extends TestCase
             ->assertRedirect(route('meals.create'));
         $this->assertDatabaseMissing('meals', $meal->toArray());
 
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
         $this->deleteJson(route('meals.destroy', $meal))
             ->assertSuccessful();
         $this->assertDatabaseMissing('meals', $meal->toArray());
@@ -118,7 +118,7 @@ class MealTest extends TestCase
     /** @test */
     public function admin_can_create_a_meal_and_stay_on_the_create_page()
     {
-        $meal = factory(Meal::class)->raw();
+        $meal = Meal::factory()->raw();
 
         $this->loginAsAdmin();
 
@@ -149,7 +149,7 @@ class MealTest extends TestCase
     /** @test */
     public function guests_are_not_allowed_to_edit_meals()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         $this->withExceptionHandling();
 
@@ -162,7 +162,7 @@ class MealTest extends TestCase
     /** @test */
     public function guests_and_users_are_not_allowed_to_delete_meals()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         $this->withExceptionHandling();
 
@@ -178,7 +178,7 @@ class MealTest extends TestCase
     /** @test */
     public function guests_and_users_are_not_allowed_to_see_meal_details()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         $this->withExceptionHandling();
 
@@ -194,19 +194,19 @@ class MealTest extends TestCase
     public function meals_can_be_filtered_down_by_date()
     {
         /** @var Meal $meal1 */
-        $meal1 = factory(Meal::class)->create([
+        $meal1 = Meal::factory()->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
         ]);
 
         /** @var Meal $meal2 */
-        $meal2 = factory(Meal::class)->create([
+        $meal2 = Meal::factory()->create([
             'date_from' => Carbon::tomorrow(),
             'date_to' => Carbon::tomorrow(),
         ]);
 
         /** @var Meal $meal3 */
-        $meal3 = factory(Meal::class)->create([
+        $meal3 = Meal::factory()->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::tomorrow(),
         ]);
@@ -223,13 +223,13 @@ class MealTest extends TestCase
     public function is_shows_meals_for_the_current_day()
     {
         /** @var Meal $meal1 */
-        $meal1 = factory(Meal::class)->create([
+        $meal1 = Meal::factory()->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
         ]);
 
         /** @var Meal $variant1 */
-        $variant1 = factory(Meal::class)->create([
+        $variant1 = Meal::factory()->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
         ]);
@@ -237,13 +237,13 @@ class MealTest extends TestCase
         $meal1->variants()->save($variant1);
 
         /** @var Meal $meal2 */
-        $meal2 = factory(Meal::class)->create([
+        $meal2 = Meal::factory()->create([
             'date_from' => Carbon::today()->addWeekday(),
             'date_to' => Carbon::today()->addWeekday(),
         ]);
 
         /** @var Meal $meal3 */
-        $meal3 = factory(Meal::class)->create([
+        $meal3 = Meal::factory()->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today()->addWeekday(),
         ]);
@@ -267,13 +267,13 @@ class MealTest extends TestCase
     public function meal_variants_are_listed_as_relations_in_json_response()
     {
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->create([
+        $meal = Meal::factory()->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
         ]);
 
         /** @var Meal $variant */
-        $variant = factory(Meal::class)->create([
+        $variant = Meal::factory()->create([
             'date_from' => Carbon::today(),
             'date_to' => Carbon::today(),
             'parent_id' => $meal->id
@@ -298,7 +298,7 @@ class MealTest extends TestCase
     /** @test */
     public function admin_can_see_meal_details()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
 
         $this->loginAsAdmin();
@@ -315,9 +315,9 @@ class MealTest extends TestCase
     {
         //$this->withExceptionHandling();
 
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
-        $meal->orderItems()->save(factory(OrderItem::class)->make());
+        $meal->orderItems()->save(OrderItem::factory()->make());
 
         $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
         $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
@@ -327,14 +327,14 @@ class MealTest extends TestCase
     public function it_can_send_a_notifications_when_a_new_meal_was_created_when_user_opted_in()
     {
         /** @var User $john */
-        $john = factory(User::class)->create([
+        $john = User::factory()->create([
             'settings' => [
                 User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1"
             ]
         ]);
 
         /** @var User $sara */
-        $sara = factory(User::class)->create([
+        $sara = User::factory()->create([
             'settings' => [
                 User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "0"
             ]
@@ -343,7 +343,7 @@ class MealTest extends TestCase
         Notification::fake();
 
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
         event(new NewOrderPossibility($meal->date_from));
 
         Notification::assertSentTo($john, \App\Notifications\NewOrderPossibility::class);
@@ -356,14 +356,14 @@ class MealTest extends TestCase
         $date = today()->addDay()->toDateString();
 
         /** @var Meal $meal1 */
-        $meal1 = factory(Meal::class)->create([
+        $meal1 = Meal::factory()->create([
             'provider' => 'provider_1',
             'date_from' => $date,
             'date_to' => $date
         ]);
 
         /** @var Meal $meal2 */
-        $meal2 = factory(Meal::class)->create([
+        $meal2 = Meal::factory()->create([
             'provider' => 'provider_2',
             'date_from' => $date,
             'date_to' => $date

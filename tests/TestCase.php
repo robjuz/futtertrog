@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
@@ -13,12 +14,12 @@ abstract class TestCase extends BaseTestCase
 
     public function loginAsAdmin()
     {
-        return $this->login(factory('App\User')->state('admin')->create());
+        return $this->login(User::factory()->admin()->create());
     }
 
     public function login($user = null)
     {
-        $user = $user ?: factory('App\User')->create();
+        $user = $user ?: User::factory()->create();
 
         $this->actingAs($user);
 

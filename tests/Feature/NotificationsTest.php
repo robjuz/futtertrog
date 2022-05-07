@@ -27,8 +27,8 @@ class NotificationsTest extends TestCase
     {
         Notification::fake();
 
-        $john = factory(User::class)->create();
-        $tom = factory(User::class)->create(
+        $john = User::factory()->create();
+        $tom = User::factory()->create(
             [
                 'settings' => [User::SETTING_NO_ORDER_NOTIFICATION => "1"],
             ]
@@ -59,8 +59,8 @@ class NotificationsTest extends TestCase
     {
         Notification::fake();
 
-        $john = factory(User::class)->create();
-        $tom = factory(User::class)->create(
+        $john = User::factory()->create();
+        $tom = User::factory()->create(
             [
                 'settings' => [User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => "1"],
             ]
@@ -89,8 +89,8 @@ class NotificationsTest extends TestCase
     {
         Notification::fake();
 
-        $john = factory(User::class)->create();
-        $tom = factory(User::class)->create(
+        $john = User::factory()->create();
+        $tom = User::factory()->create(
             [
                 'settings' => [User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => "1"],
             ]
@@ -119,7 +119,7 @@ class NotificationsTest extends TestCase
     {
         Notification::fake();
 
-        $john = factory(User::class)->state('admin')->create();
+        $john = User::factory()->admin()->create();
 
 
         // (new OpenOrdersForNextWeekNotification())();
@@ -129,7 +129,7 @@ class NotificationsTest extends TestCase
 
         $nextMonday = today()->addWeek()->startOfWeek();
 
-        $meal = factory(Meal::class)->create([
+        $meal = Meal::factory()->create([
             'date_from' => $nextMonday,
             'date_to' => $nextMonday
         ]);
@@ -172,8 +172,8 @@ class NotificationsTest extends TestCase
 
         $today = today();
 
-        $john = factory(User::class)->create();
-        $tom = factory(User::class)->create(
+        $john = User::factory()->create();
+        $tom = User::factory()->create(
             [
                 'settings' => [User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1"],
             ]
@@ -206,11 +206,11 @@ class NotificationsTest extends TestCase
     /** @test */
     public function it_notifies_an_admin_when_an_closed_order_was_reopened()
     {
-        $meal = factory(Meal::class)->state('in_future')->create();
-        $admin = factory(User::class)->create(['is_admin' => true]);
+        $meal = Meal::factory()->inFuture()->create();
+        $admin = User::factory()->create(['is_admin' => true]);
 
         // Given we have a closed order
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'date' => $meal->date_from,
             'status' => Order::STATUS_ORDERED,
             'provider' => $meal->provider
@@ -221,7 +221,7 @@ class NotificationsTest extends TestCase
         Mail::fake();
 
         // When a user creates a new order item associated with this order
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->login($user);
         $this->post(route('order_items.store'), [
             'date' => $meal->date_from,
@@ -254,7 +254,7 @@ class NotificationsTest extends TestCase
         );
 
         // When another creates a new order item associated with this order
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
         $this->login($user2);
         $this->post(route('order_items.store'), [
             'date' => $meal->date_from,

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Money\Money;
 
@@ -53,6 +54,8 @@ use Money\Money;
  */
 class OrderItem extends Model
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     protected $hidden = ['user_id', 'meal_id'];

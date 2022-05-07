@@ -43,7 +43,7 @@ class UserTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->login();
 
@@ -59,7 +59,7 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_a_list_of_system_users()
     {
-        $user = factory(User::class )->create();
+        $user = User::factory()->create();
 
         $this->loginAsAdmin($user);
 
@@ -74,14 +74,14 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_manage_users()
     {
-        $data = factory(User::class)->raw([
+        $data = User::factory()->raw([
             'name' => 'Example1',
             'is_admin' => true,
             'password' => 'secret',
             'password_confirmation' => 'secret',
         ]);
 
-        $data2 = factory(User::class)->raw([
+        $data2 = User::factory()->raw([
             'name' => 'Example2',
             'is_admin' => true,
             'password' => 'secret',
@@ -100,7 +100,7 @@ class UserTest extends TestCase
             'is_admin' => true
         ]);
 
-        $user = factory(User::class)->create(['is_admin' => true]);
+        $user = User::factory()->create(['is_admin' => true]);
 
         $this->get(route('users.edit', $user))->assertSee($user->name);
 
@@ -118,16 +118,16 @@ class UserTest extends TestCase
         $this->delete(route('users.destroy', $user))->assertRedirect();
         $this->assertNull(User::find($user->id));
 
-        $user = factory(User::class)->create(['is_admin' => true]);
+        $user = User::factory()->create(['is_admin' => true]);
         $this->deleteJson(route('users.destroy', $user))->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
     /** @test */
     public function admin_can_see_users_order_history()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $orderItem = factory(OrderItem::class)->make();
+        $orderItem = OrderItem::factory()->make();
         $user->orderItems()->save($orderItem);
 
         $this->loginAsAdmin()
@@ -140,9 +140,9 @@ class UserTest extends TestCase
      */
     public function admin_can_see_users_deposit_history()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $deposit = factory(Deposit::class)->make(['value' => 9900]);
+        $deposit =  Deposit::factory()->make(['value' => 9900]);
         $user->deposits()->save($deposit);
 
         $this->loginAsAdmin()
@@ -153,9 +153,9 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_see_users_current_balance()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $deposits = factory(Deposit::class, 2)->make(['value' => 10]);
+        $deposits = Deposit::factory()->count(2)->make(['value' => 10]);
         $user->deposits()->saveMany($deposits);
 
         $this->loginAsAdmin()
@@ -168,10 +168,10 @@ class UserTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->login()->delete(route('users.destroy', $user))->assertForbidden();
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->login()->deleteJson(route('users.destroy', $user))->assertForbidden();
     }
 
@@ -180,12 +180,12 @@ class UserTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->loginAsAdmin()->delete(route('users.destroy', $user))->assertRedirect(route('users.index'));
         $this->assertFalse(User::all()->contains($user));
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->loginAsAdmin()->deleteJson(route('users.destroy', $user))->assertSuccessful();
         $this->assertFalse(User::all()->contains($user));
 
@@ -196,7 +196,7 @@ class UserTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->delete();
 
         // no admin user is not allowed to restore users

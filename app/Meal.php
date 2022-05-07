@@ -3,6 +3,7 @@
 namespace App;
 
 use Cknow\Money\Casts\MoneyDecimalCast;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -32,6 +33,8 @@ use OpenApi\Annotations as OA;
  */
 class Meal extends Model
 {
+    use HasFactory;
+
     protected $guarded = ['variants'];
 
     protected $dates = ['date_from', 'date_to'];

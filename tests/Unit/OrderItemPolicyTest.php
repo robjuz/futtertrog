@@ -13,7 +13,7 @@ class OrderItemPolicyTest extends TestCase
     /** @test */
     public function acting_as_admin()
     {
-        $orderItem = factory(OrderItem::class)->create();
+        $orderItem = OrderItem::factory()->create();
 
         $this->loginAsAdmin();
 
@@ -39,18 +39,18 @@ class OrderItemPolicyTest extends TestCase
         $this->assertTrue(auth()->user()->cannot('create', [OrderItem::class, today()->subDay()]));
 
         //someone elses order
-        $orderItem = factory(OrderItem::class);
+        $orderItem = OrderItem::factory();
         $this->assertTrue(auth()->user()->cannot('view', $orderItem));
         $this->assertTrue(auth()->user()->cannot('update', $orderItem));
         $this->assertTrue(auth()->user()->cannot('delete', $orderItem));
 
         //own order in future
-        $futureMeal = factory(Meal::class)->state('in_future')->create();
-        $futureOrder = factory(Order::class)->create([
+        $futureMeal = Meal::factory()->inFuture()->create();
+        $futureOrder = Order::factory()->create([
             'date' => $futureMeal->date_from
         ]);
 
-        $orderItem = factory(OrderItem::class)->create([
+        $orderItem = OrderItem::factory()->create([
             'meal_id' => $futureMeal->id,
             'user_id' => auth()->id(),
             'order_id' => $futureOrder->id
@@ -60,12 +60,12 @@ class OrderItemPolicyTest extends TestCase
         $this->assertTrue(auth()->user()->can('delete', $orderItem));
 
         //own order in future
-        $pastMeal = factory(Meal::class)->state('in_past')->create();
-        $pastOrder = factory(Order::class)->create([
+        $pastMeal = Meal::factory()->inPast()->create();
+        $pastOrder = Order::factory()->create([
             'date' => $pastMeal->date_from
         ]);
 
-        $orderItem = factory(OrderItem::class)->create([
+        $orderItem = OrderItem::factory()->create([
             'meal_id' => $pastMeal->id,
             'user_id' => auth()->id(),
             'order_id' => $pastOrder->id

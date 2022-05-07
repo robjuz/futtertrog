@@ -13,7 +13,7 @@ class DashboardTest extends TestCase
     /** @test */
     public function it_shows_the_users_current_balance()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $user->deposits()->create([
             'value' => 10
@@ -25,13 +25,13 @@ class DashboardTest extends TestCase
     /** @test */
     public function it_shows_the_users_today_orders()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'date' => today()
         ]);
 
-        $orderItems = factory(OrderItem::class, 10)->create([
+        $orderItems = OrderItem::factory()->count( 10)->create([
             'order_id' => $order->id,
             'user_id' => $user->id
         ]);
@@ -47,13 +47,13 @@ class DashboardTest extends TestCase
     /** @test */
     public function it_shows_the_users_upcoming_orders()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'date' => today()->addDays(1)
         ]);
 
-        $orderItems = factory(OrderItem::class, 5)->create([
+        $orderItems = OrderItem::factory()->count(5)->create([
             'order_id' => $order->id,
             'user_id' => $user->id
         ]);
@@ -69,8 +69,8 @@ class DashboardTest extends TestCase
     public function it_shows_the_users_deposit_history()
     {
         /** @var User $user */
-        $user = factory(User::class)->create();
-        $deposit = factory(Deposit::class)->make(['status' => Deposit::STATUS_OK]);
+        $user = User::factory()->create();
+        $deposit =  Deposit::factory()->make(['status' => Deposit::STATUS_OK]);
 
         $user->deposits()->save($deposit);
 
@@ -83,8 +83,8 @@ class DashboardTest extends TestCase
     public function it_does_not_show_processing_deposits()
     {
         /** @var User $user */
-        $user = factory(User::class)->create();
-        $deposit = factory(Deposit::class)->make(['status' => Deposit::STATUS_PROCESSING]);
+        $user = User::factory()->create();
+        $deposit =  Deposit::factory()->make(['status' => Deposit::STATUS_PROCESSING]);
 
         $user->deposits()->save($deposit);
 

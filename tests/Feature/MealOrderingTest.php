@@ -20,7 +20,7 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_can_order_a_meal_for_himself()
     {
-        $meal = factory(Meal::class)->create([
+        $meal = Meal::factory()->create([
             'date_from' => today()->addDay(),
             'date_to' => today()->addDay()
         ]);
@@ -42,9 +42,9 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_cannot_order_a_meal_for_other_users()
     {
-        $meal = factory(Meal::class)->state('in_future')->create();
+        $meal = Meal::factory()->inFuture()->create();
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->login()
             ->post(route('order_items.store'), [
@@ -60,7 +60,7 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_cannot_order_a_meal_located_in_the_past()
     {
-        $meal = factory(Meal::class)->create([
+        $meal = Meal::factory()->create([
             'date_from' => today(),
             'date_to' => today()
         ]);
@@ -77,10 +77,10 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function admin_can_order_a_meal_for_other_users()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->loginAsAdmin();
 
@@ -109,12 +109,12 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function it_dispatches_an_event_when_an_order_was_reopened()
     {
-        $meal = factory(Meal::class)->state('in_future')->create();
-        $user = factory(User::class)->create();
+        $meal = Meal::factory()->inFuture()->create();
+        $user = User::factory()->create();
 
         // Given we have a closed order
         /** @var Order $order */
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'date' => $meal->date_from,
             'status' => Order::STATUS_ORDERED,
             'provider' => $meal->provider
@@ -142,8 +142,8 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function it_provides_a_list_of_order_items()
     {
-        $user = factory(User::class)->create();
-        $orderItem = factory(OrderItem::class)->make();
+        $user = User::factory()->create();
+        $orderItem = OrderItem::factory()->make();
         $user->orderItems()->save($orderItem);
 
         $orderItem->load('meal');
@@ -156,7 +156,7 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function admin_can_see_all_order_items()
     {
-        $orderItem = factory(OrderItem::class)->create();
+        $orderItem = OrderItem::factory()->create();
 
         $this->loginAsAdmin()
             ->get(route('order_items.index'))
@@ -166,11 +166,11 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function admin_can_see_order_items_from_other_users()
     {
-        $user = factory(User::class)->create();
-        $orderItem = factory(OrderItem::class)->make();
+        $user = User::factory()->create();
+        $orderItem = OrderItem::factory()->make();
         $user->orderItems()->save($orderItem);
 
-        $orderItem2 = factory(OrderItem::class)->create();
+        $orderItem2 = OrderItem::factory()->create();
 
         $orderItem->load('meal');
 
@@ -183,8 +183,8 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function it_allows_to_delete_an_order_item()
     {
-        $user = factory(User::class)->create();
-        $orderItem = factory(OrderItem::class)->state('in_future')->make();
+        $user = User::factory()->create();
+        $orderItem = OrderItem::factory()->inFuture()->make();
         $user->orderItems()->save($orderItem);
 
         $this->login($user)
@@ -193,7 +193,7 @@ class MealOrderingTest extends TestCase
 
         $this->assertDatabaseMissing('order_items', $orderItem->toArray());
 
-        $orderItem = factory(OrderItem::class)->state('in_future')->make();
+        $orderItem = OrderItem::factory()->inFuture()->make();
         $user->orderItems()->save($orderItem);
 
         $this->login($user)
@@ -206,9 +206,9 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function it_disallows_to_delete_an_order_item_in_the_past()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         /** @var OrderItem $orderItem */
-        $orderItem = factory(OrderItem::class)->state('in_past')->make();
+        $orderItem = OrderItem::factory()->inPast()->make();
         $user->orderItems()->save($orderItem);
 
         $this->withExceptionHandling();
@@ -219,7 +219,7 @@ class MealOrderingTest extends TestCase
 
         $this->assertDatabaseHas('order_items', $orderItem->only(['order_id', 'user_id', 'meal_id', 'quantity']));
 
-        $orderItem = factory(OrderItem::class)->state('in_past')->make();
+        $orderItem = OrderItem::factory()->inPast()->make();
         $user->orderItems()->save($orderItem);
 
         $this->login($user)
@@ -233,10 +233,10 @@ class MealOrderingTest extends TestCase
     public function it_shows_a_delete_order_button_for_a_ordered_meal()
     {
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->state('in_future')->create();
+        $meal = Meal::factory()->inFuture()->create();
 
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->login($user);
 
@@ -254,16 +254,16 @@ class MealOrderingTest extends TestCase
     public function it_shows_a_delete_order_button_for_a_ordered_meal_variant()
     {
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->state('in_future')->create();
+        $meal = Meal::factory()->inFuture()->create();
 
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
-            factory(Meal::class)->state('in_future')->make()
+            Meal::factory()->inFuture()->make()
         );
 
 
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->login($user);
 
@@ -280,11 +280,11 @@ class MealOrderingTest extends TestCase
     public function it_only_allows_to_order_a_meal_variant_in_meal_with_variants()
     {
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->state('in_future')->create();
+        $meal = Meal::factory()->inFuture()->create();
 
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
-            factory(Meal::class)->state('in_future')->make()
+            Meal::factory()->inFuture()->make()
         );
 
         $this->login();
@@ -311,11 +311,11 @@ class MealOrderingTest extends TestCase
     public function admin_can_see_only_meal_variants_in_order_item_create_form()
     {
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->state('in_future')->create();
+        $meal = Meal::factory()->inFuture()->create();
 
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
-            factory(Meal::class)->make([
+            Meal::factory()->make([
                     'date_from' => $meal->date_from,
                     'date_to' => $meal->date_to
                 ]
@@ -335,14 +335,14 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function admin_can_see_only_meal_variants_in_order_item_edit_form()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->state('in_future')->create();
+        $meal = Meal::factory()->inFuture()->create();
 
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
-            factory(Meal::class)->make([
+            Meal::factory()->make([
                     'date_from' => $meal->date_from,
                     'date_to' => $meal->date_to
                 ]

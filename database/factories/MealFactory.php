@@ -1,26 +1,47 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Meal::class, function (Faker $faker) {
-    $date = \Illuminate\Support\Carbon::parse($faker->dateTimeThisMonth)->startOfDay()->format('Y-m-d H:i:s');
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-    return [
-        'price' => $faker->randomNumber('3'),
-        'title' => $faker->sentence,
-        'description' => $faker->sentences(1, true),
-        'date_from' => $date,
-        'date_to' => $date,
-        'provider' => array_rand(app('mealProviders')),
-    ];
-});
+class MealFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $date = \Illuminate\Support\Carbon::parse($this->faker->dateTimeThisMonth)->startOfDay()->format('Y-m-d H:i:s');
 
-$factory->state(App\Meal::class, 'in_future', [
-    'date_from' => today()->addDay(),
-    'date_to' => today()->addDay(),
-]);
+        return [
+            'price' => $this->faker->randomNumber('3'),
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->sentences(1, true),
+            'date_from' => $date,
+            'date_to' => $date,
+            'provider' => array_rand(app('mealProviders')),
+        ];
+    }
 
-$factory->state(App\Meal::class, 'in_past', [
-    'date_from' => today(),
-    'date_to' => today(),
-]);
+    public function inFuture()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'date_from' => today()->addDay(),
+                'date_to' => today()->addDay(),
+            ];
+        });
+    }
+
+    public function inPast()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'date_from' => today(),
+                'date_to' => today(),
+            ];
+        });
+    }
+}

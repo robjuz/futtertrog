@@ -12,7 +12,7 @@ class MealTest extends TestCase
 {
     public function testOrderItems()
     {
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         $this->assertInstanceOf(Collection::class, $meal->orderItems);
     }
@@ -21,10 +21,10 @@ class MealTest extends TestCase
     public function variant_name_consist_of_parent_name_and_variant_name()
     {
         /** @var Meal $meal */
-        $meal = factory(Meal::class)->create();
+        $meal = Meal::factory()->create();
 
         /** @var Meal $variant */
-        $variant = $meal->variants()->save(factory(Meal::class)->make());
+        $variant = $meal->variants()->save(Meal::factory()->make());
 
         $this->assertTrue(Str::containsAll($variant->title, [$meal->title, $variant->title]));
     }
@@ -33,7 +33,7 @@ class MealTest extends TestCase
     public function hated_takes_precedence_before_preferred()
     {
         /** @var User $user */
-        $user = factory(User::class)->create([
+        $user = User::factory()->create([
             'settings' => [
                 User::SETTING_MEAL_PREFERENCES => 'preferred',
                 User::SETTING_MEAL_AVERSION => 'hated'
@@ -43,7 +43,7 @@ class MealTest extends TestCase
         $this->actingAs($user);
 
         /** @var Meal $preferredMeal */
-        $preferredMeal = factory(Meal::class)->create([
+        $preferredMeal = Meal::factory()->create([
             'title' => 'preferred'
         ]);
 
@@ -51,7 +51,7 @@ class MealTest extends TestCase
         $this->assertFalse($preferredMeal->is_hated);
 
         /** @var Meal $hatedMeal */
-        $hatedMeal =  factory(Meal::class)->create([
+        $hatedMeal =  Meal::factory()->create([
             'title' => 'hated'
         ]);
 
@@ -59,7 +59,7 @@ class MealTest extends TestCase
         $this->assertTrue($hatedMeal->is_hated);
 
         /** @var Meal $meal */
-        $meal =  factory(Meal::class)->create([
+        $meal =  Meal::factory()->create([
             'title' => 'hated and preferred'
         ]);
 

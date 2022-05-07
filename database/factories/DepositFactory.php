@@ -1,12 +1,19 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Deposit::class, function (Faker $faker) {
-    return [
-        'user_id' => factory('App\User'),
-        'value' => $faker->randomFloat(2, -10, 10),
-        'comment' => $faker->sentence,
-        'status' => \App\Deposit::STATUS_OK,
-    ];
-});
+use App\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class DepositFactory extends Factory
+{
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'value' => $this->faker->randomFloat(2, -10, 10),
+            'comment' => $this->faker->sentence,
+            'status' => \App\Deposit::STATUS_OK,
+        ];
+    }
+}

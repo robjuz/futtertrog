@@ -18,7 +18,7 @@ class UserTest extends TestCase
     public function it_has_many_deposits()
     {
         /** @var \App\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->assertInstanceOf(Collection::class, $user->deposits);
     }
@@ -27,7 +27,7 @@ class UserTest extends TestCase
     public function it_has_many_order_items()
     {
         /** @var \App\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->assertInstanceOf(Collection::class, $user->orderItems);
     }
@@ -36,19 +36,19 @@ class UserTest extends TestCase
     public function it_knows_its_current_balance()
     {
         /** @var \App\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $user->deposits()->saveMany([
-            factory(Deposit::class)->make(['value' => 1000]),
-            factory(Deposit::class)->make(['value' => 1500]),
+             Deposit::factory()->make(['value' => 1000]),
+             Deposit::factory()->make(['value' => 1500]),
         ]);
 
-        $meal = factory(Meal::class)->create([
+        $meal = Meal::factory()->create([
             'price' => 5.45
         ]);
 
         /** @var \App\Order $order */
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'date' => $meal->date_from
         ]);
 
@@ -64,7 +64,7 @@ class UserTest extends TestCase
     /** @test */
     public function it_can_be_marked_as_admin()
     {
-        $user = factory(User::class)->create(['is_admin' => false]);
+        $user = User::factory()->create(['is_admin' => false]);
 
         $user->markAsAdmin();
 
@@ -75,7 +75,7 @@ class UserTest extends TestCase
     public function admin_cannot_delete_his_own_account()
     {
         /** @var User $user */
-        $user = factory(User::class)->create(['is_admin' => true]);
+        $user = User::factory()->create(['is_admin' => true]);
 
         $this->assertTrue($user->cannot('delete', $user));
     }

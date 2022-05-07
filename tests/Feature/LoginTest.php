@@ -11,7 +11,7 @@ class LoginTest extends TestCase
     /** @test */
     public function it_allows_to_login_with_email_and_password()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'John Doe',
             'email' => 'john-doe@example.com'
         ]);

@@ -10,7 +10,7 @@ class OrderPolicyTest extends TestCase
     /** @test */
     public function acting_as_admin()
     {
-        $order = factory(Order::class)->create();
+        $order = Order::factory()->create();
 
         $this->loginAsAdmin();
 
@@ -28,7 +28,7 @@ class OrderPolicyTest extends TestCase
 
         $this->login();
 
-        $order = factory(Order::class);
+        $order = Order::factory();
 
         $this->assertTrue(auth()->user()->cannot('list', Order::class));
         $this->assertTrue(auth()->user()->cannot('create', Order::class));

@@ -1,4 +1,4 @@
-@inject('providers', mealProviders')
+@inject('providers', 'mealProviders')
 @extends('layouts.app')
 
 @section('content')
@@ -26,7 +26,6 @@
             <span>{{ $message }}</span>
             @enderror
         </label>
-
         <input type="text" name="title" id="title" required
                value="{{ old('title') }}">
 

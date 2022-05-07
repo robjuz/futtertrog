@@ -16,7 +16,7 @@ class PasswordResetTest extends TestCase
     {
         Notification::fake();
 
-        $user = factory(User::class)->create(['email' => 'john@example.com']);
+        $user = User::factory()->create(['email' => 'john@example.com']);
 
         $this->post(route('password.email'), ['email' => 'john@example.com']);
 
@@ -26,7 +26,7 @@ class PasswordResetTest extends TestCase
     /** @test */
     public function guest_can_reset_his_password()
     {
-        $user = factory(User::class)->create(['email' => 'john@example.com']);
+        $user = User::factory()->create(['email' => 'john@example.com']);
 
         $broker = Password::broker();
 

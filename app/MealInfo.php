@@ -13,7 +13,7 @@ class MealInfo implements Castable, Arrayable, JsonSerializable
     public array $allergens = [];
     public ?string $deposit = null;
 
-    public static function castUsing()
+    public static function castUsing(array $arguments): string
     {
         return MealInfoCast::class;
     }

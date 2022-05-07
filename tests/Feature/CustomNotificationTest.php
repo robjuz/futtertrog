@@ -19,7 +19,7 @@ class CustomNotificationTest extends TestCase
         Notification::fake();
 
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->loginAsAdmin()
             ->postJson(
@@ -51,7 +51,7 @@ class CustomNotificationTest extends TestCase
         Notification::fake();
 
         /** @var User $user */
-        $users = factory(User::class, 10)->create();
+        $users = User::factory()->count(10)->create();
 
         $this->loginAsAdmin()
             ->postJson(

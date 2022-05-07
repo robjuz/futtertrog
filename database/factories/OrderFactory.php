@@ -1,10 +1,21 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Order::class, function (Faker $faker) {
-    return [
-        'date' => $faker->dateTimeThisMonth,
-        'provider' => array_rand(app('mealProviders')),
-    ];
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class OrderFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'date' => $this->faker->dateTimeThisMonth,
+            'provider' => array_rand(app('mealProviders')),
+        ];
+    }
+}
