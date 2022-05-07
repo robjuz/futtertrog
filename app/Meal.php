@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Cknow\Money\Casts\MoneyDecimalCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -39,6 +40,7 @@ class Meal extends Model
 
     protected $casts = [
         'info' => MealInfo::class,
+        'price' => MoneyDecimalCast::class,
     ];
 
     public function orderItems(): HasMany
@@ -54,17 +56,6 @@ class Meal extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Meal::class, 'parent_id');
-    }
-
-    /**
-     * Set the price in cent.
-     *
-     * @param  int  $value
-     * @return void
-     */
-    public function setPriceAttribute($value)
-    {
-        $this->attributes['price'] = is_float($value) ? intval(100 * $value) : $value;
     }
 
     public function getTitleAttribute($value)

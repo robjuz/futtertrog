@@ -44,7 +44,7 @@
                 </td>
 
                 <td class="money collapsible">
-                    @money($orderItem->meal->price)
+                    {{ $orderItem->meal->price }}
                 </td>
 
                 @if(auth()->user()->is_admin AND !request()->routeIs('home'))

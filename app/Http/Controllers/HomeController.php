@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Deposit;
 use App\User;
+use Cknow\Money\Money;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -45,6 +46,8 @@ class HomeController extends Controller
             ->appends('meals_page', $request->meals_page)
             ->appends('future_meals_page', $request->future_meals_page);
 
-        return view('home', compact('balance', 'ordersHistory', 'todayOrders', 'futureOrders', 'deposits', 'user'));
+        $test = Money::EUR(100);
+
+        return view('home', compact('balance', 'ordersHistory', 'todayOrders', 'futureOrders', 'deposits', 'user', 'test'));
     }
 }

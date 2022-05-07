@@ -6,6 +6,7 @@ use App\Order;
 use App\Repositories\OrdersRepository;
 use App\User;
 use Carbon\Carbon;
+use Cknow\Money\Money;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
@@ -34,7 +35,10 @@ class OrderController extends Controller
 
         $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
 
-        $sum = $orders->sum->subtotal;
+        $sum = Money::sum(
+            Money::parse(0),
+            ...$orders->map->subtotal
+        );
 
         $users = User::orderBy('name')->get();
 

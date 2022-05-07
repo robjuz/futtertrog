@@ -16,6 +16,8 @@ Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('order_possibilities', 'MealController@index');
+    Route::get('orders', 'OrderItemController@index');
 
     Route::post('place_order', 'OrderItemController@store');
+
 });

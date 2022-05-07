@@ -146,7 +146,7 @@
                             </td>
 
                             <td class="money collapsible">
-                                @money($orderItem->meal->price)
+                                {{ $orderItem->meal->price }}
                             </td>
                         </tr>
                     @endforeach
@@ -156,7 +156,7 @@
                 <tfoot>
                 <tr>
                     <td colspan="6" class="money">
-                        {{ __('Sum') }}: @money($sum)
+                        {{ __('Sum') }}: {{ $sum }}
                     </td>
                 </tr>
                 </tfoot>

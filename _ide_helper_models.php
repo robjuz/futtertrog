@@ -40,7 +40,10 @@ namespace App{
 }
 
 namespace App{
-/**
+
+    use Money\Money;
+
+    /**
  * App\Meal
  *
  * @property int $id
@@ -48,7 +51,7 @@ namespace App{
  * @property string $title
  * @property string|null $description
  * @property string|null $provider
- * @property int|null $price
+ * @property Money|null $price
  * @property \Illuminate\Support\Carbon $date_from
  * @property \Illuminate\Support\Carbon $date_to
  * @property \Illuminate\Support\Carbon|null $created_at

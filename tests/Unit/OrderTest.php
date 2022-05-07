@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Meal;
 use App\Order;
 use App\OrderItem;
+use Cknow\Money\Money;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
@@ -39,6 +40,6 @@ class OrderTest extends TestCase
         $orderItem2->save();
 
 
-        $this->assertEquals(6, $order->subtotal);
+        $this->assertEquals(Money::parse(6), $order->subtotal);
     }
 }

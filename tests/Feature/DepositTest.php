@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Deposit;
 use App\User;
+use Cknow\Money\Money;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
@@ -76,7 +77,7 @@ class DepositTest extends TestCase
 
         $this->assertDatabaseMissing('deposits', $deposit->toArray());
 
-        $this->assertEquals(0, $user->balance);
+        $this->assertEquals(Money::parse(0), $user->balance);
     }
 
     /** @test */
@@ -94,8 +95,8 @@ class DepositTest extends TestCase
             'comment' => 'transfer'
         ]);
 
-        $this->assertEquals(-1050, $user->balance);
-        $this->assertEquals(1050, $otherUser->balance);
+        $this->assertEquals(Money::parse(-1050), $user->balance);
+        $this->assertEquals(Money::parse(1050), $otherUser->balance);
     }
 
     /** @test  */

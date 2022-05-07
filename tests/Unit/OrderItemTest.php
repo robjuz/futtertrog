@@ -7,6 +7,7 @@ use App\Order;
 use App\OrderItem;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Cknow\Money\Money;
 use Tests\TestCase;
 
 class OrderItemTest extends TestCase
@@ -42,7 +43,7 @@ class OrderItemTest extends TestCase
         $orderItem = factory(OrderItem::class)->make(['quantity' => 2]);
         $orderItem->meal()->associate($meal)->save();
 
-        $this->assertEquals(2, $orderItem->subtotal);
+        $this->assertEquals(Money::parse(2), $orderItem->subtotal);
     }
 
     public function testGetStatusAttribute() {

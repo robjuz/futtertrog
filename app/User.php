@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,7 +35,7 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Deposit[] $deposits
  * @property-read int|null $deposits_count
- * @property-read mixed $balance
+ * @property-read Money $balance
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
@@ -129,12 +130,15 @@ class User extends Authenticatable
         if (empty($this->attributes['balance'])) {
             $this->loadMissing('orderItems.meal');
 
-            $deposits = $this->deposits()->whereStatus(Deposit::STATUS_OK)->sum('value');
-            $orders = $this->orderItems->sum(function ($order) {
-                return $order->meal->price * $order->quantity;
-            });
+            $deposits = Money::parse($this->deposits()->whereStatus(Deposit::STATUS_OK)->sum('value'));
+            $orders = Money::sum(
+                Money::parse(0),
+                ...$this->orderItems->map(
+                    fn(OrderItem $orderItem) => $orderItem->meal->price->multiply($orderItem->quantity)
+                )
+            );
 
-            $this->attributes['balance'] = $deposits - $orders;
+            $this->attributes['balance'] = $deposits->subtract($orders);
         }
 
         return $this->attributes['balance'];

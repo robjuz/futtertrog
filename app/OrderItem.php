@@ -3,10 +3,27 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Money\Money;
 
 /**
  * App\OrderItem.
  *
+ * @OA\Schema (
+ *      required={"title", "description", "price"},
+ *      @OA\Property ( property="id", ref="#/components/schemas/id" ),
+ *      @OA\Property ( property="order_id", ref="#/components/schemas/id" ),
+ *      @OA\Property( property="meal", ref="#/components/schemas/Meal"),
+ *      @OA\Property( property="user", ref="#/components/schemas/User"),
+ *      @OA\Property( property="quantity", type="number"),
+ *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
+ *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
+ *  ),
+ * 
+ *  @OA\Schema(
+ *      schema="OrderItems",
+ *      type="array",
+ *      @OA\Items( type="object", ref="#/components/schemas/OrderItem" )
+ *  ),
  * @property int $id
  * @property int $order_id
  * @property int $user_id
@@ -15,7 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $status
- * @property-read mixed $subtotal
+ * @property-read Money $subtotal
  * @property-read \App\Meal $meal
  * @property-read \App\Order $order
  * @property-read \App\User $user
@@ -37,6 +54,8 @@ use Illuminate\Database\Eloquent\Model;
 class OrderItem extends Model
 {
     protected $guarded = [];
+
+    protected $hidden = ['user_id', 'meal_id'];
 
     protected $dates = ['date'];
 
@@ -64,7 +83,7 @@ class OrderItem extends Model
 
     public function getSubtotalAttribute()
     {
-        return $this->meal->price * $this->quantity;
+        return $this->meal->price->multiply($this->quantity);
     }
 
     public function getStatusAttribute()

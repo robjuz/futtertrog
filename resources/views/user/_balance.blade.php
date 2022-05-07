@@ -1,5 +1,5 @@
 <h2>{{ __('Balance') }}</h2>
 
-<p class="{{  $balance > 0 ? 'positive-value' : 'negative-value' }}">
-    @money($balance)
-</span>
+<p class="{{ money_parse($balance)->isPositive() ? 'positive-value' : 'negative-value' }}">
+    {{ $balance }}
+</p>

@@ -6,6 +6,7 @@ use App\Deposit;
 use App\Meal;
 use App\Order;
 use App\User;
+use Cknow\Money\Money;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
@@ -57,7 +58,7 @@ class UserTest extends TestCase
             'quantity' => 2
         ]);
 
-        $this->assertEquals(1410, $user->balance);
+        $this->assertEquals(Money::parse(1410), $user->balance);
     }
 
     /** @test */

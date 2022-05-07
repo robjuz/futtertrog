@@ -12,7 +12,7 @@
         "ext-dom": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
-        "cknow/laravel-money": "^4.0",
+        "cknow/laravel-money": "^6.4",
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^2.10",
         "eluceo/ical": "^0.15.0",

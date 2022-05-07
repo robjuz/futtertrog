@@ -18,7 +18,7 @@
 </h4>
 
 @if($meal->variants->isEmpty())
-<small class="money">@money($meal->price)</small>
+<small class="money">{{ $meal->price }}</small>
 @endif
 
 @if($meal->image)
@@ -84,7 +84,7 @@ $orderItem = $todayOrders->firstWhere('meal_id', $orderItemId);
                     <input type="radio" name="meal_id" value="{{ $variant->id }}" id="variant_{{ $variant->id }}" @if($loop->first) checked @endif />
                     <label for="variant_{{ $variant->id }}">
                         <span>{{ $variant->variant_title }}</span>
-                        <small class="money">@money($variant->price)</small>
+                        <small class="money">{{ $variant->price }}</small>
                     </label>
                 @endforeach
                 </fieldset>

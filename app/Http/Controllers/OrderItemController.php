@@ -24,6 +24,19 @@ class OrderItemController extends Controller
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @OA\Get (
+     *      path="/api/orders",
+     *      summary="List of orders",
+     *      description="List of orders for today and upcoming days",
+     *      operationId="order_items.index",
+     *      security={ {"bearer": {} }},
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Success",
+     *          @OA\JsonContent( ref="#/components/schemas/OrderItem" ),
+     *      ),
+     * )
      */
     public function index(Request $request)
     {

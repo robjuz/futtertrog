@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost"
+            "url": "http://localhost:8080"
         }
     ],
     "paths": {
@@ -162,6 +162,30 @@
                 ]
             }
         },
+        "/api/orders": {
+            "get": {
+                "summary": "List of orders",
+                "description": "List of orders for today and upcoming days",
+                "operationId": "order_items.index",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderItem"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/place_order": {
             "post": {
                 "summary": "Place order",
@@ -179,13 +203,11 @@
                                 ],
                                 "properties": {
                                     "date": {
-                                        "description": "Store a newly created resource in storage.",
                                         "type": "string",
                                         "format": "date",
                                         "example": "2020-02-02"
                                     },
                                     "quantity": {
-                                        "description": "Store a newly created resource in storage.",
                                         "type": "integer",
                                         "minimum": "1",
                                         "example": "1"
@@ -290,6 +312,10 @@
                         "type": "string",
                         "readOnly": "true"
                     },
+                    "variant_title": {
+                        "type": "string",
+                        "readOnly": "true"
+                    },
                     "description": {
                         "type": "string",
                         "readOnly": "true"
@@ -307,6 +333,16 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": "true"
+                    },
+                    "variants": {
+                        "nullable": true,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Meal"
+                        }
+                    },
+                    "parent": {
+                        "$ref": "#/components/schemas/Meal"
                     }
                 },
                 "type": "object"
@@ -315,6 +351,48 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Meal"
+                }
+            },
+            "OrderItem": {
+                "required": [
+                    "title",
+                    "description",
+                    "price"
+                ],
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "order_id": {
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "meal": {
+                        "$ref": "#/components/schemas/Meal"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "quantity": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderItems": {
+                "description": "App\\OrderItem.",
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/OrderItem"
                 }
             },
             "User": {

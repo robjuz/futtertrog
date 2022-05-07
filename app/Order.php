@@ -3,6 +3,7 @@
 namespace App;
 
 use App\MealProviders\AbstractMealProvider;
+use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -85,7 +86,10 @@ class Order extends Model
 
     public function getSubtotalAttribute()
     {
-        return $this->orderItems->sum->subtotal;
+        return Money::sum(
+            Money::parse(0),
+            ...$this->orderItems->map->subtotal
+        );
     }
 
     public function orderItemsCompact()

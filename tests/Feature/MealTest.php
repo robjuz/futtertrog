@@ -6,6 +6,7 @@ use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\OrderItem;
 use App\User;
+use Cknow\Money\Money;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -84,9 +85,17 @@ class MealTest extends TestCase
             ->assertRedirect(route('meals.index'));
 
         $this->putJson(route('meals.update', $meal), $attributes)
-            ->assertJsonFragment($attributes);
+            ->assertJsonFragment([
+                'title' => 'Changed title',
+                'description' => 'Changed description',
+                'price' => Money::parse(100)
+            ]);
 
-        $this->assertDatabaseHas('meals', $attributes);
+        $this->assertDatabaseHas('meals', [
+            'title' => 'Changed title',
+            'description' => 'Changed description',
+            'price' => Money::parse(100)->formatByDecimal()
+        ]);
     }
 
     /** @test */
