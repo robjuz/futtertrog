@@ -15,7 +15,7 @@
         "cknow/laravel-money": "^6.4",
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^2.10",
-        "eluceo/ical": "^0.15.0",
+        "eluceo/ical": "^2.5",
         "fideloper/proxy": "^4.0",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
