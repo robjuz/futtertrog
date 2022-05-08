@@ -23,3 +23,41 @@ production_manual:
   environment:
     kubernetes:
       namespace: futtertrog
+
+sentry:releases:
+  stage: build
+  image: getsentry/sentry-cli
+  script:
+    - sentry-cli releases new $CI_COMMIT_SHA
+    - sentry-cli releases set-commits $CI_COMMIT_SHA --auto
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+
+sentry:releases:staging:
+  stage: staging
+  image: getsentry/sentry-cli
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    - sentry:releases
+    - staging
+  script:
+    - sentry-cli releases finalize $CI_COMMIT_SHA
+    - sentry-cli releases deploys $CI_COMMIT_SHA new -e staging
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+sentry:releases:production:
+  stage: production
+  image: getsentry/sentry-cli
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    - sentry:releases
+    - production_manual
+  script:
+    - sentry-cli releases finalize $CI_COMMIT_SHA
+    - sentry-cli releases deploys $CI_COMMIT_SHA new -e staging
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
