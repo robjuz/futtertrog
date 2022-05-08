@@ -116,7 +116,9 @@ class LoginController extends Controller
      */
     public function redirectToGitlab()
     {
-        return Socialite::driver('gitlab')->redirect();
+        return Socialite::driver('gitlab')
+            ->setScopes(['read_user'])
+            ->redirect();
     }
 
     /**
@@ -126,7 +128,7 @@ class LoginController extends Controller
      */
     public function handleGitlabCallback(Request $request)
     {
-        $gitlabUser = Socialite::driver('gitlab')->user();
+        $gitlabUser = Socialite::driver('gitlab')->stateless()->user();
 
         /** @var User $user */
         $user = User::withTrashed()->firstOrNew(
@@ -143,7 +145,7 @@ class LoginController extends Controller
 
         $user->save();
 
-        Auth::login($user, true);
+        Auth::login($user);
 
         return $this->sendLoginResponse($request);
     }

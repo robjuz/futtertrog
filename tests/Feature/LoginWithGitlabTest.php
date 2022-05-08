@@ -27,7 +27,7 @@ class LoginWithGitlabTest extends TestCase
             ->shouldReceive('getAvatar')
             ->andReturn($this->faker->imageUrl());
 
-        Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
+        Socialite::shouldReceive('driver->stateless->user')->andReturn($abstractUser);
     }
 
     /** @test */

@@ -12,6 +12,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use SocialiteProviders\GitLab\GitLabExtendSocialite;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -33,9 +35,8 @@ class EventServiceProvider extends ServiceProvider
         NewOrderPossibilities::class => [
             SendNewOrderPossibilitiesNotification::class,
         ],
-        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
-            // add your listeners (aka providers) here
-            'SocialiteProviders\\GitLab\\GitLabExtendSocialite@handle',
+        SocialiteWasCalled::class => [
+            GitLabExtendSocialite::class.'@handle',
         ],
     ];
 
