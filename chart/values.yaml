@@ -40,9 +40,6 @@ services:
     url: ''
     clientId: ''
     clientSecret: ''
-  nexmo:
-    key: ''
-    secret: ''
   vapid:
     public_key: ''
     private_key: ''

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use NotificationChannels\WebPush\HasPushSubscriptions;
 
 /**
  * @OA\Schema (
@@ -41,7 +40,6 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @property-read int|null $order_items_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\NotificationChannels\WebPush\PushSubscription[] $pushSubscriptions
  * @property-read int|null $push_subscriptions_count
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
@@ -71,7 +69,6 @@ class User extends Authenticatable
 {
     use HasFactory;
     use Notifiable;
-    use HasPushSubscriptions;
     use SoftDeletes;
 
     const SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION = 'newOrderPossibilityNotification';
@@ -172,17 +169,6 @@ class User extends Authenticatable
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->where('date', '>', today())
             ->orderBy('date');
-    }
-
-    /**
-     * Route notifications for the Nexmo channel.
-     *
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return string
-     */
-    public function routeNotificationForNexmo($notification)
-    {
-        return $this->phone_number;
     }
 
     public function orderHistory(): HasMany

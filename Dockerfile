@@ -1,6 +1,6 @@
 ARG PHP_EXTENSIONS="bcmath pdo_mysql intl gmp"
 
-FROM thecodingmachine/php:7.4-v4-slim-apache
+FROM thecodingmachine/php:8.1-v4-slim-apache
 
 ENV APACHE_DOCUMENT_ROOT=public/ \
     APACHE_RUN_USER=www-data \

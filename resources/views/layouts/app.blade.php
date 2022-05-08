@@ -17,7 +17,6 @@
             'messages' => [
                 'are_you_sure' => __('Are you sure?'),
 ]           ,
-            'vapidPublicKey' => config('webpush.vapid.public_key'),
             'csrf' => csrf_token(),
             'user' => auth()->id()
         ]) !!};
@@ -146,13 +145,6 @@
 </div>
 @stack('scripts')
 <script src="{{ asset('js/app.js') }}"></script>
-<script>
-    @auth()
-        window.Futtertrog.pushNotifications.enable();
-    @else
-        window.Futtertrog.pushNotifications.disable();
-    @endauth
-</script>
 <style>
     #main-navbar {
         display: block;

@@ -194,7 +194,6 @@ namespace App{
  * @property-read int|null $order_history_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderItem[] $orderItems
  * @property-read int|null $order_items_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\NotificationChannels\WebPush\PushSubscription[] $pushSubscriptions
  * @property-read int|null $push_subscriptions_count
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()

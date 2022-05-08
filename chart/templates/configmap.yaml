@@ -27,10 +27,6 @@ data:
   HOLZKE_ORDER_INFO: {{ .Values.mealProviders.holzke.orderInfo | quote }}
   {{- end }}
 
-  {{- if .Values.services.nexmo.key }}
-  NEXMO_KEY: {{ .Values.services.nexmo.key | quote }}
-  {{- end }}
-
   {{- if .Values.mealProviders.call_a_pizza.location }}
   CALL_A_PIZZA_LOCATION: {{ .Values.mealProviders.call_a_pizza.location | quote }}
   {{- end }}

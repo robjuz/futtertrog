@@ -7,8 +7,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
-use NotificationChannels\WebPush\WebPushChannel;
-use NotificationChannels\WebPush\WebPushMessage;
 use Traversable;
 
 class NewOrderPossibilities extends Notification
@@ -63,27 +61,6 @@ class NewOrderPossibilities extends Notification
         return $message->action(__('Click here for more details'), route('meals.index'));
     }
 
-    public function toWebPush(User $notifiable, $notification)
-    {
-        $locale = $notifiable->settings[User::SETTING_LANGUAGE] ?? config('app.locale');
-
-        return (new WebPushMessage())
-            ->title(__('New order possibilities'))
-            //->icon('/utensils.svg')
-            ->body(__('New order possibilities'))
-            ->action('Click here for more details', 'click')
-            ->data(['url' => route('meals.index')])
-            // ->badge()
-            // ->dir()
-            // ->image('/utensils.svg')
-            ->lang($locale)
-            // ->renotify()
-            // ->requireInteraction()
-            // ->tag()
-            // ->vibrate()
-;
-    }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -92,6 +69,6 @@ class NewOrderPossibilities extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', WebPushChannel::class];
+        return ['mail'];
     }
 }

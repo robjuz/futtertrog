@@ -5,8 +5,6 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\WebPush\WebPushChannel;
-use NotificationChannels\WebPush\WebPushMessage;
 
 class CustomNotification extends Notification
 {
@@ -42,7 +40,7 @@ class CustomNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', WebPushChannel::class];
+        return ['mail'];
     }
 
     /**
@@ -69,12 +67,5 @@ class CustomNotification extends Notification
             'title' => $this->subject,
             'body' => $this->body,
         ];
-    }
-
-    public function toWebPush($notifiable)
-    {
-        return (new WebPushMessage())
-            ->title($this->subject)
-            ->body($this->body);
     }
 }

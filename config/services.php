@@ -40,12 +40,6 @@ return [
         ],
     ],
 
-    'nexmo' => [
-        'key' => env('NEXMO_KEY'),
-        'secret' => env('NEXMO_SECRET'),
-        'sms_from' => '15556666666',
-    ],
-
     'gitlab' => [
         'enabled' => env('LOGIN_WITH_GITLAB', false),
         'client_id' => env('GITLAB_CLIENT_ID'),

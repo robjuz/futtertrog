@@ -14,7 +14,6 @@
     <script>
         window.Futtertrog = @json([
             'user' => Auth::user(),
-            'vapidPublicKey' => config('webpush.vapid.public_key'),
             'csrf' => csrf_token()
         ]);
     </script>

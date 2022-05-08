@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Messages\NexmoMessage;
 use Illuminate\Notifications\Notification;
 
 class OpenOrders extends Notification
@@ -54,19 +53,6 @@ class OpenOrders extends Notification
     }
 
     /**
-     * Get the Nexmo / SMS representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return NexmoMessage
-     */
-    public function toNexmo($notifiable)
-    {
-        return (new NexmoMessage())
-            ->content(__('There is an open order!', ['day' => $this->day]))
-            ->unicode();
-    }
-
-    /**
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
@@ -74,6 +60,6 @@ class OpenOrders extends Notification
      */
     public function via($notifiable)
     {
-        return ['nexmo', 'mail'];
+        return ['mail'];
     }
 }

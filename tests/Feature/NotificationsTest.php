@@ -151,7 +151,6 @@ class NotificationsTest extends TestCase
         Notification::assertSentTo($john, OpenOrders::class, function ($message, $channels, $notifiable) use ($nextMonday) {
             $toArray =  $message->toArray($notifiable);
             $toMail = $message->toMail($notifiable);
-            $toNexmo = $message->toNexmo($notifiable);
 
 
             return $toArray['title'] === __('This is a friendly reminder.')
@@ -159,9 +158,7 @@ class NotificationsTest extends TestCase
 
                 && $toMail->subject === __('Open order for', ['day' => __('Next week')])
                 && in_array(__('This is a friendly reminder.'), $toMail->introLines)
-                && in_array(__('There is an open order!', ['day' => __('Next week')]), $toMail->introLines)
-
-                && $toNexmo->content === __('There is an open order!', ['day' => __('Next week')]);
+                && in_array(__('There is an open order!', ['day' => __('Next week')]), $toMail->introLines);
         });
     }
 
@@ -186,7 +183,6 @@ class NotificationsTest extends TestCase
         Notification::assertSentTo($tom, NewOrderPossibilityNotification::class, function ($message, $channels, $notifialble) use ($today) {
             $toArray =  $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
-            $toWebPush = $message->toWebPush($notifialble)->toArray();
 
 
             $day = $today->format(trans('futtertrog.date_format'));
@@ -195,10 +191,7 @@ class NotificationsTest extends TestCase
 
                 && $toMail->subject === __('New order possibility for :day', ['day' => $day])
                 && in_array(__('New order possibility for :day', ['day' => $day]), $toMail->introLines)
-                && $toMail->actionText === __('Click here for more details')
-
-                && $toWebPush['title'] === __('New order possibility for :day', ['day' => $day])
-                && $toWebPush['body'] === __('New order possibility for :day', ['day' => $day]);
+                && $toMail->actionText === __('Click here for more details');
         });
     }
 
@@ -242,10 +235,6 @@ class NotificationsTest extends TestCase
                 $this->assertEquals($toArray['date'], $order->date);
                 $this->assertEquals($toArray['user'], $user->name);
                 $this->assertEquals($toArray['meal'], $meal->title);
-
-                $toWebPush = $notification->toWebPush($user)->toArray();
-                $this->assertEquals($toWebPush['title'], __('The order for :date was reopened', ['date' => $order->date->format(trans('futtertrog.date_format'))]));
-                $this->assertEquals($toWebPush['body'], __(':user updated :meal', ['user' => $user->name, 'meal' => $meal->title]));
 
                 return $notification->order->is($order)
                     && $notification->user->is($user)

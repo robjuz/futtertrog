@@ -68,8 +68,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `gitlab.url`          | Gitlab url                       | ``      |
 | `gitlab.clientId`     | Gitlab application clientId      | ``      |
 | `gitlab.clientSecret` | Gitlab application clientSecret  | ``      |
-| `nexmo.key`           | Nexmo key                        | ``      |
-| `nexmo.secret`        | Nexmo secret                     | ``      |
 
 ### Futtertrog meal providers configuration parameters
 
