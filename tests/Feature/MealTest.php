@@ -94,7 +94,7 @@ class MealTest extends TestCase
         $this->assertDatabaseHas('meals', [
             'title' => 'Changed title',
             'description' => 'Changed description',
-            'price' => Money::parse(100)->formatByDecimal()
+            'price' => Money::parse(100)->getAmount()
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App;
 
 use Cknow\Money\Casts\MoneyDecimalCast;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,7 +44,7 @@ class Meal extends Model
 
     protected $casts = [
         'info' => MealInfo::class,
-        'price' => MoneyDecimalCast::class,
+        'price' => MoneyIntegerCast::class,
     ];
 
     public function orderItems(): HasMany
