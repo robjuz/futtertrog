@@ -20,9 +20,9 @@ services:
 
       PHP_INI_MEMORY_LIMIT: 100M
 
-#      STARTUP_COMMAND_1: php -r "file_exists('.env') || copy('.env.example', '.env');"
-#      STARTUP_COMMAND_2: composer install
-#      STARTUP_COMMAND_3: php artisan migrate --force
+      STARTUP_COMMAND_1: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      STARTUP_COMMAND_2: composer install
+      STARTUP_COMMAND_3: php artisan migrate --force
 
       CRON_SCHEDULE: "* * * * *"
       CRON_COMMAND: php artisan schedule:run
