@@ -30,7 +30,7 @@ class IcalController extends Controller
         $events = $orderItems->map(fn($orderItem) => (new Event())
             ->setOccurrence(new SingleDay(new Date($orderItem->order->date)))
             ->setSummary($orderItem->meal->title . ' (' . $orderItem->quantity . ')')
-            ->setDescription($orderItem->meal->description)
+            ->setDescription($orderItem->meal->description ?? '')
         )->toArray();
 
 

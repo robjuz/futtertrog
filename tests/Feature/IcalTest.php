@@ -21,6 +21,13 @@ class IcalTest extends TestCase
             ->get(route('meals.ical'))
             ->assertSee($orderItem->meal->title.' ('.$orderItem->quantity.')')
             ->assertSee($orderItem->meal->description);
+
+        $meal = Meal::factory()->create(['title' => 'menu 1', 'description' => null]);
+        $orderItem = OrderItem::factory()->create(['user_id' => $user->id, 'meal_id' => $meal->id]);
+
+        $this->login($user)
+            ->get(route('meals.ical'))
+            ->assertSee($orderItem->meal->title.' ('.$orderItem->quantity.')');
     }
 
     /** @test */
