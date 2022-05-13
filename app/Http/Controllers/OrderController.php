@@ -67,6 +67,7 @@ class OrderController extends Controller
             $request->validate(
                 [
                     'status' => ['sometimes', 'string', Rule::in(Order::$statuses)],
+                    'payed_at' => ['date', 'sometimes', 'nullable']
                 ]
             )
         );

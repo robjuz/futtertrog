@@ -17,10 +17,31 @@
                 @csrf
                 <input type="hidden" name="status"
                        value="{{ $order->status === \App\Order::STATUS_ORDERED ? \App\Order::STATUS_OPEN : \App\Order::STATUS_ORDERED }}">
+
                 <button type="submit">
                     {{ $order->status === \App\Order::STATUS_ORDERED ? __('Mark as open') : __('Mark as ordered') }}
                 </button>
             </form>
+
+                <form action="{{ route('orders.update', $order) }}" method="POST">
+                    @method('put')
+                    @csrf
+                    <input type="hidden" name="status"
+                           value="{{ $order->status === \App\Order::STATUS_ORDERED ? \App\Order::STATUS_OPEN : \App\Order::STATUS_ORDERED }}">
+
+                    <label>
+                        <span>{{ __('Payed at') }}</span>
+                        @error('payed_at')
+                        <span>{{ $message }}</span>
+                        @enderror
+
+                        <input type="date" name="payed_at" value="{{ old('payed_at', $order->payed_at) }}">
+                    </label>
+
+                    <button type="submit">
+                        {{ __('Save') }}
+                    </button>
+                </form>
         @endcan
 
         @can('delete', $order)

@@ -127,6 +127,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'payed_at' => [
+            'date' => 'Bitte ein gültiges Datum eintragen'
+        ]
     ],
     /*
     |--------------------------------------------------------------------------
@@ -168,5 +171,6 @@ return [
         'time'                  => 'Uhrzeit',
         'available'             => 'verfügbar',
         'size'                  => 'Größe',
+        'payed_at'              => 'Bezahlt am'
     ],
 ];
