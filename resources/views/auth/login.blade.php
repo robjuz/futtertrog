@@ -6,7 +6,7 @@
         <h1>{{ __('Login') }}</h1>
     </header>
 
-        <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}">
             @csrf
 
             <label for="email">
@@ -40,14 +40,22 @@
                     {{ __('Forgot Your Password?') }}
                 </a>
             @endif
-
-            @if (config('services.gitlab.enabled'))
-                <div class="or-login-with"><span>{{ __('or') }}</span></div>
-
-                <a class="login-with-gitlab" href="{{ route('login.gitlab') }}">
-                    @svg('brands/gitlab', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
-                    {{ __('Login with GitLab') }}
-                </a>
-            @endif
         </form>
+
+    @if (config('services.gitlab.enabled'))
+        <form method="GET" action="{{ route('login.gitlab') }}">
+            <div class="or-login-with"><span>{{ __('or') }}</span></div>
+
+            <button type="submit" class="login-with-gitlab">
+                @svg('brands/gitlab', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
+                {{ __('Login with GitLab') }}
+            </button>
+
+            <input id="remember_gitlab" name="remember" type="checkbox"
+                    {{ old('remember') ? 'checked' : '' }}>
+            <label for="remember_gitlab">
+                {{ __('Remember Me') }}
+            </label>
+        </form>
+    @endif
 @endsection

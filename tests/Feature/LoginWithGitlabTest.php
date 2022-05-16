@@ -3,32 +3,18 @@
 namespace Tests\Feature;
 
 use App\User;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Mockery;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Tests\TestCase;
 
 class LoginWithGitlabTest extends TestCase
 {
     use WithFaker;
-
-    protected function mockSocialite(): void
-    {
-        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
-
-        $abstractUser->shouldReceive('getId')
-            ->andReturn($this->faker->uuid)
-            ->shouldReceive('getName')
-            ->andReturn($this->faker->name)
-            ->shouldReceive('getEmail')
-            ->andReturn('test@example.com')
-            ->shouldReceive('getAvatar')
-            ->andReturn($this->faker->imageUrl());
-
-        Socialite::shouldReceive('driver->stateless->user')->andReturn($abstractUser);
-    }
 
     /** @test */
     public function it_can_be_disabled()
@@ -64,6 +50,23 @@ class LoginWithGitlabTest extends TestCase
         $this->assertAuthenticatedAs(User::whereEmail('test@example.com')->first());
     }
 
+    protected function mockSocialite(): self
+    {
+        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
+
+        $abstractUser->shouldReceive('getId')
+            ->andReturn($this->faker->uuid)
+            ->shouldReceive('getName')
+            ->andReturn($this->faker->name)
+            ->shouldReceive('getEmail')
+            ->andReturn('test@example.com')
+            ->shouldReceive('getAvatar')
+            ->andReturn($this->faker->imageUrl());
+
+        Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
+
+        return $this;
+    }
 
     /** @test * */
     public function it_logs_in_a_user_with_the_equivalent_gitlab_email()
@@ -105,5 +108,54 @@ class LoginWithGitlabTest extends TestCase
         $this->withExceptionHandling()
             ->get(route('login.gitlab-callback'))
             ->assertUnauthorized();
+    }
+
+    /** @test */
+    public function it_respects_the_remember_me_checkbox_not_set()
+    {
+        Config::set('services.gitlab.enabled', true);
+
+        $this->get(route('login.gitlab'))
+            ->assertSessionHas('remember_gitlab', false);
+
+        /** @var User $user */
+        $user = User::factory()->create(
+            [
+                'email' => 'test@example.com'
+            ]
+        );
+
+        /** @var SessionGuard $sessionGuard */
+        $sessionGuard = Auth::guard();
+
+        $this->mockSocialite()
+            ->get(route('login.gitlab-callback'))
+            ->assertCookieMissing($sessionGuard->getRecallerName());
+    }
+
+    /** @test */
+    public function it_respects_the_remember_me_checkbox_set()
+    {
+        Config::set('services.gitlab.enabled', true);
+
+        $this->get(route('login.gitlab', ['remember' => 'on']))
+            ->assertSessionHas('remember_gitlab', true);
+
+        /** @var User $user */
+        $user = User::factory()->create(
+            [
+                'email' => 'test@example.com'
+            ]
+        );
+
+        /** @var SessionGuard $sessionGuard */
+        $sessionGuard = Auth::guard();
+
+        $this->mockSocialite()
+            ->withSession(['remember_gitlab' => true])
+            ->get(route('login.gitlab-callback'))
+            ->assertCookie(
+                $sessionGuard->getRecallerName(),
+            );
     }
 }

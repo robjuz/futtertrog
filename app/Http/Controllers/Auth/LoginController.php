@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\GitlabProvider;
 use OpenApi\Annotations as OA;
 
 /**
@@ -97,7 +102,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard';
+    protected string $redirectTo = '/dashboard';
 
     /**
      * Create a new controller instance.
@@ -110,25 +115,17 @@ class LoginController extends Controller
     }
 
     /**
-     * Redirect the user to the GitHub authentication page.
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function redirectToGitlab()
-    {
-        return Socialite::driver('gitlab')
-            ->setScopes(['read_user'])
-            ->redirect();
-    }
-
-    /**
      * Obtain the user information from GitHub.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse|RedirectResponse
      */
-    public function handleGitlabCallback(Request $request)
+    public function handleGitlabCallback(Request $request, Session $session): JsonResponse|RedirectResponse
     {
-        $gitlabUser = Socialite::driver('gitlab')->stateless()->user();
+        /** @var GitlabProvider $gitlabProvider */
+        $gitlabProvider = Socialite::driver('gitlab');
+
+        $gitlabUser = $gitlabProvider->user();
 
         /** @var User $user */
         $user = User::withTrashed()->firstOrNew(
@@ -145,41 +142,34 @@ class LoginController extends Controller
 
         $user->save();
 
-        Auth::login($user);
+        Auth::login($user, $session->pull('remember_gitlab'));
 
         return $this->sendLoginResponse($request);
     }
 
     /**
-     * Validate the user login request.
+     * Redirect the user to the GitHub authentication page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function validateLogin(Request $request)
+    public function redirectToGitlab(Request $request, Session $session): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        $request->validate(
-            [
-                $this->username() => 'required|string',
-                'password' => 'required',
-            ]
-        );
-    }
+        $session->put('remember_gitlab', $request->filled('remember'));
 
-    protected function loggedOut(Request $request)
-    {
-        return redirect()->route('login');
+        /** @var GitlabProvider $gitlabProvider */
+        $gitlabProvider = Socialite::driver('gitlab');
+
+        return $gitlabProvider->redirect();
     }
 
     /**
      * Send the response after the user was authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return RedirectResponse|JsonResponse
      */
-    protected function sendLoginResponse(Request $request)
+    protected function sendLoginResponse(Request $request): JsonResponse|RedirectResponse
     {
         if ($request->wantsJson()) {
             return $this->guard()->user();
@@ -194,5 +184,26 @@ class LoginController extends Controller
         }
 
         return redirect()->intended($this->redirectPath());
+    }
+
+    /**
+     * Validate the user login request.
+     *
+     * @param Request $request
+     * @return void
+     */
+    protected function validateLogin(Request $request): void
+    {
+        $request->validate(
+            [
+                $this->username() => 'required|string',
+                'password' => 'required',
+            ]
+        );
+    }
+
+    protected function loggedOut(Request $request): RedirectResponse
+    {
+        return redirect()->route('login');
     }
 }
