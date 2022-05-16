@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
+
 class WeekNavigation extends Component
 {
     public Carbon $requestedDate;
@@ -39,8 +40,12 @@ class WeekNavigation extends Component
     public function render()
     {
         $previousWeek = $this->requestedDate->clone()->subWeek()->startOfWeek();
-        $nextWeek = $this->requestedDate->clone()->addWeek()->startOfWeek();
 
+        $nextWeek = null;
+
+        if ($this->meals->inFutureFrom($this->requestedDate)->isNotEmpty()) {
+            $nextWeek = $this->requestedDate->clone()->addWeek()->startOfWeek();
+        }
         $period = CarbonPeriod::create(
             $this->requestedDate->clone()->startOfWeek(),
             $this->requestedDate->clone()->endOfWeek()

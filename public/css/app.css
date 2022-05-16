@@ -873,6 +873,7 @@ footer {
 
 [id="calendar"] > header h1 {
   margin: 0;
+  flex: 1;
 }
 
 /* 1, 2 - For nice effect on hover */
