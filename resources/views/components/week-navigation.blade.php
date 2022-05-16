@@ -8,10 +8,13 @@
                 {{ __('calendar.WN') }} {{ $previousWeek->weekOfYear }}
             </a>
 
+            @if($nextWeek)
             <a href="<?= route('meals.index', ['date' => $nextWeek->toDateString()]) ?>">
                 {{ __('calendar.WN') }} {{ $nextWeek->weekOfYear }}
                 <span aria-hidden="true">&rarr;</span>
             </a>
+            @endif
+
         </header>
         <ol>
             @foreach($period as $date)

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Meal;
+use App\MealCollection;
 use Illuminate\Support\Carbon;
 
 class MealsRepository
@@ -11,7 +12,7 @@ class MealsRepository
 
     /**
      * @param $date
-     * @return \App\MealCollection
+     * @return MealCollection
      */
     public function forDate($date)
     {
@@ -22,5 +23,16 @@ class MealsRepository
         }
 
         return $this->cache[$date->timestamp];
+    }
+
+    public function inFutureFrom($currentDate)
+    {
+        $currentDate = Carbon::parse($currentDate);
+
+        $nextWeekMonday = $currentDate->clone()->addWeek()->startOfWeek();
+
+        return Meal::doesntHave('parent')
+            ->whereDate('date_from', '>=', $nextWeekMonday)
+            ->get();
     }
 }
