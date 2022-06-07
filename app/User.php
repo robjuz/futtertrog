@@ -26,7 +26,7 @@ use Illuminate\Support\Str;
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
  * @property bool $is_admin
- * @property array|null $settings
+ * @property UserSettings $settings
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -71,16 +71,6 @@ class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
-    const SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION = 'newOrderPossibilityNotification';
-    const SETTING_NO_ORDER_NOTIFICATION = 'noOrderNotification';
-    const SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION = 'noOrderForNextDayNotification';
-    const SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION = 'noOrderForNextWeekNotification';
-    const SETTING_MEAL_PREFERENCES = 'mealPreferences';
-    const SETTING_MEAL_AVERSION = 'mealAversion';
-    const SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION = 'hideDashboardMealDescription';
-    const SETTING_HIDE_ORDERING_MEAL_DESCRIPTION = 'hideOrderingMealDescription';
-    const SETTING_LANGUAGE = 'language';
-
     /**
      * The attributes that should be cast to native types.
      *
@@ -88,7 +78,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'is_admin' => 'boolean',
-        'settings' => 'array',
+        'settings' => UserSettings::class,
     ];
 
     protected $dates = ['email_verified_at'];

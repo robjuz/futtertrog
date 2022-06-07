@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\User;
+use App\UserSettings;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,15 +24,15 @@ class SettingsTest extends TestCase
     {
         // $this->withExceptionHandling();
         $data = [
-            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => 1,
-            User::SETTING_NO_ORDER_NOTIFICATION => 1,
-            User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => 1,
-            User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => 1,
-            User::SETTING_MEAL_PREFERENCES => 'meal1, meal2',
-            User::SETTING_MEAL_AVERSION => 'meal3, meal4',
-            User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION => 0,
-            User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => 0,
-            User::SETTING_LANGUAGE => 'de',
+            UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION => 1,
+            UserSettings::NO_ORDER_NOTIFICATION => 1,
+            UserSettings::NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => 1,
+            UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => 1,
+            UserSettings::MEAL_PREFERENCES => 'meal1, meal2',
+            UserSettings::MEAL_AVERSION => 'meal3, meal4',
+            UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION => 0,
+            UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION => 0,
+            UserSettings::LANGUAGE => 'de',
         ];
 
         $this->login()
@@ -39,15 +40,15 @@ class SettingsTest extends TestCase
             ->assertRedirect();
 
         $jsonData = [
-            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => true,
-            User::SETTING_NO_ORDER_NOTIFICATION => true,
-            User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => true,
-            User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => true,
-            User::SETTING_MEAL_PREFERENCES => 'meal1, meal2',
-            User::SETTING_MEAL_AVERSION => 'meal3, meal4',
-            User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION => false,
-            User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => false,
-            User::SETTING_LANGUAGE => 'de',
+            UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION => true,
+            UserSettings::NO_ORDER_NOTIFICATION => true,
+            UserSettings::NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => true,
+            UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => true,
+            UserSettings::MEAL_PREFERENCES => 'meal1, meal2',
+            UserSettings::MEAL_AVERSION => 'meal3, meal4',
+            UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION => false,
+            UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION => false,
+            UserSettings::LANGUAGE => 'de',
         ];
     
         $this->login()->postJson(route('settings.store'), $jsonData)->assertJson($jsonData);

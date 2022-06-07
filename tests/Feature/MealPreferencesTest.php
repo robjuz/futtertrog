@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Meal;
 use App\User;
+use App\UserSettings;
 use Tests\TestCase;
 
 class MealPreferencesTest extends TestCase
@@ -13,10 +14,11 @@ class MealPreferencesTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $user->settings = [
-            User::SETTING_MEAL_PREFERENCES => 'pancake',
-            User::SETTING_MEAL_AVERSION => 'pumpkin'
-        ];
+        $settings = new UserSettings();
+        $settings->mealPreferences = 'pancake';
+        $settings->mealAversion = 'pumpkin';
+
+        $user->settings = $settings;
         $user->save();
 
         $meal1 = Meal::factory()->create([

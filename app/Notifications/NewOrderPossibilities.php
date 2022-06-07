@@ -51,7 +51,7 @@ class NewOrderPossibilities extends Notification
     {
         $message = (new MailMessage)->subject(__('New order possibilities'));
 
-        $locale = $notifiable->settings[User::SETTING_LANGUAGE] ?? config('app.locale');
+        $locale = $notifiable->settings->language ?? config('app.locale');
 
         foreach ($this->dates as $date) {
             $formatted = Carbon::parse($date)->locale($locale)->isoFormat('ddd MMM DD YYYY');

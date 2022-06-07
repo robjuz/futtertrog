@@ -9,6 +9,7 @@ use App\Notifications\NewOrderPossibilities as NewOrderPossibilitiesNotification
 use App\MealProviders\CallAPizza;
 use App\MealProviders\Holzke;
 use App\User;
+use App\UserSettings;
 use Illuminate\Support\Facades\Event;
 use Ixudra\Curl\Facades\Curl;
 use Mockery;
@@ -57,13 +58,14 @@ class HolzkeTest extends TestCase
 
         $today = today();
 
+        $settings = new UserSettings();
+        $settings->newOrderPossibilityNotification = true;
+        $settings->language = 'de';
+
 
         $tom = User::factory()->create(
             [
-                'settings' => [
-                    User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1",
-                    User::SETTING_LANGUAGE => 'de'
-                ],
+                'settings' => $settings,
             ]
         );
 
@@ -86,11 +88,11 @@ class HolzkeTest extends TestCase
 
        app(Holzke::class)->getAllUpcomingMeals();
 
-        Notification::assertSentTo($tom, NewOrderPossibilitiesNotification::class, function ($message, $channels, $notifiable) use ($today) {
+        Notification::assertSentTo($tom, NewOrderPossibilitiesNotification::class, function ($message, $channels, User $notifiable) use ($today) {
             $toArray =  $message->toArray($notifiable);
             $toMail = $message->toMail($notifiable);
 
-            $day = $today->locale($notifiable->settings[User::SETTING_LANGUAGE])->isoFormat('ddd MMM DD YYYY');
+            $day = $today->locale($notifiable->settings->language)->isoFormat('ddd MMM DD YYYY');
 
             return $today->isSameAs($toArray['dates'][0])
                 && $toMail->subject === __('New order possibilities')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\UserSettings;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -34,15 +35,15 @@ class SettingsController extends Controller
     public function store(Request $request)
     {
         $settings = $request->validate([
-            User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => ['required', 'boolean'],
-            User::SETTING_NO_ORDER_NOTIFICATION => ['required', 'boolean'],
-            User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => ['required', 'boolean'],
-            User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => ['required', 'boolean'],
-            User::SETTING_MEAL_PREFERENCES => ['nullable', 'string'],
-            User::SETTING_MEAL_AVERSION => ['nullable', 'string'],
-            User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION => ['required', 'boolean'],
-            User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION => ['required', 'boolean'],
-            User::SETTING_LANGUAGE => ['required', Rule::in(config('app.supported_locale'))],
+            UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION => ['required', 'boolean'],
+            UserSettings::NO_ORDER_NOTIFICATION => ['required', 'boolean'],
+            UserSettings::NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => ['required', 'boolean'],
+            UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => ['required', 'boolean'],
+            UserSettings::MEAL_PREFERENCES => ['nullable', 'string'],
+            UserSettings::MEAL_AVERSION => ['nullable', 'string'],
+            UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION => ['required', 'boolean'],
+            UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION => ['required', 'boolean'],
+            UserSettings::LANGUAGE => ['required', Rule::in(config('app.supported_locale'))],
         ]);
 
         /** @var User $user */

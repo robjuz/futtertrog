@@ -19,7 +19,7 @@
                         <h3>
                             {{ $order->quantity }} &times; {{ $order->meal->title }}
                         </h3>
-                        @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
+                        @if (!(auth()->user()->settings->hideDashboardMealDescription))
                             <p>{{ $order->meal->description }}</p>
                         @endif
                         <p class="orderStatus">{{ __('Status')}}: {{__('futtertrog.orderStatus.'. $order->status) }}</p>
@@ -51,7 +51,7 @@
                                     {{ $order->quantity }} &times; {{ $order->meal->title }}
                                 </h4>
 
-                                @if (!(auth()->user()->settings[\App\User::SETTING_HIDE_DASHBOARD_MEAL_DESCRIPTION] ?? false))
+                                @if (!(auth()->user()->settings->hideDashboardMealDescription ?? false))
                                     <p>{{ $order->meal->description }}</p>
                                 @endif
                                 <p class="orderStatus">{{ __('Status')}}: {{__('futtertrog.orderStatus.'. $order->status) }}</p>

@@ -82,7 +82,7 @@ class Meal extends Model
             $this->attributes['is_preferred'] = false;
 
             if (Auth::check() and !$this->is_hated) {
-                $preferences = Auth::user()->settings[User::SETTING_MEAL_PREFERENCES] ?? '';
+                $preferences = Auth::user()->settings->mealPreferences;
                 $preferences = array_map('trim', explode(',', $preferences));
 
                 foreach ($preferences as $preference) {
@@ -107,7 +107,7 @@ class Meal extends Model
             $this->attributes['is_hated'] = false;
 
             if (Auth::check()) {
-                $aversions = Auth::user()->settings[User::SETTING_MEAL_AVERSION] ?? '';
+                $aversions = Auth::user()->settings->mealAversion;
                 $aversions = array_map('trim', explode(',', $aversions));
 
                 foreach ($aversions as $aversion) {
