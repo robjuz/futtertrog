@@ -12,7 +12,7 @@
 */
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
-Auth::routes(['register' => false]);
+//Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('order_possibilities', 'MealController@index');

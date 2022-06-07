@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\DisabledNotification;
 use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\Notifications\CustomNotification;
@@ -259,4 +260,23 @@ class NotificationsTest extends TestCase
         );
     }
 
+    /** @test */
+    public function it_does_not_sent_a_no_order_for_today_notification_to_users_that_opted_in_but_turned_off_the_notification()
+    {
+        Notification::fake();
+
+        /** @var User $tom */
+        $tom = User::factory()->create(
+            [
+                'settings' => [User::SETTING_NO_ORDER_NOTIFICATION => "1"],
+            ]
+        );
+
+        $tom->disabledNotifications()->create(['date' => today()]);
+
+        (new NoOrderForTodayNotification)();
+
+        Notification::assertNotSentTo($tom, NoOrder::class);
+
+    }
 }

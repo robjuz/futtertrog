@@ -71,7 +71,7 @@ $orderItem = $todayOrders->firstWhere('meal_id', $orderItemId);
         <p> {{ trans_choice('futtertrog.portions_ordered', $orderItem->quantity) }}</p>
     @endcan()
 @else
-        <form action="{{ route('order_items.store') }}" method="post">
+        <form action="{{ route('order_items.store') }}" method="post" class="meal-form">
             @csrf
             <input type="hidden" name="date" value="{{ $requestedDate->toDateString() }}"/>
             <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
@@ -92,7 +92,7 @@ $orderItem = $todayOrders->firstWhere('meal_id', $orderItemId);
     @can('create', [App\OrderItem::class, $requestedDate])
             <label for="amount-{{ $meal->id }}" class="sr-only">{{ __('Amount') }}</label>
             <input type="number" name="quantity" min="1" value="1" id="amount-{{ $meal->id }}">
-            <button type="submit">{{ __('Place order') }}</button>
+            <button type="submit">{{ __('Place order') }} </button>
     @endcan
         </form>
 @endif

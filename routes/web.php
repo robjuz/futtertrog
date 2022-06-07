@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DisabledNotificationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,8 @@ Route::group(['middleware' => 'auth:web'], function () {
     Route::post('orders/auto_order', 'AutoOrderController')->name('orders.auto_order');
     Route::resource('orders', 'OrderController')->only(['index', 'edit', 'update', 'destroy']);
     Route::resource('order_items', 'OrderItemController')->except(['show']);
+    Route::post('order_items/json', 'OrderItemController@store_json');
+
 
     Route::post('users/{user}/restore', 'UserController@restore')->name('users.restore');
     Route::resource('users', 'UserController');
@@ -50,6 +53,9 @@ Route::group(['middleware' => 'auth:web'], function () {
 
     Route::get('notifications/create', 'NotificationController@create')->name('notifications.create');
     Route::post('notifications', 'NotificationController@store')->name('notification.store');
+
+    Route::post('notifications/disable', [DisabledNotificationController::class, 'store'])->name('notification.disable');
+    Route::delete('notifications/disable', [DisabledNotificationController::class, 'destroy']);
 
     Route::post('/subscriptions', 'PushSubscriptionController@update');
 });

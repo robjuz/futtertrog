@@ -177,4 +177,9 @@ class User extends Authenticatable
         ->with(['order', 'meal'])
         ->latest();
     }
+
+    public function disabledNotifications(): HasMany
+    {
+        return $this->hasMany(DisabledNotification::class);
+    }
 }

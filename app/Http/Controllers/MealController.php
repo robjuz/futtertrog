@@ -8,8 +8,10 @@ use App\Http\Requests\MealUpdateRequest;
 use App\Meal;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
+use App\User;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -52,6 +54,13 @@ class MealController extends Controller
      */
     public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {
+
+        /** @var User $user */
+        $user = $request->user();
+        $notificationEnabledThisDay = $user->disabledNotifications()->where('date', $request->input('date'))->doesntExist();
+        $noOrderNotification =  $user->settings['noOrderNotification'] ?? false;
+
+
         $requestedDate = Carbon::parse($request->query('date', today()));
 
         $todayMeals = Meal::forDate($requestedDate)
@@ -66,8 +75,7 @@ class MealController extends Controller
         }
 
         $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
-
-        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate'));
+        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate','noOrderNotification','notificationEnabledThisDay'));
     }
 
     /**

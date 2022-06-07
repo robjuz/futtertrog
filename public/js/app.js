@@ -84,3 +84,39 @@ var confirmDelete = function (e) {
     }
 };
 document.addEventListener('submit', confirmDelete);
+
+
+
+
+
+
+async function init(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+        response = await fetch('order_items/json', {
+            method: 'POST',
+            credentials: 'same-origin',
+            redirect: 'follow',
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": window.Futtertrog.csrf,
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+        console.log(response);
+    } catch (error) {
+        console.log(error);
+    }
+    }
+
+
+
+document.querySelectorAll('.meal-form').forEach(item => {
+    item.addEventListener('submit', event => {
+        init(event); })})
+

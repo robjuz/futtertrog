@@ -95,6 +95,8 @@
   "Will be sent at 10 o'clock on Thursday and Friday": "Wird am Donnerstag und Freitag um 10 Uhr verschickt.",
   "Notifications": "Benachrichtigungen",
   "No order for today notification": "Kein Essen für heute",
+  "Disable No order for today notification": "Benachrichtigung Kein Essen für heute deaktivieren",
+  "Enable No order for today notification": "Benachrichtigung Kein Essen für heute aktivieren",
   "No order for next day notification": "Kein Essen für nächsten Tag",
   "No order for next week notification": "Kein Essen für nächste Woche",
   "New order possibility notification":  "Neue Bestellmöglichkeit",

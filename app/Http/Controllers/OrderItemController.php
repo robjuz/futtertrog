@@ -144,6 +144,7 @@ class OrderItemController extends Controller
      */
     public function store(Request $request)
     {
+
         $attributes = $request->validate(
             [
                 'date' => 'required|date',
@@ -179,6 +180,20 @@ class OrderItemController extends Controller
 
         return back()->with('success', __('Success'));
     }
+
+
+    public function store_json(Request $request)
+    {
+
+//        return back()->with('success', __('Success'));
+
+// Hier komme ich nicht weiter. Ich fand bisher keine Möglichkeit die Eingabewerte im Controller zu dumpen.
+
+
+    }
+
+
+
 
     public function update(Request $request, OrderItem $orderItem)
     {
