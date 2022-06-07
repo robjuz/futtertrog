@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8080"
+            "url": "http://localhost"
         }
     ],
     "paths": {
@@ -21,6 +21,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
+                                "title": "LoginRequest",
                                 "required": [
                                     "email",
                                     "password"
@@ -48,6 +49,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "title": "LoginResponse",
                                     "properties": {
                                         "user": {
                                             "$ref": "#/components/schemas/User"
@@ -63,6 +65,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "title": "LoginValidationResponse",
                                     "properties": {
                                         "message": {
                                             "type": "string",
@@ -131,7 +134,7 @@
         "/api/order_possibilities": {
             "get": {
                 "summary": "Meals for given date",
-                "description": "Schows the meals for the current or given date",
+                "description": "Shows the meals for the current or given date",
                 "operationId": "meals.index",
                 "parameters": [
                     {
@@ -149,7 +152,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Meals"
+                                    "title": "Meals",
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Meal"
+                                    }
                                 }
                             }
                         }
@@ -335,23 +342,17 @@
                         "readOnly": "true"
                     },
                     "variants": {
-                        "nullable": true,
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/Meal"
-                        }
+                        },
+                        "nullable": true
                     },
                     "parent": {
                         "$ref": "#/components/schemas/Meal"
                     }
                 },
                 "type": "object"
-            },
-            "Meals": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/Meal"
-                }
             },
             "OrderItem": {
                 "required": [
@@ -389,7 +390,6 @@
                 "type": "object"
             },
             "OrderItems": {
-                "description": "App\\OrderItem.",
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/OrderItem"
@@ -478,8 +478,5 @@
                 "in": "header"
             }
         }
-    },
-    "security": [
-        []
-    ]
+    }
 }

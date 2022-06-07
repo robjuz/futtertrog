@@ -27,11 +27,6 @@ use OpenApi\Annotations as OA;
  *      @OA\Property( property="variants",type="array", @OA\Items( type="object", ref="#/components/schemas/Meal" ), nullable=true ),
  *      @OA\Property( property="parent", type="object", ref="#/components/schemas/Meal", nullable=true ),
  *  ),
- * @OA\Schema(
- *      schema="Meals",
- *      type="array",
- *      @OA\Items( type="object", ref="#/components/schemas/Meal" )
- *  ),
  * @mixin IdeHelperMeal
  */
 class Meal extends Model

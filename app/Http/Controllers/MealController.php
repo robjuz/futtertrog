@@ -35,7 +35,7 @@ class MealController extends Controller
      * @OA\Get(
      *      path="/api/order_possibilities",
      *      summary="Meals for given date",
-     *      description="Schows the meals for the current or given date",
+     *      description="Shows the meals for the current or given date",
      *      operationId="meals.index",
      *      security={ {"bearer": {} }},
      *
@@ -48,7 +48,11 @@ class MealController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Meals list",
-     *          @OA\JsonContent(  ref="#/components/schemas/Meals" ),
+     *          @OA\JsonContent(
+     *              title="Meals",
+     *              type="array",
+     *              @OA\Items( type="object", ref="#/components/schemas/Meal" )
+     *          ),
      *      ),
      * )
      */

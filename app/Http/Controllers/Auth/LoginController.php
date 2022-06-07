@@ -27,6 +27,7 @@ use OpenApi\Annotations as OA;
  *          required=true,
  *          description="Pass user credentials",
  *          @OA\JsonContent(
+ *              title="LoginRequest",
  *              required={"email","password"},
  *              @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
  *              @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
@@ -36,6 +37,7 @@ use OpenApi\Annotations as OA;
  *          response=200,
  *          description="Success",
  *          @OA\JsonContent(
+ *              title="LoginResponse",
  *              @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
  *          )
  *      ),
@@ -43,6 +45,7 @@ use OpenApi\Annotations as OA;
  *          response=422,
  *          description="Validation error",
  *          @OA\JsonContent(
+ *             title="LoginValidationResponse",
  *             @OA\Property(property="message", type="string", example="The given data was invalid."),
  *             @OA\Property(
  *                property="errors",
