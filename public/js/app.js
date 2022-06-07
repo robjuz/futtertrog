@@ -72,9 +72,39 @@ document.addEventListener('submit', function (e) {
     e.target.querySelector('[type="submit"]').disabled = true;
 });
 
+
+async function handleMealFormSubmit(form) {
+    const wrapper = form.closest('.meal')
+
+    let response = await fetch(form.getAttribute('action'), {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            "X-CSRF-TOKEN": window.Futtertrog.csrf,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: new FormData(form)
+    });
+
+    const tmp = document.createElement('div');
+    tmp.innerHTML = await response.text();
+    const meal = tmp.querySelector('.meal');
+
+    wrapper.innerHTML = meal.innerHTML;
+    wrapper.classList = meal.classList;
+
+}
+
+
 /* are you sure modal on delete form */
-var confirmDelete = function (e) {
-    if (e.target.querySelector('[name="_method"][value="delete"]')) {
+var handleFormSubmit = function (e) {
+    const form = e.target
+    if (form.matches('.meal-form')) {
+        e.preventDefault();
+        return handleMealFormSubmit(form);
+    }
+
+    if (form.querySelector('[name="_method"][value="delete"]')) {
         if ((confirm(window.Futtertrog.messages.are_you_sure))) {
             e.target.submit();
         } else {
@@ -83,40 +113,5 @@ var confirmDelete = function (e) {
         }
     }
 };
-document.addEventListener('submit', confirmDelete);
 
-
-
-
-
-
-async function init(event) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-
-    try {
-        response = await fetch('order_items/json', {
-            method: 'POST',
-            credentials: 'same-origin',
-            redirect: 'follow',
-            dataType: "json",
-            headers: {
-                "X-CSRF-TOKEN": window.Futtertrog.csrf,
-                "X-Requested-With": "XMLHttpRequest",
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify(formData)
-        });
-        console.log(response);
-    } catch (error) {
-        console.log(error);
-    }
-    }
-
-
-
-document.querySelectorAll('.meal-form').forEach(item => {
-    item.addEventListener('submit', event => {
-        init(event); })})
-
+document.addEventListener('submit', handleFormSubmit);

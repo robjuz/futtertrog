@@ -4,10 +4,12 @@ namespace App;
 
 use Cknow\Money\Casts\MoneyDecimalCast;
 use Cknow\Money\Casts\MoneyIntegerCast;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use OpenApi\Annotations as OA;
@@ -25,7 +27,7 @@ use OpenApi\Annotations as OA;
  *      @OA\Property( property="variants",type="array", @OA\Items( type="object", ref="#/components/schemas/Meal" ), nullable=true ),
  *      @OA\Property( property="parent", type="object", ref="#/components/schemas/Meal", nullable=true ),
  *  ),
- *  @OA\Schema(
+ * @OA\Schema(
  *      schema="Meals",
  *      type="array",
  *      @OA\Items( type="object", ref="#/components/schemas/Meal" )
@@ -78,7 +80,7 @@ class Meal extends Model
 
     public function getIsPreferredAttribute()
     {
-        if (! isset($this->attributes['is_preferred'])) {
+        if (!isset($this->attributes['is_preferred'])) {
             $this->attributes['is_preferred'] = false;
 
             if (Auth::check() and !$this->is_hated) {
@@ -103,7 +105,7 @@ class Meal extends Model
 
     public function getIsHatedAttribute()
     {
-        if (! isset($this->attributes['is_hated'])) {
+        if (!isset($this->attributes['is_hated'])) {
             $this->attributes['is_hated'] = false;
 
             if (Auth::check()) {
@@ -129,7 +131,7 @@ class Meal extends Model
     /**
      * Create a new Eloquent Collection instance.
      *
-     * @param  array  $models
+     * @param array $models
      * @return \App\MealCollection
      */
     public function newCollection(array $models = []): MealCollection
@@ -144,7 +146,7 @@ class Meal extends Model
 
     public function scopeByProvider($query, $provider = null)
     {
-        if (! $provider) {
+        if (!$provider) {
             return $query;
         }
 
@@ -176,5 +178,37 @@ class Meal extends Model
             );
 
         return $orderItem;
+    }
+
+    public function isOrdered($date = null, User $user = null): bool
+    {
+        /** @var User $user */
+        $user = $user ?? auth()->user();
+
+        $date = Carbon::parse($date ?? today());
+
+        return OrderItem::query()
+            ->whereIn('meal_id', $this->variants()->pluck('id')->merge($this->id))
+            ->where('user_id', $user->id)
+            ->whereHas('order', function (Builder $builder) use ($date) {
+                $builder->whereDate('date', $date);
+            })
+            ->exists();
+    }
+
+    public function getOrderItem($date = null, User $user = null): OrderItem
+    {
+        /** @var User $user */
+        $user = $user ?? auth()->user();
+
+        $date = Carbon::parse($date ?? today());
+
+        return OrderItem::query()
+            ->whereIn('meal_id', $this->variants()->pluck('id')->merge($this->id))
+            ->where('user_id', $user->id)
+            ->whereHas('order', function (Builder $builder) use ($date) {
+                $builder->whereDate('date', $date);
+            })
+            ->first();
     }
 }

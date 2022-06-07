@@ -270,7 +270,7 @@ class MealOrderingTest extends TestCase
         $this->get(route('meals.index'))
             ->assertDontSee(__('Delete order'));
 
-        $variant->order($user->id, $meal->date_from);
+        $variant->fresh()->order($user->id, $meal->date_from);
 
         $this->get(route('meals.index', ['date' => $variant->date_from->toDateString()]))
             ->assertSee(__('Delete order'));

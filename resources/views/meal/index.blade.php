@@ -40,13 +40,7 @@
         @if(($todayMeals)->isNotEmpty())
             <ol class="tiles">
                 @foreach($todayMeals as $meal)
-                    <li id="meal_{{ $meal->id }}"
-                        @if($todayOrders->firstWhere('meal_id', $meal->id))
-                        class="selected"
-                        @endif
-                    >
-                        @include('meal.meal')
-                    </li>
+                    @include('meal.meal')
                 @endforeach
             </ol>
         @else
