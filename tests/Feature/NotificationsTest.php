@@ -16,6 +16,7 @@ use App\ScheduledJobs\NoOrderForNextWeekNotification;
 use App\ScheduledJobs\NoOrderForTodayNotification;
 use App\ScheduledJobs\OpenOrdersForNextWeekNotification;
 use App\User;
+use App\UserSettings;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -29,9 +30,12 @@ class NotificationsTest extends TestCase
         Notification::fake();
 
         $john = User::factory()->create();
+
+        $tomSettings = new UserSettings();
+        $tomSettings->noOrderNotification = true;
         $tom = User::factory()->create(
             [
-                'settings' => [User::SETTING_NO_ORDER_NOTIFICATION => "1"],
+                'settings' => $tomSettings,
             ]
         );
 
@@ -61,9 +65,12 @@ class NotificationsTest extends TestCase
         Notification::fake();
 
         $john = User::factory()->create();
+
+        $tomSettings = new UserSettings();
+        $tomSettings->noOrderForNextDayNotification = true;
         $tom = User::factory()->create(
             [
-                'settings' => [User::SETTING_NO_ORDER_FOR_NEXT_DAY_NOTIFICATION => "1"],
+                'settings' => $tomSettings,
             ]
         );
 
@@ -91,11 +98,10 @@ class NotificationsTest extends TestCase
         Notification::fake();
 
         $john = User::factory()->create();
-        $tom = User::factory()->create(
-            [
-                'settings' => [User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION => "1"],
-            ]
-        );
+
+        $tomSettings = new UserSettings();
+        $tomSettings->noOrderForNextWeekNotification = true;
+        $tom = User::factory()->create(['settings' => $tomSettings]);
 
         (new NoOrderForNextWeekNotification())();
 
@@ -171,11 +177,10 @@ class NotificationsTest extends TestCase
         $today = today();
 
         $john = User::factory()->create();
-        $tom = User::factory()->create(
-            [
-                'settings' => [User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1"],
-            ]
-        );
+
+        $tomSettings = new UserSettings();
+        $tomSettings->newOrderPossibilityNotification = true;
+        $tom = User::factory()->create(['settings' => $tomSettings]);
 
         event(new NewOrderPossibility($today));
 
@@ -265,10 +270,13 @@ class NotificationsTest extends TestCase
     {
         Notification::fake();
 
+        $settings = new UserSettings();
+        $settings->noOrderNotification = true;
+
         /** @var User $tom */
         $tom = User::factory()->create(
             [
-                'settings' => [User::SETTING_NO_ORDER_NOTIFICATION => "1"],
+                'settings' => $settings,
             ]
         );
 

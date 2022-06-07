@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Meal;
 use App\User;
+use App\UserSettings;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -32,12 +33,14 @@ class MealTest extends TestCase
     /** @test */
     public function hated_takes_precedence_before_preferred()
     {
+
+        $settings = new UserSettings();
+        $settings->mealPreferences = 'preferred';
+        $settings->mealAversion = 'hated';
+
         /** @var User $user */
         $user = User::factory()->create([
-            'settings' => [
-                User::SETTING_MEAL_PREFERENCES => 'preferred',
-                User::SETTING_MEAL_AVERSION => 'hated'
-            ]
+            'settings' => $settings
         ]);
 
         $this->actingAs($user);

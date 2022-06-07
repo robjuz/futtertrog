@@ -13,7 +13,10 @@ class NoOrderForNextDayNotification
     {
         $nextDay = today()->addWeekday();
         $users = User::query()
-            ->where('settings->noOrderForNextDayNotification', '1')
+            ->where(function(Builder $query) {
+                $query->where('settings->noOrderForNextDayNotification', '1')
+                    ->orWhere('settings->noOrderForNextDayNotification', true);
+            })
             ->whereDoesntHave('orderItems.order', function (Builder $q) use ($nextDay) {
                 return $q->whereDate('date', $nextDay);
             })

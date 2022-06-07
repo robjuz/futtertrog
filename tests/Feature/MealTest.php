@@ -6,6 +6,7 @@ use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\OrderItem;
 use App\User;
+use App\UserSettings;
 use Cknow\Money\Money;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -326,18 +327,21 @@ class MealTest extends TestCase
     /** @test */
     public function it_can_send_a_notifications_when_a_new_meal_was_created_when_user_opted_in()
     {
+        $johnSettings = new UserSettings();
+        $johnSettings->newOrderPossibilityNotification = true;
+
         /** @var User $john */
         $john = User::factory()->create([
-            'settings' => [
-                User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "1"
-            ]
+            'settings' => $johnSettings
         ]);
+
+
+        $saraSettings = new UserSettings();
+        $saraSettings->newOrderPossibilityNotification = false;
 
         /** @var User $sara */
         $sara = User::factory()->create([
-            'settings' => [
-                User::SETTING_NEW_ORDER_POSSIBILITY_NOTIFICATION => "0"
-            ]
+            'settings' => $saraSettings
         ]);
 
         Notification::fake();

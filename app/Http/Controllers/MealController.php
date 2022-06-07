@@ -58,7 +58,7 @@ class MealController extends Controller
         /** @var User $user */
         $user = $request->user();
         $notificationEnabledThisDay = $user->disabledNotifications()->where('date', $request->input('date'))->doesntExist();
-        $noOrderNotification =  $user->settings['noOrderNotification'] ?? false;
+        $noOrderNotification =  $user->settings->noOrderNotification ?? false;
 
 
         $requestedDate = Carbon::parse($request->query('date', today()));

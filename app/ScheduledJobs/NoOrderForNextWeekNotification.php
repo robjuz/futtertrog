@@ -14,7 +14,10 @@ class NoOrderForNextWeekNotification
         $nextMonday = today()->addWeek()->startOfWeek();
         $nextSunday = today()->addWeek()->endOfWeek();
         $users = User::query()
-            ->where('settings->noOrderForNextWeekNotification', '1')
+            ->where(function(Builder $query) {
+                $query->where('settings->noOrderForNextWeekNotification', '1')
+                    ->orWhere('settings->noOrderForNextWeekNotification', true);
+            })
             ->whereDoesntHave('orderItems.order', function (Builder $q) use ($nextMonday, $nextSunday) {
                 return $q->whereBetween('date', [$nextMonday, $nextSunday]);
             })

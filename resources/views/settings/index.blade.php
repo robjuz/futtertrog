@@ -18,10 +18,10 @@
         <section>
             <h2>{{ __('General') }}</h2>
 
-            <label for="language">{{ __('Language') }}</label>
-            <select name="language" id="language">
+            <label for="{{ \App\UserSettings::LANGUAGE }}">{{ __('Language') }}</label>
+            <select name="{{ \App\UserSettings::LANGUAGE }}" id="{{ \App\UserSettings::LANGUAGE }}">
                 @foreach(config('app.supported_locale') as $locale)
-                    <option value="{{ $locale }}" {{ old('language', ($settings['language'] ?? app()->getLocale())) == $locale ? 'selected' : '' }}>
+                    <option value="{{ $locale }}" {{ old(\App\UserSettings::LANGUAGE, ($settings->language ?? app()->getLocale())) == $locale ? 'selected' : '' }}>
                         @lang('futtertrog.locale.'. $locale)
                     </option>
                 @endforeach
@@ -33,25 +33,25 @@
         <section>
             <h2>{{ __('Surprise me') }}</h2>
 
-            <input type="hidden" name="hideDashboardMealDescription" value="0">
+            <input type="hidden" name="{{ \App\UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION }}" value="0">
             <input type="checkbox"
-                   name="hideDashboardMealDescription"
-                   id="hideDashboardMealDescription"
-                   {{ old('hideDashboardMealDescription', $settings['hideDashboardMealDescription'] ?? false) ? 'checked' : '' }}
+                   name="{{ \App\UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION }}"
+                   id="{{ \App\UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION }}"
+                   {{ old(\App\UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION, $settings->hideDashboardMealDescription) ? 'checked' : '' }}
                    value="1"
             >
-            <label for="hideDashboardMealDescription">
+            <label for="{{ \App\UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION }}">
                 {{ __('Hide meal description on dashboard') }}
             </label>
 
-            <input type="hidden" name="hideOrderingMealDescription" value="0">
+            <input type="hidden" name="{{ \App\UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION }}" value="0">
             <input type="checkbox"
-                   name="hideOrderingMealDescription"
-                   id="hideOrderingMealDescription"
-                   {{ old('hideOrderingMealDescription', $settings['hideOrderingMealDescription'] ?? false) ? 'checked' : '' }}
+                   name="{{ \App\UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION }}"
+                   id="{{ \App\UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION }}"
+                   {{ old(\App\UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION, $settings->hideOrderingMealDescription) ? 'checked' : '' }}
                    value="1"
             >
-            <label for="hideOrderingMealDescription">
+            <label for="{{ \App\UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION }}">
                 {{ __('Hide meal description on ordering list') }}
             </label>
         </section>
@@ -59,25 +59,25 @@
         <section>
             <h2>{{ __('Notifications') }}</h2>
 
-            <input type="hidden" name="newOrderPossibilityNotification" value="0">
+            <input type="hidden" name="{{ \App\UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION }}" value="0">
             <input type="checkbox"
-                   name="newOrderPossibilityNotification"
-                   id="newOrderPossibilityNotification"
-                   {{ old('newOrderPossibilityNotification', $settings['newOrderPossibilityNotification'] ?? false) ? 'checked' : '' }}
+                   name="{{ \App\UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION }}"
+                   id="{{ \App\UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION }}"
+                   {{ old(\App\UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION, $settings->newOrderPossibilityNotification) ? 'checked' : '' }}
                    value="1"
             >
-            <label for="newOrderPossibilityNotification">
+            <label for="{{ \App\UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION }}">
                 {{ __('New order possibility notification') }}
             </label>
 
-            <input type="hidden" name="noOrderNotification" value="0">
+            <input type="hidden" name="{{ \App\UserSettings::NO_ORDER_NOTIFICATION }}" value="0">
             <input type="checkbox"
-                   name="noOrderNotification"
-                   id="noOrderNotification"
-                   {{ old('noOrderNotification', $settings['noOrderNotification'] ?? false) ? 'checked' : '' }}
+                   name="{{ \App\UserSettings::NO_ORDER_NOTIFICATION }}"
+                   id="{{ \App\UserSettings::NO_ORDER_NOTIFICATION }}"
+                   {{ old(\App\UserSettings::NO_ORDER_NOTIFICATION, $settings->noOrderNotification) ? 'checked' : '' }}
                    value="1"
             >
-            <label for="noOrderNotification">
+            <label for="{{ \App\UserSettings::NO_ORDER_NOTIFICATION }}">
                 <span>
                     {{ __('No order for today notification') }}
                 </span>
@@ -86,14 +86,14 @@
                 </small>
             </label>
 
-            <input type="hidden" name="noOrderForNextDayNotification" value="0">
+            <input type="hidden" name="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_DAY_NOTIFICATION }}" value="0">
             <input type="checkbox"
-                   name="noOrderForNextDayNotification"
-                   id="noOrderForNextDayNotification"
-                   {{ old('noOrderForNextDayNotification', $settings['noOrderForNextDayNotification'] ?? false) ? 'checked' : '' }}
+                   name="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_DAY_NOTIFICATION }}"
+                   id="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_DAY_NOTIFICATION }}"
+                   {{ old(\App\UserSettings::NO_ORDER_FOR_NEXT_DAY_NOTIFICATION, $settings->noOrderForNextDayNotification) ? 'checked' : '' }}
                    value="1"
             >
-            <label for="noOrderForNextDayNotification">
+            <label for="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_DAY_NOTIFICATION }}">
                 <span>
                     {{ __('No order for next day notification') }}
                 </span>
@@ -102,14 +102,14 @@
                 </small>
             </label>
 
-            <input type="hidden" name="noOrderForNextWeekNotification" value="0">
+            <input type="hidden" name="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}" value="0">
             <input type="checkbox"
-                   name="noOrderForNextWeekNotification"
-                   id="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
-                   {{ old('noOrderForNextDayNotification', $settings[\App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION] ?? false) ? 'checked' : '' }}
+                   name="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
+                   id="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
+                   {{ old(\App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION, $settings->noOrderForNextDayNotification) ? 'checked' : '' }}
                    value="1"
             >
-            <label for="{{ \App\User::SETTING_NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}">
+            <label for="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}">
                 <span>
                     {{ __('No order for next week notification') }}
                 </span>
@@ -122,7 +122,7 @@
         <section>
             <h2>{{ __('Ingredients') }}</h2>
 
-            <label for="mealPreferences">
+            <label for="{{ \App\UserSettings::MEAL_PREFERENCES }}">
                 <span>
                     {{ __('Meal preferences') }}
                 </span>
@@ -131,11 +131,11 @@
                 </small>
             </label>
             <textarea
-                   name="mealPreferences"
-                   id="mealPreferences"
-            >{{ old('mealPreferences', $settings['mealPreferences'] ?? "") }}</textarea>
+                   name="{{ \App\UserSettings::MEAL_PREFERENCES }}"
+                   id="{{ \App\UserSettings::MEAL_PREFERENCES }}"
+            >{{ old(\App\UserSettings::MEAL_PREFERENCES, $settings->mealPreferences) }}</textarea>
 
-            <label for="mealAversion">
+            <label for="{{ \App\UserSettings::MEAL_AVERSION }}">
                 <span>
                     {{ __('Meal excludes') }}
                 </span>
@@ -144,9 +144,9 @@
                 </small>
             </label>
             <textarea
-                   name="mealAversion"
-                   id="mealAversion"
-            >{{ old('mealAversion', $settings['mealAversion'] ?? "") }}</textarea>
+                   name="{{ \App\UserSettings::MEAL_AVERSION }}"
+                   id="{{ \App\UserSettings::MEAL_AVERSION }}"
+            >{{ old(\App\UserSettings::MEAL_AVERSION, $settings->mealAversion) }}</textarea>
         </section>
 
         <button type="submit">{{ __('Save') }}</button>

@@ -27,7 +27,7 @@
     </div>
 @endif
 
-@if (!(auth()->user()->settings[\App\User::SETTING_HIDE_ORDERING_MEAL_DESCRIPTION] ?? false))
+@if (!(auth()->user()->settings->hideOrderingMealDescription ?? false))
     @if ($meal->description)
         <p>{!! $meal->description !!}</p>
     @endif
