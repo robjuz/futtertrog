@@ -178,21 +178,12 @@ class OrderItemController extends Controller
             return response($orderItem, Response::HTTP_CREATED);
         }
 
+        if ($request->ajax()) {
+            return view('meal.meal', compact('meal'));
+        }
+
         return back()->with('success', __('Success'));
     }
-
-
-    public function store_json(Request $request)
-    {
-
-//        return back()->with('success', __('Success'));
-
-// Hier komme ich nicht weiter. Ich fand bisher keine Möglichkeit die Eingabewerte im Controller zu dumpen.
-
-
-    }
-
-
 
 
     public function update(Request $request, OrderItem $orderItem)
@@ -220,12 +211,18 @@ class OrderItemController extends Controller
     {
         $this->authorize('delete', $orderItem);
 
+        $meal = $orderItem->meal;
+
         $orderItem->delete();
 
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
+        }
+
+        if ($request->ajax()) {
+            return view('meal.meal', compact('meal'));
         }
 
         return back(Response::HTTP_FOUND, [], route('order_items.index'))->with('success', __('Success'));

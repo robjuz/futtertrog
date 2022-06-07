@@ -70,4 +70,39 @@ class MealTest extends TestCase
         $this->assertFalse($meal->is_preferred);
 
     }
+
+    /** @test */
+    public function it_knows_it_is_ordered()
+    {
+
+        /** @var Meal $meal */
+        $meal = Meal::factory()->create();
+
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $meal->order($user->id, $meal->date_from);
+
+        $this->assertTrue($meal->isOrdered($meal->date_from, $user));
+    }
+
+    /** @test */
+    public function it_knows_its_variant_is_ordered()
+    {
+
+        /** @var Meal $meal */
+        $meal = Meal::factory()->create();
+
+        /** @var Meal $variant */
+        $variant = $meal->variants()->save(
+            Meal::factory()->inFuture()->make()
+        );
+
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $variant->order($user->id, $meal->date_from);
+
+        $this->assertTrue($meal->isOrdered($meal->date_from, $user));
+    }
 }

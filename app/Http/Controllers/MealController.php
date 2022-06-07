@@ -75,6 +75,9 @@ class MealController extends Controller
         }
 
         $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
+
+        $todayMeals->load('orderItems.order');
+
         return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate','noOrderNotification','notificationEnabledThisDay'));
     }
 
