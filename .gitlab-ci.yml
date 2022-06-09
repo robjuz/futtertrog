@@ -58,6 +58,6 @@ sentry:releases:production:
     - production_manual
   script:
     - sentry-cli releases finalize $CI_COMMIT_SHA
-    - sentry-cli releases deploys $CI_COMMIT_SHA new -e staging
+    - sentry-cli releases deploys $CI_COMMIT_SHA new -e production
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
