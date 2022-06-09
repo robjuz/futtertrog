@@ -26,8 +26,8 @@ class UserSettings implements Castable, Arrayable, JsonSerializable
     public bool $noOrderForNextWeekNotification = false;
     public bool $hideDashboardMealDescription = false;
     public bool $hideOrderingMealDescription = false;
-    public string $mealPreferences = '';
-    public string $mealAversion = '';
+    public ?string $mealPreferences = '';
+    public ?string $mealAversion = '';
     public ?string $language = null;
 
     public static function castUsing(array $arguments): string
