@@ -7,8 +7,6 @@
     <title>{{ config('app.name') }}</title>
     <meta name="Description" content="{{ __('futtertrog.description') }}">
 
-    @laravelPWA
-
     <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Livvic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
@@ -16,35 +14,40 @@
         window.Futtertrog = {!!  json_encode([
             'messages' => [
                 'are_you_sure' => __('Are you sure?'),
-]           ,
+                ],
             'csrf' => csrf_token(),
             'user' => auth()->id()
         ]) !!};
+    </script>
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/serviceworker.js').then(function (reg) {
-                listenForWaitingServiceWorker(reg, promptUserToRefresh);
-            });
+    @if(app()->environment('staging', 'production'))
+        @laravelPWA
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/serviceworker.js').then(function (reg) {
+                    listenForWaitingServiceWorker(reg, promptUserToRefresh);
+                });
 
-            function listenForWaitingServiceWorker(reg, callback) {
-                function awaitStateChange() {
-                    reg.installing.addEventListener('statechange', function () {
-                        if (this.state === 'installed') callback(reg);
-                    });
+                function listenForWaitingServiceWorker(reg, callback) {
+                    function awaitStateChange() {
+                        reg.installing.addEventListener('statechange', function () {
+                            if (this.state === 'installed') callback(reg);
+                        });
+                    }
+
+                    if (!reg) return;
+                    if (reg.waiting) return callback(reg);
+                    if (reg.installing) awaitStateChange();
+                    reg.addEventListener('updatefound', awaitStateChange);
                 }
 
-                if (!reg) return;
-                if (reg.waiting) return callback(reg);
-                if (reg.installing) awaitStateChange();
-                reg.addEventListener('updatefound', awaitStateChange);
-            }
+                function promptUserToRefresh() {
+                    document.getElementById('newVersionDialog').style.setProperty('display', 'block');
+                }
 
-            function promptUserToRefresh() {
-                document.getElementById('newVersionDialog').style.setProperty('display', 'block');
             }
-
-        }
-    </script>
+        </script>
+    @endif
 </head>
 <body id="{{ Route::currentRouteName() }}">
 @if (session('success'))
