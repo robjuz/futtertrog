@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
 class MealFactory extends Factory
 {
@@ -13,14 +14,11 @@ class MealFactory extends Factory
      */
     public function definition()
     {
-        $date = \Illuminate\Support\Carbon::parse($this->faker->dateTimeThisMonth)->startOfDay()->format('Y-m-d H:i:s');
-
         return [
             'price' => $this->faker->randomNumber('3'),
             'title' => $this->faker->sentence,
             'description' => $this->faker->sentences(1, true),
-            'date_from' => $date,
-            'date_to' => $date,
+            'date' => today()->toDateTimeString(),
             'provider' => array_rand(app('mealProviders')),
         ];
     }
@@ -29,8 +27,7 @@ class MealFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'date_from' => today()->addDay(),
-                'date_to' => today()->addDay(),
+                'date' => today()->addDays(rand(1,10)),
             ];
         });
     }
@@ -39,8 +36,7 @@ class MealFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'date_from' => today(),
-                'date_to' => today(),
+                'date' => today()->subDay(),
             ];
         });
     }

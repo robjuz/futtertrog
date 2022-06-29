@@ -34,9 +34,7 @@ class OrderTest extends TestCase
     public function it_provides_a_list_of_not_empty_orders()
     {
         /** @var \Illuminate\Support\Collection|\App\Order[] $orders */
-        $orders = Order::factory()->count(5)->create([
-            'date' => today()
-        ]);
+        $orders = Order::factory()->count(5)->create();
 
         $orders->each(function($order) {
             /** @var OrderItem $orderItem */
@@ -57,12 +55,11 @@ class OrderTest extends TestCase
 
 
         foreach ($orders as $order) {
-            $response->assertSee($order->date->format(trans('futtertrog.date_format')));
             $response->assertSee($order->provider);
+            $response->assertSee($order->subtotal);
 
             $jsonResponse->assertJsonFragment([
-                'date' => $order->date,
-                'provider' => $order->provider->getKey(),
+                'provider' => $order->provider->getName(),
                 'subtotal' => $order->subtotal
             ]);
         }
@@ -72,9 +69,7 @@ class OrderTest extends TestCase
     public function it_dont_shows_empty_orders()
     {
         /** @var \Illuminate\Support\Collection|\App\Order[] $orders */
-        $orders = Order::factory()->count(5)->create([
-            'date' => today(),
-        ]);
+        $orders = Order::factory()->count(5)->create();
 
         $this->loginAsAdmin();
 
@@ -83,11 +78,9 @@ class OrderTest extends TestCase
 
 
         foreach ($orders as $order) {
-            $response->assertDontSee($order->date->format(trans('futtertrog.date_format')));
             $response->assertDontSee($order->provider);
 
             $jsonResponse->assertJsonMissing([
-                'date' => $order->date->toDateTimeString(),
                 'provider' => $order->provider,
                 'subtotal' => $order->subtotal
             ]);
@@ -97,58 +90,32 @@ class OrderTest extends TestCase
     /** @test */
     public function it_shows_per_default_today_and_upcoming_orders()
     {
-        $yesterdayOrder = Order::factory()->create(['date' => today()->subDay()]);
-        $todayOrder = Order::factory()->create(['date' => today()]);
-        $tomorrowOrder = Order::factory()->create(['date' => today()->addDay()]);
-
-        $yesterdayOrder->orderItems()->save(OrderItem::factory()->make());
-        $todayOrder->orderItems()->save(OrderItem::factory()->make());
-        $tomorrowOrder->orderItems()->save(OrderItem::factory()->make());
+        /** @var OrderItem $pastOrder */
+        $pastOrder = OrderItem::factory()->inPast()->create();
+        /** @var OrderItem $todayOrder */
+        $todayOrder = OrderItem::factory()->create();
+        /** @var OrderItem $upcomingOrder */
+        $upcomingOrder = OrderItem::factory()->inFuture()->create();
 
         $this->loginAsAdmin()
             ->get(route('orders.index'))
-            ->assertSee($todayOrder->date->format(trans('futtertrog.date_format')))
-            ->assertSee($tomorrowOrder->date->format(trans('futtertrog.date_format')))
-            ->assertDontSee($yesterdayOrder->date->format(trans('futtertrog.date_format')));
-    }
-
-    /** @test */
-    public function it_allows_to_filter_orders_by_date_range()
-    {
-        $yesterdayOrder = Order::factory()->create(['date' => today()->subDay()]);
-        $todayOrder = Order::factory()->create(['date' => today()]);
-        $tomorrowOrder = Order::factory()->create(['date' => today()->addDay()]);
-
-        $yesterdayOrder->orderItems()->save(OrderItem::factory()->make());
-        $todayOrder->orderItems()->save(OrderItem::factory()->make());
-        $tomorrowOrder->orderItems()->save(OrderItem::factory()->make());
-
-        $this->loginAsAdmin()
-            ->get(route('orders.index', [
-                'from' => today()->toDateString(),
-                'to' => today()->toDateString()
-            ]))
-            ->assertSee($todayOrder->date->format(trans('futtertrog.date_format')))
-            ->assertDontSee($tomorrowOrder->date->format(trans('futtertrog.date_format')))
-            ->assertDontSee($yesterdayOrder->date->format(trans('futtertrog.date_format')));
+            ->assertSee($todayOrder->date->isoFormat('L'))
+            ->assertSee($upcomingOrder->date->isoFormat('L'))
+            ->assertDontSee($pastOrder->date->isoFormat('L'));
     }
 
     /** @test */
     public function it_provides_a_sum_of_order_items_prices()
     {
-        /** @var \App\Order $order */
-        $order = Order::factory()->create(['date' => today()]);
-
         $meal = Meal::factory()->create([
-            'date_from' => today(),
-            'date_to' => today(),
+            'date' => today(),
             'price' => 111
         ]);
 
-        $order->orderItems()->save(OrderItem::factory()->make([
+        OrderItem::factory()->create([
             'meal_id' => $meal->id,
             'quantity' => 2
-        ]));
+        ]);
 
         $this->loginAsAdmin()
             ->get(route('orders.index'))

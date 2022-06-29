@@ -12,18 +12,6 @@ use Illuminate\Queue\SerializesModels;
 class OrderUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    /**
-     * @var Order
-     */
-    public $order;
-    /**
-     * @var User
-     */
-    public $user;
-    /**
-     * @var OrderItem
-     */
-    public $orderItem;
 
     /**
      * Create a new event instance.
@@ -32,11 +20,8 @@ class OrderUpdated
      * @param  User  $user
      * @param  OrderItem  $orderItem
      */
-    public function __construct(Order $order, User $user, OrderItem $orderItem)
+    public function __construct(public Order $order, public User $user, public OrderItem $orderItem)
     {
-        $this->order = $order;
-        $this->user = $user;
-        $this->orderItem = $orderItem;
     }
 
 //    /*

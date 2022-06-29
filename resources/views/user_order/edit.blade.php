@@ -3,7 +3,7 @@
 @section('content')
     <h1>
         <span>{{ __('Edit order') }}</span>
-        {{ $orderItem->order->date->format(__('futtertrog.date_format')) }}
+        {{ $orderItem->date->format(__('futtertrog.date_format')) }}
     </h1>
 
     <form action="{{ route('order_items.update', $orderItem) }}" method="post">
@@ -38,7 +38,7 @@
             @foreach($meals as $meal)
                 <option
                     value="{{ $meal->id }}"
-                    {{ old('user_id', $orderItem->meal_id) === $meal->id ? 'selected' : '' }}
+                    {{ old('meal_id', $orderItem->meal_id) === $meal->id ? 'selected' : '' }}
                 >
                     {{ $meal->title }}
                 </option>
@@ -52,8 +52,6 @@
             @enderror
         </label>
         <input id="quantity" type="number" min="1" pattern="\d*" name="quantity" value="{{ old('quantity', $orderItem->quantity) }}">
-
-        <input type="hidden" name="date" value="{{ $orderItem->date }}"/>
 
         <button type="submit">{{ __('Save') }}</button>
     </form>

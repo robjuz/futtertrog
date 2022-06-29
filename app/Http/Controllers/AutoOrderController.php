@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\MealProviders\AbstractMealProvider;
+use App\Order;
 use App\Repositories\OrdersRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,19 +16,16 @@ class AutoOrderController extends Controller
      * @param  Request  $request
      * @return Response
      */
-    public function __invoke(
-        Request $request,
-        OrdersRepository $ordersRepository
-    ) {
-        $providerOrders = $ordersRepository->getByProvider($request);
+    public function __invoke(Request $request, Order $order) {
 
-        foreach ($providerOrders as $providerName => $orders) {
-            /** @var AbstractMealProvider $provider */
-            $provider = app($providerName);
-            if ($provider->supportsAutoOrder()) {
-                $provider->placeOrder($orders);
-            }
+        abort_unless($order->canBeAutoOrdered(), Response::HTTP_BAD_REQUEST, __('This order cannot be auto-ordered'));
+
+        if ($order->external_id) {
+            $order->updateOrder();
+        } else {
+            $order->placeOrder();
         }
+
 
         if ($request->wantsJson()) {
             return response()->json(null);

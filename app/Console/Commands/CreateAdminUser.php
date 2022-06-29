@@ -14,9 +14,9 @@ class CreateAdminUser extends Command
      * @var string
      */
     protected $signature = 'futtertrog:create-admin
-                            {name}
-                            {email}
-                            {password}
+                            {name?}
+                            {email?}
+                            {password?}
     ';
 
     /**

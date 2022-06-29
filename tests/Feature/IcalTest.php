@@ -37,16 +37,14 @@ class IcalTest extends TestCase
 
         $todayMeal = Meal::factory()->create(
             [
-                'date_from' => today(),
-                'date_to' => today(),
+                'date' => today(),
                 'title' => 'today meal'
             ]
         );
 
         $tomorrowMeal = Meal::factory()->create(
             [
-                'date_from' => today()->addDay(),
-                'date_to' => today()->addDay(),
+                'date' => today()->addDay(),
                 'title' => 'tomorrow meal'
             ]
         );
@@ -55,7 +53,6 @@ class IcalTest extends TestCase
             [
                 'user_id' => $user->id,
                 'meal_id' => $todayMeal->id,
-                'order_id' => Order::factory()->create(['date' => $todayMeal->date_from])
             ]
         );
 
@@ -63,7 +60,6 @@ class IcalTest extends TestCase
             [
                 'user_id' => $user->id,
                 'meal_id' => $tomorrowMeal->id,
-                'order_id' => Order::factory()->create(['date' => $tomorrowMeal->date_from])
             ]
         );
 

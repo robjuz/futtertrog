@@ -26,8 +26,7 @@ class MealStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'date_from' => 'required|date',
-            'date_to' => 'required|date|after_or_equal:date_from',
+            'date' => 'required|date',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',

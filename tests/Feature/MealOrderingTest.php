@@ -20,21 +20,17 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_can_order_a_meal_for_himself()
     {
-        $meal = Meal::factory()->create([
-            'date_from' => today()->addDay(),
-            'date_to' => today()->addDay()
-        ]);
+        /** @var Meal $meal */
+        $meal = Meal::factory()->inFuture()->create();
 
         $this->login();
         $this->post(route('order_items.store'), [
-            'date' => $meal->date_from->toDateString(),
             'meal_id' => $meal->id
         ]);
 
         $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
 
         $this->postJson(route('order_items.store'), [
-            'date' => $meal->date_from->toDateString(),
             'meal_id' => $meal->id
         ])->assertSuccessful();
     }
@@ -42,13 +38,14 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_cannot_order_a_meal_for_other_users()
     {
+        /** @var Meal $meal */
         $meal = Meal::factory()->inFuture()->create();
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $this->login()
             ->post(route('order_items.store'), [
-                'date' => $meal->date_from,
                 'user_id' => $user->id,
                 'meal_id' => $meal->id
             ]);
@@ -60,15 +57,12 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function user_cannot_order_a_meal_located_in_the_past()
     {
-        $meal = Meal::factory()->create([
-            'date_from' => today(),
-            'date_to' => today()
-        ]);
+        /** @var Meal $meal */
+        $meal = Meal::factory()->create();
 
         $this->login()
             ->withExceptionHandling()
             ->post(route('order_items.store'), [
-                'date' => $meal->date_from,
                 'meal_id' => $meal->id
             ])
             ->assertForbidden();
@@ -77,6 +71,7 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function admin_can_order_a_meal_for_other_users()
     {
+        /** @var Meal $meal */
         $meal = Meal::factory()->create();
 
         /** @var User $user */
@@ -88,7 +83,6 @@ class MealOrderingTest extends TestCase
 
         $this->loginAsAdmin()
             ->post(route('order_items.store'), [
-                'date' => $meal->date_from,
                 'user_id' => $user->id,
                 'meal_id' => $meal->id
             ]);
@@ -109,30 +103,38 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function it_dispatches_an_event_when_an_order_was_reopened()
     {
-        $meal = Meal::factory()->inFuture()->create();
+        /** @var Meal $meal1 */
+        $meal1 = Meal::factory(['date' => today()->addDay()])->create();
+
+        /** @var Meal $meal2 */
+        $meal2 = Meal::factory([
+            'date' => today()->addDay(),
+            'provider' => $meal1->provider
+        ] )->create();
+
+        /** @var User $user */
         $user = User::factory()->create();
+
+        $orderItem = $user->order($meal1);
 
         // Given we have a closed order
         /** @var Order $order */
-        $order = Order::factory()->create([
-            'date' => $meal->date_from,
-            'status' => Order::STATUS_ORDERED,
-            'provider' => $meal->provider
-        ]);
+        $order = $orderItem->order;
+        $order->markOrdered();
 
         Event::fake();
 
         // When a user creates a new order item associated with this order
         $this->login($user);
+
         $this->post(route('order_items.store'), [
-            'date' => $meal->date_from,
             'user_id' => $user->id,
-            'meal_id' => $meal->id
+            'meal_id' => $meal2->id
         ]);
 
         // En event is dispatched
-        Event::assertDispatched(OrderUpdated::class, function ($event) use ($order, $user, $meal) {
-            $orderItem = $order->orderItems()->whereMealId($meal->id)->first();
+        Event::assertDispatched(OrderUpdated::class, function ($event) use ($order, $user, $meal2) {
+            $orderItem = $order->orderItems()->whereMealId($meal2->id)->first();
             return $event->order->is($order)
                 && $event->user->is($user)
                 && $event->orderItem->is($orderItem);
@@ -243,9 +245,9 @@ class MealOrderingTest extends TestCase
         $this->get(route('meals.index'))
             ->assertDontSee(__('Delete order'));
 
-        $meal->order($user->id, $meal->date_from);
+        $meal->order($user->id);
 
-        $this->get(route('meals.index', ['date' => $meal->date_from->toDateString()]))
+        $this->get(route('meals.index', ['date' => $meal->date->toDateString()]))
             ->assertSee(__('Delete order'));
     }
 
@@ -258,7 +260,7 @@ class MealOrderingTest extends TestCase
 
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
-            Meal::factory()->inFuture()->make()
+            Meal::factory()->make(['date' => $meal->date])
         );
 
 
@@ -270,9 +272,9 @@ class MealOrderingTest extends TestCase
         $this->get(route('meals.index'))
             ->assertDontSee(__('Delete order'));
 
-        $variant->fresh()->order($user->id, $meal->date_from);
+        $user->order($variant);
 
-        $this->get(route('meals.index', ['date' => $variant->date_from->toDateString()]))
+        $this->get(route('meals.index', ['date' => $variant->date->toDateString()]))
             ->assertSee(__('Delete order'));
     }
 
@@ -290,7 +292,7 @@ class MealOrderingTest extends TestCase
         $this->login();
 
         $this->post(route('order_items.store'), [
-            'date' => $variant->date_from->toDateString(),
+            'date' => $variant->date->toDateString(),
             'meal_id' => $variant->id
         ]);
 
@@ -299,7 +301,6 @@ class MealOrderingTest extends TestCase
         $this
             ->withExceptionHandling()
             ->post(route('order_items.store'), [
-                'date' => $meal->date_from->toDateString(),
                 'meal_id' => $meal->id
             ])
             ->assertSessionHasErrors('meal_id');
@@ -316,8 +317,7 @@ class MealOrderingTest extends TestCase
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
             Meal::factory()->make([
-                    'date_from' => $meal->date_from,
-                    'date_to' => $meal->date_to
+                    'date' => $meal->date,
                 ]
             )
         );
@@ -325,7 +325,7 @@ class MealOrderingTest extends TestCase
         $this->loginAsAdmin();
 
         $this->get(route('order_items.create', [
-            'date' => $meal->date_from->toDateString(),
+            'date' => $meal->date->toDateString(),
         ]))
         ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
             return $meals->contains($variant) && !$meals->contains($meal);
@@ -335,6 +335,7 @@ class MealOrderingTest extends TestCase
     /** @test */
     public function admin_can_see_only_meal_variants_in_order_item_edit_form()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         /** @var Meal $meal */
@@ -343,13 +344,12 @@ class MealOrderingTest extends TestCase
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
             Meal::factory()->make([
-                    'date_from' => $meal->date_from,
-                    'date_to' => $meal->date_to
+                    'date' => $meal->date,
                 ]
             )
         );
 
-        $orderItem = $variant->order($user->id, $variant->date_from);
+        $orderItem = $user->order($variant);
         $this->loginAsAdmin();
 
         $this->get(route('order_items.edit', $orderItem))

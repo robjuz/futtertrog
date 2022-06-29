@@ -4,6 +4,10 @@ namespace Tests\Feature;
 
 use App\Events\NewOrderPossibility;
 use App\Meal;
+use App\MealProviders\Basic;
+use App\MealProviders\CallAPizza;
+use App\MealProviders\Holzke;
+use App\Order;
 use App\OrderItem;
 use App\User;
 use App\UserSettings;
@@ -194,29 +198,26 @@ class MealTest extends TestCase
     /** @test */
     public function meals_can_be_filtered_down_by_date()
     {
+        /** @var User $user */
+        $user = User::factory()->create();
+
         /** @var Meal $meal1 */
         $meal1 = Meal::factory()->create([
-            'date_from' => Carbon::today(),
-            'date_to' => Carbon::today(),
+            'date' => Carbon::today(),
         ]);
 
         /** @var Meal $meal2 */
         $meal2 = Meal::factory()->create([
-            'date_from' => Carbon::tomorrow(),
-            'date_to' => Carbon::tomorrow(),
+            'date' => Carbon::tomorrow(),
         ]);
 
-        /** @var Meal $meal3 */
-        $meal3 = Meal::factory()->create([
-            'date_from' => Carbon::today(),
-            'date_to' => Carbon::tomorrow(),
-        ]);
+        $user->order($meal1);
+        $user->order($meal2);
 
-        $this->login();
+        $this->login($user);
 
         $this->get(route('meals.index', ['date' => Carbon::today()->toDateString()]))
             ->assertSee($meal1->title)
-            ->assertSee($meal3->title)
             ->assertDontSee($meal2->title);
     }
 
@@ -225,28 +226,24 @@ class MealTest extends TestCase
     {
         /** @var Meal $meal1 */
         $meal1 = Meal::factory()->create([
-            'date_from' => Carbon::today(),
-            'date_to' => Carbon::today(),
+            'date' => Carbon::today(),
         ]);
 
         /** @var Meal $variant1 */
         $variant1 = Meal::factory()->create([
-            'date_from' => Carbon::today(),
-            'date_to' => Carbon::today(),
+            'date' => Carbon::today(),
         ]);
 
         $meal1->variants()->save($variant1);
 
         /** @var Meal $meal2 */
         $meal2 = Meal::factory()->create([
-            'date_from' => Carbon::today()->addWeekday(),
-            'date_to' => Carbon::today()->addWeekday(),
+            'date' => Carbon::today()->addWeekday(),
         ]);
 
         /** @var Meal $meal3 */
         $meal3 = Meal::factory()->create([
-            'date_from' => Carbon::today(),
-            'date_to' => Carbon::today()->addWeekday(),
+            'date' => Carbon::today(),
         ]);
 
         $this->login();
@@ -268,17 +265,12 @@ class MealTest extends TestCase
     public function meal_variants_are_listed_as_relations_in_json_response()
     {
         /** @var Meal $meal */
-        $meal = Meal::factory()->create([
-            'date_from' => Carbon::today(),
-            'date_to' => Carbon::today(),
-        ]);
+        $meal = Meal::factory()->create();
 
         /** @var Meal $variant */
-        $variant = Meal::factory()->create([
-            'date_from' => Carbon::today(),
-            'date_to' => Carbon::today(),
-            'parent_id' => $meal->id
-        ]);
+        $variant = $meal->variants()->save(
+            Meal::factory()->make()
+        );
 
         $this->login();
 
@@ -308,7 +300,7 @@ class MealTest extends TestCase
             ->assertSee($meal->title);
 
         $this->getJson(route('meals.show', $meal))
-            ->assertJson($meal->toArray());
+            ->assertJsonFragment($meal->toArray());
     }
 
     /** @test */
@@ -348,7 +340,7 @@ class MealTest extends TestCase
 
         /** @var Meal $meal */
         $meal = Meal::factory()->create();
-        event(new NewOrderPossibility($meal->date_from));
+        event(new NewOrderPossibility($meal->date));
 
         Notification::assertSentTo($john, \App\Notifications\NewOrderPossibility::class);
         Notification::assertNotSentTo($sara, \App\Notifications\NewOrderPossibility::class);
@@ -361,16 +353,14 @@ class MealTest extends TestCase
 
         /** @var Meal $meal1 */
         $meal1 = Meal::factory()->create([
-            'provider' => 'provider_1',
-            'date_from' => $date,
-            'date_to' => $date
+            'provider' => app(Holzke::class),
+            'date' => $date,
         ]);
 
         /** @var Meal $meal2 */
         $meal2 = Meal::factory()->create([
-            'provider' => 'provider_2',
-            'date_from' => $date,
-            'date_to' => $date
+            'provider' => app(CallAPizza::class),
+            'date' => $date,
         ]);
 
         $this->login()
@@ -384,12 +374,12 @@ class MealTest extends TestCase
             ->assertSee($meal2->title);
 
         $this->login()
-            ->get(route('meals.index', ['date' => $date, 'provider' => $meal1->provider]))
+            ->get(route('meals.index', ['date' => $date, 'provider' => $meal1->provider->getKey()]))
             ->assertSee($meal1->title)
             ->assertDontSee($meal2->title);
 
         $this->login()
-            ->getJson(route('meals.index', ['date' => $date, 'provider' => $meal1->provider]))
+            ->getJson(route('meals.index', ['date' => $date, 'provider' => $meal1->provider->getKey()]))
             ->assertSee($meal1->title)
             ->assertDontSee($meal2->title);
     }

@@ -28,25 +28,15 @@
         <input type="number" name="price" id="price" pattern="\d*" required min="0" step="0.01"
                value="{{ old('price', money_parse($meal->price)->formatByDecimal()) }}">
 
-        <label for="date_from">
-            <span>{{ __('From') }}</span>
-            @if ($errors->has('date_from'))
-                <span>{{ $errors->first('date_from') }}</span>
+        <label for="date">
+            <span>{{ __('Date') }}</span>
+            @if ($errors->has('date'))
+                <span>{{ $errors->first('date') }}</span>
             @endif
         </label>
 
-        <input type="date" id="date_from" name="date_from" required
-               value="{{ old('date_from', $meal->date_from->toDateString()) }}">
-
-        <label for="date_to">
-            <span>{{ __('To') }}</span>
-            @if ($errors->has('date_to'))
-                <span>{{ $errors->first('date_to') }}</span>
-            @endif
-        </label>
-
-        <input type="date" id="date_to" name="date_to" required
-               value="{{ old('date_to', $meal->date_to->toDateString()) }}">
+        <input type="date" id="date" name="date" required
+               value="{{ old('date', $meal->date->toDateString()) }}">
 
         <label for="description">
             <span>{{ __('Description') }}</span>

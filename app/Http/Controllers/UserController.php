@@ -89,7 +89,7 @@ class UserController extends Controller
         }
 
         $orders = $user->orderItems()
-            ->with(['order', 'meal'])
+            ->with(['meal'])
             ->latest()
             ->paginate(5, ['*'], 'orders_page')
             ->appends('deposits_page', $request->deposits_page);

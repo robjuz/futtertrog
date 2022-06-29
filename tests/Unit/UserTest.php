@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Deposit;
 use App\Meal;
 use App\Order;
+use App\OrderItem;
 use App\User;
 use Cknow\Money\Money;
 use Illuminate\Support\Collection;
@@ -47,12 +48,7 @@ class UserTest extends TestCase
             'price' => 5.45
         ]);
 
-        /** @var \App\Order $order */
-        $order = Order::factory()->create([
-            'date' => $meal->date_from
-        ]);
-
-        $order->orderItems()->create([
+        OrderItem::factory()->create([
             'user_id' => $user->id,
             'meal_id' => $meal->id,
             'quantity' => 2

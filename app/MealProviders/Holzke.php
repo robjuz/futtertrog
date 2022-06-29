@@ -5,12 +5,11 @@ namespace App\MealProviders;
 use App\MealInfo;
 use App\Order;
 use App\OrderItem;
-use App\Services\MealService;
 use DiDom\Document;
 use DiDom\Element;
 use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 class Holzke extends AbstractMealProvider
 {
     private string $cookieJar = '';
+
+    private bool $isLoggedIn = false;
 
     public function __construct()
     {
@@ -28,7 +29,7 @@ class Holzke extends AbstractMealProvider
 
     private function login(): void
     {
-        Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-login.html')
+        $response = Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-login.html')
             ->withData(
                 [
                     'kdnr' => config('services.holzke.login'),
@@ -36,6 +37,7 @@ class Holzke extends AbstractMealProvider
                     'is_send' => 'login',
                 ]
             )
+            ->allowRedirect()
             ->setCookieJar($this->cookieJar)
             ->post();
     }
@@ -152,18 +154,12 @@ class Holzke extends AbstractMealProvider
         return intval($price);
     }
 
-    /**
-     * @param Element $mealElement
-     * @return string
-     *
-     * @throws InvalidSelectorException
-     */
-    private function extractExternalId(Element $mealElement): string
+    private function extractExternalId(Element $mealElement): string|null
     {
         $externalId = $mealElement->first('input');
         $externalId = $externalId ? $externalId->getAttribute('name') : null;
 
-        return trim($externalId);
+        return $externalId ? trim($externalId) : null;
     }
 
     /**
@@ -178,48 +174,18 @@ class Holzke extends AbstractMealProvider
             ->get();
     }
 
-    /**
-     * @param Order[]|Collection $orders
-     *
-     * @throws InvalidSelectorException
-     */
-    public function placeOrder($orders)
+    public function placeOrder(Order $order)
     {
-        $mealsToOrderExternalIds = $this->extractMealIds($orders);
-
-        foreach ($mealsToOrderExternalIds as $externalId => $count) {
-            $this->updateMealCount($externalId, $count);
-        }
+        $this->updateMealsCount($order);
 
         $this->confirmOrder();
 
-        Order::whereKey($orders->modelKeys())->update(
+        $order->update(
             [
                 'status' => Order::STATUS_ORDERED,
                 'external_id' => $this->getLastOrderId(),
             ]
         );
-    }
-
-    /**
-     * @param Collection $orders
-     * @return array
-     */
-    private function extractMealIds(Collection $orders): array
-    {
-        $mealsToOrderExternalIds = [];
-
-        foreach ($orders as $order) {
-            foreach ($order->orderItems as $orderItem) {
-                if (!isset($mealsToOrderExternalIds[$orderItem->meal->external_id])) {
-                    $mealsToOrderExternalIds[$orderItem->meal->external_id] = 0;
-                }
-
-                $mealsToOrderExternalIds[$orderItem->meal->external_id] += $orderItem->quantity;
-            }
-        }
-
-        return $mealsToOrderExternalIds;
     }
 
     /**
@@ -246,6 +212,7 @@ class Holzke extends AbstractMealProvider
                     'is_send' => 'yes',
                 ]
             )
+            ->returnResponseObject()
             ->setCookieFile($this->cookieJar)
             ->post();
     }
@@ -263,36 +230,19 @@ class Holzke extends AbstractMealProvider
 
         $orderChange = (new Document($response))->first('.orderChange');
 
-        abort_if(!$orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
+        abort_unless($orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
 
         return $orderChange->getAttribute('data-id');
     }
 
     /**
-     * @param OrderItem $orderItem
-     *
      * @throws InvalidSelectorException
      */
-    public function updateOrder(OrderItem $orderItem)
+    public function updateOrder(Order $order)
     {
-        $order = $orderItem->order;
-        $meal = $orderItem->meal;
-
         $this->setOrderForEdit($order->external_id);
 
-        $this->updateMealCount(
-            $meal->external_id,
-            $order->orderItems()->whereMealId($meal->id)->sum('quantity')
-        );
-
-        $this->confirmOrder();
-
-        $order->update(
-            [
-                'status' => Order::STATUS_ORDERED,
-                'external_id' => $this->getLastOrderId(),
-            ]
-        );
+        $this->placeOrder($order);
     }
 
     /**
@@ -318,19 +268,52 @@ class Holzke extends AbstractMealProvider
 
     public function getAllUpcomingMeals()
     {
-        $mealService = app(MealService::class);
-        $mealService->setProvider($this);
-
         $date = today();
 
         if ($date->isWeekend()) {
             $date->addWeekday();
         }
 
-        while ($mealService->getMealsForDate(Carbon::parse($date))) {
+        while ($this->createMealsDataForDate(Carbon::parse($date))) {
             $date->addWeekday();
         }
 
-        $mealService->notify();
+        $this->notifyAboutNewOrderPossibilities();
+    }
+
+    public function getOrder($date = null): Order
+    {
+        $date = $date ? Carbon::parse($date) : today();
+
+        return Order::query()
+            ->whereHas('meals', function (Builder $query) use ($date) {
+                $query
+                    ->whereDate('date', '>=', $date->startOfWeek())
+                    ->whereDate('date', '<=', $date->endOfWeek());
+            })
+            ->updateOrCreate(
+                [
+                    'provider' => $this,
+                ],
+                [
+                    'status' => Order::STATUS_OPEN,
+                ]
+            );
+    }
+
+    /**
+     * @param Order $order
+     * @return void
+     */
+    private function updateMealsCount(Order $order): void
+    {
+        foreach ($order->meals as $meal) {
+            if ($meal->external_id) {
+                $this->updateMealCount(
+                    $meal->external_id,
+                    $order->orderItems->where('meal_id', $meal->id)->sum('quantity')
+                );
+            }
+        }
     }
 }

@@ -264,8 +264,8 @@ html {
 /************************************/
 
 /*-- POT BOTTOM --*/
+.pot,
 .user-show > section,
-.dashboard > section,
 [id="settings.index"] section,
 [id="current-offer"] li.selected,
 [id="calendar"] li.selected {
@@ -280,8 +280,8 @@ html {
 }
 
 /*-- POT LID --*/
+.pot::before,
 .user-show > section::before,
-.dashboard > section::before,
 [id="settings.index"] section::before,
 [id="current-offer"] li.selected::before,
 [id="calendar"] li.selected::before {
@@ -296,8 +296,8 @@ html {
 }
 
 /*-- POT LID HANDLE --*/
+.pot::after,
 .user-show > section::after,
-.dashboard > section::after,
 [id="settings.index"] section::after,
 [id="current-offer"] li.selected::after,
 [id="calendar"] li.selected::after {
@@ -1602,5 +1602,111 @@ footer {
 }
 
 .deposit-list__item > * {
+  margin: 0;
+}
+
+.orders {
+  list-style: none;
+}
+
+.order {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.order__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.order__subtotal {
+  border-top: 1px solid var(--custom-2);
+  font-weight: bold;
+  text-align: right;
+}
+
+.order-items {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr  max-content  max-content max-content 1fr;
+  row-gap: 1rem;
+  column-gap: 2rem;
+}
+
+.order-item {
+  padding-top: .5rem;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: 1fr  max-content  max-content max-content 1fr;
+  grid-template-columns: subgrid;
+  row-gap: 1rem;
+  column-gap: 2rem;
+}
+
+.order-item--border {
+  border-top: 1px dashed var(--custom-2);
+}
+
+.order-item__users {
+  display: grid;
+  grid-column: -3 / -1;
+  grid-template-columns: subgrid;
+  list-style: none;
+  margin: 0;
+}
+
+.order-item__user {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: -3 / -1;
+}
+
+
+.order-item__user * + * {
+  margin: 0;
+}
+
+
+.order-item__date {
+  grid-column: 1 / 1;
+}
+
+.order-item__quantity {
+  margin: 0;
+}
+
+.order-item__meal {
+  display: flex;
+  margin: 0;
+  gap: 1rem;
+}
+@supports (grid-template-columns: subgrid) {
+  .order-item__meal {
+    display: grid;
+    grid-template-columns: subgrid;
+    margin: 0;
+    grid-column: 1 / 4;
+  }
+
+  @media screen and (min-width: 850px) {
+    .order-item__meal {
+      grid-column: 2 / 4;
+    }
+  }
+}
+
+@media screen and (max-width: 666px) {
+  .order-item__users {
+    display: none;
+  }
+}
+
+.order-item__meal * + * {
+  margin: 0;
+}
+
+.order-item__price {
   margin: 0;
 }

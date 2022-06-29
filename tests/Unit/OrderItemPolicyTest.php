@@ -46,14 +46,10 @@ class OrderItemPolicyTest extends TestCase
 
         //own order in future
         $futureMeal = Meal::factory()->inFuture()->create();
-        $futureOrder = Order::factory()->create([
-            'date' => $futureMeal->date_from
-        ]);
 
         $orderItem = OrderItem::factory()->create([
             'meal_id' => $futureMeal->id,
             'user_id' => auth()->id(),
-            'order_id' => $futureOrder->id
         ]);
         $this->assertTrue(auth()->user()->can('view', $orderItem));
         $this->assertTrue(auth()->user()->can('update', $orderItem));
@@ -61,14 +57,10 @@ class OrderItemPolicyTest extends TestCase
 
         //own order in future
         $pastMeal = Meal::factory()->inPast()->create();
-        $pastOrder = Order::factory()->create([
-            'date' => $pastMeal->date_from
-        ]);
 
         $orderItem = OrderItem::factory()->create([
             'meal_id' => $pastMeal->id,
             'user_id' => auth()->id(),
-            'order_id' => $pastOrder->id
         ]);
         $this->assertTrue(auth()->user()->can('view', $orderItem));
         $this->assertTrue(auth()->user()->cannot('update', $orderItem));

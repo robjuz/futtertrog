@@ -28,8 +28,8 @@
                     </option>
                     @foreach($users as $user)
                         <option
-                            value="{{ $user->id }}"
-                            {{ request('user_id') == $user->id ? ' selected' : '' }}
+                                value="{{ $user->id }}"
+                                {{ request('user_id') == $user->id ? ' selected' : '' }}
                         >
                             {{ $user->name }}
                         </option>
@@ -41,139 +41,71 @@
         </form>
     </section>
 
-    <section>
-        @if($orders->isNotEmpty())
-            <table class="orders-overview">
-                <thead>
-                <tr>
-                    <th>{{__('Date')}}</th>
-                    <th class="collapsible">{{__('Provider')}}</th>
-                    <th class="collapsible">{{__('Status')}}</th>
-                    <th class="collapsible">{{__('Quantity')}}</th>
-                    <th>{{__('Title')}}</th>
-                    <th class="collapsible">{{__('Ordered by')}}</th>
-                    <th class="money collapsible">{{__('Price')}}</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                @php $decoration = 'a'; @endphp
-                @foreach($orders as $order)
-                    @foreach($order->orderItemsCompact() as $orderItem)
-                        @php if(count($order->orderItemsCompact()) == 1 OR $loop->first)
-                                $decoration == 'a' ? $decoration = 'b' : $decoration = 'a'; @endphp
-                        <tr class="decoration-{{$decoration}}">
-                            @if(count($order->orderItemsCompact()) == 1 OR $loop->first)
-                                <td {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}>
-                                    @can('update', $order)
-                                        <a href="{{ route('orders.edit', $order) }}">
-                                            {{ __('calendar.' . $order->date->englishDayOfWeek) }}<br>
-                                            {{ $order->date->format(__('futtertrog.date_format')) }}
-                                        </a>
-                                    @else
-                                        {{ __('calendar.' . $order->date->englishDayOfWeek) }}<br>
-                                        {{ $order->date->format(__('futtertrog.date_format')) }}
-                                    @endcan
-                                </td>
-
-                                <td
-                                    class="collapsible"
-                                    {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
-                                >
-                                    {{ $order->provider ? $order->provider->getName() : '' }}
-                                </td>
-
-                                <td
-                                    class="collapsible"
-                                    {{ count($order->orderItemsCompact()) > 1 ? ' rowspan=' . count($order->orderItemsCompact()) : ''}}
-                                >
-
-                                    @can('update', $order)
-                                        <form action="{{ route('orders.update', $order) }}" method="POST">
-                                            @method('put')
-                                            @csrf
-                                            @if($order->status === \App\Order::STATUS_ORDERED)
-                                                <input
-                                                    type="hidden"
-                                                    name="status"
-                                                    value="{{ \App\Order::STATUS_OPEN }}"
-                                                >
-                                                <button type="submit" title="{{ __('Mark as open') }}">
-                                                    {{ __('futtertrog.status.' . $order->status) }}
-
-                                                    <span class="sr-only">{{ __('Mark as open') }}</span>
-                                                </button>
-                                            @else
-                                                <input
-                                                    type="hidden"
-                                                    name="status"
-                                                    value="{{ \App\Order::STATUS_ORDERED }}"
-                                                >
-                                                <button type="submit" title="{{ __('Mark as ordered') }}">
-                                                    {{ __('futtertrog.status.' . $order->status) }}
-
-                                                    <span class="sr-only">{{ __('Mark as ordered') }}</span>
-                                                </button>
-                                            @endif
-                                        </form>
-                                    @else
-                                        {{ __('futtertrog.status.' . $order->status) }}
-                                    @endcan
-                                </td>
+    @if($orders->isNotEmpty())
+        <ul class="orders">
+            @foreach($orders as $order)
+                <li class="pot order">
+                    <header class="order__header">
+                        <h2>
+                            @if($order->provider)
+                                <span class="order__provider">
+                            {{ $order->provider->getName() }}
+                            </span>
                             @endif
-                            <td class="collapsible">
-                                {{ $orderItem->quantity }}
-                            </td>
 
-                            <td>
-                                @can('edit', $orderItem->meal)
-                                    <a href="{{ route('meals.edit', $orderItem->meal) }}">{{ $orderItem->meal->title }}</a>
-                                @else
-                                    {{ $orderItem->meal->title }}
-                                @endcan
-                            </td>
+                            <span>{{ $order->getFormattedDate() }}</span>
 
-                            <td>
-                                <ul>
-                                    @foreach($orderItem->users as $user)
-                                        <li>
-                                            <a href="{{ route('users.show', $user) }}">
-                                                {{ $user->name }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </td>
+                            <span>{{ __('futtertrog.status.' . $order->status) }}</span>
+                        </h2>
+                        @can('update', $order)
+                            <a href="{{ route('orders.edit', $order) }}" class="order__header-link">
+                                {{ __('Edit') }}
+                            </a>
+                        @endcan
+                    </header>
 
-                            <td class="money collapsible">
-                                {{ $orderItem->meal->price }}
-                            </td>
-                        </tr>
-                    @endforeach
-                @endforeach
-                </tbody>
+                    <ul class="order-items">
+                        @foreach($order->orderItems->groupBy(['meal.date.timestamp', 'meal_id']) as $mealsForDate)
+                            @foreach($mealsForDate as $orderItems)
+                                @php
+                                    $meal = $orderItems->first()->meal;
+                                @endphp
 
-                <tfoot>
-                <tr>
-                    <td colspan="6" class="money">
-                        {{ __('Sum') }}: {{ $sum }}
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
+                                <li class="order-item {{ $loop->first ? ' order-item--border' : '' }}">
+                                    @if($loop->first)
+                                    <h3 class="order-item__date">{{ $meal->date->isoFormat('L') }}</h3>
+                                    @else
+                                    <span></span>
+                                    @endif
 
-            @if($orders->canBeAutoOrdered())
+                                    <h4 class="order-item__meal">
 
-                <form action="{{ route('orders.auto_order') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="from" value="{{ $from->toDateString() }}">
-                    <input type="hidden" name="to" value="{{ $to ? $to->toDateString() : '' }}">
+                                        <span>{{ $meal->title }}</span>
+                                        <span>{{ $orderItems->sum('quantity') }} &times; {{ $meal->price }}</span>
 
-                    <button type="submit">{{ __('Place order') }}</button>
-                </form>
-            @endif
-        @else
-            <p> {{ __('No items found') }}</p>
-        @endif
-    </section>
+                                    </h4>
+
+                                    <ul class="order-item__users">
+                                        @foreach($orderItems as $orderItem)
+                                            <li class="order-item__user">
+                                                <span>{{ $orderItem->user->name }}</span>
+
+                                                 <span>&times; {{ $orderItem->quantity }}  </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                            @endforeach
+                        @endforeach
+                    </ul>
+
+                        <div class="order__subtotal">
+                            {{ $order->subtotal }}
+                        </div>
+                </li>
+            @endforeach
+        </ul>
+    @else
+        <p> {{ __('No items found') }}</p>
+    @endif
 @endsection

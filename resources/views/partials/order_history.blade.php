@@ -39,7 +39,7 @@
 
                 <td>
                     <date>
-                        {{  $orderItem->order->date->format(__('futtertrog.date_format'))  }}
+                        {{  $orderItem->date->format(__('futtertrog.date_format'))  }}
                     </date>
                 </td>
 

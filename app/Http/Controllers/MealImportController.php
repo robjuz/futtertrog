@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Meal;
+use App\MealProviders\AbstractMealProvider;
 use App\Services\MealService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -29,10 +30,13 @@ class MealImportController extends Controller
 
         $date = Carbon::parse($request->date);
 
-        $mealService->setProvider(app($request->provider))->getMealsForDate($date);
+        /** @var AbstractMealProvider $mealProvider */
+        $mealProvider = app()->make($request->provider);
+
+        $mealProvider->createMealsDataForDate($date);
 
         if ($request->has('notify')) {
-            $mealService->notify();
+            $mealProvider->notifyAboutNewOrderPossibilities();
         }
 
         return redirect()->route('meals.create')->with('success', __('Saved'));

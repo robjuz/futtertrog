@@ -9,10 +9,10 @@
             </a>
 
             @if($nextWeek)
-            <a href="<?= route('meals.index', ['date' => $nextWeek->toDateString()]) ?>">
-                {{ __('calendar.WN') }} {{ $nextWeek->weekOfYear }}
-                <span aria-hidden="true">&rarr;</span>
-            </a>
+                <a href="<?= route('meals.index', ['date' => $nextWeek->toDateString()]) ?>">
+                    {{ __('calendar.WN') }} {{ $nextWeek->weekOfYear }}
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
             @endif
 
         </header>
@@ -21,20 +21,21 @@
                 <li class="{{ $date->isWeekend() ? ' weekend' : '' }}{{ $date->isToday() ? ' today' : '' }}{{ $date->isSameDay($requestedDate) ? ' selected' : '' }}">
                     @if ($meals->forDate($date)->isEmpty())
                         <div>
-                            @else
-                                <a href="<?= route('meals.index', ['date' => $date->toDateString()]) ?>">
-                                    @endif
-                                    <span class="weekday">{{ @trans('calendar.'.$date->format('l')) }}</span>
-                                    <span class="day">{{ $date->day }}</span>
+                    @else
+                        <a href="{{ route('meals.index', ['date' => $date->toDateString()]) }}">
+                    @endif
+                    <span class="weekday">{{ @trans('calendar.'.$date->format('l')) }}</span>
+                    <span class="day">{{ $date->day }}</span>
 
-                                    @if($orders->userOrdersForDate($date)->isNotEmpty())
-                                        <p class="ordered">{{__('Ordered')}}</p>
-                                    @elseif($meals->forDate($date)->count())
-                                        <p class="order">{{ __(':count order possibilities', [ 'count' => $meals->forDate($date)->count()]) }}</p>
-                            @endif
-                            @if ($meals->forDate($date)->isEmpty())
+                    @if(auth()->user()->orderItems()->date($date)->exists())
+                        <p class="ordered">{{__('Ordered')}}</p>
+                    @elseif($meals->forDate($date)->count())
+                        <p class="order">{{ __(':count order possibilities', [ 'count' => $meals->forDate($date)->count()]) }}</p>
+                    @endif
+
+                    @if ($meals->forDate($date)->isEmpty())
                         </div>
-                        @else
+                    @else
                         </a>
                     @endif
                 </li>

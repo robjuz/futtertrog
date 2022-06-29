@@ -41,6 +41,7 @@ namespace App{
 
 namespace App{
 
+    use App\MealProviders\AbstractMealProvider;
     use Money\Money;
 
     /**
@@ -50,10 +51,9 @@ namespace App{
  * @property int|null $parent_id
  * @property string $title
  * @property string|null $description
- * @property string|null $provider
+ * @property AbstractMealProvider|null $provider
  * @property Money|null $price
- * @property \Illuminate\Support\Carbon $date_from
- * @property \Illuminate\Support\Carbon $date_to
+ * @property \Illuminate\Support\Carbon $date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $image
@@ -75,8 +75,6 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|Meal newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Meal query()
  * @method static \Illuminate\Database\Eloquent\Builder|Meal whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Meal whereDateFrom($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Meal whereDateTo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Meal whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Meal whereExternalId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Meal whereId($value)
@@ -145,6 +143,7 @@ namespace App{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $status
  * @property-read mixed $subtotal
+ * @property-read \Illuminate\Support\Carbon $date
  * @property-read \App\Meal $meal
  * @property-read \App\Order $order
  * @property-read \App\User $user

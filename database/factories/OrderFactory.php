@@ -14,7 +14,6 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'date' => $this->faker->dateTimeThisMonth,
             'provider' => array_rand(app('mealProviders')),
         ];
     }

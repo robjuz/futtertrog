@@ -22,33 +22,21 @@ class MealPreferencesTest extends TestCase
         $user->save();
 
         $meal1 = Meal::factory()->create([
-            'date_from' => today(),
-            'date_to' => today(),
             'description' => 'pumpkin'
         ]);
         $meal2 = Meal::factory()->create([
-            'date_from' => today(),
-            'date_to' => today(),
             'description' => 'pancake'
         ]);
         $meal3 = Meal::factory()->create([
-            'date_from' => today(),
-            'date_to' => today(),
             'description' => 'meal_3'
         ]);
         $meal4 = Meal::factory()->create([
-            'date_from' => today(),
-            'date_to' => today(),
             'description' => 'meal_4'
         ]);
         $meal5 = Meal::factory()->create([
-            'date_from' => today(),
-            'date_to' => today(),
             'title' => 'pumpkin'
         ]);
         $meal6 = Meal::factory()->create([
-            'date_from' => today(),
-            'date_to' => today(),
             'title' => 'pancake'
         ]);
 

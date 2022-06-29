@@ -8,6 +8,7 @@ use App\Meal;
 use App\Notifications\NewOrderPossibilities as NewOrderPossibilitiesNotification;
 use App\MealProviders\CallAPizza;
 use App\MealProviders\Holzke;
+use App\Services\MealService;
 use App\User;
 use App\UserSettings;
 use Illuminate\Support\Facades\Event;

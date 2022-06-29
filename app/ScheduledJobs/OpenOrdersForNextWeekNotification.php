@@ -4,7 +4,9 @@ namespace App\ScheduledJobs;
 
 use App\Notifications\OpenOrders;
 use App\Order;
+use App\OrderItem;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Notification;
 
 class OpenOrdersForNextWeekNotification
@@ -14,9 +16,11 @@ class OpenOrdersForNextWeekNotification
         $nextMonday = today()->addWeek()->startOfWeek();
         $nextSunday = today()->addWeek()->endOfWeek();
 
-        if (Order::whereStatus(Order::STATUS_OPEN)
-             ->whereBetween('date', [$nextMonday, $nextSunday])
-             ->exists()
+        if (OrderItem::query()->whereRelation('order', 'status', Order::STATUS_OPEN)
+            ->whereHas('meal', function (Builder $query) use ($nextMonday, $nextSunday) {
+                $query->whereBetween('date', [$nextMonday, $nextSunday]);
+            })
+            ->exists()
         ) {
             $users = User::whereIsAdmin(true)->get();
 

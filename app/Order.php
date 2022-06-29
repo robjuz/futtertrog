@@ -2,18 +2,18 @@
 
 namespace App;
 
+use App\Casts\MealProviderCast;
 use App\MealProviders\AbstractMealProvider;
 use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 /**
  * App\Order.
  *
  * @property int $id
- * @property \Illuminate\Support\Carbon $date
  * @property AbstractMealProvider|null $provider
  * @property string $status
  * @property string $previous_status
@@ -56,9 +56,11 @@ class Order extends Model
         self::STATUS_ORDERED,
     ];
 
-    protected $guarded = [];
+    protected $casts = [
+        'provider' => MealProviderCast::class
+    ];
 
-    protected $dates = ['date'];
+    protected $guarded = [];
 
     protected $appends = ['subtotal'];
 
@@ -95,30 +97,6 @@ class Order extends Model
         );
     }
 
-    public function orderItemsCompact()
-    {
-        $orderItems = $this->orderItems->groupBy('meal_id');
-
-        $orderItemsGrouped = [];
-
-        foreach ($orderItems as $key => $mealGroup) {
-            $orderItemsGrouped[$key]['quantity'] = 0;
-            foreach ($mealGroup as $orderItem) {
-                $orderItemsGrouped[$key]['meal'] = $orderItem->meal;
-                $orderItemsGrouped[$key]['users'][] = $orderItem->user;
-                $orderItemsGrouped[$key]['quantity'] += $orderItem->quantity;
-            }
-
-            $orderItemsGrouped = array_values(Arr::sort($orderItemsGrouped, function ($value) {
-                return $value['meal']->id;
-            }));
-        }
-
-        return collect($orderItemsGrouped)->map(function ($item) {
-            return new OrderItemCompact($item['meal'], $item['users'], $item['quantity']);
-        });
-    }
-
     /**
      * Create a new Eloquent Collection instance.
      *
@@ -144,23 +122,25 @@ class Order extends Model
             return false;
         }
 
-        return Auth::user()->can('create', [OrderItem::class, request()->date]);
+        if ($this->meals()->whereNull('external_id')->exists()) {
+            return false;
+        }
+
+        return true;
     }
 
     public function canBeUpdated()
     {
-        if (! $this->provider) {
+        if (! $this->canBeAutoOrdered()) {
             return false;
         }
 
-        if (! $this->provider->supportsOrderUpdate() ?? false) {
+        if (!$this->external_id) {
             return false;
         }
 
-        return
-            (bool) $this->external_id
-            and self::where('external_id', '>', $this->external_id)
-                ->whereProvider($this->provider)
+        return self::where('external_id', '>', $this->external_id)
+                ->whereProvider($this->provider->getKey())
                 ->doesntExist();
     }
 
@@ -192,15 +172,6 @@ class Order extends Model
         return $this->status === Order::STATUS_OPEN;
     }
 
-    public function getProviderAttribute($value)
-    {
-        try {
-            return app()->make($value);
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
-
     public function toArray()
     {
         return array_merge(parent::toArray(), ['provider' => $this->provider->__toString()]);
@@ -209,5 +180,21 @@ class Order extends Model
     public function wasReopened()
     {
         return $this->previous_status === self::STATUS_ORDERED and $this->status === self::STATUS_OPEN;
+    }
+
+    public function getFormattedDate()
+    {
+        return implode(' - ', [
+            Carbon::parse($this->meals_min_date)->isoFormat('L'),
+            Carbon::parse($this->meals_max_date)->isoFormat('L')
+        ]);
+    }
+
+    public function placeOrder() {
+        $this->provider->placeOrder($this);
+    }
+
+    public function updateOrder() {
+        $this->provider->updateOrder($this);
     }
 }

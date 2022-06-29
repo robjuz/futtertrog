@@ -156,9 +156,7 @@ class User extends Authenticatable
     {
         return $this->orderItems()
             ->with(['meal'])
-            ->join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->where('date', '>', today())
-            ->orderBy('date');
+            ->whereRelation('meal', 'date', '>', today());
     }
 
     public function orderHistory(): HasMany
@@ -171,5 +169,10 @@ class User extends Authenticatable
     public function disabledNotifications(): HasMany
     {
         return $this->hasMany(DisabledNotification::class);
+    }
+
+    public function order(Meal $meal): OrderItem
+    {
+        return $meal->order($this);
     }
 }
