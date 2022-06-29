@@ -35,14 +35,9 @@ class OrderController extends Controller
 
         $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
 
-        $sum = Money::sum(
-            Money::parse(0),
-            ...$orders->map->subtotal
-        );
-
         $users = User::orderBy('name')->get();
 
-        return view('order.index', compact('orders', 'from', 'to', 'sum', 'users'));
+        return view('order.index', compact('orders', 'from', 'to', 'users'));
     }
 
     public function edit(Order $order)

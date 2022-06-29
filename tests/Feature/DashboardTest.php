@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Deposit;
+use App\Meal;
 use App\Order;
 use App\OrderItem;
 use App\User;
@@ -27,16 +28,12 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $order = Order::factory()->create([
-            'date' => today()
-        ]);
-
         $orderItems = OrderItem::factory()->count( 10)->create([
-            'order_id' => $order->id,
             'user_id' => $user->id
         ]);
 
         $response = $this->login($user)->get(route('home'));
+
         foreach ($orderItems as $orderItem) {
             $response->assertSee($orderItem->meal->title);
             $response->assertSee(__('futtertrog.orderStatus.' . $orderItem->status));
@@ -49,13 +46,9 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $order = Order::factory()->create([
-            'date' => today()->addDays(1)
-        ]);
-
         $orderItems = OrderItem::factory()->count(5)->create([
-            'order_id' => $order->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'meal_id' => Meal::factory()->inFuture()
         ]);
 
         $response = $this->login($user)->get(route('home'));

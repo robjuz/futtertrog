@@ -1,5 +1,5 @@
 <li id="meal_{{ $meal->id }}"
-    class="meal {{ $meal->isOrdered(request('date', today()->toDateString())) ? ' selected' : '' }}"
+    class="meal {{ $meal->isOrdered() ? ' selected' : '' }}"
 >
     <h4>
         @can('update', $meal)
@@ -52,25 +52,21 @@
     @endif
 
 
-    @if($meal->isOrdered($meal->date_from))
+    @if($meal->isOrdered())
 
-        @php
-            $orderItem = $meal->getOrderItem($meal->date_from);
-        @endphp
-        @can('delete', $orderItem)
-            <form action="{{ route('order_items.destroy', $orderItem) }}" method="post" class="meal-form">
+        @can('delete', $meal->orderItem())
+            <form action="{{ route('order_items.destroy', $meal->orderItem()) }}" method="post" class="meal-form">
                 @csrf
                 @method('delete')
-                <p> {{ trans_choice('futtertrog.portions_ordered', $orderItem->quantity) }}</p>
+                <p> {{ trans_choice('futtertrog.portions_ordered', $meal->orderItem()->quantity) }}</p>
                 <button type="submit">{{ __('Delete order') }}</button>
             </form>
         @else
-            <p> {{ trans_choice('futtertrog.portions_ordered', $orderItem->quantity) }}</p>
+            <p> {{ trans_choice('futtertrog.portions_ordered', $meal->orderItem()->quantity) }}</p>
         @endcan()
     @else
         <form action="{{ route('order_items.store') }}" method="post" class="meal-form">
             @csrf
-            <input type="hidden" name="date" value="{{ $meal->date_from }}"/>
             <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
             @if($meal->variants->isEmpty())
                 <input type="hidden" name="meal_id" value="{{ $meal->id }}"/>

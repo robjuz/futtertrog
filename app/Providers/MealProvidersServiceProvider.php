@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\MealProviders\Basic;
 use App\MealProviders\CallAPizza;
 use App\MealProviders\Flaschenpost;
 use App\MealProviders\Holzke;
@@ -10,6 +11,7 @@ use Illuminate\Support\ServiceProvider;
 class MealProvidersServiceProvider extends ServiceProvider
 {
     private array $bundledProviders = [
+        Basic::class,
         Holzke::class,
         CallAPizza::class,
         Flaschenpost::class,

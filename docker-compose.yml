@@ -18,7 +18,7 @@ services:
 
       PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite xdebug"
 
-      PHP_INI_MEMORY_LIMIT: 100M
+#      PHP_INI_MEMORY_LIMIT: 100M
 
       STARTUP_COMMAND_1: php -r "file_exists('.env') || copy('.env.example', '.env');"
       STARTUP_COMMAND_2: composer install

@@ -50,7 +50,7 @@ class UserSettings implements Castable, Arrayable, JsonSerializable
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

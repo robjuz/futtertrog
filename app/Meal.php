@@ -2,25 +2,26 @@
 
 namespace App;
 
-use Cknow\Money\Casts\MoneyDecimalCast;
+use App\Casts\MealProviderCast;
+use App\MealProviders\Basic;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema (
- *      required={"title", "description", "price"},
+ *      required={"title", "description", "price", "date"},
  *      @OA\Property( property="id", ref="#/components/schemas/id" ),
- *      @OA\Property( property="title", type="string", readOnly="true"),
- *      @OA\Property( property="variant_title", type="string", readOnly="true"),
- *      @OA\Property( property="description", type="string", readOnly="true"),
+ *      @OA\Property( property="date", type="date" ),
+ *      @OA\Property( property="title", type="string"),
+ *      @OA\Property( property="variant_title", type="string"),
+ *      @OA\Property( property="description", type="string"),
  *      @OA\Property( property="price", type="number", format="float"),
  *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
  *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
@@ -35,13 +36,14 @@ class Meal extends Model
 
     protected $guarded = ['variants'];
 
-    protected $dates = ['date_from', 'date_to'];
+    protected $dates = ['date'];
 
     protected $appends = ['variant_title'];
 
     protected $casts = [
         'info' => MealInfo::class,
         'price' => MoneyIntegerCast::class,
+        'provider' => MealProviderCast::class
     ];
 
     public function orderItems(): HasMany
@@ -136,10 +138,10 @@ class Meal extends Model
 
     public function scopeForDate($query, $date)
     {
-        return $query->whereDate('date_from', '<=', $date)->whereDate('date_to', '>=', $date);
+        return $query->whereDate('date', $date);
     }
 
-    public function scopeByProvider($query, $provider = null)
+    public function scopeByProvider(Builder $query, $provider = null): Builder
     {
         if (!$provider) {
             return $query;
@@ -148,19 +150,11 @@ class Meal extends Model
         return $query->where('provider', $provider);
     }
 
-    public function order(int $userId, $date, $quantity = 1): OrderItem
+    public function order(User|int $user, $quantity = 1): OrderItem
     {
-        /** @var Order $order */
-        $order = Order::query()
-            ->updateOrCreate(
-                [
-                    'date' => $date,
-                    'provider' => $this->provider,
-                ],
-                [
-                    'status' => Order::STATUS_OPEN,
-                ]
-            );
+        $userId = $user->id ?? $user;
+
+        $order = $this->provider->getOrder($this->date);
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->orderItems()
@@ -175,35 +169,16 @@ class Meal extends Model
         return $orderItem;
     }
 
-    public function isOrdered($date = null, User $user = null): bool
+    public function isOrdered(User $user = null): bool
     {
-        /** @var User $user */
-        $user = $user ?? auth()->user();
-
-        $date = Carbon::parse($date ?? today());
-
-        return OrderItem::query()
-            ->whereIn('meal_id', $this->variants()->pluck('id')->merge($this->id))
-            ->where('user_id', $user->id)
-            ->whereHas('order', function (Builder $builder) use ($date) {
-                $builder->whereDate('date', $date);
-            })
-            ->exists();
+        return !! $this->orderItem($user);
     }
 
-    public function getOrderItem($date = null, User $user = null): OrderItem
+    public function orderItem(User $user = null): ?OrderItem
     {
-        /** @var User $user */
-        $user = $user ?? auth()->user();
-
-        $date = Carbon::parse($date ?? today());
-
         return OrderItem::query()
             ->whereIn('meal_id', $this->variants()->pluck('id')->merge($this->id))
-            ->where('user_id', $user->id)
-            ->whereHas('order', function (Builder $builder) use ($date) {
-                $builder->whereDate('date', $date);
-            })
+            ->where('user_id', $user ? $user->id : auth()->id())
             ->first();
     }
 }

@@ -12,41 +12,21 @@ use Illuminate\Notifications\Notification;
 class OrderReopenedNotification extends Notification
 {
     use Queueable;
-    /**
-     * @var Order
-     */
-    public $order;
-    /**
-     * @var User
-     */
-    public $user;
-    /**
-     * @var Meal
-     */
-    public $meal;
 
     /**
      * Create a new notification instance.
-     *
-     * @param  Order  $order
-     * @param  User  $user
-     * @param  Meal  $meal
      */
-    public function __construct(Order $order, User $user, Meal $meal)
+    public function __construct(public Order $order, public User $user, public Meal $meal)
     {
         //
-        $this->order = $order;
-        $this->user = $user;
-        $this->meal = $meal;
     }
 
     /**
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
             'date' => $this->order->date,
@@ -64,15 +44,15 @@ class OrderReopenedNotification extends Notification
     public function toMail($notifiable)
     {
         $url = route('orders.index', [
-            'from' => $this->order->date->toDateString(),
-            'to'   => $this->order->date->toDateString(),
+            'from' => $this->meal->date->toDateString(),
+            'to'   => $this->meal->date->toDateString(),
         ]);
 
         return (new MailMessage)
             ->subject(__('Order reopened'))
             ->line(__(
                 'The order for :date was reopened',
-                ['date' => $this->order->date->format(trans('futtertrog.date_format'))]
+                ['date' => $this->meal->date->format(trans('futtertrog.date_format'))]
             ))
             ->line(__(':user updated :meal', ['user' => $this->user->name, 'meal' => $this->meal->title]))
             ->action(__('Click here for more details'), $url);

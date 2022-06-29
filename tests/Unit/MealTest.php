@@ -81,9 +81,9 @@ class MealTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $meal->order($user->id, $meal->date_from);
+        $meal->order($user->id);
 
-        $this->assertTrue($meal->isOrdered($meal->date_from, $user));
+        $this->assertTrue($meal->isOrdered($user));
     }
 
     /** @test */
@@ -101,8 +101,8 @@ class MealTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $variant->order($user->id, $meal->date_from);
+        $variant->order($user->id);
 
-        $this->assertTrue($meal->isOrdered($meal->date_from, $user));
+        $this->assertTrue($meal->isOrdered($user));
     }
 }

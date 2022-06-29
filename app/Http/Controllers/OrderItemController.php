@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderUpdated;
 use App\Meal;
-use App\Order;
 use App\OrderItem;
 use App\Rules\MealWithoutVariants;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -20,10 +25,10 @@ class OrderItemController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      * @OA\Get (
      *      path="/api/orders",
      *      summary="List of orders",
@@ -42,7 +47,7 @@ class OrderItemController extends Controller
     {
         $this->authorize('list', OrderItem::class);
 
-        /** @var \App\User $user */
+        /** @var User $user */
         $user = $request->user();
         if ($user->is_admin) {
             $query = OrderItem::with(['meal', 'user'])
@@ -62,24 +67,21 @@ class OrderItemController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function create(Request $request)
     {
         $this->authorize('create', OrderItem::class);
 
         if ($date = $request->query('date')) {
-            $date = Carbon::parse($date);
-            $meals = Meal::whereDate('date_from', '>=', $date)
-                ->whereDate('date_to', '<=', $date)
-                ->doesntHave('variants')
-                ->get();
+            $meals = Meal::forDate(Carbon::parse($date))->doesntHave('variants')->get();
+
             $users = User::orderBy('name')->get();
 
-            return view('user_order.create', compact('meals', 'users', 'date'));
+            return view('user_order.create', compact('meals', 'users'));
         }
 
         return view('user_order.select_date');
@@ -88,22 +90,20 @@ class OrderItemController extends Controller
     /**
      * Show the form for editing a new resource.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\OrderItem  $orderItem
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param OrderItem $orderItem
+     * @return Response
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function edit(OrderItem $orderItem)
     {
         $this->authorize('edit', $orderItem);
 
-        $date = $orderItem->order->date;
-
-        $meals = Meal::whereDate('date_from', '>=', $date)
-            ->whereDate('date_to', '<=', $date)
+        $meals = Meal::forDate($orderItem->date)
             ->doesntHave('variants')
             ->get();
+
         $users = User::orderBy('name')->get();
 
         return view('user_order.edit', compact('orderItem', 'meals', 'users'));
@@ -112,10 +112,7 @@ class OrderItemController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      *
      * @OA\Post (
      *      path="/api/place_order",
@@ -142,19 +139,19 @@ class OrderItemController extends Controller
      *      ),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): View|RedirectResponse|JsonResponse
     {
-
-        $attributes = $request->validate(
+        $request->validate(
             [
-                'date' => 'required|date',
                 'user_id' => 'sometimes|exists:users,id',
                 'quantity' => 'sometimes|numeric|min:1,max:10',
-                'meal_id' => ['required','exists:meals,id', new MealWithoutVariants()],
+                'meal_id' => ['required', 'exists:meals,id', new MealWithoutVariants()],
             ]
         );
 
-        $this->authorize('create', [OrderItem::class, $request->date]);
+        $meal = Meal::findOrFail($request->input('meal_id'));
+
+        $this->authorize('create', [OrderItem::class, $meal->date]);
 
         /** @var User $user */
         $userId = Auth::id();
@@ -164,18 +161,15 @@ class OrderItemController extends Controller
             $userId = $request->input('user_id');
         }
 
-        $meal = Meal::find($attributes['meal_id']);
-
         $orderItem = $meal->order(
             $userId,
-            $request->input('date'),
             $request->input('quantity', 1)
         );
 
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
-            return response($orderItem, Response::HTTP_CREATED);
+            return response()->json($orderItem, Response::HTTP_CREATED);
         }
 
         if ($request->ajax()) {
@@ -186,7 +180,7 @@ class OrderItemController extends Controller
     }
 
 
-    public function update(Request $request, OrderItem $orderItem)
+    public function update(Request $request, OrderItem $orderItem): JsonResponse|RedirectResponse
     {
         $data = $request->validate(
             [
@@ -201,13 +195,16 @@ class OrderItemController extends Controller
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
-            return response($orderItem, Response::HTTP_OK);
+            return response()->json($orderItem, Response::HTTP_OK);
         }
 
         return redirect()->route('orders.edit', $orderItem->order)->with('success', __('Success'));
     }
 
-    public function destroy(Request $request, OrderItem $orderItem)
+    /**
+     * @throws AuthorizationException
+     */
+    public function destroy(Request $request, OrderItem $orderItem): View|JsonResponse|RedirectResponse
     {
         $this->authorize('delete', $orderItem);
 
@@ -218,7 +215,7 @@ class OrderItemController extends Controller
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
-            return response(null, Response::HTTP_NO_CONTENT);
+            return response()->json(null, Response::HTTP_NO_CONTENT);
         }
 
         if ($request->ajax()) {

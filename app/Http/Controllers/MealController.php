@@ -78,11 +78,9 @@ class MealController extends Controller
             return response()->json($todayMeals);
         }
 
-        $todayOrders = $orders->userOrdersForDate($requestedDate, $request->user());
-
         $todayMeals->load('orderItems.order');
 
-        return view('meal.index', compact('todayMeals', 'todayOrders', 'requestedDate','noOrderNotification','notificationEnabledThisDay'));
+        return view('meal.index', compact('todayMeals', 'requestedDate','noOrderNotification','notificationEnabledThisDay'));
     }
 
     /**
@@ -110,7 +108,7 @@ class MealController extends Controller
         $meal = Meal::create($request->validated());
 
         if ($request->has('notify')) {
-            event(new NewOrderPossibility($meal->date_from));
+            event(new NewOrderPossibility($meal->date));
         }
 
         if ($request->wantsJson()) {

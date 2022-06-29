@@ -23,8 +23,7 @@ class WeekNavigationTest extends TestCase
         $date = Carbon::now()->addWeek()->addDays(rand(0, 6));
 
         Meal::factory()->create([
-            'date_from' => $date,
-            'date_to' => $date,
+            'date' => $date,
         ]);
 
         $this->login()

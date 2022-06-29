@@ -32,7 +32,7 @@ class MealsRepository
         $nextWeekMonday = $currentDate->clone()->addWeek()->startOfWeek();
 
         return Meal::doesntHave('parent')
-            ->whereDate('date_from', '>=', $nextWeekMonday)
+            ->whereDate('date', '>=', $nextWeekMonday)
             ->get();
     }
 }

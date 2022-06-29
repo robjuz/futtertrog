@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\OrderItem;
 use App\Repositories\OrdersRepository;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\Entity\Event;
@@ -27,8 +28,8 @@ class IcalController extends Controller
             $request->input('to', null)
         );
 
-        $events = $orderItems->map(fn($orderItem) => (new Event())
-            ->setOccurrence(new SingleDay(new Date($orderItem->order->date)))
+        $events = $orderItems->map(fn(OrderItem $orderItem) => (new Event())
+            ->setOccurrence(new SingleDay(new Date($orderItem->meal->date)))
             ->setSummary($orderItem->meal->title . ' (' . $orderItem->quantity . ')')
             ->setDescription($orderItem->meal->description ?? '')
         )->toArray();

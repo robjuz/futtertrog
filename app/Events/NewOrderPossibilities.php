@@ -20,9 +20,9 @@ class NewOrderPossibilities
     /**
      * Create a new event instance.
      *
-     * @param  Traversable  $dates
+     * @param  iterable  $dates
      */
-    public function __construct(Traversable $dates)
+    public function __construct(iterable $dates)
     {
         $this->dates = $dates;
     }

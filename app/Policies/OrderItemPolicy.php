@@ -56,7 +56,7 @@ class OrderItemPolicy
      */
     public function update(User $user, OrderItem $orderItem)
     {
-        return $orderItem->user->is($user) && $orderItem->order->date->isAfter(today());
+        return $orderItem->user->is($user) && $orderItem->meal->date->isAfter(today());
     }
 
     /**
@@ -68,6 +68,6 @@ class OrderItemPolicy
      */
     public function delete(User $user, OrderItem $orderItem)
     {
-        return $orderItem->user->is($user) && $orderItem->order->date->isAfter(today());
+        return $orderItem->user->is($user) && $orderItem->date->isAfter(today());
     }
 }

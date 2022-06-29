@@ -2,36 +2,30 @@
 
 namespace App\MealProviders;
 
+use App\Events\NewOrderPossibilities;
 use App\Meal;
 use App\Order;
 use Exception;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
-abstract class AbstractMealProvider
+abstract class AbstractMealProvider implements \JsonSerializable
 {
+    /**
+     * @var string[]
+     */
+    private array $newOrderPossibilitiesDates = [];
+
     public static function register(Application $app)
     {
-        $app->singleton(static::class, function () {
-            return new static();
-        });
+        $app->singleton(static::class, static::class);
 
         $app->alias(static::class, class_basename(static::class));
     }
 
-    public function getName(): string {
-        return class_basename($this);
-    }
-
-    public function getKey(): string {
-        return class_basename($this);
-    }
-
-    abstract public function getMealsDataForDate(Carbon $date): array;
-
-    public function createMealsDataForDate(Carbon $date): Collection
+    public function createMealsDataForDate(Carbon $date): int
     {
         $meals = collect();
 
@@ -40,8 +34,7 @@ abstract class AbstractMealProvider
                 [
                     'title' => $data['title'],
                     'description' => $data['description'],
-                    'date_from' => $date->toDateString(),
-                    'date_to' => $date->toDateString(),
+                    'date' => $date->toDateString(),
                     'provider' => $this->getKey(),
                 ],
                 $data
@@ -52,17 +45,28 @@ abstract class AbstractMealProvider
                     [
                         'title' => $variantData['title'],
                         'description' => $variantData['description'] ?? null,
-                        'date_from' => $date->toDateString(),
-                        'date_to' => $date->toDateString(),
+                        'date' => $date->toDateString(),
                         'provider' => $this->getKey(),
                     ],
-                    $variantData);
+                    $variantData
+                );
             }
 
             $meals->add($meal);
         }
 
-        return $meals;
+        if ($meals->where('wasRecentlyCreated')->isNotEmpty()) {
+            $this->newOrderPossibilitiesDates[] = $date->toDateString();
+        }
+
+        return $meals->count();
+    }
+
+    abstract public function getMealsDataForDate(Carbon $date): array;
+
+    public function getKey(): string
+    {
+        return class_basename($this);
     }
 
     abstract public function supportsAutoOrder(): bool;
@@ -71,16 +75,60 @@ abstract class AbstractMealProvider
 
     abstract public function configureSchedule(Schedule $schedule): void;
 
-    /**
-     * @param  Order[]|Collection  $orders
-     */
-    public function placeOrder($orders)
+    public function placeOrder(Order $order)
     {
         throw new Exception('Not implemented');
+    }
+
+    /**
+     * Per default create one order pro day
+     *
+     * @return Order
+     */
+    public function getOrder($date = null): Order
+    {
+        $date = $date ? Carbon::parse($date) : today();
+
+        return Order::query()
+            ->whereHas('meals', fn(Builder $query) => $query->whereDate('date', $date))
+            ->updateOrCreate(
+                [
+                    'provider' => $this->getKey(),
+                ],
+                [
+                    'status' => Order::STATUS_OPEN,
+                ]
+            );
+    }
+
+    public function notifyAboutNewOrderPossibilities()
+    {
+        if (count($this->newOrderPossibilitiesDates) > 0) {
+            event(new NewOrderPossibilities($this->newOrderPossibilitiesDates));
+        }
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'name' => $this->__toString()
+        ];
     }
 
     public function __toString()
     {
         return $this->getName();
     }
+
+    public function getName(): string
+    {
+        return class_basename($this);
+    }
+
+//    public function __serialize(): array
+//    {
+//        return [
+//            'test' => 'test'
+//        ];
+//    }
 }

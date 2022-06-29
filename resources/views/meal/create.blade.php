@@ -39,25 +39,15 @@
         <input id="price" type="number" name="price" pattern="\d*" required min="0" step="0.01"
                value="{{ old('price') }}">
 
-        <label for="date_from">
-            <span>{{ __('From') }}</span>
-            @error('date_from')
+        <label for="date">
+            <span>{{ __('Date') }}</span>
+            @error('date')
             <span>{{ $message }}</span>
             @enderror
         </label>
 
-        <input id="date_from" type="date" name="date_from" required
-               value="{{ old('date_from') }}">
-
-        <label for="date_to">
-            <span>{{ __('To') }}</span>
-            @error('date_to')
-            <span>{{ $message }}</span>
-            @enderror
-        </label>
-
-        <input id="date_to" type="date" name="date_to" required
-               value="{{ old('date_to') }}">
+        <input id="date" type="date" name="date" required
+               value="{{ old('date') }}">
 
         <label for="description">
             <span>{{ __('Description') }}</span>

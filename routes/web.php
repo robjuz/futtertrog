@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth:web'], function () {
     Route::post('meals/import', 'MealImportController')->name('meals.import');
     Route::resource('meals', 'MealController');
 
-    Route::post('orders/auto_order', 'AutoOrderController')->name('orders.auto_order');
+    Route::post('orders/{order}/auto_order', 'AutoOrderController')->name('orders.auto_order');
     Route::resource('orders', 'OrderController')->only(['index', 'edit', 'update', 'destroy']);
     Route::resource('order_items', 'OrderItemController')->except(['show']);
     Route::post('order_items/json', 'OrderItemController@store_json');

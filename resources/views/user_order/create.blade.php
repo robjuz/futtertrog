@@ -37,8 +37,6 @@
         </label>
         <input id="quantity" type="number" min="1" pattern="\d*" name="quantity">
 
-        <input type="hidden" name="date" value="{{ $date }}"/>
-
         <button type="submit">{{ __('Save') }}</button>
     </form>
 @endsection

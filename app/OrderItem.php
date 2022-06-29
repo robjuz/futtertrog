@@ -2,9 +2,11 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Money\Money;
+use OpenApi\Annotations as OA;
 
 /**
  * App\OrderItem.
@@ -25,31 +27,6 @@ use Money\Money;
  *      type="array",
  *      @OA\Items( type="object", ref="#/components/schemas/OrderItem" )
  *  ),
- * @property int $id
- * @property int $order_id
- * @property int $user_id
- * @property int $meal_id
- * @property int $quantity
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $status
- * @property-read Money $subtotal
- * @property-read \App\Meal $meal
- * @property-read \App\Order $order
- * @property-read \App\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem query()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereMealId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereOrderId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereQuantity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereUserId($value)
- * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  * @mixin IdeHelperOrderItem
  */
 class OrderItem extends Model
@@ -94,13 +71,18 @@ class OrderItem extends Model
         return $this->order->status;
     }
 
-    public function scopeToday($query)
+    public function getDateAttribute()
     {
-        return $query->whereHas(
-            'order',
-            function ($query) {
-                $query->whereDate('date', today());
-            }
-        );
+        return $this->meal->date;
+    }
+
+    public function scopeToday(Builder $query): Builder
+    {
+        return $query->whereRelation('meal', 'date', today());
+    }
+
+    public function scopeDate(Builder $query, $date): Builder
+    {
+        return $query->whereRelation('meal', 'date', $date);
     }
 }

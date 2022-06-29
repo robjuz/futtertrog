@@ -21,9 +21,9 @@ class NewOrderPossibilities extends Notification
     /**
      * Create a new notification instance.
      *
-     * @param  Traversable  $dates
+     * @param  iterable  $dates
      */
-    public function __construct(Traversable $dates)
+    public function __construct(iterable $dates)
     {
         $this->dates = $dates;
     }

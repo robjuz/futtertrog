@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\DisabledNotification;
 use App\Events\NewOrderPossibility;
 use App\Meal;
+use App\MealProviders\Basic;
+use App\MealProviders\Holzke;
 use App\Notifications\CustomNotification;
 use App\Notifications\NewOrderPossibility as NewOrderPossibilityNotification;
 use App\Notifications\NoOrder;
@@ -126,25 +128,23 @@ class NotificationsTest extends TestCase
     {
         Notification::fake();
 
-        $john = User::factory()->admin()->create();
+        $admin = User::factory()->admin()->create();
 
 
         // (new OpenOrdersForNextWeekNotification())();
 
-        Notification::assertNotSentTo($john, OpenOrders::class);
+        Notification::assertNotSentTo($admin, OpenOrders::class);
 
 
         $nextMonday = today()->addWeek()->startOfWeek();
 
         $meal = Meal::factory()->create([
-            'date_from' => $nextMonday,
-            'date_to' => $nextMonday
+            'date' => $nextMonday,
         ]);
 
-        $this->actingAs($john)
+        $this->actingAs($admin)
             ->postJson(route('order_items.store'), [
-                'date' => $nextMonday->toDateString(),
-                'user_id' => $john->id,
+                'user_id' => $admin->id,
                 'quantity' => 1,
                 'meal_id' => $meal->id,
             ]);
@@ -153,9 +153,9 @@ class NotificationsTest extends TestCase
 
         (new OpenOrdersForNextWeekNotification())();
 
-        Notification::assertSentTo($john, OpenOrders::class);
+        Notification::assertSentTo($admin, OpenOrders::class);
 
-        Notification::assertSentTo($john, OpenOrders::class, function ($message, $channels, $notifiable) use ($nextMonday) {
+        Notification::assertSentTo($admin, OpenOrders::class, function ($message, $channels, $notifiable) use ($nextMonday) {
             $toArray =  $message->toArray($notifiable);
             $toMail = $message->toMail($notifiable);
 
@@ -205,14 +205,18 @@ class NotificationsTest extends TestCase
     /** @test */
     public function it_notifies_an_admin_when_an_closed_order_was_reopened()
     {
-        $meal = Meal::factory()->inFuture()->create();
+        /** @var Meal $meal */
+        $meal = Meal::factory(['provider' => app(Basic::class)])->inFuture()->create();
+
+        /** @var User $admin */
         $admin = User::factory()->create(['is_admin' => true]);
 
+        $orderItem = $admin->order($meal);
+
         // Given we have a closed order
-        $order = Order::factory()->create([
-            'date' => $meal->date_from,
+        $order = $orderItem->order;
+        $order->update([
             'status' => Order::STATUS_ORDERED,
-            'provider' => $meal->provider
         ]);
 
 
@@ -220,10 +224,10 @@ class NotificationsTest extends TestCase
         Mail::fake();
 
         // When a user creates a new order item associated with this order
+        /** @var User $user */
         $user = User::factory()->create();
         $this->login($user);
         $this->post(route('order_items.store'), [
-            'date' => $meal->date_from,
             'user_id' => $user->id,
             'meal_id' => $meal->id
         ]);
@@ -232,8 +236,7 @@ class NotificationsTest extends TestCase
         Notification::assertSentTo(
             $admin,
             OrderReopenedNotification::class,
-            function ($notification, $channels) use ($user, $meal, $order) {
-                /** @var \Illuminate\Notifications\Messages\MailMessage $mailData */
+            function (OrderReopenedNotification $notification, $channels) use ($user, $meal, $order) {
                 $mailData = $notification->toMail($user);
                 $this->assertEquals(__('Order reopened'), $mailData->subject);
 
@@ -264,6 +267,73 @@ class NotificationsTest extends TestCase
             1
         );
     }
+
+    /** @test */
+    public function it_notifies_an_admin_when_an_closed_holzke_order_was_reopened()
+    {
+        /** @var Meal $meal */
+        $meal = Meal::factory(['provider' => app(Holzke::class)])->inFuture()->create();
+
+        /** @var User $admin */
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $orderItem = $admin->order($meal);
+
+        // Given we have a closed order
+        $order = $orderItem->order;
+        $order->update([
+            'status' => Order::STATUS_ORDERED,
+        ]);
+
+
+        Notification::fake();
+        Mail::fake();
+
+        // When a user creates a new order item associated with this order
+        /** @var User $user */
+        $user = User::factory()->create();
+        $this->login($user);
+        $this->post(route('order_items.store'), [
+            'user_id' => $user->id,
+            'meal_id' => $meal->id
+        ]);
+
+        // Admin should be notified
+        Notification::assertSentTo(
+            $admin,
+            OrderReopenedNotification::class,
+            function (OrderReopenedNotification $notification, $channels) use ($user, $meal, $order) {
+                $mailData = $notification->toMail($user);
+                $this->assertEquals(__('Order reopened'), $mailData->subject);
+
+                $toArray = $notification->toArray($user);
+                $this->assertEquals($toArray['date'], $order->date);
+                $this->assertEquals($toArray['user'], $user->name);
+                $this->assertEquals($toArray['meal'], $meal->title);
+
+                return $notification->order->is($order)
+                    && $notification->user->is($user)
+                    && $notification->meal->is($meal);
+            }
+        );
+
+        // When another creates a new order item associated with this order
+        $user2 = User::factory()->create();
+        $this->login($user2);
+        $this->post(route('order_items.store'), [
+            'date' => $meal->date_from,
+            'user_id' => $user2->id,
+            'meal_id' => $meal->id
+        ]);
+
+        // Admin should not be notified again
+        Notification::assertSentToTimes(
+            $admin,
+            OrderReopenedNotification::class,
+            1
+        );
+    }
+
 
     /** @test */
     public function it_does_not_sent_a_no_order_for_today_notification_to_users_that_opted_in_but_turned_off_the_notification()

@@ -7,7 +7,7 @@
 @section('content')
     <h1>{{ __('Dashboard') }}</h1>
 
-    <section id="today-orders">
+    <section id="today-orders" class="pot">
         <header>
             <h2>{{ __('Your order for today') }}</h2>
         </header>
@@ -31,11 +31,11 @@
         @endif
     </section>
 
-    <section>
+    <section class="pot">
         @include('user._balance')
     </section>
 
-    <section id="upcoming-orders">
+    <section id="upcoming-orders" class="pot">
         <header>
             <h2 id="future-meals">{{ __('Your upcoming orders') }}</h2>
         </header>
@@ -69,7 +69,7 @@
             @endif
     </section>
 
-    <section id="deposit-history">
+    <section id="deposit-history" class="pot">
         @include('partials.deposit_history')
     </section>
 <?php /*

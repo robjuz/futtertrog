@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost"
+            "url": "http://localhost:8080"
         }
     ],
     "paths": {
@@ -309,23 +309,25 @@
                 "required": [
                     "title",
                     "description",
-                    "price"
+                    "price",
+                    "date"
                 ],
                 "properties": {
                     "id": {
                         "$ref": "#/components/schemas/id"
                     },
-                    "title": {
+                    "date": {
                         "type": "string",
-                        "readOnly": "true"
+                        "format": "date"
+                    },
+                    "title": {
+                        "type": "string"
                     },
                     "variant_title": {
-                        "type": "string",
-                        "readOnly": "true"
+                        "type": "string"
                     },
                     "description": {
-                        "type": "string",
-                        "readOnly": "true"
+                        "type": "string"
                     },
                     "price": {
                         "type": "number",
