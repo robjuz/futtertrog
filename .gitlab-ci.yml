@@ -11,11 +11,15 @@ test:
     PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite xdebug"
     XDEBUG_MODE: coverage
   services: []
-  script:
+  before_script:
     - composer install
     - cp .env.example .env
     - php artisan key:gen
-    - vendor/bin/phpunit --colors=never --stop-on-error --coverage-text
+  script:
+    - vendor/bin/phpunit --stop-on-error --coverage-text --coverage-cobertura=coverage.cobertura.xml
+  artifacts:
+    reports:
+      cobertura: coverage.cobertura.xml
 
 production_manual:
   variables:
