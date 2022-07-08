@@ -1621,6 +1621,12 @@ footer {
   align-items: flex-end;
 }
 
+.order__header-item:not(:last-child) {
+  border-right: 1px solid var(--main-text-color);
+  padding-right: .5rem;
+  margin-right: .5rem;
+}
+
 .order__subtotal {
   border-top: 1px solid var(--custom-2);
   font-weight: bold;

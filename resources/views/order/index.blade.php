@@ -12,7 +12,7 @@
 
             <div>
                 <label for="from">{{ __('From') }}</label>
-                <input type="date" name="from" id="from" value="{{ $from->toDateString() }}">
+                <input type="date" name="from" id="from" value="{{ $from ? $from->toDateString() : '' }}">
             </div>
 
             <div>
@@ -20,18 +20,49 @@
                 <input type="date" name="to" id="to" value="{{ $to ? $to->toDateString() : '' }}">
             </div>
 
+            <x-user-select show-option-all="true"></x-user-select>
+
+            <x-provider-select></x-provider-select>
+
             <div>
-                <label for="user_id">{{ __('Filter by user') }}</label>
-                <select name="user_id" id="user_id">
-                    <option value="" {{ request('user_id', null) == null ? ' selected' : '' }}>
-                        {{ __('All users') }}
-                    </option>
-                    @foreach($users as $user)
+                <label for="status">
+                    <span>{{__('Status')}}</span>
+                    @error('status'))
+                    <span>{{ $message }}</span>
+                    @enderror
+                </label>
+                <select id="status" name="status">
+                        <option value="" {{ request('status')  == null ? 'selected="selected"' : '' }}>
+                            {{ __('All') }}
+                        </option>
+                    @foreach(\App\Order::$statuses as $status)
                         <option
-                                value="{{ $user->id }}"
-                                {{ request('user_id') == $user->id ? ' selected' : '' }}
+                                value="{{ $status }}"
+                                {{ request('status')  == $status ? 'selected="selected"' : '' }}
                         >
-                            {{ $user->name }}
+                            {{ __('futtertrog.status.' . $status) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label for="payed">
+                    <span>{{__('Payed')}}</span>
+                    @error('payed'))
+                    <span>{{ $message }}</span>
+                    @enderror
+                </label>
+                <select id="payed" name="payed">
+                    <option value="" {{ request('payed')  == null ? 'selected="selected"' : '' }}>
+                        {{ __('All') }}
+                    </option>
+                    @foreach([0 => __('Not payed'), 1 => __('Payed')] as $key => $payed)
+                        <option
+                                value="{{ $key }}"
+                                {{ request('status')  == $key ? 'selected="selected"' : '' }}
+                        >
+                            {{ $payed }}
                         </option>
                     @endforeach
                 </select>
@@ -48,15 +79,18 @@
                     <header class="order__header">
                         <h2>
                             @if($order->provider)
-                                <span class="order__provider">
+                                <span class="order__provider order__header-item">
                             {{ $order->provider->getName() }}
                             </span>
                             @endif
 
-                            <span>{{ $order->getFormattedDate() }}</span>
+                            <span class="order__header-item">{{ $order->getFormattedDate() }}</span>
 
-                            <span>{{ __('futtertrog.status.' . $order->status) }}</span>
+                            <span class="order__header-item">{{ __('futtertrog.status.' . $order->status) }}</span>
+
+                            <span class="order__header-item">{{ $order->payed_at ? __('Payed') : __('Not payed') }}</span>
                         </h2>
+
                         @can('update', $order)
                             <a href="{{ route('orders.edit', $order) }}" class="order__header-link">
                                 {{ __('Edit') }}
@@ -105,6 +139,8 @@
                 </li>
             @endforeach
         </ul>
+
+        {{ $orders->links() }}
     @else
         <p> {{ __('No items found') }}</p>
     @endif

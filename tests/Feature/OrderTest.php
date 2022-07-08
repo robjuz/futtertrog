@@ -78,30 +78,13 @@ class OrderTest extends TestCase
 
 
         foreach ($orders as $order) {
-            $response->assertDontSee($order->provider);
+            $response->assertDontSee($order->subtotal);
 
             $jsonResponse->assertJsonMissing([
                 'provider' => $order->provider,
                 'subtotal' => $order->subtotal
             ]);
         }
-    }
-
-    /** @test */
-    public function it_shows_per_default_today_and_upcoming_orders()
-    {
-        /** @var OrderItem $pastOrder */
-        $pastOrder = OrderItem::factory()->inPast()->create();
-        /** @var OrderItem $todayOrder */
-        $todayOrder = OrderItem::factory()->create();
-        /** @var OrderItem $upcomingOrder */
-        $upcomingOrder = OrderItem::factory()->inFuture()->create();
-
-        $this->loginAsAdmin()
-            ->get(route('orders.index'))
-            ->assertSee($todayOrder->date->isoFormat('L'))
-            ->assertSee($upcomingOrder->date->isoFormat('L'))
-            ->assertDontSee($pastOrder->date->isoFormat('L'));
     }
 
     /** @test */

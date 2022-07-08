@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\Repositories\OrdersRepository;
-use App\User;
-use Carbon\Carbon;
-use Cknow\Money\Money;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
@@ -16,7 +14,7 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -25,19 +23,48 @@ class OrderController extends Controller
     {
         $this->authorize('list', Order::class);
 
-        $orders = $ordersRepository->get($request);
+        $from = $request->has('from') && !empty($request->from) ? $request->date('from') : null;
+        $to = $request->has('to') && !empty($request->to) ? $request->date('to') : null;
+
+        $orders = Order::with(['orderItems.meal', 'orderItems.user'])
+            ->withMin('meals', 'date')
+            ->withMax('meals', 'date')
+            ->whereHas(
+                'orderItems.meal',
+                fn(Builder $query) => $query->when(
+                    $from,
+                    fn(Builder $query) => $query->whereDate('date', '>=', $from->toDateString())
+                )->when(
+                    $to,
+                    fn(Builder $query) => $query->whereDate('date', '<=', $to->toDateString())
+                )
+            )
+            ->when(
+                $request->input('user_id'),
+                fn(Builder $query) => $query->whereRelation('orderItems', 'user_id', $request->input('user_id'))
+            )
+            ->when(
+                $request->input('provider'),
+                fn(Builder $query) => $query->whereRelation('orderItems', 'provider', $request->input('provider'))
+            )
+            ->when(
+                $request->input('status'),
+                fn(Builder $query) => $query->whereRelation('orderItems', 'status', $request->input('status'))
+            )
+            ->when(
+                $request->input('payed'),
+                fn(Builder $query) => $request->input('payed')
+                    ? $query->whereNotNull('payed_at')
+                    : $query->whereNull('payed_at')
+            )
+            ->latest()
+            ->paginate();
 
         if ($request->wantsJson()) {
             return response()->json($orders);
         }
 
-        $from = Carbon::parse($request->query('from', today()));
-
-        $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
-
-        $users = User::orderBy('name')->get();
-
-        return view('order.index', compact('orders', 'from', 'to', 'users'));
+        return view('order.index', compact('orders', 'from', 'to'));
     }
 
     public function edit(Order $order)
@@ -48,8 +75,8 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Order  $order
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Order $order
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -77,8 +104,8 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Request  $request
-     * @param  \App\Order  $order
+     * @param Request $request
+     * @param \App\Order $order
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
      *
      * @throws \Exception

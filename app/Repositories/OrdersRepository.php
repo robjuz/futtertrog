@@ -56,11 +56,4 @@ class OrdersRepository
             })
             ->get();
     }
-
-    public function getByProvider(Request $request)
-    {
-        return $this->get($request)->groupBy(function (Order $order) {
-            return $order->getAttributes()['provider'];
-        });
-    }
 }

@@ -4,17 +4,7 @@
     <form action="{{ route('order_items.store') }}" method="post">
         @csrf
 
-        <label for="user_id">
-            <span>{{__('User')}}</span>
-            @error('user_id'))
-                <span>{{ $message }}</span>
-            @enderror
-        </label>
-        <select id="user_id" name="user_id">
-            @foreach($users as $user)
-                <option value="{{ $user->id }}">{{ $user->name }}</option>
-            @endforeach
-        </select>
+        <x-user-select></x-user-select>
 
         <label for="meal_id">
             <span>{{__('Meal')}}</span>
