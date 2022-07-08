@@ -47,6 +47,6 @@ sentry:releases:deploys:
     GIT_STRATEGY: none
   script:
     - sentry-cli releases finalize $CI_COMMIT_SHA
-    - sentry-cli releases deploys $CI_COMMIT_SHA new -e $CI_ENVIRONMENT_NAME
+    - sentry-cli releases deploys $CI_COMMIT_SHA new -e $CI_COMMIT_REF_SLUG
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
