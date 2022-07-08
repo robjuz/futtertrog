@@ -23,14 +23,15 @@ test:
         coverage_format: cobertura
         path: coverage.cobertura.xml
 
-production_manual:
+
+production:
   variables:
     HELM_RELEASE_NAME: futtertrog
   environment:
     kubernetes:
       namespace: futtertrog
 
-sentry:releases:
+sentry:releases:prepare:
   stage: build
   image: getsentry/sentry-cli
   script:
@@ -39,31 +40,13 @@ sentry:releases:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-
-sentry:releases:staging:
-  stage: staging
+sentry:releases:deploys:
+  stage: performance
   image: getsentry/sentry-cli
   variables:
     GIT_STRATEGY: none
-  needs:
-    - sentry:releases
-    - staging
   script:
     - sentry-cli releases finalize $CI_COMMIT_SHA
-    - sentry-cli releases deploys $CI_COMMIT_SHA new -e staging
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-sentry:releases:production:
-  stage: production
-  image: getsentry/sentry-cli
-  variables:
-    GIT_STRATEGY: none
-  needs:
-    - sentry:releases
-    - production_manual
-  script:
-    - sentry-cli releases finalize $CI_COMMIT_SHA
-    - sentry-cli releases deploys $CI_COMMIT_SHA new -e production
+    - sentry-cli releases deploys $CI_COMMIT_SHA new -e $CI_ENVIRONMENT_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
