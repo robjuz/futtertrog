@@ -2,12 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\DisabledNotification;
 use App\Events\NewOrderPossibility;
 use App\Meal;
 use App\MealProviders\Basic;
 use App\MealProviders\Holzke;
-use App\Notifications\CustomNotification;
 use App\Notifications\NewOrderPossibility as NewOrderPossibilityNotification;
 use App\Notifications\NoOrder;
 use App\Notifications\OpenOrders;
@@ -19,7 +17,6 @@ use App\ScheduledJobs\NoOrderForTodayNotification;
 use App\ScheduledJobs\OpenOrdersForNextWeekNotification;
 use App\User;
 use App\UserSettings;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -66,8 +63,23 @@ class NotificationsTest extends TestCase
     {
         Notification::fake();
 
+        // User with no orders and notification disabled
         $john = User::factory()->create();
 
+
+        // User with orders and notification disabled
+        $peterSettings = new UserSettings();
+        $peterSettings->noOrderForNextDayNotification = true;
+        /** @var User $peter */
+        $peter = User::factory()->create(
+            [
+                'settings' => $peterSettings,
+            ]
+        );
+        $meal = Meal::factory()->create(['date' => today()->addWeekday(),]);
+        $peter->order($meal);
+
+        // User without orders and notification enabled
         $tomSettings = new UserSettings();
         $tomSettings->noOrderForNextDayNotification = true;
         $tom = User::factory()->create(
@@ -79,6 +91,7 @@ class NotificationsTest extends TestCase
         (new NoOrderForNextDayNotification())();
 
         Notification::assertNotSentTo($john, NoOrder::class);
+        Notification::assertNotSentTo($peter, NoOrder::class);
         Notification::assertSentTo($tom, NoOrder::class, function ($message, $channels, $notifialble) {
             $toArray =  $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);

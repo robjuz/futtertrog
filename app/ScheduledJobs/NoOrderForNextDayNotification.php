@@ -17,7 +17,7 @@ class NoOrderForNextDayNotification
                 $query->where('settings->noOrderForNextDayNotification', '1')
                     ->orWhere('settings->noOrderForNextDayNotification', true);
             })
-            ->whereDoesntHave('orderItems.order', function (Builder $q) use ($nextDay) {
+            ->whereDoesntHave('orderItems.meal', function (Builder $q) use ($nextDay) {
                 return $q->whereDate('date', $nextDay);
             })
             ->get();
