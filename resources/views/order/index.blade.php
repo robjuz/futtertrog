@@ -86,6 +86,8 @@
 
                             <span class="order__header-item">{{ $order->getFormattedDate() }}</span>
 
+                            <span class="order__header-item">{{ $order->subtotal }}</span>
+
                             <span class="order__header-item">{{ __('futtertrog.status.' . $order->status) }}</span>
 
                             <span class="order__header-item">{{ $order->payed_at ? __('Payed') : __('Not payed') }}</span>
