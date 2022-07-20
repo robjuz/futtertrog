@@ -55,9 +55,11 @@
     @if($meal->isOrdered())
 
         @can('delete', $meal->orderItem())
-            <form action="{{ route('order_items.destroy', $meal->orderItem()) }}" method="post" class="meal-form">
+            <form action="{{ route('order_items.update', $meal->orderItem()) }}" method="post" class="meal-form">
                 @csrf
-                @method('delete')
+                @method('put')
+                <input type="hidden" name="quantity" value="0">
+                <input type="hidden" name="meal_id" value="{{ $meal->orderItem()->meal_id }}"/>
                 <p> {{ trans_choice('futtertrog.portions_ordered', $meal->orderItem()->quantity) }}</p>
                 <button type="submit">{{ __('Delete order') }}</button>
             </form>

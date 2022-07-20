@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use OpenApi\Annotations as OA;
 
 class OrderItemController extends Controller
@@ -180,12 +181,12 @@ class OrderItemController extends Controller
     }
 
 
-    public function update(Request $request, OrderItem $orderItem): JsonResponse|RedirectResponse
+    public function update(Request $request, OrderItem $orderItem): View|JsonResponse|RedirectResponse
     {
         $data = $request->validate(
             [
-                'user_id' => 'sometimes|exists:users,id',
-                'quantity' => 'sometimes|numeric|min:1,max:10',
+                'user_id' => Rule::when(Auth::user()->is_admin, 'sometimes|exists:users,id'),
+                'quantity' => 'sometimes|numeric|min:0,max:10',
                 'meal_id' => 'required|exists:meals,id',
             ]
         );
@@ -198,17 +199,21 @@ class OrderItemController extends Controller
             return response()->json($orderItem, Response::HTTP_OK);
         }
 
+        if ($request->ajax()) {
+
+            $meal = $orderItem->meal;
+            return view('meal.meal', compact('meal'));
+        }
+
         return redirect()->route('orders.edit', $orderItem->order)->with('success', __('Success'));
     }
 
     /**
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, OrderItem $orderItem): View|JsonResponse|RedirectResponse
+    public function destroy(Request $request, OrderItem $orderItem): JsonResponse|RedirectResponse
     {
         $this->authorize('delete', $orderItem);
-
-        $meal = $orderItem->meal;
 
         $orderItem->delete();
 
@@ -216,10 +221,6 @@ class OrderItemController extends Controller
 
         if ($request->wantsJson()) {
             return response()->json(null, Response::HTTP_NO_CONTENT);
-        }
-
-        if ($request->ajax()) {
-            return view('meal.meal', compact('meal'));
         }
 
         return back(Response::HTTP_FOUND, [], route('order_items.index'))->with('success', __('Success'));

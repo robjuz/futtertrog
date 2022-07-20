@@ -179,6 +179,7 @@ class Meal extends Model
         return OrderItem::query()
             ->whereIn('meal_id', $this->variants()->pluck('id')->merge($this->id))
             ->where('user_id', $user ? $user->id : auth()->id())
+            ->where('quantity', '>', 0)
             ->first();
     }
 }
