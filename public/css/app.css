@@ -418,7 +418,6 @@ legend {
   border-color: var(--custom-4);
   border-radius: 4px;
   box-shadow: 0 0 2px 2px #fff;
-  margin-bottom: 1em;
   margin-left: 6px; /* because of pseudo elements */
   margin-top: calc(1em + 6px); /* because of pseudo elements */
   position: relative; /* to position fancy border */
@@ -611,6 +610,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* necessary for sticky footer */
+  margin: 0 1rem;
 }
 
 aside {
@@ -630,7 +630,6 @@ main {
   margin: auto auto 2em; /* exceptionally margin on bottom because of sticky footer */
   min-width: 300px;
   padding: 0 3vw 3em;
-  width: 80%;
 }
 
 main > h1 {
@@ -663,7 +662,6 @@ header a {
   background: #fff;
   border: 1px solid var(--custom-4);
   box-shadow: 0 0 3px 3px #eee;
-  margin-top: 1em;
   padding: 1em;
 }
 
@@ -1430,18 +1428,6 @@ footer {
 }
 
 /************************************/
-/*------- Order Edit ---------------*/
-/************************************/
-
-[id="orders.edit"] ul {
-  padding-left: 2em;
-}
-
-[id="orders.edit"] ol > li {
-  max-width: 40ch;
-}
-
-/************************************/
 /*------- Orders Index ---------------*/
 /************************************/
 
@@ -1618,7 +1604,9 @@ footer {
 .order__header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .order__header-item:not(:last-child) {
@@ -1633,22 +1621,46 @@ footer {
   text-align: right;
 }
 
+.order__footer {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+.order__footer * + *{
+  margin-top: 0;
+}
+
+.order__form {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.order__form * {
+  margin: 0;
+}
+
 .order-items {
   list-style: none;
-  display: grid;
-  grid-template-columns: 1fr  max-content  max-content max-content 1fr;
-  row-gap: 1rem;
-  column-gap: 2rem;
+  /*display: grid;*/
+  display: flex;
+  flex-direction: column;
+  /*grid-template-columns: 1fr  max-content  max-content max-content 1fr max-content;*/
+  /*row-gap: 1rem;*/
+  /*column-gap: 2rem;*/
+  margin-top: .5rem
 }
 
 .order-item {
   padding-top: .5rem;
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: 1fr  max-content  max-content max-content 1fr;
-  grid-template-columns: subgrid;
-  row-gap: 1rem;
-  column-gap: 2rem;
+  /*display: grid;*/
+  /*grid-column: 1 / -1;*/
+  /*grid-template-columns: 1fr  max-content  max-content max-content 1fr max-content;*/
+  /*grid-template-columns: subgrid;*/
+  /*row-gap: 1rem;*/
+  /*column-gap: 2rem;*/
 }
 
 .order-item--border {
@@ -1657,16 +1669,38 @@ footer {
 
 .order-item__users {
   display: grid;
-  grid-column: -3 / -1;
+  grid-column: -3 / -2;
   grid-template-columns: subgrid;
   list-style: none;
   margin: 0;
+  padding-left: 1rem;
 }
 
 .order-item__user {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: -3 / -1;
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.order-item__actions {
+  align-items: center;
+  margin-top: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.order-item__actions * + * {
+  margin: 0;
+}
+
+.order-item__actions form {
+  width: auto;
+}
+.order-item__actions .icon {
+  margin: 0;
 }
 
 
@@ -1677,6 +1711,8 @@ footer {
 
 .order-item__date {
   grid-column: 1 / 1;
+  margin-top: 1rem;
+  padding-top: 1rem;
 }
 
 .order-item__quantity {
@@ -1688,26 +1724,7 @@ footer {
   margin: 0;
   gap: 1rem;
 }
-@supports (grid-template-columns: subgrid) {
-  .order-item__meal {
-    display: grid;
-    grid-template-columns: subgrid;
-    margin: 0;
-    grid-column: 1 / 4;
-  }
 
-  @media screen and (min-width: 850px) {
-    .order-item__meal {
-      grid-column: 2 / 4;
-    }
-  }
-}
-
-@media screen and (max-width: 666px) {
-  .order-item__users {
-    display: none;
-  }
-}
 
 .order-item__meal * + * {
   margin: 0;

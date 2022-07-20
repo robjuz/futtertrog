@@ -26,7 +26,7 @@ class OrderController extends Controller
         $from = $request->has('from') && !empty($request->from) ? $request->date('from') : null;
         $to = $request->has('to') && !empty($request->to) ? $request->date('to') : null;
 
-        $orders = Order::with(['orderItems.meal', 'orderItems.user'])
+        $orders = Order::query()
             ->withMin('meals', 'date')
             ->withMax('meals', 'date')
             ->whereHas(

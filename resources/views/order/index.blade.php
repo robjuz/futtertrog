@@ -97,45 +97,6 @@
                             </a>
                         @endcan
                     </header>
-
-                    <ul class="order-items">
-                        @foreach($order->orderItems->groupBy(['meal.date.timestamp', 'meal_id']) as $mealsForDate)
-                            @foreach($mealsForDate as $orderItems)
-                                @php
-                                    $meal = $orderItems->first()->meal;
-                                @endphp
-
-                                <li class="order-item {{ $loop->first ? ' order-item--border' : '' }}">
-                                    @if($loop->first)
-                                    <h3 class="order-item__date">{{ $meal->date->isoFormat('L') }}</h3>
-                                    @else
-                                    <span></span>
-                                    @endif
-
-                                    <h4 class="order-item__meal">
-
-                                        <span>{{ $meal->title }}</span>
-                                        <span>{{ $orderItems->sum('quantity') }} &times; {{ $meal->price }}</span>
-
-                                    </h4>
-
-                                    <ul class="order-item__users">
-                                        @foreach($orderItems as $orderItem)
-                                            <li class="order-item__user">
-                                                <span>{{ $orderItem->user->name }}</span>
-
-                                                 <span>&times; {{ $orderItem->quantity }}  </span>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </li>
-                            @endforeach
-                        @endforeach
-                    </ul>
-
-                        <div class="order__subtotal">
-                            {{ $order->subtotal }}
-                        </div>
                 </li>
             @endforeach
         </ul>
