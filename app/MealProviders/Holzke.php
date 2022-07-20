@@ -78,13 +78,15 @@ class Holzke extends AbstractMealProvider
                 $info->calories = $this->extractCalories($mealElement);
                 $info->allergens = $this->extractAllergens($mealElement);
 
-                return [
+                $values =  [
                     'title' => $this->extractTitle($mealElement),
                     'description' => $this->extractDescription($mealElement),
                     'price' => $this->extractPrice($mealElement),
                     'external_id' => $this->extractExternalId($mealElement),
                     'info' => $info,
                 ];
+
+                return array_filter($values);
             },
             (new Document($response))->find('.meal')
         );
