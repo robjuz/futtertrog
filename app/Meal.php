@@ -158,10 +158,12 @@ class Meal extends Model
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->orderItems()
-            ->create(
+            ->updateOrCreate(
                 [
                     'meal_id' => $this->id,
                     'user_id' => $userId,
+                ],
+                [
                     'quantity' => $quantity,
                 ]
             );
