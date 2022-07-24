@@ -69,6 +69,10 @@
             @endif
     </section>
 
+    @if(auth()->user()->is_admin)
+        <x-system-balance />
+    @endif
+
     <section id="deposit-history" class="pot">
         @include('partials.deposit_history')
     </section>

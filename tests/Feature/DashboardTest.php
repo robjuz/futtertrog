@@ -7,6 +7,7 @@ use App\Meal;
 use App\Order;
 use App\OrderItem;
 use App\User;
+use Cknow\Money\Money;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
@@ -84,5 +85,24 @@ class DashboardTest extends TestCase
         $this->login($user)
             ->get(route('home'))
             ->assertDontSee(money($deposit->value));
+    }
+
+    /** @test */
+    public function admin_can_see_current_system_balance()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $user->deposits()->create(['value' => 10]);
+
+        $this->login()
+            ->get(route('home'))
+            ->assertDontSee(__('System balance'))
+            ->assertDontSee(Money::parse(10));
+
+         $this->loginAsAdmin()
+             ->get(route('home'))
+             ->assertSee(__('System balance'))
+             ->assertSee(Money::parse(10));
     }
 }
