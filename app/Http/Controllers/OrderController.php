@@ -69,6 +69,10 @@ class OrderController extends Controller
 
     public function edit(Order $order)
     {
+        $order
+            ->loadMin('meals', 'date')
+            ->loadMax('meals', 'date');
+
         return view('order.edit', compact('order'));
     }
 
