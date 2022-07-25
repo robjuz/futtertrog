@@ -52,7 +52,7 @@ class OrderController extends Controller
                 fn(Builder $query) => $query->whereRelation('orderItems', 'status', $request->input('status'))
             )
             ->when(
-                $request->input('payed'),
+                $request->filled('payed'),
                 fn(Builder $query) => $request->input('payed')
                     ? $query->whereNotNull('payed_at')
                     : $query->whereNull('payed_at')

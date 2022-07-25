@@ -54,13 +54,13 @@
                     @enderror
                 </label>
                 <select id="payed" name="payed">
-                    <option value="" {{ request('payed')  == null ? 'selected="selected"' : '' }}>
+                    <option value="" {{ request('payed') == null ? 'selected="selected"' : '' }}>
                         {{ __('All') }}
                     </option>
                     @foreach([0 => __('Not payed'), 1 => __('Payed')] as $key => $payed)
                         <option
                                 value="{{ $key }}"
-                                {{ request('status')  == $key ? 'selected="selected"' : '' }}
+                                {{ request()->filled('payed') && request('payed')  == $key ? 'selected="selected"' : '' }}
                         >
                             {{ $payed }}
                         </option>
