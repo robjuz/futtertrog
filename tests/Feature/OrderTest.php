@@ -3,8 +3,11 @@
 namespace Tests\Feature;
 
 use App\Meal;
+use App\MealProviders\Holzke;
+use App\MealProviders\Weekly;
 use App\Order;
 use App\OrderItem;
+use App\User;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
@@ -28,7 +31,6 @@ class OrderTest extends TestCase
 
         $this->get(route('orders.index'))->assertForbidden();
     }
-
 
     /** @test */
     public function it_provides_a_list_of_not_empty_orders()
@@ -153,5 +155,35 @@ class OrderTest extends TestCase
 
         $this->assertEquals(Order::STATUS_ORDERED, $order->status);
         $this->assertEquals(Order::STATUS_OPEN, $order->previous_status);
+    }
+
+    /** @test */
+    public function it_shows_order_details()
+    {
+        \Carbon::setTestNow(now()->weekday(3));
+
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+
+
+        $meal1 = Meal::factory()->inPast()->create(['provider' => app(Weekly::class)]);
+        $meal2 = Meal::factory()->inFuture()->create(['provider' => app(Weekly::class)]);
+
+        $user1->order($meal1);
+        $user1->order($meal2);
+        $user2->order($meal1);
+        $user2->order($meal2);
+
+        $order = Order::first();
+
+        $this->loginAsAdmin()
+            ->get(route('orders.edit', $order))
+            ->assertSee($meal1->date->isoFormat('L'))
+            ->assertSee($meal2->date->isoFormat('L'))
+            ->assertSee($meal1->title)
+            ->assertSee($meal2->title)
+            ->assertSee($user1->username)
+            ->assertSee($user2->username);
+
     }
 }

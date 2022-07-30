@@ -4,6 +4,7 @@ namespace App\MealProviders;
 
 use App\Events\NewOrderPossibilities;
 use App\Meal;
+use App\MealProviders\Interfaces\HasWeeklyOrders;
 use App\Order;
 use Exception;
 use Illuminate\Console\Scheduling\Schedule;
@@ -89,16 +90,27 @@ abstract class AbstractMealProvider implements \JsonSerializable
     {
         $date = $date ? Carbon::parse($date) : today();
 
-        return Order::query()
-            ->whereHas('meals', fn(Builder $query) => $query->whereDate('date', $date))
-            ->updateOrCreate(
-                [
-                    'provider' => $this->getKey(),
-                ],
-                [
-                    'status' => Order::STATUS_OPEN,
-                ]
-            );
+        $query = Order::query();
+
+        if ($this instanceof HasWeeklyOrders) {
+            $query = $query->whereHas('meals', function (Builder $query) use ($date) {
+                $query
+                    ->whereDate('date', '>=', $date->startOfWeek())
+                    ->whereDate('date', '<=', $date->endOfWeek());
+            });
+        } else {
+            $query = $query->whereHas('meals', fn(Builder $query) => $query->whereDate('date', $date));
+        }
+
+
+       return $query->updateOrCreate(
+            [
+                'provider' => $this->getKey(),
+            ],
+            [
+                'status' => Order::STATUS_OPEN,
+            ]
+        );
     }
 
     public function notifyAboutNewOrderPossibilities()

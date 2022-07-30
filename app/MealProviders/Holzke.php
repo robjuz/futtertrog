@@ -3,19 +3,19 @@
 namespace App\MealProviders;
 
 use App\MealInfo;
+use App\MealProviders\Interfaces\HasWeeklyOrders;
 use App\Order;
-use App\OrderItem;
 use DiDom\Document;
 use DiDom\Element;
 use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Ixudra\Curl\Facades\Curl;
 use Symfony\Component\HttpFoundation\Response;
 
-class Holzke extends AbstractMealProvider
+class Holzke extends AbstractMealProvider implements HasWeeklyOrders
 {
+
     private string $cookieJar = '';
 
     private bool $isLoggedIn = false;
@@ -281,26 +281,6 @@ class Holzke extends AbstractMealProvider
         }
 
         $this->notifyAboutNewOrderPossibilities();
-    }
-
-    public function getOrder($date = null): Order
-    {
-        $date = $date ? Carbon::parse($date) : today();
-
-        return Order::query()
-            ->whereHas('meals', function (Builder $query) use ($date) {
-                $query
-                    ->whereDate('date', '>=', $date->startOfWeek())
-                    ->whereDate('date', '<=', $date->endOfWeek());
-            })
-            ->updateOrCreate(
-                [
-                    'provider' => $this,
-                ],
-                [
-                    'status' => Order::STATUS_OPEN,
-                ]
-            );
     }
 
     /**
