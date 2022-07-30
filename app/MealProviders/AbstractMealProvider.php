@@ -88,7 +88,7 @@ abstract class AbstractMealProvider implements \JsonSerializable
      */
     public function getOrder($date = null): Order
     {
-        $date = $date ? Carbon::parse($date) : today();
+        $date = $date ? Carbon::parse($date) : now();
 
         $query = Order::query();
 

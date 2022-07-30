@@ -75,7 +75,7 @@ class OrderController extends Controller
             ->loadMax('meals', 'date')
             ->load([
                 'orderItems.meal',
-                'orderItems.user',
+                'orderItems.user' => fn($q) => $q->withTrashed()
             ]);
 
         return view('order.edit', compact('order'));

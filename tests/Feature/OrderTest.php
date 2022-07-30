@@ -160,14 +160,16 @@ class OrderTest extends TestCase
     /** @test */
     public function it_shows_order_details()
     {
-        \Carbon::setTestNow(now()->weekday(3));
+        \Carbon::setTestNow(now()->startOfWeek()->addDays(2));
 
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
 
+        $user2->delete();
 
-        $meal1 = Meal::factory()->inPast()->create(['provider' => app(Weekly::class)]);
-        $meal2 = Meal::factory()->inFuture()->create(['provider' => app(Weekly::class)]);
+
+        $meal1 = Meal::factory()->create(['provider' => app(Weekly::class), 'date' => now()->subDay()]);
+        $meal2 = Meal::factory()->create(['provider' => app(Weekly::class), 'date' => now()->addDay()]);
 
         $user1->order($meal1);
         $user1->order($meal2);
