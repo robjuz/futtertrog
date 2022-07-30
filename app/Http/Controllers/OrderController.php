@@ -29,6 +29,7 @@ class OrderController extends Controller
         $orders = Order::query()
             ->withMin('meals', 'date')
             ->withMax('meals', 'date')
+            ->with('orderItems.meal')
             ->whereHas(
                 'orderItems.meal',
                 fn(Builder $query) => $query->when(
@@ -71,7 +72,11 @@ class OrderController extends Controller
     {
         $order
             ->loadMin('meals', 'date')
-            ->loadMax('meals', 'date');
+            ->loadMax('meals', 'date')
+            ->load([
+                'orderItems.meal',
+                'orderItems.user',
+            ]);
 
         return view('order.edit', compact('order'));
     }

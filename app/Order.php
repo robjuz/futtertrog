@@ -131,6 +131,7 @@ class Order extends Model
 
     public function canBeUpdated()
     {
+
         if (! $this->canBeAutoOrdered()) {
             return false;
         }
