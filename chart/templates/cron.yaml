@@ -27,9 +27,13 @@ spec:
                 - schedule:run
               envFrom:
                 - configMapRef:
-                    name: {{ template "common.names.fullname" . }}-config
+                    name: {{ include "common.names.fullname" . }}-config
                 - secretRef:
-                    name: {{ template "common.names.fullname" . }}-secret
+                    name: {{ include "common.names.fullname" . }}-basic-secret
+              {{- if .Values.application.secretName }}
+                - secretRef:
+                    name: {{ .Values.application.secretName }}
+              {{- end }}
               {{- if .Values.resources }}
               resources: {{- toYaml .Values.cron.resources | nindent 16 }}
               {{- end }}

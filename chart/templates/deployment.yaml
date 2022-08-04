@@ -53,7 +53,7 @@ spec:
             - configMapRef:
                 name: {{ include "common.names.fullname" . }}-config
             - secretRef:
-                name: {{ include "common.names.fullname" . }}-secret
+                name: {{ include "common.names.fullname" . }}-basic-secret
           {{- if .Values.application.secretName }}
             - secretRef:
                 name: {{ .Values.application.secretName }}

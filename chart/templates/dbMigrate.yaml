@@ -20,13 +20,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
-          - configMapRef:
-              name: {{ template "common.names.fullname" . }}-config
-          - secretRef:
-              name: {{ template "common.names.fullname" . }}-secret
+            - configMapRef:
+                name: {{ include "common.names.fullname" . }}-config
+            - secretRef:
+                name: {{ include "common.names.fullname" . }}-basic-secret
           {{- if .Values.application.secretName }}
-          - secretRef:
-              name: {{ .Values.application.secretName }}
+            - secretRef:
+                name: {{ .Values.application.secretName }}
           {{- end }}
           command:
             - php
