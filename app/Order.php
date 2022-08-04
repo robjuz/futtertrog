@@ -91,10 +91,16 @@ class Order extends Model
 
     public function getSubtotalAttribute()
     {
-        return Money::sum(
-            Money::parse(0),
-            ...$this->orderItems->map->subtotal
-        );
+        if (empty($this->attributes['subtotal'])) {
+            $this->loadMissing('orderItems.meal');
+
+            $this->attributes['subtotal'] = Money::sum(
+                   Money::parse(0),
+                ...$this->orderItems->map->subtotal
+            );
+        }
+
+        return $this->attributes['subtotal'];
     }
 
     /**

@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
 
             $payedOrdersValues = Money::sum(
                 Money::parse(0),
-                ...Order::whereNotNull('payed_at')->get()->pluck('subtotal')
+                ...Order::with('orderItems.meal')->whereNotNull('payed_at')->get()->pluck('subtotal')
             );
 
             return $depositesValue->subtract($payedOrdersValues);
