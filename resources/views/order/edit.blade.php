@@ -36,9 +36,6 @@
                 <form class="order__form" action="{{ route('orders.update', $order) }}" method="POST">
                     @method('put')
                     @csrf
-                    <input type="hidden" name="status"
-                           value="{{ $order->status === \App\Order::STATUS_ORDERED ? \App\Order::STATUS_OPEN : \App\Order::STATUS_ORDERED }}">
-
                     <label>
                         <span>{{ __('Payed at') }}</span>
                         @error('payed_at')

@@ -69,7 +69,7 @@ class Order extends Model
         parent::boot();
 
         static::saving(function (self $order) {
-            $order->previous_status = $order->original['status'] ?? null;
+            $order->previous_status = $order->getOriginal('status');
         });
     }
 
