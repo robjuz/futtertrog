@@ -155,6 +155,7 @@ class User extends Authenticatable
     public function futureOrders(): HasMany
     {
         return $this->orderItems()
+            ->whereQuantity('>', 0)
             ->with(['meal'])
             ->whereRelation('meal', 'date', '>', today());
     }
@@ -162,8 +163,9 @@ class User extends Authenticatable
     public function orderHistory(): HasMany
     {
         return $this->orderItems()
-        ->with(['order', 'meal'])
-        ->latest();
+            ->whereQuantity('>', 0)
+            ->with(['order', 'meal'])
+            ->latest();
     }
 
     public function disabledNotifications(): HasMany

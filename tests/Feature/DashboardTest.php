@@ -105,4 +105,41 @@ class DashboardTest extends TestCase
              ->assertSee(__('System balance'))
              ->assertSee(Money::parse(10));
     }
+
+    /**
+     * @test
+     */
+    public function it_does_not_show_order_without_quantity()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Meal $meal */
+        $meal = Meal::factory()->create();
+
+        $orderItem = $user->order($meal);
+
+        $orderItem->update(['quantity' => 0]);
+
+        $this->login($user)
+            ->get(route('home'))
+            ->assertDontSee($meal->title);
+
+        /** @var Meal $meal */
+        $meal = Meal::factory()->inFuture()->create();
+
+        $orderItem = $user->order($meal);
+
+        $orderItem->update(['quantity' => 0]);
+
+        $this->login($user)
+            ->get(route('home'))
+            ->assertDontSee($meal->title);
+
+
+//        foreach ($orderItems as $orderItem) {
+//            $response->assertSee($orderItem->meal->title);
+//            $response->assertSee(__('futtertrog.orderStatus.' . $orderItem->status));
+//        }
+    }
 }
