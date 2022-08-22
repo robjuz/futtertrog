@@ -19,6 +19,9 @@ class NoOrderForTodayNotification
             ->whereDoesntHave('orderItems.meal', function (Builder $q) {
                 return $q->whereDate('date', today());
             })
+            ->whereDoesntHave('disabledNotifications', function(Builder $q) {
+                return $q->where('date', today());
+            })
             ->get();
 
         Notification::send($users, new NoOrder(__('calendar.today')));

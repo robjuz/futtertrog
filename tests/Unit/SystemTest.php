@@ -1,15 +1,12 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Deposit;
 use App\Meal;
 use App\Order;
-use App\OrderItem;
 use App\User;
 use Cknow\Money\Money;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class SystemTest extends TestCase
