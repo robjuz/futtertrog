@@ -28,8 +28,22 @@ class NotificationsTest extends TestCase
     {
         Notification::fake();
 
+        // User with no orders and notification disabled
         $john = User::factory()->create();
 
+        // User with orders and notification disabled
+        $peterSettings = new UserSettings();
+        $peterSettings->noOrderNotification = true;
+        /** @var User $peter */
+        $peter = User::factory()->create(
+            [
+                'settings' => $peterSettings,
+            ]
+        );
+        $meal = Meal::factory()->create(['date' => today()]);
+        $peter->order($meal);
+
+        // User without orders and notification enabled
         $tomSettings = new UserSettings();
         $tomSettings->noOrderNotification = true;
         $tom = User::factory()->create(
@@ -41,6 +55,7 @@ class NotificationsTest extends TestCase
         (new NoOrderForTodayNotification)();
 
         Notification::assertNotSentTo($john, NoOrder::class);
+        Notification::assertNotSentTo($peter, NoOrder::class);
         Notification::assertSentTo($tom, NoOrder::class, function ($message, $channels, $notifialble) {
             $toArray =  $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
@@ -87,6 +102,7 @@ class NotificationsTest extends TestCase
                 'settings' => $tomSettings,
             ]
         );
+
 
         (new NoOrderForNextDayNotification())();
 

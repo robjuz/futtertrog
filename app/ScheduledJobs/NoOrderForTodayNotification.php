@@ -16,11 +16,8 @@ class NoOrderForTodayNotification
                 $query->where('settings->noOrderNotification', '1')
                     ->orWhere('settings->noOrderNotification', true);
             })
-            ->whereDoesntHave('orderItems.order', function (Builder $q) {
+            ->whereDoesntHave('orderItems.meal', function (Builder $q) {
                 return $q->whereDate('date', today());
-            })
-            ->whereDoesntHave('disabledNotifications', function(Builder $q) {
-                return $q->where('date', today());
             })
             ->get();
 
