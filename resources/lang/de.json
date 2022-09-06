@@ -181,5 +181,7 @@
   "Payed": "Bezahlt",
   "Not payed": "Nicht bezahlt",
   "Payed at": "Bezahlt am",
-  "Update order": "Aktualisieren"
+  "Update order": "Aktualisieren",
+  "You can export your orders to an iCal file": "Du kannst deine Bestellungen im iCal format exportieren",
+  "System settings": "Systemeinstellungen"
 }

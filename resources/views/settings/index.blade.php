@@ -16,7 +16,15 @@
     <form method="POST" action="{{ route('settings.store') }}">
         @csrf
         <section>
-            <h2>{{ __('General') }}</h2>
+            <h2>{{ __('iCal') }}</h2>
+
+            {{ __('You can export your orders to an iCal file') }}
+
+            <a href="{{ route('meals.ical', ['api_token' => auth()->user()->api_token]) }}">{{ __('Download as iCal') }}</a>
+        </section>
+
+        <section>
+            <h2>{{ __('System settings') }}</h2>
 
             <label for="{{ \App\UserSettings::LANGUAGE }}">{{ __('Language') }}</label>
             <select name="{{ \App\UserSettings::LANGUAGE }}" id="{{ \App\UserSettings::LANGUAGE }}">
@@ -26,12 +34,6 @@
                     </option>
                 @endforeach
             </select>
-
-            <a href="{{ route('meals.ical', ['api_token' => auth()->user()->api_token]) }}">{{ __('Download as iCal') }}</a>
-        </section>
-
-        <section>
-            <h2>{{ __('Surprise me') }}</h2>
 
             <input type="hidden" name="{{ \App\UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION }}" value="0">
             <input type="checkbox"
