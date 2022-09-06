@@ -6,12 +6,14 @@ use App\Events\NewOrderPossibility;
 use App\Http\Requests\MealStoreRequest;
 use App\Http\Requests\MealUpdateRequest;
 use App\Meal;
+use App\OrderItem;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
 use App\User;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -64,6 +66,12 @@ class MealController extends Controller
         $notificationEnabledThisDay = $user->disabledNotifications()->where('date', $request->input('date'))->doesntExist();
         $noOrderNotification =  $user->settings->noOrderNotification ?? false;
 
+        if ($this->shouldRedirectToOtherDate($request)) {
+            /** @var Meal $meal */
+            $meal = Meal::where('date', '>', today())->orderBy('date')->first();
+
+            return redirect()->route('meals.index', ['date' => $meal->date->toDateString()]);
+        }
 
         $requestedDate = Carbon::parse($request->query('date', today()));
 
@@ -200,5 +208,17 @@ class MealController extends Controller
         }
 
         return redirect()->route('meals.create')->with('success', __('Deleted'));
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    private function shouldRedirectToOtherDate(Request $request): bool
+    {
+        return $request->missing('date')
+            && ($request->user()->settings->redirectToNextDay ?? false)
+            && ($request->user()->orderItems()->today()->exists() || Meal::where('date', today())->doesntExist())
+            && Meal::where('date', '>', today())->exists();
     }
 }

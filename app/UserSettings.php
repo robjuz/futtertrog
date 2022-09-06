@@ -19,6 +19,7 @@ class UserSettings implements Castable, Arrayable, JsonSerializable
     const HIDE_DASHBOARD_MEAL_DESCRIPTION = 'hideDashboardMealDescription';
     const HIDE_ORDERING_MEAL_DESCRIPTION = 'hideOrderingMealDescription';
     const LANGUAGE = 'language';
+    const REDIRECT_TO_NEXT_DAY = 'redirectToNextDay';
 
     public bool $newOrderPossibilityNotification = false;
     public bool $noOrderNotification = false;
@@ -29,6 +30,7 @@ class UserSettings implements Castable, Arrayable, JsonSerializable
     public ?string $mealPreferences = '';
     public ?string $mealAversion = '';
     public ?string $language = null;
+    public bool $redirectToNextDay = false;
 
     public static function castUsing(array $arguments): string
     {
@@ -47,6 +49,7 @@ class UserSettings implements Castable, Arrayable, JsonSerializable
             self::HIDE_DASHBOARD_MEAL_DESCRIPTION => $this->hideDashboardMealDescription,
             self::HIDE_ORDERING_MEAL_DESCRIPTION => $this->hideOrderingMealDescription,
             self::LANGUAGE => $this->language,
+            self::REDIRECT_TO_NEXT_DAY => $this->redirectToNextDay,
         ];
     }
 

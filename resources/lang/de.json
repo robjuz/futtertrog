@@ -183,5 +183,6 @@
   "Payed at": "Bezahlt am",
   "Update order": "Aktualisieren",
   "You can export your orders to an iCal file": "Du kannst deine Bestellungen im iCal format exportieren",
-  "System settings": "Systemeinstellungen"
+  "System settings": "Systemeinstellungen",
+  "Redirect to next day without orders": "Weiterleiten zum erstem Tag ohne Bestellungen"
 }

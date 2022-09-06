@@ -56,6 +56,19 @@
             <label for="{{ \App\UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION }}">
                 {{ __('Hide meal description on ordering list') }}
             </label>
+
+            <hr>
+
+            <input type="hidden" name="{{ \App\UserSettings::REDIRECT_TO_NEXT_DAY }}" value="0">
+            <input type="checkbox"
+                   name="{{ \App\UserSettings::REDIRECT_TO_NEXT_DAY }}"
+                   id="{{ \App\UserSettings::REDIRECT_TO_NEXT_DAY }}"
+                   {{ old(\App\UserSettings::REDIRECT_TO_NEXT_DAY, $settings->redirectToNextDay) ? 'checked' : '' }}
+                   value="1"
+            >
+            <label for="{{ \App\UserSettings::REDIRECT_TO_NEXT_DAY }}">
+                {{ __('Redirect to next day without orders') }}
+            </label>
         </section>
 
         <section>

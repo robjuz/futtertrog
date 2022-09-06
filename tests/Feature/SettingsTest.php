@@ -33,6 +33,7 @@ class SettingsTest extends TestCase
             UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION => 0,
             UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION => 0,
             UserSettings::LANGUAGE => 'de',
+            UserSettings::REDIRECT_TO_NEXT_DAY => 1,
         ];
 
         $this->login()
@@ -49,6 +50,7 @@ class SettingsTest extends TestCase
             UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION => false,
             UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION => false,
             UserSettings::LANGUAGE => 'de',
+            UserSettings::REDIRECT_TO_NEXT_DAY => true,
         ];
     
         $this->login()->postJson(route('settings.store'), $jsonData)->assertJson($jsonData);

@@ -383,4 +383,58 @@ class MealTest extends TestCase
             ->assertSee($meal1->title)
             ->assertDontSee($meal2->title);
     }
+
+    /**
+     * @test
+     */
+    public function it_redirects_to_the_next_day_without_orders_when_user_opted_in()
+    {
+        $johnSettings = new UserSettings();
+        $johnSettings->redirectToNextDay = true;
+
+        /** @var User $john */
+        $john = User::factory()->create(
+            [
+                'settings' => $johnSettings
+            ]
+        );
+
+
+        $saraSettings = new UserSettings();
+        $saraSettings->redirectToNextDay = false;
+
+        /** @var User $sara */
+        $sara = User::factory()->create(
+            [
+                'settings' => $saraSettings
+            ]
+        );
+
+
+        /** @var Meal $meal1 */
+        $meal1 = Meal::factory()->create(
+            [
+                'date' => today(),
+            ]
+        );
+
+        $dateToRedirect = today()->addWeekdays(3);
+
+        Meal::factory()->create(
+            [
+                'date' => $dateToRedirect
+            ]
+        );
+
+        $john->order($meal1);
+        $sara->order($meal1);
+
+        $this->login($john)
+            ->get(route('meals.index'))
+            ->assertRedirect(route('meals.index', ['date' => $dateToRedirect->toDateString()]));
+
+        $this->login($sara)
+            ->get(route('meals.index'))
+            ->assertOk();
+    }
 }

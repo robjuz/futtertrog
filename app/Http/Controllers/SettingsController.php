@@ -44,6 +44,7 @@ class SettingsController extends Controller
             UserSettings::HIDE_DASHBOARD_MEAL_DESCRIPTION => ['required', 'boolean'],
             UserSettings::HIDE_ORDERING_MEAL_DESCRIPTION => ['required', 'boolean'],
             UserSettings::LANGUAGE => ['required', Rule::in(config('app.supported_locale'))],
+            UserSettings::REDIRECT_TO_NEXT_DAY => ['required', 'boolean'],
         ]);
 
         /** @var User $user */
