@@ -46,6 +46,7 @@ class OrdersRepository
 
         return $user->orderItems()
             ->with(['meal'])
+            ->where('quantity','>', 0)
             ->whereHas('meal', function (Builder $query) use ($fromDate, $toDate) {
                 $query->when($fromDate, function (Builder $query) use ($fromDate) {
                     return $query->whereDate('date', '>=', $fromDate);

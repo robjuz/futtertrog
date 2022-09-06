@@ -13,9 +13,11 @@ class IcalTest extends TestCase
     /** @test */
     public function it_allows_to_export_users_order_history_to_ical()
     {
+        /** @var User $user */
         $user = User::factory()->create();
         $meal = Meal::factory()->create(['title' => 'menu 1', 'description' => 'menu 1 desc']);
-        $orderItem = OrderItem::factory()->create(['user_id' => $user->id, 'meal_id' => $meal->id]);
+
+        $orderItem = $user->order($meal);
 
         $this->login($user)
             ->get(route('meals.ical'))
@@ -76,5 +78,37 @@ class IcalTest extends TestCase
             ]))
             ->assertSee($todayMeal->title)
             ->assertDontSee($tomorrowMeal->title);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_show_order_without_quantity()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Meal $meal */
+        $meal = Meal::factory()->create();
+
+        $orderItem = $user->order($meal);
+
+        $orderItem->update(['quantity' => 0]);
+
+        $this->login($user)
+            ->get(route('meals.ical'))
+            ->assertDontSee($orderItem->meal->title);
+
+
+        /** @var Meal $meal */
+        $meal = Meal::factory()->inFuture()->create();
+
+        $orderItem = $user->order($meal);
+
+        $orderItem->update(['quantity' => 0]);
+
+        $this->login($user)
+            ->get(route('meals.ical'))
+            ->assertDontSee($orderItem->meal->title);
     }
 }
