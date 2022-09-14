@@ -24,18 +24,7 @@
                 {{ __('Actions') }}
             </h2>
 
-            @if($noOrderNotification)
-                <form action="{{ route('notification.disable') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="date" value="{{ request('date', today()->toDateString()) }}">
-                    @if ($notificationEnabledThisDay)
-                        <button type="submit">{{ __('Disable No order for today notification') }}</button>
-                    @else
-                        @method('delete')
-                        <button type="submit">{{ __('Enable No order for today notification') }}</button>
-                    @endif
-                </form>
-            @endif
+            <x-disable-no-order-notification :user="request()->user()" :date="$requestedDate"/>
         </aside>
         @if(($todayMeals)->isNotEmpty())
             <ol class="tiles">

@@ -21,6 +21,9 @@ class NoOrderForNextWeekNotification
             ->whereDoesntHave('orderItems.order', function (Builder $q) use ($nextMonday, $nextSunday) {
                 return $q->whereBetween('date', [$nextMonday, $nextSunday]);
             })
+            ->whereDoesntHave('disabledNotifications', function(Builder $q) use ($nextMonday, $nextSunday) {
+                return $q->whereBetween('date', [$nextMonday, $nextSunday]);
+            })
             ->get();
 
         Notification::send($users, new NoOrder(__('Next week')));

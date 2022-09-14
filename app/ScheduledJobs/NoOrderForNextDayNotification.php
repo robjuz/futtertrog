@@ -20,6 +20,9 @@ class NoOrderForNextDayNotification
             ->whereDoesntHave('orderItems.meal', function (Builder $q) use ($nextDay) {
                 return $q->whereDate('date', $nextDay);
             })
+            ->whereDoesntHave('disabledNotifications', function(Builder $q) {
+                return $q->where('date', today()->addDay());
+            })
             ->get();
 
         Notification::send($users, new NoOrder(__('calendar.'.$nextDay->englishDayOfWeek)));

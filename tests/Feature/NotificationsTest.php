@@ -386,4 +386,50 @@ class NotificationsTest extends TestCase
         Notification::assertNotSentTo($tom, NoOrder::class);
 
     }
+
+    /** @test */
+    public function it_does_not_sent_a_no_order_for_next_day_notification_to_users_that_opted_in_but_turned_off_the_notification()
+    {
+        Notification::fake();
+
+        $settings = new UserSettings();
+        $settings->noOrderForNextDayNotification = true;
+
+        /** @var User $tom */
+        $tom = User::factory()->create(
+            [
+                'settings' => $settings,
+            ]
+        );
+
+        $tom->disabledNotifications()->create(['date' => today()->addDay()]);
+
+        (new NoOrderForNextDayNotification())();
+
+        Notification::assertNotSentTo($tom, NoOrder::class);
+
+    }
+
+    /** @test */
+    public function it_does_not_sent_a_no_order_for_next_week_notification_to_users_that_opted_in_but_turned_off_the_notification()
+    {
+        Notification::fake();
+
+        $settings = new UserSettings();
+        $settings->noOrderForNextWeekNotification = true;
+
+        /** @var User $tom */
+        $tom = User::factory()->create(
+            [
+                'settings' => $settings,
+            ]
+        );
+
+        $tom->disabledNotifications()->create(['date' => today()->addWeek()]);
+
+        (new NoOrderForNextWeekNotification())();
+
+        Notification::assertNotSentTo($tom, NoOrder::class);
+
+    }
 }

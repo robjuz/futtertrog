@@ -60,11 +60,8 @@ class MealController extends Controller
      */
     public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {
-
         /** @var User $user */
         $user = $request->user();
-        $notificationEnabledThisDay = $user->disabledNotifications()->where('date', $request->input('date'))->doesntExist();
-        $noOrderNotification =  $user->settings->noOrderNotification ?? false;
 
         if ($this->shouldRedirectToOtherDate($request)) {
             /** @var Meal $meal */
@@ -74,7 +71,6 @@ class MealController extends Controller
         }
 
         $requestedDate = Carbon::parse($request->query('date', today()));
-
         $todayMeals = Meal::forDate($requestedDate)
             ->whereNull('parent_id')
             ->byProvider($request->provider)
@@ -88,7 +84,10 @@ class MealController extends Controller
 
         $todayMeals->load('orderItems.order');
 
-        return view('meal.index', compact('todayMeals', 'requestedDate','noOrderNotification','notificationEnabledThisDay'));
+        return view(
+            'meal.index',
+            compact('todayMeals', 'requestedDate')
+        );
     }
 
     /**
