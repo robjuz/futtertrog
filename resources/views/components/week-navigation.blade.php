@@ -27,7 +27,7 @@
                     <span class="weekday">{{ @trans('calendar.'.$date->format('l')) }}</span>
                     <span class="day">{{ $date->day }}</span>
 
-                    @if(auth()->user()->orderItems()->date($date)->exists())
+                    @if(auth()->user()->orderItems()->date($date)->positive()->exists())
                         <p class="ordered">{{__('Ordered')}}</p>
                     @elseif($meals->forDate($date)->count())
                         <p class="order">{{ __(':count order possibilities', [ 'count' => $meals->forDate($date)->count()]) }}</p>

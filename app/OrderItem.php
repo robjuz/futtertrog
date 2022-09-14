@@ -85,4 +85,9 @@ class OrderItem extends Model
     {
         return $query->whereRelation('meal', 'date', $date);
     }
+
+    public function scopePositive(Builder $query)
+    {
+        return $query->where('quantity','>', 0);
+    }
 }

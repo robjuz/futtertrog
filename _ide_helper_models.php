@@ -151,6 +151,8 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem query()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem today()
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem date()
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem positive()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereMealId($value)
