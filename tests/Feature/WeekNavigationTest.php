@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Meal;
 use App\User;
+use App\UserSettings;
 use App\View\Components\WeekNavigation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -56,6 +57,32 @@ class WeekNavigationTest extends TestCase
         $view = $this->component(WeekNavigation::class);
 
         $view->assertDontSee(__('Ordered'));
+
+    }
+    /**
+     * @test
+     */
+    public function it_shows_an_notifications_disabled_icon(){
+        $settings = new UserSettings();
+        $settings->noOrderForNextWeekNotification = true;
+
+        /** @var User $tom */
+        $user = User::factory()->create(
+            [
+                'settings' => $settings,
+            ]
+        );
+
+        $this->login($user);
+
+        $view = $this->component(WeekNavigation::class);
+        $view->assertDontSee('week-navigation__icon--notification-disabled');
+
+        $user->disabledNotifications()->create(['date' => today()]);
+
+        $view = $this->component(WeekNavigation::class);
+        $view->assertSee('week-navigation__icon--notification-disabled');
+
 
     }
 }

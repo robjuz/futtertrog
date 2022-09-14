@@ -258,64 +258,6 @@ html {
 }
 
 /************************************/
-/*------- Custom -------------------*/
-/*- Keep this section here to allow-*/
-/*- simple overriding with cascade -*/
-/************************************/
-
-/*-- POT BOTTOM --*/
-.pot,
-.user-show > section,
-[id="settings.index"] section,
-[id="current-offer"] li.selected,
-[id="calendar"] li.selected {
-  background: #fff;
-  border: 3px solid;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-  border-color: var(--custom-2);
-  border-top-width: 0;
-  padding: 1em;
-  position: relative;
-}
-
-/*-- POT LID --*/
-.pot::before,
-.user-show > section::before,
-[id="settings.index"] section::before,
-[id="current-offer"] li.selected::before,
-[id="calendar"] li.selected::before {
-  border-bottom: 7px solid;
-  border-bottom-color: inherit;
-  border-radius: 999px;
-  content: "";
-  left: -10px;
-  position: absolute;
-  right: -10px;
-  top: -10px;
-}
-
-/*-- POT LID HANDLE --*/
-.pot::after,
-.user-show > section::after,
-[id="settings.index"] section::after,
-[id="current-offer"] li.selected::after,
-[id="calendar"] li.selected::after {
-  border: 0.4em solid;
-  border-color: inherit;
-  border-radius: 50%;
-  content: "";
-  display: block;
-  height: 0;
-  left: 50%;
-  margin-right: -0.4em;
-  position: absolute;
-  top: -20px;
-  transform: translate(-50%);
-  width: 0;
-}
-
-/************************************/
 /*------- Tables -------------------*/
 /************************************/
 table {
@@ -831,7 +773,7 @@ footer {
 /*------- Calendar -----------------*/
 /************************************/
 
-[id="calendar"] {
+.week-navigation {
   background: rgba(255, 255, 255, 0.85);
   box-shadow: 0 0 15px 10px #fff;
   display: grid;
@@ -841,11 +783,7 @@ footer {
   padding: 0.5em 0;
 }
 
-[id="calendar"] > header {
-
-}
-
-[id="calendar"] > header {
+.week-navigation__header {
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -855,86 +793,88 @@ footer {
 }
 
 @media (min-width: 580px) {
-  [id="calendar"] > header {
+  .week-navigation__header {
     flex-wrap: nowrap;
   }
 
-  [id="calendar"] > header > a:first-of-type {
+  .week-navigation__header a:first-of-type {
     order: -1;
   }
 
 }
 
-[id="calendar"] > header a {
+.week-navigation__header a {
   white-space: nowrap;
 }
 
-[id="calendar"] > header h1 {
+.week-navigation__header h1 {
   margin: 0;
   flex: 1;
 }
 
 /* 1, 2 - For nice effect on hover */
-[id="calendar"] ol {
+.week-navigation__list {
   display: flex;
   grid-row: 2;
   list-style-type: none;
   margin-top: 0; /* 1 */
   overflow-x: auto;
-  padding-left: 0;
   padding-top: 2em; /* 2 */
+
+  padding-left: -0.25em;
+  padding-right: -0.25em;
 }
 
-[id="calendar"] > ol > li {
+.week-navigation__list-item {
   background: #fff;
   border: 1px solid;
   border-color: var(--custom-4);
   border-radius: 10px;
   display: block;
   flex: 1 0 100px;
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+  padding: 0 !important;
 }
 
-[id="calendar"] > ol > li:first-child {
+.week-navigation__list-item:first-child {
   margin-left: 1px;
 }
 
-[id="calendar"] > ol > li:last-child {
+.week-navigation__list-item:last-child {
   margin-right: 1px;
 }
 
-[id="calendar"] li.weekend {
+.week-navigation__list-item--weekend {
   background: #eaeaea;
   border-color: var(--custom-3);
 }
 
-[id="calendar"] li.today {
+.week-navigation__list-item--today {
   border-color: var(--custom-2);
 }
 
 /* styled as POT */
-[id="calendar"] li.selected {
+.week-navigation__list-item--selected {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   font-weight: bold;
   padding: 0;
 }
 
-[id="calendar"] > ol > li:hover {
+.week-navigation__list-item:hover {
   border-color: var(--custom-2);
-  padding: 0;
 }
 
-[id="calendar"] svg {
+.week-navigation__icon--notification-disabled {
   height: auto;
   width: 1.5em;
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 
-[id="calendar"] * + li {
-  margin-left: 0.25em;
-  margin-right: 0.25em;
-}
-
-[id="calendar"] ol li > * {
+.week-navigation__list-item > * {
   align-items: center;
   display: flex;
   flex-direction: column-reverse;
@@ -943,6 +883,7 @@ footer {
   padding: 0.5em;
   text-decoration: none;
   width: 100%;
+  position: relative;
 }
 
 [id="calendar"] * > span {
@@ -1732,4 +1673,55 @@ footer {
 
 .order-item__price {
   margin: 0;
+}
+
+
+
+/*-- POT BOTTOM --*/
+.pot,
+.user-show > section,
+[id="settings.index"] section,
+[id="current-offer"] li.selected {
+  background: #fff;
+  border: 3px solid;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-color: var(--custom-2);
+  border-top-width: 0;
+  padding: 1em;
+  position: relative;
+}
+
+/*-- POT LID --*/
+.pot::before,
+.user-show > section::before,
+[id="settings.index"] section::before,
+[id="current-offer"] li.selected::before {
+  border-bottom: 7px solid;
+  border-bottom-color: inherit;
+  border-radius: 999px;
+  content: "";
+  left: -10px;
+  position: absolute;
+  right: -10px;
+  top: -10px;
+}
+
+/*-- POT LID HANDLE --*/
+.pot::after,
+.user-show > section::after,
+[id="settings.index"] section::after,
+[id="current-offer"] li.selected::after {
+  border: 0.4em solid;
+  border-color: inherit;
+  border-radius: 50%;
+  content: "";
+  display: block;
+  height: 0;
+  left: 50%;
+  margin-right: -0.4em;
+  position: absolute;
+  top: -20px;
+  transform: translate(-50%);
+  width: 0;
 }
