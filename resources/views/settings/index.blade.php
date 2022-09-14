@@ -121,7 +121,7 @@
             <input type="checkbox"
                    name="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
                    id="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}"
-                   {{ old(\App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION, $settings->noOrderForNextDayNotification) ? 'checked' : '' }}
+                   {{ old(\App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION, $settings->noOrderForNextWeekNotification) ? 'checked' : '' }}
                    value="1"
             >
             <label for="{{ \App\UserSettings::NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION }}">
