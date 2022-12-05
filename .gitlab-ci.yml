@@ -16,12 +16,12 @@ test:
     - cp .env.example .env
     - php artisan key:gen
   script:
-    - vendor/bin/phpunit --stop-on-error --coverage-text --coverage-cobertura=coverage.cobertura.xml
+    - vendor/bin/phpunit --stop-on-error --coverage-text --coverage-cobertura=coverage.xml
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: coverage.cobertura.xml
+        path: coverage.xml
 
 sonarqube-check:
   stage: test
