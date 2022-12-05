@@ -18,6 +18,8 @@ test:
   script:
     - vendor/bin/phpunit --stop-on-error --coverage-text --coverage-cobertura=coverage.xml
   artifacts:
+    paths:
+      -  coverage.xml
     reports:
       coverage_report:
         coverage_format: cobertura
