@@ -110,7 +110,7 @@ class MealOrderingTest extends TestCase
         $meal2 = Meal::factory([
             'date' => today()->addDay(),
             'provider' => $meal1->provider
-        ] )->create();
+        ])->create();
 
         /** @var User $user */
         $user = User::factory()->create();
@@ -139,6 +139,42 @@ class MealOrderingTest extends TestCase
                 && $event->user->is($user)
                 && $event->orderItem->is($orderItem);
         });
+    }
+
+    /**  @test */
+    public function it_updates_its_status()
+    {
+        /** @var Meal $meal1 */
+        $meal1 = Meal::factory(['date' => today()->addDay()])->create();
+
+        /** @var Meal $meal2 */
+        $meal2 = Meal::factory([
+            'date' => today()->addDay(),
+            'provider' => $meal1->provider
+        ])->create();
+
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $orderItem = $user->order($meal1);
+        $order = $orderItem->order;
+
+        $this->assertEquals(Order::STATUS_OPEN, $order->status);
+
+        $order->markOrdered();
+        $this->assertEquals(Order::STATUS_ORDERED, $order->status);
+
+        $user->order($meal2);
+        $order->refresh();
+        $this->assertEquals(Order::STATUS_OPEN, $order->status);
+
+        $order->markOrdered();
+        $order->refresh();
+        $this->assertEquals(Order::STATUS_ORDERED, $order->status);
+
+        $this->login($user)->putJson(route('order_items.update', $orderItem), ['quantity' => 2]);
+        $order->refresh();
+        $this->assertEquals(Order::STATUS_OPEN, $order->status);
     }
 
     /** @test */
@@ -327,9 +363,9 @@ class MealOrderingTest extends TestCase
         $this->get(route('order_items.create', [
             'date' => $meal->date->toDateString(),
         ]))
-        ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
-            return $meals->contains($variant) && !$meals->contains($meal);
-        });
+            ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
+                return $meals->contains($variant) && !$meals->contains($meal);
+            });
     }
 
     /** @test */

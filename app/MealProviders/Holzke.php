@@ -224,7 +224,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      *
      * @throws InvalidSelectorException
      */
-    private function getLastOrderId(): ?string
+    protected function getLastOrderId(): ?string
     {
         $response = Curl::to('https://holzke-menue.de/de/meine-kundendaten/meine-bestellungen.html')
             ->setCookieFile($this->cookieJar)
@@ -266,6 +266,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         }
 
         $schedule->call([$this, 'getAllUpcomingMeals'])->dailyAt('10:00');
+        $schedule->call([$this, 'autoOrder'])->weekdays()->at('7:20');
     }
 
     public function getAllUpcomingMeals()
@@ -283,6 +284,17 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         $this->notifyAboutNewOrderPossibilities();
     }
 
+    public function autoOrder(): void
+    {
+        $order = $this->getOrder(now());
+
+        if ($order->canBeUpdated()) {
+            $order->updateOrder();
+        } else if ($order->canBeAutoOrdered()) {
+            $order->placeOrder();
+        }
+    }
+
     /**
      * @param Order $order
      * @return void
@@ -298,4 +310,6 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
             }
         }
     }
+
+
 }

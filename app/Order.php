@@ -114,7 +114,7 @@ class Order extends Model
         return new OrderCollection($models);
     }
 
-    public function canBeAutoOrdered()
+    public function canBeAutoOrdered(): bool
     {
         if (! $this->provider) {
             return false;
@@ -135,7 +135,7 @@ class Order extends Model
         return true;
     }
 
-    public function canBeUpdated()
+    public function canBeUpdated(): bool
     {
 
         if (! $this->canBeAutoOrdered()) {

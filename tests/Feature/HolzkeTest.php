@@ -8,10 +8,12 @@ use App\Meal;
 use App\Notifications\NewOrderPossibilities as NewOrderPossibilitiesNotification;
 use App\MealProviders\CallAPizza;
 use App\MealProviders\Holzke;
+use App\Order;
 use App\Services\MealService;
 use App\User;
 use App\UserSettings;
 use Illuminate\Support\Facades\Event;
+use Ixudra\Curl\Builder;
 use Ixudra\Curl\Facades\Curl;
 use Mockery;
 use Tests\TestCase;
@@ -20,6 +22,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Mockery\MockInterface;
+use function PHPUnit\Framework\once;
 
 class HolzkeTest extends TestCase
 {
@@ -139,5 +142,65 @@ class HolzkeTest extends TestCase
         });
 
         app(Holzke::class)->getAllUpcomingMeals();
+    }
+
+    /** @test */
+    public function it_allows_to_auto_order()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Meal $meal1 */
+        $meal = Meal::factory()->create([
+            'provider' => Holzke::class,
+            'date' => Carbon::today(),
+            'external_id' => '111'
+        ]);
+
+        /** @var Meal $meal1 */
+        $meal2 = Meal::factory()->create([
+            'provider' => Holzke::class,
+            'date' => Carbon::today()->addWeek(),
+            'external_id' => '222'
+        ]);
+
+        $orderItem1 = $user->order($meal);
+        $order1 = $orderItem1->order;
+        $order2 = $user->order($meal2)->order;
+
+        $this->assertTrue($order1->canBeAutoOrdered());
+        $this->assertTrue($order2->canBeAutoOrdered());
+
+
+        $this->partialMock(Holzke::class, function (MockInterface $mock) {
+            $mock->shouldAllowMockingProtectedMethods();
+            $mock->shouldReceive('getKey')
+                ->andReturn('Holzke');
+
+            $mock
+                ->shouldReceive('getLastOrderId')
+                ->once()
+                ->andReturn('123');
+        });
+
+        app(Holzke::class)->autoOrder();
+
+        $order1->refresh();
+
+        $this->assertEquals('123', $order1->external_id);
+        $this->assertEquals(Order::STATUS_ORDERED, $order1->status);
+
+        $this->assertNull($order2->fresh()->external_id);
+        $this->assertEquals(Order::STATUS_OPEN, $order2->status);
+
+        $this->login($user)
+            ->putJson(route('order_items.update', $orderItem1), ['quantity' => 2]);
+
+        $order1->refresh();
+
+        $this->assertEquals(Order::STATUS_OPEN, $order1->status);
+
+        $this->assertTrue($order1->canBeAutoOrdered());
+        $this->assertTrue($order1->canBeUpdated());
     }
 }

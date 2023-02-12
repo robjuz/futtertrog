@@ -187,11 +187,12 @@ class OrderItemController extends Controller
             [
                 'user_id' => Rule::when(Auth::user()->is_admin, 'sometimes|exists:users,id'),
                 'quantity' => 'sometimes|numeric|min:0,max:10',
-                'meal_id' => 'required|exists:meals,id',
+                'meal_id' => 'sometimes|exists:meals,id',
             ]
         );
 
         $orderItem->update($data);
+        $orderItem->order->reopen();
 
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
@@ -216,6 +217,7 @@ class OrderItemController extends Controller
         $this->authorize('delete', $orderItem);
 
         $orderItem->delete();
+        $orderItem->order->reopen();
 
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
