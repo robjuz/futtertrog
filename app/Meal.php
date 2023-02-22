@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use OpenApi\Annotations as OA;
 
@@ -25,7 +26,12 @@ use OpenApi\Annotations as OA;
  *      @OA\Property( property="price", type="number", format="float"),
  *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
  *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
- *      @OA\Property( property="variants",type="array", @OA\Items( type="object", ref="#/components/schemas/Meal" ), nullable=true ),
+ *      @OA\Property(
+ *          property="variants",
+ *          type="array",
+ *          nullable=true,
+ *          @OA\Items( type="object", ref="#/components/schemas/Meal" )
+ *      ),
  *      @OA\Property( property="parent", type="object", ref="#/components/schemas/Meal", nullable=true ),
  *  ),
  * @mixin IdeHelperMeal
@@ -154,26 +160,30 @@ class Meal extends Model
     {
         $userId = $user->id ?? $user;
 
-        $order = $this->provider->getOrder($this->date);
+        return DB::transaction(function() use ($userId, $quantity) {
+            $order = $this->provider->getOrder($this->date);
 
-        /** @var OrderItem $orderItem */
-        $orderItem = $order->orderItems()
-            ->updateOrCreate(
-                [
-                    'meal_id' => $this->id,
-                    'user_id' => $userId,
-                ],
-                [
-                    'quantity' => $quantity,
-                ]
-            );
+            /** @var OrderItem $orderItem */
+            $orderItem = $order->orderItems()
+                ->updateOrCreate(
+                    [
+                        'meal_id' => $this->id,
+                        'user_id' => $userId,
+                    ],
+                    [
+                        'quantity' => $quantity,
+                    ]
+                );
 
-        return $orderItem;
+            $order->reopen();
+
+            return $orderItem;
+        });
     }
 
     public function isOrdered(User $user = null): bool
     {
-        return !! $this->orderItem($user);
+        return (bool) $this->orderItem($user);
     }
 
     public function orderItem(User $user = null): ?OrderItem

@@ -103,14 +103,7 @@ abstract class AbstractMealProvider implements \JsonSerializable
         }
 
 
-       return $query->updateOrCreate(
-            [
-                'provider' => $this->getKey(),
-            ],
-            [
-                'status' => Order::STATUS_OPEN,
-            ]
-        );
+        return $query->firstOrCreate(['provider' => $this->getKey()], ['status' => Order::STATUS_OPEN]);
     }
 
     public function notifyAboutNewOrderPossibilities()
@@ -134,13 +127,6 @@ abstract class AbstractMealProvider implements \JsonSerializable
 
     public function getName(): string
     {
-        return class_basename($this);
+        return $this->getKey();
     }
-
-//    public function __serialize(): array
-//    {
-//        return [
-//            'test' => 'test'
-//        ];
-//    }
 }

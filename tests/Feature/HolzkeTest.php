@@ -203,4 +203,42 @@ class HolzkeTest extends TestCase
         $this->assertTrue($order1->canBeAutoOrdered());
         $this->assertTrue($order1->canBeUpdated());
     }
+
+    public function testGetOrder()
+    {
+        $holzke = app(Holzke::class);
+
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Meal $meal */
+        $meal = Meal::factory()->create(
+            [
+                'provider' => Holzke::class,
+                'date' => Carbon::today(),
+                'external_id' => '111'
+            ]
+        );
+
+        $this->assertDatabaseCount('orders', 0);
+
+        $user->order($meal);
+
+        $order = $holzke->getOrder(now());
+
+
+        $this->assertEquals(Order::STATUS_OPEN, $order->status);
+        $this->assertDatabaseCount('orders', 1);
+
+        $order->markOrdered();
+        $order = $holzke->getOrder(now());
+
+        $this->assertEquals(Order::STATUS_ORDERED, $order->status);
+        $this->assertDatabaseCount('orders', 1);
+
+        //---//
+        $order = $holzke->getOrder(now()->addWeek());
+        $this->assertEquals(Order::STATUS_OPEN, $order->status);
+        $this->assertDatabaseCount('orders', 2);
+    }
 }
