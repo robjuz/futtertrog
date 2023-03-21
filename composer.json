@@ -26,7 +26,7 @@
         "laravel/ui": "^3.0",
         "blade-ui-kit/blade-icons": "^1.2.2",
         "sentry/sentry": "*",
-        "sentry/sentry-laravel": "^2.11",
+        "sentry/sentry-laravel": "^3.3.1",
         "silviolleite/laravelpwa": "^2.0",
         "socialiteproviders/gitlab": "^4.1"
     },
