@@ -27,7 +27,6 @@ services:
 mealProviders:
   holzke:
     enabled: true
-    cronjob: true
   call_a_pizza:
     enabled: true
     location: dresden_loebtau_sued
