@@ -99,6 +99,8 @@ class MealController extends Controller
      */
     public function create()
     {
+//        abort(404);
+
         $this->authorize('create', Meal::class);
 
         return view('meal.create');

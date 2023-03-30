@@ -160,6 +160,8 @@ class OrderTest extends TestCase
     /** @test */
     public function it_shows_order_details()
     {
+        Weekly::register($this->app);
+
         \Carbon::setTestNow(now()->startOfWeek()->addDays(2));
 
         $user1 = User::factory()->create();

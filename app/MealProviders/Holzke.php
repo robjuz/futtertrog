@@ -10,41 +10,66 @@ use DiDom\Element;
 use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 use Ixudra\Curl\Facades\Curl;
 use Symfony\Component\HttpFoundation\Response;
 
 class Holzke extends AbstractMealProvider implements HasWeeklyOrders
 {
 
-    private string $cookieJar = '';
+    private string $cookieJar;
 
     private bool $isLoggedIn = false;
+
+    private string $baseUrl = 'https://bestellung-holzke-menue.de';
+
+    const LOGIN_URL = '/en/accounts/login/';
+    const MEAL_URL = '/en/sammel/eb/';
 
     public function __construct()
     {
         $this->cookieJar = storage_path('holzke_cookie.txt');
+    }
 
-        $this->login();
+    private function getUrl($url) {
+        return URL::format($this->baseUrl, $url) . '/';
     }
 
     private function login(): void
     {
-        $response = Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-login.html')
+        /** @var Element $response */
+        $response = Curl::to($this->baseUrl)
+            ->allowRedirect()
+            ->setCookieJar($this->cookieJar)
+            ->withResponseHeaders()
+            ->get();
+
+
+        $csrf = (new Document($response))->first('[name=csrfmiddlewaretoken]')->attr('value');
+
+        $response = Curl::to($this->getUrl(self::LOGIN_URL))
             ->withData(
                 [
-                    'kdnr' => config('services.holzke.login'),
-                    'passwort' => config('services.holzke.password'),
-                    'is_send' => 'login',
+                    'login' => config('services.holzke.login'),
+                    'password' => config('services.holzke.password'),
+                    'csrfmiddlewaretoken' => $csrf,
                 ]
             )
             ->allowRedirect()
+            ->setCookieFile($this->cookieJar)
             ->setCookieJar($this->cookieJar)
+            ->withResponseHeaders()
+            ->returnResponseObject()
             ->post();
+
+
+        $this->baseUrl = 'https://' . parse_url($response->headers['location'][0], PHP_URL_HOST);
+
     }
 
     public function supportsAutoOrder(): bool
     {
-        return true;
+        return false;
     }
 
     public function supportsOrderUpdate(): bool
@@ -59,6 +84,8 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     public function getMealsDataForDate(Carbon $date): array
     {
+//        $this->login();
+
         return $this->parseResponse(
             $this->getHtml($date)
         );
@@ -72,13 +99,15 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     private function parseResponse($response): array
     {
+        $items = (new Document($response))->find('.menu-table tr');
+        array_shift($items); //remove headings row
         return array_map(
             function ($mealElement) {
                 $info = new MealInfo();
-                $info->calories = $this->extractCalories($mealElement);
-                $info->allergens = $this->extractAllergens($mealElement);
+//                $info->calories = $this->extractCalories($mealElement);
+//                $info->allergens = $this->extractAllergens($mealElement);
 
-                $values =  [
+                $values = [
                     'title' => $this->extractTitle($mealElement),
                     'description' => $this->extractDescription($mealElement),
                     'price' => $this->extractPrice($mealElement),
@@ -88,7 +117,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
 
                 return array_filter($values);
             },
-            (new Document($response))->find('.meal')
+            $items
         );
     }
 
@@ -124,8 +153,8 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     private function extractTitle(Element $mealElement): string
     {
-        $title = $mealElement->first('h2')->text();
-        preg_match('/^[\w\s]*/mu', $title, $titleMatch);
+        $title = $mealElement->first('.mealtitel')->firstChild()->text();
+        preg_match('/[\w\s]*/mu', $title, $titleMatch);
 
         return trim($titleMatch[0]);
     }
@@ -138,7 +167,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     private function extractDescription(Element $mealElement): string
     {
-        return trim($mealElement->first('.cBody')->firstChild()->text());
+        return trim($mealElement->first('#mealtext')->firstChild()->text());
     }
 
     /**
@@ -149,9 +178,9 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     private function extractPrice(Element $mealElement): int
     {
-        $title = $mealElement->first('h2')->text();
-        preg_match('/\((\S*)/', $title, $priceMatch);
-        $price = preg_replace('/[,.]/', '', $priceMatch[1] ?? 1);
+        $mealElement = $mealElement->first('price');
+        $title = $mealElement ? $mealElement->text() : '0';
+        $price = preg_replace('/\D*/', '', $title) ?? 0;
 
         return intval($price);
     }
@@ -170,10 +199,93 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     public function getHtml(Carbon $date): string
     {
-        return Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan.html')
-            ->withData(['t' => $date->timestamp])
+        $this->login();
+
+        $response = Curl::to($this->getUrl(self::MEAL_URL))
+            ->setCookieFile($this->cookieJar)
+            ->withResponseHeaders()
+            ->returnResponseObject()
+            ->allowRedirect()
+            ->get();
+
+        $urlParts = explode(
+            '/',
+            trim(
+                $response->headers['location'],
+                '/',
+            ),
+        );
+
+        array_pop($urlParts);
+        array_pop($urlParts);
+        $urlParts[] = $date->toDateString();
+        $urlParts[] = $date->toDateString();
+
+        $url = $this->getUrl(join('/', $urlParts));
+
+        return Curl::to($url)
             ->setCookieFile($this->cookieJar)
             ->get();
+    }
+
+    public function configureSchedule(Schedule $schedule): void
+    {
+        if (!config('services.holzke.schedule')) {
+            return;
+        }
+
+        $schedule->call([$this, 'getAllUpcomingMeals'])->dailyAt('10:00');
+        $schedule->call([$this, 'autoOrder'])->weekdays()->at('7:20');
+    }
+
+    public function getAllUpcomingMeals()
+    {
+        $date = today();
+
+        if ($date->isWeekend()) {
+            $date->addWeekday();
+        }
+
+        while ($this->createMealsDataForDate(Carbon::parse($date))) {
+            $date->addWeekday();
+        }
+
+        $this->notifyAboutNewOrderPossibilities();
+    }
+
+    public function autoOrder(): void
+    {
+        $order = $this->getOrder(now());
+
+        if ($order->canBeUpdated()) {
+            $order->updateOrder();
+        } else {
+            if ($order->canBeAutoOrdered()) {
+                $order->placeOrder();
+            }
+        }
+    }
+
+    /**
+     * @throws InvalidSelectorException
+     */
+    public function updateOrder(Order $order)
+    {
+        $this->setOrderForEdit($order->external_id);
+
+        $this->placeOrder($order);
+    }
+
+    /**
+     * @param string $external_id
+     */
+    private function setOrderForEdit(string $external_id): void
+    {
+        Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
+            ->withData(['vid' => $external_id])
+            ->returnResponseObject()
+            ->setCookieFile($this->cookieJar)
+            ->post();
     }
 
     public function placeOrder(Order $order)
@@ -188,6 +300,22 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
                 'external_id' => $this->getLastOrderId(),
             ]
         );
+    }
+
+    /**
+     * @param Order $order
+     * @return void
+     */
+    private function updateMealsCount(Order $order): void
+    {
+        foreach ($order->meals as $meal) {
+            if ($meal->external_id) {
+                $this->updateMealCount(
+                    $meal->external_id,
+                    $order->orderItems->where('meal_id', $meal->id)->sum('quantity')
+                );
+            }
+        }
     }
 
     /**
@@ -235,80 +363,6 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         abort_unless($orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
 
         return $orderChange->getAttribute('data-id');
-    }
-
-    /**
-     * @throws InvalidSelectorException
-     */
-    public function updateOrder(Order $order)
-    {
-        $this->setOrderForEdit($order->external_id);
-
-        $this->placeOrder($order);
-    }
-
-    /**
-     * @param string $external_id
-     */
-    private function setOrderForEdit(string $external_id): void
-    {
-        Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
-            ->withData(['vid' => $external_id])
-            ->returnResponseObject()
-            ->setCookieFile($this->cookieJar)
-            ->post();
-    }
-
-    public function configureSchedule(Schedule $schedule): void
-    {
-        if (!config('services.holzke.schedule')) {
-            return;
-        }
-
-        $schedule->call([$this, 'getAllUpcomingMeals'])->dailyAt('10:00');
-        $schedule->call([$this, 'autoOrder'])->weekdays()->at('7:20');
-    }
-
-    public function getAllUpcomingMeals()
-    {
-        $date = today();
-
-        if ($date->isWeekend()) {
-            $date->addWeekday();
-        }
-
-        while ($this->createMealsDataForDate(Carbon::parse($date))) {
-            $date->addWeekday();
-        }
-
-        $this->notifyAboutNewOrderPossibilities();
-    }
-
-    public function autoOrder(): void
-    {
-        $order = $this->getOrder(now());
-
-        if ($order->canBeUpdated()) {
-            $order->updateOrder();
-        } else if ($order->canBeAutoOrdered()) {
-            $order->placeOrder();
-        }
-    }
-
-    /**
-     * @param Order $order
-     * @return void
-     */
-    private function updateMealsCount(Order $order): void
-    {
-        foreach ($order->meals as $meal) {
-            if ($meal->external_id) {
-                $this->updateMealCount(
-                    $meal->external_id,
-                    $order->orderItems->where('meal_id', $meal->id)->sum('quantity')
-                );
-            }
-        }
     }
 
 

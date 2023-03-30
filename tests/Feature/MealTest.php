@@ -9,6 +9,7 @@ use App\MealProviders\CallAPizza;
 use App\MealProviders\Holzke;
 use App\Order;
 use App\OrderItem;
+use App\Providers\MealProvidersServiceProvider;
 use App\User;
 use App\UserSettings;
 use Cknow\Money\Money;
@@ -349,6 +350,10 @@ class MealTest extends TestCase
     /** @test */
     public function meals_can_be_filtered_by_provider()
     {
+        config(['services.call_a_pizza.enabled' => true]);
+        config(['services.holzke.enabled' => true]);
+        $this->app->register(MealProvidersServiceProvider::class, true);
+
         $date = today()->addDay()->toDateString();
 
         /** @var Meal $meal1 */

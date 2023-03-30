@@ -11,6 +11,7 @@ use App\Notifications\NoOrder;
 use App\Notifications\OpenOrders;
 use App\Notifications\OrderReopenedNotification;
 use App\Order;
+use App\Providers\MealProvidersServiceProvider;
 use App\ScheduledJobs\NoOrderForNextDayNotification;
 use App\ScheduledJobs\NoOrderForNextWeekNotification;
 use App\ScheduledJobs\NoOrderForTodayNotification;
@@ -300,6 +301,9 @@ class NotificationsTest extends TestCase
     /** @test */
     public function it_notifies_an_admin_when_an_closed_holzke_order_was_reopened()
     {
+        config(['services.holzke.enabled' => true]);
+        $this->app->register(MealProvidersServiceProvider::class, true);
+
         /** @var Meal $meal */
         $meal = Meal::factory(['provider' => app(Holzke::class)])->inFuture()->create();
 

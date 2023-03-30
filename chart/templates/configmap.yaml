@@ -17,6 +17,9 @@ data:
   GITLAB_CLIENT_ID: {{ .Values.services.gitlab.clientId | quote }}
   {{- end }}
 
+  {{- if .Values.mealProviders.holzke.enabled }}
+  HOLZKE_ENABLED: {{ .Values.mealProviders.holzke.enabled | quote }}
+  {{- end }}
   {{- if .Values.mealProviders.holzke.login }}
   HOLZKE_LOGIN: {{ .Values.mealProviders.holzke.login | quote }}
   {{- end }}
@@ -27,6 +30,9 @@ data:
   HOLZKE_ORDER_INFO: {{ .Values.mealProviders.holzke.orderInfo | quote }}
   {{- end }}
 
+  {{- if .Values.mealProviders.call_a_pizza.enabled }}
+  CALL_A_PIZZA_ENABLED: {{ .Values.mealProviders.call_a_pizza.enabled | quote }}
+  {{- end }}
   {{- if .Values.mealProviders.call_a_pizza.location }}
   CALL_A_PIZZA_LOCATION: {{ .Values.mealProviders.call_a_pizza.location | quote }}
   {{- end }}
@@ -34,6 +40,9 @@ data:
   CALL_A_PIZZA_CATEGORIES: {{ .Values.mealProviders.call_a_pizza.categories | toJson | quote }}
   {{- end }}
 
+  {{- if .Values.mealProviders.flaschenpost.enabled }}
+  FLASCHENPOST_ENABLED: {{ .Values.mealProviders.flaschenpost.enabled | quote }}
+  {{- end }}
   {{- if .Values.mealProviders.flaschenpost.zipcode }}
   FLASCHENPOST_ZIPCODE: {{ .Values.mealProviders.flaschenpost.zipcode | quote }}
   {{- end }}

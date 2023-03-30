@@ -13,7 +13,6 @@ class MealProvidersServiceProvider extends ServiceProvider
 {
     private array $bundledProviders = [
         Basic::class,
-        Weekly::class,
         Holzke::class,
         CallAPizza::class,
         Flaschenpost::class,
@@ -26,15 +25,7 @@ class MealProvidersServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        foreach ($this->bundledProviders as $provider) {
-            call_user_func([$provider, 'register'], $this->app);
-        }
-
-        $this->app->bind('mealProviders', function ($app) {
-            return collect($this->bundledProviders)->mapWithKeys(function ($provider) use ($app) {
-                return [class_basename($provider) => $app->make($provider)->getName()];
-            })->all();
-        });
+        //
     }
 
     /**
@@ -44,6 +35,14 @@ class MealProvidersServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $registeredProviders = [];
+
+        foreach ($this->bundledProviders as $provider) {
+            if (call_user_func([$provider, 'register'], $this->app)) {
+                $registeredProviders[class_basename($provider)] = $this->app->make($provider)->getName();
+            }
+        }
+
+        $this->app->bind('mealProviders', fn () => $registeredProviders);
     }
 }

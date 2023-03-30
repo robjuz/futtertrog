@@ -11,6 +11,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 abstract class AbstractMealProvider implements \JsonSerializable
 {
@@ -19,11 +20,24 @@ abstract class AbstractMealProvider implements \JsonSerializable
      */
     private array $newOrderPossibilitiesDates = [];
 
-    public static function register(Application $app)
+    public static function register(Application $app): bool
     {
+        $name = class_basename(static::class);
+
+        $configKey = Str::snake($name);
+
+        if (config("services.{$configKey}")) {
+            if (!config("services.{$configKey}.enabled")) {
+                return false;
+            }
+        }
+
+
         $app->singleton(static::class, static::class);
 
-        $app->alias(static::class, class_basename(static::class));
+        $app->alias(static::class, $name);
+
+        return true;
     }
 
     public function createMealsDataForDate(Carbon $date): int

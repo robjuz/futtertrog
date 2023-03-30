@@ -27,6 +27,7 @@ services:
 mealProviders:
   holzke:
     enabled: true
+    cron: true
   call_a_pizza:
     enabled: true
     location: dresden_loebtau_sued
@@ -35,6 +36,7 @@ mealProviders:
       - burger
 
   flaschenpost:
+    enabled: true
     zipcode: 01217
     categories:
       - wasser/spritzig

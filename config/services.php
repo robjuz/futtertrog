@@ -49,6 +49,7 @@ return [
     ],
 
     'holzke' => [
+        'enabled' => env('HOLZKE_ENABLED'),
         'login' => env('HOLZKE_LOGIN'),
         'password' => env('HOLZKE_PASSWORD'),
         'schedule' => env('HOLZKE_SCHEDULE'),
@@ -56,11 +57,13 @@ return [
     ],
 
     'call_a_pizza' => [
+        'enabled' => env('CALL_A_PIZZA_ENABLED'),
         'location' => env('CALL_A_PIZZA_LOCATION', 'dresden_loebtau_sued'),
         'meals' => json_decode(env('CALL_A_PIZZA_CATEGORIES', "[\"pizza/pizza-klassiker\", \"burger\"]")),
     ],
 
     'flaschenpost' => [
+        'enabled' => env('FLASCHENPOST_ENABLED'),
         'zipcode' => env('FLASCHENPOST_ZIPCODE', '01159'),
         'categories' => json_decode(env('FLASCHENPOST_CATEGORIES', "[\"limonade/cola\"]")),
     ],
