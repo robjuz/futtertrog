@@ -1,9 +1,0 @@
-terminal:
-  # This can be any image that has the necessary runtime environment for your project.
-  image: thecodingmachine/php:8.1-v4-apache
-  before_script:
-    - composer install
-    - cp .env.example .env
-  script: sleep 60
-  variables:
-    PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite xdebug"
