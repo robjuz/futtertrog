@@ -1,51 +1,16 @@
 include:
-  - template: Auto-DevOps.gitlab-ci.yml
+  - project: 'helmundwalter/ci'
+    file: 'Auto-DevOps.yml'
+    ref: refactor
 
-test:
-  image: thecodingmachine/php:8.1-v4-cli
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - vendor/
+test:phpunit:
   variables:
     PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite xdebug"
-    XDEBUG_MODE: coverage
-  services: []
+  services: [ ]
   before_script:
     - composer install
     - cp .env.example .env
     - php artisan key:gen
-  script:
-    - vendor/bin/phpunit --stop-on-error --coverage-text --coverage-cobertura=coverage.cobertura.xml --coverage-clover=coverage.xml
-  artifacts:
-    paths:
-      -  coverage.xml
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.cobertura.xml
-
-sonarqube-check:
-  stage: test
-  needs: 
-    - test
-  image: 
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-    GIT_STRATEGY: clone
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
-  script: 
-    - sonar-scanner
-  allow_failure: true
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 
 production:
   variables:
@@ -53,23 +18,3 @@ production:
   environment:
     kubernetes:
       namespace: futtertrog
-
-sentry:releases:prepare:
-  stage: build
-  image: getsentry/sentry-cli
-  script:
-    - sentry-cli releases new $CI_COMMIT_SHA
-    - sentry-cli releases set-commits $CI_COMMIT_SHA --auto
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-sentry:releases:deploys:
-  stage: performance
-  image: getsentry/sentry-cli
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - sentry-cli releases finalize $CI_COMMIT_SHA
-    - sentry-cli releases deploys $CI_COMMIT_SHA new -e $CI_COMMIT_REF_SLUG
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
