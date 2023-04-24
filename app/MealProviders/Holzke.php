@@ -109,24 +109,24 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     {
         $items = (new Document($response))->find('.menu-table tr');
         array_shift($items); //remove headings row
-        return array_map(
+        $items =  array_map(
             function ($mealElement) {
                 $info = new MealInfo();
 //                $info->calories = $this->extractCalories($mealElement);
 //                $info->allergens = $this->extractAllergens($mealElement);
 
-                $values = [
+                return [
                     'title' => $this->extractTitle($mealElement),
                     'description' => $this->extractDescription($mealElement),
                     'price' => $this->extractPrice($mealElement),
                     'external_id' => $this->extractExternalId($mealElement),
                     'info' => $info,
                 ];
-
-                return array_filter($values);
             },
             $items
         );
+
+        return $items;
     }
 
     /**
@@ -161,7 +161,12 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     private function extractTitle(Element $mealElement): string
     {
-        $title = $mealElement->first('.mealtitel')->firstChild()->text();
+        $title = $mealElement->first('.mealtitel')->firstChild();
+        if (!$title) {
+            return '';
+        }
+
+        $title = $title->text();
         preg_match('/[\w\s]*/mu', $title, $titleMatch);
 
         return trim($titleMatch[0]);
@@ -175,7 +180,17 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     private function extractDescription(Element $mealElement): string
     {
-        return trim($mealElement->first('#mealtext')->firstChild()->text());
+        $mealText = $mealElement->first('#mealtext');
+        if ($mealText) {
+            return '';
+        }
+
+        $description =  $mealText->firstChild();
+        if ($description) {
+            return '';
+        }
+
+        return trim($description->text());
     }
 
     /**
@@ -186,8 +201,12 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     private function extractPrice(Element $mealElement): int
     {
-        $mealElement = $mealElement->first('price');
-        $title = $mealElement ? $mealElement->text() : '0';
+        $priceElement = $mealElement->first('price');
+        if (!$priceElement) {
+            return 0;
+        }
+
+        $title = $priceElement->text();
         $price = preg_replace('/\D*/', '', $title) ?? 0;
 
         return intval($price);
@@ -196,9 +215,11 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     private function extractExternalId(Element $mealElement): string|null
     {
         $externalId = $mealElement->first('input');
-        $externalId = $externalId ? $externalId->getAttribute('name') : null;
+        if (!$externalId) {
+            return null;
+        }
 
-        return $externalId ? trim($externalId) : null;
+        return trim($externalId->getAttribute('name'));
     }
 
     /**
