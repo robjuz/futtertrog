@@ -2,7 +2,7 @@ include:
   - project: 'helmundwalter/ci'
     file: 'Auto-DevOps.yml'
 
-test:phpunit:
+phpunit:
   variables:
     PHP_EXTENSIONS: "intl gmp sqlite3 pdo_sqlite xdebug"
   services: [ ]
