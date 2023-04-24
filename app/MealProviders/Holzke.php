@@ -22,6 +22,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     private bool $isLoggedIn = false;
 
     private string $baseUrl = 'https://bestellung-holzke-menue.de';
+    private string $loginUrl = 'https://bestellung-holzke-menue.de';
 
     const LOGIN_URL = '/en/accounts/login/';
     const MEAL_URL = '/en/sammel/eb/';
@@ -37,8 +38,16 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
 
     private function login(): void
     {
+        if ($this->isLoggedIn) {
+            return;
+        }
+
+        if (!config('services.holzke.login') || !config('services.holzke.password')) {
+            return;
+        }
+
         /** @var Element $response */
-        $response = Curl::to($this->baseUrl)
+        $response = Curl::to($this->loginUrl)
             ->allowRedirect()
             ->setCookieJar($this->cookieJar)
             ->withResponseHeaders()
@@ -62,8 +71,9 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
             ->returnResponseObject()
             ->post();
 
-
         $this->baseUrl = 'https://' . parse_url($response->headers['location'][0], PHP_URL_HOST);
+
+        $this->isLoggedIn = true;
 
     }
 
@@ -84,8 +94,6 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     public function getMealsDataForDate(Carbon $date): array
     {
-//        $this->login();
-
         return $this->parseResponse(
             $this->getHtml($date)
         );
