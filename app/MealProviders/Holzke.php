@@ -126,7 +126,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
             $items
         );
 
-        return $items;
+        return collect($items)->whereNotNull('external_id')->toArray();
     }
 
     /**
@@ -181,12 +181,12 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     private function extractDescription(Element $mealElement): string
     {
         $mealText = $mealElement->first('#mealtext');
-        if ($mealText) {
+        if (!$mealText) {
             return '';
         }
 
         $description =  $mealText->firstChild();
-        if ($description) {
+        if (!$description) {
             return '';
         }
 
@@ -206,8 +206,8 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
             return 0;
         }
 
-        $title = $priceElement->text();
-        $price = preg_replace('/\D*/', '', $title) ?? 0;
+        $priceText = $priceElement->text();
+        $price = preg_replace('/\D*/', '', $priceText) ?? 0;
 
         return intval($price);
     }

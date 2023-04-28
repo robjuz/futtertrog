@@ -47,8 +47,7 @@ abstract class AbstractMealProvider implements \JsonSerializable
         foreach ($this->getMealsDataForDate($date) as $data) {
             $meal = Meal::updateOrCreate(
                 [
-                    'title' => $data['title'],
-                    'description' => $data['description'],
+                    'external_id' => $data['external_id'],
                     'date' => $date->toDateString(),
                     'provider' => $this->getKey(),
                 ],
@@ -58,8 +57,7 @@ abstract class AbstractMealProvider implements \JsonSerializable
             foreach ($data['variants'] ?? [] as $variantData) {
                 $meal->variants()->updateOrCreate(
                     [
-                        'title' => $variantData['title'],
-                        'description' => $variantData['description'] ?? null,
+                        'external_id' => $variantData['external_id'],
                         'date' => $date->toDateString(),
                         'provider' => $this->getKey(),
                     ],

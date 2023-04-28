@@ -60,6 +60,7 @@ class CallAPizza extends AbstractMealProvider
 
             $meal = [
                 'title' => trim($name->text()),
+                'external_id' => trim($name->text()),
                 'description' => trim($descriptionNode->innerHtml()),
                 'image' => $image->getAttribute('src') ?: $image->getAttribute('data-src'),
                 'variants' => [],

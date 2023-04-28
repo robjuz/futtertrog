@@ -83,6 +83,7 @@ class Flaschenpost extends AbstractMealProvider
 
                 $meals[] = [
                     'title' => $product['name'],
+                    'external_id' => $product['name'],
                     'description' => join('<br>', [$article['shortDescription'], $article['pricePerUnit']]),
                     'price' => $article['trackingNetPrice'] + $article['trackingPriceDuty'],
                     'image' => $product['imagePath'].$product['articleIdForImage'].'.png',
