@@ -115,18 +115,19 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
 //                $info->calories = $this->extractCalories($mealElement);
 //                $info->allergens = $this->extractAllergens($mealElement);
 
+                $title = $this->extractTitle($mealElement);
                 return [
-                    'title' => $this->extractTitle($mealElement),
+                    'title' => $title,
                     'description' => $this->extractDescription($mealElement),
                     'price' => $this->extractPrice($mealElement),
-                    'external_id' => $this->extractExternalId($mealElement),
+                    'external_id' => $this->extractExternalId($mealElement) ?? $title,
                     'info' => $info,
                 ];
             },
             $items
         );
 
-        return collect($items)->whereNotNull('external_id')->toArray();
+        return collect($items)->whereNotNull('external_id')->whereNotNull('description')->toArray();
     }
 
     /**
@@ -187,6 +188,10 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
 
         $description =  $mealText->firstChild();
         if (!$description) {
+            return '';
+        }
+
+        if ($description->text() === ';') {
             return '';
         }
 
