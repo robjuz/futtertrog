@@ -164,15 +164,19 @@ ingress:
   secrets: [ ]
 
 resources:
+  requests:
+   cpu: 100m
   limits:
-    memory: 150Mi
-    cpu: 100m
+    memory: 200Mi
+    cpu: 500m
 
 cron:
   resources:
-    limits:
-      memory: 150Mi
+    requests:
       cpu: 100m
+    limits:
+      memory: 200Mi
+      cpu: 500m
 
 
 nodeSelector: {}
