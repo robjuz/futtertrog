@@ -5,11 +5,13 @@ namespace App\MealProviders;
 use App\MealInfo;
 use App\MealProviders\Interfaces\HasWeeklyOrders;
 use App\Order;
+use App\OrderItem;
 use DiDom\Document;
 use DiDom\Element;
 use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 use Ixudra\Curl\Facades\Curl;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,20 +19,17 @@ use Symfony\Component\HttpFoundation\Response;
 class Holzke extends AbstractMealProvider implements HasWeeklyOrders
 {
 
-    private string $cookieJar;
-
     private bool $isLoggedIn = false;
 
     private string $baseUrl = 'https://bestellung-holzke-menue.de';
-    private string $loginUrl = 'https://bestellung-holzke-menue.de';
-
     const LOGIN_URL = '/en/accounts/login/';
     const MEAL_URL = '/en/sammel/eb/';
 
-    public function __construct()
+    public function getCookieJar(): string
     {
-        $this->cookieJar = storage_path('holzke_cookie.txt');
+        return storage_path('holzke_cookie.txt');
     }
+
 
     private function getUrl($url) {
         return URL::format($this->baseUrl, $url) . '/';
@@ -47,14 +46,15 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         }
 
         /** @var Element $response */
-        $response = Curl::to($this->loginUrl)
+        $response = Curl::to($this->baseUrl)
             ->allowRedirect()
-            ->setCookieJar($this->cookieJar)
+            ->setCookieJar($this->getCookieJar())
             ->withResponseHeaders()
             ->get();
 
 
-        $csrf = (new Document($response))->first('[name=csrfmiddlewaretoken]')->attr('value');
+        $csrf = $this->extractCsrfToken($response);
+
 
         $response = Curl::to($this->getUrl(self::LOGIN_URL))
             ->withData(
@@ -65,8 +65,8 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
                 ]
             )
             ->allowRedirect()
-            ->setCookieFile($this->cookieJar)
-            ->setCookieJar($this->cookieJar)
+            ->setCookieFile($this->getCookieJar())
+            ->setCookieJar($this->getCookieJar())
             ->withResponseHeaders()
             ->returnResponseObject()
             ->post();
@@ -79,12 +79,12 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
 
     public function supportsAutoOrder(): bool
     {
-        return false;
+        return true;
     }
 
     public function supportsOrderUpdate(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -235,31 +235,48 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     {
         $this->login();
 
+        return Curl::to($this->getOrderingUrl($date, $date))
+            ->setCookieFile($this->getCookieJar())
+            ->get();
+    }
+
+    private function getOrderingUrl(Carbon $dateStart, Carbon $dateEnd): string
+    {
         $response = Curl::to($this->getUrl(self::MEAL_URL))
-            ->setCookieFile($this->cookieJar)
+            ->setCookieFile($this->getCookieJar())
+            ->setCookieJar($this->getCookieJar())
             ->withResponseHeaders()
             ->returnResponseObject()
             ->allowRedirect()
             ->get();
 
+        $orderingUrl = $response->headers['location'];
+
         $urlParts = explode(
             '/',
             trim(
-                $response->headers['location'],
+                $orderingUrl,
                 '/',
             ),
         );
 
         array_pop($urlParts);
         array_pop($urlParts);
-        $urlParts[] = $date->toDateString();
-        $urlParts[] = $date->toDateString();
+        $urlParts[] = $dateStart->toDateString();
+        $urlParts[] = $dateEnd->toDateString();
 
-        $url = $this->getUrl(join('/', $urlParts));
+        return $this->getUrl(join('/', $urlParts));
+    }
 
-        return Curl::to($url)
-            ->setCookieFile($this->cookieJar)
+    private function getCsrf(string $url): string
+    {
+        $response = Curl::to($url)
+            ->setCookieFile($this->getCookieJar())
+            ->setCookieJar($this->getCookieJar())
+            ->allowRedirect()
             ->get();
+
+        return $this->extractCsrfToken($response);
     }
 
     public function configureSchedule(Schedule $schedule): void
@@ -292,10 +309,10 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         $order = $this->getOrder(now());
 
         if ($order->canBeUpdated()) {
-            $order->updateOrder();
+            $this->updateOrder($order);
         } else {
             if ($order->canBeAutoOrdered()) {
-                $order->placeOrder();
+                $this->placeOrder($order);
             }
         }
     }
@@ -305,8 +322,6 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     public function updateOrder(Order $order)
     {
-        $this->setOrderForEdit($order->external_id);
-
         $this->placeOrder($order);
     }
 
@@ -318,85 +333,65 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
             ->withData(['vid' => $external_id])
             ->returnResponseObject()
-            ->setCookieFile($this->cookieJar)
+            ->setCookieFile($this->getCookieJar())
             ->post();
     }
 
     public function placeOrder(Order $order)
     {
-        $this->updateMealsCount($order);
+        $this->login();
 
-        $this->confirmOrder();
+        /** @var Carbon $startDate */
+        $startDate = $order->meals()->orderBy('date')->value('date');
+        $startDate = $startDate->startOfWeek();
+        /** @var Carbon $endDate */
+        $endDate = $order->meals()->orderByDesc('date')->value('date');
+        $endDate = $endDate->endOfWeek();
+
+        $orderingUrl = $this->getOrderingUrl($startDate, $endDate);
+        $csrfToken = $this->getCsrf($orderingUrl);
+
+        $data = $order->orderItems->groupBy('meal.external_id')->mapWithKeys(function($orderItems, $externalId) {
+            /** @var OrderItem[]|Collection $orderItems */
+            return [$externalId => $orderItems->sum('quantity')];
+        });
+
+        $data['change_order'] = 'Weiter';
+        $data['csrfmiddlewaretoken'] = $csrfToken;
+
+        $response = Curl::to($this->getUrl($orderingUrl))
+            ->withData($data->toArray())
+            ->setCookieFile($this->getCookieJar())
+            ->setCookieJar($this->getCookieJar())
+            ->returnResponseObject()
+            ->withResponseHeaders()
+            ->allowRedirect()
+            ->post();
+
+        $confirmationCsrfToken = $this->extractCsrfToken($response->content);
+
+        Curl::to($this->getUrl($response->headers['location']))
+            ->withData(
+                [
+                    'csrfmiddlewaretoken' => $confirmationCsrfToken,
+                    'order' => 'order'
+                ]
+            )
+            ->setCookieFile($this->getCookieJar())
+            ->post();
+
 
         $order->update(
             [
                 'status' => Order::STATUS_ORDERED,
-                'external_id' => $this->getLastOrderId(),
+                'external_id' => $orderingUrl,
             ]
         );
     }
 
-    /**
-     * @param Order $order
-     * @return void
-     */
-    private function updateMealsCount(Order $order): void
+    private function extractCsrfToken(string $response): string
     {
-        foreach ($order->meals as $meal) {
-            if ($meal->external_id) {
-                $this->updateMealCount(
-                    $meal->external_id,
-                    $order->orderItems->where('meal_id', $meal->id)->sum('quantity')
-                );
-            }
-        }
-    }
-
-    /**
-     * @param $meal
-     * @param $count
-     */
-    private function updateMealCount($meal, $count): void
-    {
-        Curl::to('https://holzke-menue.de/ajax/updateMealCount.php')
-            ->withData(compact('meal', 'count'))
-            ->returnResponseObject()
-            ->setCookieFile($this->cookieJar)
-            ->post();
-    }
-
-    private function confirmOrder(): void
-    {
-        Curl::to('https://holzke-menue.de/de/speiseplan/erwachsenen-speiseplan/schritt-order.html')
-            ->withData(
-                [
-                    'info1' => config('services.holzke.order_info'),
-                    'agb' => 1,
-                    'zeit' => now()->timestamp,
-                    'is_send' => 'yes',
-                ]
-            )
-            ->returnResponseObject()
-            ->setCookieFile($this->cookieJar)
-            ->post();
-    }
-
-    /**
-     * @return string|null
-     *
-     * @throws InvalidSelectorException
-     */
-    protected function getLastOrderId(): ?string
-    {
-        $response = Curl::to('https://holzke-menue.de/de/meine-kundendaten/meine-bestellungen.html')
-            ->setCookieFile($this->cookieJar)
-            ->get();
-
-        $orderChange = (new Document($response))->first('.orderChange');
-
-        abort_unless($orderChange, Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not find order number');
-
-        return $orderChange->getAttribute('data-id');
+        return (new Document($response))->first('[name=csrfmiddlewaretoken]')->attr('value');
     }
 
 

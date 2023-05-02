@@ -146,9 +146,7 @@ class Order extends Model
             return false;
         }
 
-        return self::where('external_id', '>', $this->external_id)
-                ->whereProvider($this->provider->getKey())
-                ->doesntExist();
+        return true;
     }
 
     public function reopen()
