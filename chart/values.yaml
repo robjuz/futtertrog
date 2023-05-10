@@ -225,6 +225,13 @@ mariadb:
       accessModes:
         - ReadWriteOnce
       size: 4Gi
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 100Mi
+
+
 ## External Database Configuration
 ## All of these values are only used if `mariadb.enabled=false`
 ##
