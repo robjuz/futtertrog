@@ -359,7 +359,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         $data['change_order'] = 'Weiter';
         $data['csrfmiddlewaretoken'] = $csrfToken;
 
-        $response = Curl::to($this->getUrl($orderingUrl))
+        $response = Curl::to($orderingUrl)
             ->withData($data->toArray())
             ->setCookieFile($this->getCookieJar())
             ->setCookieJar($this->getCookieJar())
