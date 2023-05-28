@@ -20,11 +20,7 @@ class AutoOrderController extends Controller
 
         abort_unless($order->canBeAutoOrdered(), Response::HTTP_BAD_REQUEST, __('This order cannot be auto-ordered'));
 
-        if ($order->external_id) {
-            $order->updateOrder();
-        } else {
-            $order->placeOrder();
-        }
+        $order->autoOrder();
 
 
         if ($request->wantsJson()) {

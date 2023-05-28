@@ -286,7 +286,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         }
 
         $schedule->call([$this, 'getAllUpcomingMeals'])->dailyAt('10:00');
-        $schedule->call([$this, 'autoOrder'])->weekdays()->at('7:20');
+        $schedule->call([$this, 'autoOrder'])->weekdays()->at('6:00');
     }
 
     public function getAllUpcomingMeals()
@@ -308,13 +308,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     {
         $order = $this->getOrder(now());
 
-        if ($order->canBeUpdated()) {
-            $this->updateOrder($order);
-        } else {
-            if ($order->canBeAutoOrdered()) {
-                $this->placeOrder($order);
-            }
-        }
+        $order->autoOrder();
     }
 
     /**

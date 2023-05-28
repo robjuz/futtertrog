@@ -195,6 +195,15 @@ class Order extends Model
         ]);
     }
 
+    public function autoOrder()
+    {
+        if ($this->canBeUpdated()) {
+            $this->updateOrder();
+        } elseif ($this->canBeAutoOrdered()) {
+            $this->placeOrder();
+        }
+    }
+
     public function placeOrder() {
         $this->provider->placeOrder($this);
     }
