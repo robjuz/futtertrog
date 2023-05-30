@@ -25,9 +25,15 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     const LOGIN_URL = '/en/accounts/login/';
     const MEAL_URL = '/en/sammel/eb/';
 
+    private string $cookieJar = '';
+
     public function getCookieJar(): string
     {
-        return storage_path('holzke_cookie.txt');
+        if (!$this->cookieJar) {
+            $this->cookieJar = tempnam(sys_get_temp_dir(), 'holzke_cookie');
+        }
+
+        return $this->cookieJar;
     }
 
 
