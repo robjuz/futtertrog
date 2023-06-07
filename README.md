@@ -131,10 +131,6 @@ GITLAB_CLIENT_SECRET=
 GITLAB_URL=
 ```
 in `.env` file
-
-## SMS with Nexmo
-You can use Nexmo to send SMS notifications to admin users
-
 ---
 
 ## Local Development
