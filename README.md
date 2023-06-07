@@ -189,3 +189,4 @@ or
 
 
 Will create a `admin@example.com` user with `123456` password. You can change this password in the app.
+
