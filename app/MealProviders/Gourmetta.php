@@ -129,10 +129,6 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
     {
         $date = today();
 
-        if ($date->isWeekend()) {
-            $date->addWeekday();
-        }
-
         while ($this->createMealsDataForDate(Carbon::parse($date))) {
             $date->addWeekday();
         }
