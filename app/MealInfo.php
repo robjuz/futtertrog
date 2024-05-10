@@ -11,6 +11,7 @@ class MealInfo implements Castable, Arrayable, JsonSerializable
 {
     public ?float $calories = null;
     public array $allergens = [];
+    public array $tags = [];
     public ?string $deposit = null;
 
     public static function castUsing(array $arguments): string
@@ -23,6 +24,7 @@ class MealInfo implements Castable, Arrayable, JsonSerializable
         return [
             'calories' => $this->calories,
             'allergens' => $this->allergens,
+            'tags' => $this->tags,
             'deposit' => $this->deposit,
         ];
     }

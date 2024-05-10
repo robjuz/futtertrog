@@ -87,17 +87,14 @@ You could use nginx as reverse proxy and certbot to manage you certificate
 
 The system currently support 3 providers
 
-| Provider | Prices | Auto ordering |
-| -------- | ------ | ------------- |
-| Holzke | yes  | yes |
-| Call A Pizza | no | no
-| Manuall | no | no
+| Provider     | Prices | Auto ordering |
+|--------------|--------|---------------|
+| Holzke       | yes    | yes           |
+| Groumetta    | yes    | yes           |
+| Call A Pizza | no     | no            |
+| Manuall      | no     | no            |
 
 ### Holzke
-
-To import all available menus for the incoming days run:
-
-    php artisan import:holzke
 
 If you with to also import prices please set you Holzke credentials in `.env` file
 
@@ -107,6 +104,17 @@ If you with to also import prices please set you Holzke credentials in `.env` fi
 If you with to automatically get available menus, set in `.env` file
 
     HOLZKE_SCHEDULE: "true"    
+
+### Groumetta
+
+If you with to also import prices please set you Holzke credentials in `.env` file
+
+    GOURMETTA_LOGIN: 
+    GOURMETTA_PASSWORD: 
+
+If you with to automatically get available menus, set in `.env` file
+
+    GOURMETTA_SCHEDULE: "true"    
 
 ### Call A Pizza
 

@@ -56,6 +56,14 @@ return [
         'order_info' => env('HOLZKE_ORDER_INFO'),
     ],
 
+    'gourmetta' => [
+        'enabled' => env('GOURMETTA_ENABLED'),
+        'login' => env('GOURMETTA_LOGIN'),
+        'password' => env('GOURMETTA_PASSWORD'),
+        'schedule' => env('GOURMETTA_SCHEDULE'),
+        'order_info' => env('GOURMETTA_ORDER_INFO'),
+    ],
+
     'call_a_pizza' => [
         'enabled' => env('CALL_A_PIZZA_ENABLED'),
         'location' => env('CALL_A_PIZZA_LOCATION', 'dresden_loebtau_sued'),
