@@ -153,25 +153,30 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
 
     public function placeOrder(Order $order)
     {
-//        $this->login();
+        $this->login();
 
         $data =
             [
-                'orderDays' => $order->orderItems->groupBy('meal.date')->map(
-                    function ($orderItems, $date) {
-                        /** @var OrderItem[]|Collection $orderItems */
-                        return [
-                            'date' => Carbon::parse($date)->toDateString(),
-                            'orderedMeals' => $orderItems->groupBy('meal.external_id')->map(
-                                function ($orderItems, $externalId) {
-                                    return [
-                                        'mealId' => $externalId,
-                                        'quantity' => $orderItems->sum('quantity')
-                                    ];
-                                })->values()->toArray()
-                        ];
-                    }
-                )->values()->toArray()
+                'orderDays' => $order->orderItems()
+                    ->whereHas('meal', fn($q) => $q->whereDate('date', '>', now()))
+                    ->get()
+                    ->groupBy('meal.date')
+                    ->map(
+                        function ($orderItems, $date) {
+                            /** @var OrderItem[]|Collection $orderItems */
+                            return [
+                                'date' => Carbon::parse($date)->toDateString(),
+                                'orderedMeals' => $orderItems->groupBy('meal.external_id')->map(
+                                    function ($orderItems, $externalId) {
+                                        return [
+                                            'mealId' => $externalId,
+                                            'quantity' => $orderItems->sum('quantity')
+                                        ];
+                                    }
+                                )->values()->toArray()
+                            ];
+                        }
+                    )->values()->toArray()
             ];
 
 
@@ -182,7 +187,7 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
             ->returnResponseObject()
             ->put();
 
-        abort_if($response->status !== 200, 500, $response->content->errorSummary);
+        abort_if($response->status !== 200, 500, $response->content->errorSummary ?? '');
 
         $order->update(
             [
