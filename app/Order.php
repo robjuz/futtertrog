@@ -83,6 +83,11 @@ class Order extends Model
         return $this->hasManyThrough(Meal::class, OrderItem::class, 'order_id', 'id', 'id', 'meal_id');
     }
 
+    public function payedBy()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 //
 //    public function users()
 //    {
@@ -101,6 +106,11 @@ class Order extends Model
         }
 
         return $this->attributes['subtotal'];
+    }
+
+    public function getIsPayedAttribute(): bool
+    {
+        return (bool)($this->payed_at ?? $this->payedBy);
     }
 
     /**

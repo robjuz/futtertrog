@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\Repositories\OrdersRepository;
+use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -78,7 +79,9 @@ class OrderController extends Controller
                 'orderItems.user' => fn($q) => $q->withTrashed()
             ]);
 
-        return view('order.edit', compact('order'));
+        $users = User::all();
+
+        return view('order.edit', compact('order', 'users'));
     }
 
     /**
@@ -98,7 +101,8 @@ class OrderController extends Controller
             $request->validate(
                 [
                     'status' => ['sometimes', 'string', Rule::in(Order::$statuses)],
-                    'payed_at' => ['date', 'sometimes', 'nullable']
+                    'payed_at' => ['date', 'sometimes', 'nullable'],
+                    'user_id' => 'sometimes|nullable',
                 ]
             )
         );

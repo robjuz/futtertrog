@@ -3,12 +3,13 @@
 namespace Tests\Feature;
 
 use App\Meal;
-use App\MealProviders\Holzke;
+use App\MealProviders\Basic;
 use App\MealProviders\Weekly;
 use App\Order;
 use App\OrderItem;
 use App\User;
 use Illuminate\Http\Response;
+use Cknow\Money\Money;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -189,5 +190,25 @@ class OrderTest extends TestCase
             ->assertSee($user1->username)
             ->assertSee($user2->username);
 
+    }
+
+    /**
+     * @test
+     */
+    public function it_allows_to_mark_an_order_as_payed_by_a_user(){
+        $user1 = User::factory()->create();
+
+        $meal1 = Meal::factory()->create(['provider' => app(Basic::class), 'date' => now()->subDay()]);
+
+        $user1->order($meal1);
+
+        $this->assertEquals($meal1->price, $user1->balance->absolute());
+
+        $order = Order::first();
+
+        $this->loginAsAdmin()
+            ->put(route('orders.update', $order), ['user_id' => $user1->id]);
+
+        $this->assertEquals(Money::parse(0), $user1->fresh()->balance);
     }
 }

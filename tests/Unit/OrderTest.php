@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Meal;
 use App\Order;
 use App\OrderItem;
+use App\User;
 use Cknow\Money\Money;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
@@ -41,5 +42,27 @@ class OrderTest extends TestCase
 
 
         $this->assertEquals(Money::parse(6), $order->subtotal);
+    }
+
+    /**
+     * @test
+     */
+    public function it_is_payed_when_payed_at_or_user_id_is_set(){
+        $order1 = Order::create();
+
+        $this->assertFalse($order1->is_payed);
+
+        $order1->update(['payed_at' => now()]);
+
+        $this->assertTrue($order1->fresh()->is_payed);
+
+        $user = User::factory()->create();
+        $order2 = Order::create();
+
+        $this->assertFalse($order2->is_payed);
+
+        $order2->payedBy()->associate($user)->save();
+
+        $this->assertTrue($order2->fresh()->is_payed);
     }
 }

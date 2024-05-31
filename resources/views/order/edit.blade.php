@@ -21,7 +21,7 @@
         </header>
 
         @can('update', $order)
-            <div class="order__header">
+            <div class="order__subheader">
                 <form class="order__form" action="{{ route('orders.update', $order) }}" method="POST">
                     @method('put')
                     @csrf
@@ -36,7 +36,7 @@
                 <form class="order__form" action="{{ route('orders.update', $order) }}" method="POST">
                     @method('put')
                     @csrf
-                    <label>
+                    <label style="flex: 1;">
                         <span>{{ __('Payed at') }}</span>
                         @error('payed_at')
                         <span>{{ $message }}</span>
@@ -44,6 +44,27 @@
 
                         <input type="date" name="payed_at" value="{{ old('payed_at', $order->payed_at) }}">
                     </label>
+
+                    <div style="flex: 1;">
+                        <label for="user_id">
+                            <span>{{ __('Payed by') }}</span>
+                            @error('user_id')
+                            <span>{{ $message }}</span>
+                            @enderror
+                        </label>
+                        <select id="user_id" name="user_id">
+                            <option value="">---</option>
+                            @foreach ($users as $user)
+                                <option
+                                        value="{{ $user->id }}"
+                                        {{ old('user_id', $order->user_id) == $user->id ? 'selected' : ''}}
+
+                                >
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <button type="submit">
                         {{ __('Save') }}

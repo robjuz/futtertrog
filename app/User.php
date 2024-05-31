@@ -127,7 +127,12 @@ class User extends Authenticatable
                 )
             );
 
-            $this->attributes['balance'] = $deposits->subtract($orders);
+            $payedOrders = Money::sum(
+                Money::parse(0),
+                ...$this->payedOrders->map->subtotal
+            );
+
+            $this->attributes['balance'] = $deposits->subtract($orders)->add($payedOrders);
         }
 
         return $this->attributes['balance'];
@@ -143,6 +148,11 @@ class User extends Authenticatable
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function payedOrders()
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function generateApiToken()

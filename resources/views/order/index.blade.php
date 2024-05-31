@@ -90,7 +90,7 @@
 
                             <span class="order__header-item">{{ __('futtertrog.status.' . $order->status) }}</span>
 
-                            <span class="order__header-item">{{ $order->payed_at ? __('Payed') : __('Not payed') }}</span>
+                            <span class="order__header-item">{{ $order->is_payed ? __('Payed') : __('Not payed') }}</span>
                         </h2>
 
                         @can('update', $order)
