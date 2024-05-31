@@ -1014,35 +1014,57 @@ footer {
   width: 100%;
 }
 
-[id="current-offer"] h4 {
-  align-items: center;
+.meal__header {
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
 }
 
-[id="current-offer"] h4 * + * {
-  margin-left: 1em;
+.meal__name {
+  display: flex;
+  flex-direction: column;
+  flex: 1
 }
 
-[id="current-offer"] h4 > *:first-child {
+.meal__header-infos {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.meal__header-infos .money {
+  margin-top: .5rem;
+}
+
+.meal__provider-name {
+  opacity: .6;
+}
+
+
+.meal__name > *:first-child {
   margin-right: auto;
 }
 
-[id="current-offer"] li:nth-child(2n + 1) {
+.meal__edit-link {
+  margin: 0;
+}
+
+.meal:nth-child(2n + 1) {
   border-color: var(--custom-2);
 }
 
-[id="current-offer"] li:nth-child(3n + 1) {
+.meal:nth-child(3n + 1) {
   border-color: var(--custom-3);
 }
 
 
 /* styled as POT */
-[id="current-offer"] li.selected {
+.meal.selected {
   border-color: var(--danger);
 }
 
-[id="current-offer"] li > *:last-child {
+.meal > *:last-child {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -1056,12 +1078,12 @@ footer {
         "submit   submit";
 }
 
-[id="current-offer"] li > *:last-child .variants {
+.meal> *:last-child .variants {
   grid-area: variants;
   margin-bottom: auto;
 }
 
-[id="current-offer"] li > *:last-child .variants + * {
+.meal > *:last-child .variants + * {
   grid-area: submit;
 }
 
@@ -1103,7 +1125,6 @@ footer {
   cursor: not-allowed;
   animation: 1s loading infinite;
 }
-
 
 @keyframes loading {
   50% {

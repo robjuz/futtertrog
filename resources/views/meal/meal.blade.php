@@ -1,27 +1,31 @@
 <li id="meal_{{ $meal->id }}"
     class="meal {{ $meal->isOrdered() ? ' selected' : '' }}"
 >
-    <h4>
+    <div class="meal__header">
+    <h4 class="meal__name">
         @can('update', $meal)
-            <a href="{{ route('meals.edit', $meal) }}">
-                {{ $meal->title }}
-            </a>
+                <small class="meal__provider-name">{{ $meal->provider }}</small>
+                <a class="meal__edit-link" href="{{ route('meals.edit', $meal) }}">
+                    {{ $meal->title }}
+                </a>
         @else
-            <span>
+            <small class="meal_provider-name">{{ $meal->provider }}</small>
             {{ $meal->title }}
-        </span>
         @endcan
-
-        @if($meal->isHated)
-            @svg('solid/skull-crossbones', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
-        @elseif($meal->isPreferred)
-            @svg('solid/heart', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
-        @endif
     </h4>
+
+        <div class="meal__header-infos">
+    @if($meal->isHated)
+        @svg('solid/skull-crossbones', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
+    @elseif($meal->isPreferred)
+        @svg('solid/heart', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
+    @endif
 
     @if($meal->variants->isEmpty())
         <small class="money">{{ $meal->price }}</small>
     @endif
+        </div>
+    </div>
 
     @if($meal->image)
         <div>
