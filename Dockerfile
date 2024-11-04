@@ -1,6 +1,7 @@
+#syntax=docker.io/docker/dockerfile:1.7-labs
+
 FROM alpine:3.20
 
-# Setup apache and php
 RUN apk --no-cache --update \
     add apache2 \
     composer \
@@ -18,21 +19,16 @@ RUN apk --no-cache --update \
     php83-intl \
     php83-tokenizer \
     php83-session \
-    && mkdir /htdocs
-
-EXPOSE 80 443
-
-ADD .docker/docker-entrypoint.sh /
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
-CMD ["httpd", "-D", "FOREGROUND"]
+    && mkdir /htdocs \
+    && chown apache:apache /htdocs
 
 WORKDIR /htdocs
+COPY --exclude=./.docker --chown=apache:apache . .
 
-COPY --chown=root:apache --chmod=776 . .
+RUN composer install --no-dev \
+    && php artisan icons:cache
 
-RUN composer install --no-dev
-
-RUN composer dump-autoload --optimize
-RUN php artisan icons:cache
+EXPOSE 80
+COPY .docker/docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["httpd", "-D", "FOREGROUND"]

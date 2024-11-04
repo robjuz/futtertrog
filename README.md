@@ -53,10 +53,12 @@ services:
       HOLZKE_LOGIN: 
       HOLZKE_PASSWORD: 
       HOLZKE_SCHEDULE: "false"
-      
-      STARTUP_COMMAND_1: php artisan migrate --force
-      CRON_SCHEDULE_1: "* * * * *"
-      CRON_COMMAND_1: php artisan schedule:run
+
+  cron:
+    image: robjuz/futtertrog
+    extends:
+      service: app
+    command: php artisan schedule:work
       
   db:
     image: docker.io/bitnami/mariadb:11.5
@@ -147,7 +149,9 @@ GITLAB_CLIENT_ID=
 GITLAB_CLIENT_SECRET=
 GITLAB_URL=
 ```
+
 in `.env` file
+
 ---
 
 ## Local Development

@@ -34,4 +34,13 @@ sed -i 's/#LoadModule\ expires_module/LoadModule\ expires_module/' /etc/apache2/
 sed -i "s/memory_limit = .*/memory_limit = ${PHP_MEMORY_LIMIT}/" /etc/php83/php.ini
 sed -i "s#^;date.timezone =\$#date.timezone = \"${TZ}\"#" /etc/php83/php.ini
 
+umask 0022
+if [[ "$1" = "httpd" ]]; then
+    echo "** Starting Futtetrog setup **"
+    php artisan migrate --force
+    php artisan optimize
+    echo "** Futtetrog setup finished! **"
+fi
+
+echo ""
 exec "$@"
