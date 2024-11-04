@@ -1,20 +1,38 @@
-ARG PHP_EXTENSIONS="bcmath pdo_mysql intl gmp bcmath"
+FROM alpine:3.20
 
-FROM thecodingmachine/php:8.3-v4-slim-apache
+# Setup apache and php
+RUN apk --no-cache --update \
+    add apache2 \
+    composer \
+    php83-apache2 \
+    php83-bcmath \
+    php83-common \
+    php83-curl \
+    php83-dom \
+    php83-mbstring \
+    php83-mysqlnd \
+    php83-pdo_mysql \
+    php83-pdo_sqlite \
+    php83-xml \
+    php83-fileinfo \
+    php83-intl \
+    php83-tokenizer \
+    php83-session \
+    && mkdir /htdocs
 
-ENV APACHE_DOCUMENT_ROOT=public/ \
-    APACHE_RUN_USER=www-data \
-    APACHE_RUN_GROUP=www-data \
-    TEMPLATE_PHP_INI=production \
-    LOG_CHANNEL=stderr \
-    SESSION_DRIVER=cookie\
-    PHP_INI_MEMORY_LIMIT=100M
+EXPOSE 80 443
 
-COPY composer.* ./
+ADD .docker/docker-entrypoint.sh /
 
-RUN composer install --no-dev --no-scripts --no-autoloader
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
-COPY --chown=docker:www-data --chmod=776 . .
+CMD ["httpd", "-D", "FOREGROUND"]
+
+WORKDIR /htdocs
+
+COPY --chown=root:apache --chmod=776 . .
+
+RUN composer install --no-dev
 
 RUN composer dump-autoload --optimize
 RUN php artisan icons:cache
