@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b45b078cc6ce68942b57a28f5f3aff9e",
+    "content-hash": "40fc1902357ed2a4099e0500a7955495",
     "packages": [
         {
             "name": "blade-ui-kit/blade-icons",
@@ -4600,28 +4600,28 @@
             "time": "2020-08-20T12:19:16+00:00"
         },
         {
-            "name": "socialiteproviders/gitlab",
-            "version": "4.1.0",
+            "name": "socialiteproviders/authentik",
+            "version": "5.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/SocialiteProviders/GitLab.git",
-                "reference": "a8f67d3b02c9ee8c70c25c6728417c0eddcbbb9d"
+                "url": "https://github.com/SocialiteProviders/Authentik.git",
+                "reference": "4cf129cf04728a38e0531c54454464b162f0fa66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/GitLab/zipball/a8f67d3b02c9ee8c70c25c6728417c0eddcbbb9d",
-                "reference": "a8f67d3b02c9ee8c70c25c6728417c0eddcbbb9d",
+                "url": "https://api.github.com/repos/SocialiteProviders/Authentik/zipball/4cf129cf04728a38e0531c54454464b162f0fa66",
+                "reference": "4cf129cf04728a38e0531c54454464b162f0fa66",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^7.2 || ^8.0",
-                "socialiteproviders/manager": "~4.0"
+                "php": "^8.0",
+                "socialiteproviders/manager": "^4.4"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "SocialiteProviders\\GitLab\\": ""
+                    "SocialiteProviders\\Authentik\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4630,15 +4630,24 @@
             ],
             "authors": [
                 {
-                    "name": "Christoffer Martinsen",
-                    "email": "christoffermartinsen@gmail.com"
+                    "name": "rf152",
+                    "email": "git@rf152.co.uk"
                 }
             ],
-            "description": "GitLab OAuth2 Provider for Laravel Socialite",
+            "description": "Authentik OAuth2 Provider for Laravel Socialite",
+            "keywords": [
+                "authentik",
+                "laravel",
+                "oauth",
+                "provider",
+                "socialite"
+            ],
             "support": {
-                "source": "https://github.com/SocialiteProviders/GitLab/tree/4.1.0"
+                "docs": "https://socialiteproviders.com/authentik",
+                "issues": "https://github.com/socialiteproviders/providers/issues",
+                "source": "https://github.com/socialiteproviders/providers"
             },
-            "time": "2020-12-01T23:10:59+00:00"
+            "time": "2023-11-07T22:21:16+00:00"
         },
         {
             "name": "socialiteproviders/manager",
@@ -10551,7 +10560,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -10561,6 +10570,6 @@
         "ext-json": "*",
         "ext-pdo": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

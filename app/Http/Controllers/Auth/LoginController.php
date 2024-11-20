@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +14,6 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\GitlabProvider;
 
 /**
  * @OA\Post(
@@ -105,7 +103,7 @@ class LoginController extends Controller implements HasMiddleware
      *
      * @var string
      */
-    protected string $redirectTo = '/dashboard';
+    protected string $redirectTo = '/';
 
     public static function middleware(): array
     {
@@ -115,26 +113,26 @@ class LoginController extends Controller implements HasMiddleware
     }
 
     /**
-     * Obtain the user information from GitHub.
+     * Obtain the user information from OAuth provider.
      *
      * @param Request $request
+     * @param $provider
      * @return JsonResponse|RedirectResponse
      */
-    public function handleGitlabCallback(Request $request, Session $session): JsonResponse|RedirectResponse
+    public function handleOauthCallback(Request $request, $provider): JsonResponse|RedirectResponse
     {
-        /** @var GitlabProvider $gitlabProvider */
-        $gitlabProvider = Socialite::driver('gitlab');
+        $oauthProvider = Socialite::driver($provider);
 
-        $gitlabUser = $gitlabProvider->user();
+        $oauthUser = $oauthProvider->user();
 
         /** @var User $user */
         $user = User::withTrashed()->firstOrNew(
             [
-                'email' => $gitlabUser->getEmail(),
+                'email' => $oauthUser->getEmail(),
             ],
             [
-                'name' => $gitlabUser->getName(),
-                'password' => Hash::make($gitlabUser->getId()),
+                'name' => $oauthUser->getName(),
+                'password' => Hash::make($oauthUser->getId()),
             ]
         );
 
@@ -142,25 +140,21 @@ class LoginController extends Controller implements HasMiddleware
 
         $user->save();
 
-        Auth::login($user, $session->pull('remember_gitlab'));
+        Auth::login($user, true);
 
         return $this->sendLoginResponse($request);
     }
 
     /**
-     * Redirect the user to the GitHub authentication page.
+     * Redirect the user to the Oauth provider authentication page.
      *
      * @param Request $request
+     * @param string $provider
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function redirectToGitlab(Request $request, Session $session): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function redirectToOauth(string $provider): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        $session->put('remember_gitlab', $request->filled('remember'));
-
-        /** @var GitlabProvider $gitlabProvider */
-        $gitlabProvider = Socialite::driver('gitlab');
-
-        return $gitlabProvider->redirect();
+        return Socialite::driver($provider)->redirect();
     }
 
     /**
