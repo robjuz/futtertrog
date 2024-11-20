@@ -137,20 +137,32 @@ To obtain the location key
     FLASCHENPOST_ENABLED: "true" 
 
 ---
+## Login with OAuth
 
-## Login with GitLab
+### GitLab
 
-You can use gitlab as OAuth provider
 1. go to GitLab -> Applications and create a new App
-2. set
-```
-LOGIN_WITH_GITLAB=true
+   1. set Callback URL to `https://<your_domain>/login/gitlab/callback`
+
+`.env`
+```dotenv
 GITLAB_CLIENT_ID=
 GITLAB_CLIENT_SECRET=
 GITLAB_URL=
 ```
+### Authentik
 
-in `.env` file
+1. go to Authentik -> Providers and create a new Provider
+   1. set Redirect URIs to `https://<your_domain>/login/authentic/callback`
+2. go to Authentik -> Applicaations and create a new Application
+   1. use the provider from previous step
+
+`.env`
+```dotenv
+AUTHENTIK_BASE_URL=
+AUTHENTIK_CLIENT_ID=
+AUTHENTIK_CLIENT_SECRET=
+```
 
 ---
 
@@ -175,24 +187,50 @@ Visit http://localhost:8000 in your browser
 
 ### With Docker Compose
 
+To expose the app container port you can use this:
+
+`docker-compose.override.yml`
+```yaml
+services:
+  app:
+    ports:
+      - 8080:80
+```
+
+```shell
     docker-compose pull
     docker-compose up -d
+```
+
 
 After first install you need to generate the APP_KEY
-
-* `cp .env.example .env`
-* `docker-compose exec app php artisan key:gen`
+```shell
+docker-compose exec app php artisan key:gen
+```
 
 
 Visit http://localhost:8080 in your browser
 
 #### Mails
-
+`docker-compose.override.yml`
+```yaml
+services:
+  mailhog:
+    ports:
+      - 8025:8025
+```
 You can see your mails using __MailHog__ under ```localhost:8025```
 
 ### PHPUnit
 
-```vendor/bin/phpunit --configuration ./phpunit.xml```
+```shell
+vendor/bin/phpunit
+```
+or
+```shell
+php artisan test
+```
+
 
 #### PhpStorm
 * Go to PHP settings and set default interpreter to the app service.

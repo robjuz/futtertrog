@@ -15,34 +15,14 @@ class LoginWithGitlabTest extends TestCase
 {
     use WithFaker;
 
-    /** @test */
-    public function it_can_be_disabled()
-    {
-        Config::set('services.gitlab.enabled', false);
-
-        $this->withExceptionHandling()
-            ->get(route('login.gitlab'))
-            ->assertNotFound();
-    }
-
-    /** @test */
-    public function it_can_be_enabled()
-    {
-        Config::set('services.gitlab.enabled', true);
-
-        $this->get(route('login.gitlab'))->assertRedirect();
-    }
-
     /** @test * */
     public function it_creates_a_new_user_from_gitlab_user()
     {
         $this->mockSocialite();
 
-        Config::set('services.gitlab.enabled', true);
-
         $this->assertDatabaseCount('users', 0);
 
-        $this->get(route('login.gitlab-callback'));
+        $this->get(route('login.oauth-callback', 'gitlab'));
 
         $this->assertDatabaseCount('users', 1);
 
@@ -72,8 +52,6 @@ class LoginWithGitlabTest extends TestCase
     {
         $this->mockSocialite();
 
-        Config::set('services.gitlab.enabled', true);
-
         $user = User::factory()->create(
             [
                 'email' => 'test@example.com'
@@ -82,7 +60,7 @@ class LoginWithGitlabTest extends TestCase
 
         $this->assertDatabaseCount('users', 1);
 
-        $this->get(route('login.gitlab-callback'));
+        $this->get(route('login.oauth-callback', 'gitlab'));
 
         $this->assertDatabaseCount('users', 1);
 
@@ -94,8 +72,6 @@ class LoginWithGitlabTest extends TestCase
     {
         $this->mockSocialite();
 
-        Config::set('services.gitlab.enabled', true);
-
         $user = User::factory()->create(
             [
                 'email' => 'test@example.com'
@@ -105,56 +81,7 @@ class LoginWithGitlabTest extends TestCase
         $user->delete();
 
         $this->withExceptionHandling()
-            ->get(route('login.gitlab-callback'))
+            ->get(route('login.oauth-callback', 'gitlab'))
             ->assertUnauthorized();
-    }
-
-    /** @test */
-    public function it_respects_the_remember_me_checkbox_not_set()
-    {
-        Config::set('services.gitlab.enabled', true);
-
-        $this->get(route('login.gitlab'))
-            ->assertSessionHas('remember_gitlab', false);
-
-        /** @var User $user */
-        $user = User::factory()->create(
-            [
-                'email' => 'test@example.com'
-            ]
-        );
-
-        /** @var SessionGuard $sessionGuard */
-        $sessionGuard = Auth::guard();
-
-        $this->mockSocialite()
-            ->get(route('login.gitlab-callback'))
-            ->assertCookieMissing($sessionGuard->getRecallerName());
-    }
-
-    /** @test */
-    public function it_respects_the_remember_me_checkbox_set()
-    {
-        Config::set('services.gitlab.enabled', true);
-
-        $this->get(route('login.gitlab', ['remember' => 'on']))
-            ->assertSessionHas('remember_gitlab', true);
-
-        /** @var User $user */
-        $user = User::factory()->create(
-            [
-                'email' => 'test@example.com'
-            ]
-        );
-
-        /** @var SessionGuard $sessionGuard */
-        $sessionGuard = Auth::guard();
-
-        $this->mockSocialite()
-            ->withSession(['remember_gitlab' => true])
-            ->get(route('login.gitlab-callback'))
-            ->assertCookie(
-                $sessionGuard->getRecallerName(),
-            );
     }
 }

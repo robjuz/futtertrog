@@ -20,10 +20,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('logout', [LoginController::class, 'logout']);
 Auth::routes(['register' => false]);
 
-Route::group(['middleware' => 'enableLoginWithGitlab'], function () {
-    Route::get('login/gitlab', [LoginController::class, 'redirectToGitlab'])->name('login.gitlab');
-    Route::get('login/gitlab/callback', [LoginController::class, 'handleGitlabCallback'])->name('login.gitlab-callback');
-});
+Route::get('login/oauth/{provider}', [LoginController::class, 'redirectToOauth'])->name('login.oauth');
+Route::get('login/oauth/{provider}/callback', [LoginController::class, 'handleOauthCallback'])->name('login.oauth-callback');
 
 Route::group(['middleware' => 'auth:web,api'], function () {
     Route::get('meals/ical', IcalController::class)->name('meals.ical');

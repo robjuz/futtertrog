@@ -36,12 +36,18 @@ return [
     ],
 
     'gitlab' => [
-        'enabled' => env('LOGIN_WITH_GITLAB', false),
+        'host' => env('GITLAB_URL'),
         'client_id' => env('GITLAB_CLIENT_ID'),
         'client_secret' => env('GITLAB_CLIENT_SECRET'),
-        'instance_uri' => env('GITLAB_URL'),
-        'redirect' => '/login/gitlab/callback',
+        'redirect' => '/login/oauth/gitlab/callback',
     ],
+    'authentik' => [
+        'base_url' => env('AUTHENTIK_BASE_URL'),
+        'client_id' => env('AUTHENTIK_CLIENT_ID'),
+        'client_secret' => env('AUTHENTIK_CLIENT_SECRET'),
+        'redirect' => '/login/oauth/authentik/callback'
+    ],
+
 
     'holzke' => [
         'enabled' =>  (bool) env('HOLZKE_ENABLED', false),

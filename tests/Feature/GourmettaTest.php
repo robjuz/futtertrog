@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature;
+namespace Tests\Feature;
 
 use App\Events\NewOrderPossibilities;
 use App\MealProviders\Gourmetta;

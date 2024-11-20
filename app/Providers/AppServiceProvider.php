@@ -7,6 +7,7 @@ use App\Models\Order;
 use Cknow\Money\Money;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
             );
 
             return $depositesValue->subtract($payedOrdersValues);
+        });
+
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('authentik', \SocialiteProviders\Authentik\Provider::class);
         });
     }
 

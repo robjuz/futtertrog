@@ -26,7 +26,7 @@
         "laravel/ui": "^4.0",
         "sentry/sentry-laravel": "^4.9",
         "silviolleite/laravelpwa": "^2.0",
-        "socialiteproviders/gitlab": "^4.1"
+        "socialiteproviders/authentik": "^5.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
