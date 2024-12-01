@@ -22,11 +22,4 @@ class MealImportTest extends TestCase
             ->postJson(route('meals.import'))
             ->assertUnprocessable();
     }
-
-    /** @test */
-    public function it_allows_to_import_meals_from_holzke(): void
-    {
-        $this->loginAsAdmin()
-            ->post()
-    }
 }
