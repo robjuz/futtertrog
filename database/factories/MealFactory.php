@@ -19,7 +19,7 @@ class MealFactory extends Factory
             'title' => $this->faker->sentence,
             'description' => $this->faker->sentences(1, true),
             'date' => today()->toDateTimeString(),
-            'provider' => array_rand(app('mealProviders')),
+            'provider' => null,
         ];
     }
 
