@@ -6,6 +6,7 @@ use App\MealProviders\CallAPizza;
 use App\MealProviders\Flaschenpost;
 use App\MealProviders\Gourmetta;
 use App\MealProviders\Holzke;
+use App\MealProviders\Internal;
 use Illuminate\Support\ServiceProvider;
 
 class MealProvidersServiceProvider extends ServiceProvider
@@ -34,6 +35,8 @@ class MealProvidersServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Internal::register($this->app);
+
         $registeredProviders = [];
 
         foreach ($this->bundledProviders as $provider) {

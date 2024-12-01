@@ -164,7 +164,9 @@ class Meal extends Model
             if ($this->provider) {
                 $order = $this->provider->getOrder($this->date);
             } else {
-                $order = Order::query()->firstOrCreate(['provider' => $this->getKey()], ['status' => Order::STATUS_OPEN]);
+                $order = Order::query()
+                    ->whereHas('meals', fn(Builder $query) => $query->whereDate('date', $this->date))
+                    ->firstOrCreate(['provider' => null], ['status' => Order::STATUS_OPEN]);
             }
 
             /** @var OrderItem $orderItem */

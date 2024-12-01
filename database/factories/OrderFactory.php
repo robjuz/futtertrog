@@ -14,7 +14,7 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'provider' => array_rand(app('mealProviders')),
+            'provider' => null,
         ];
     }
 }

@@ -148,6 +148,7 @@ class OrderItemController extends Controller
             ]
         );
 
+        /** @var Meal $meal */
         $meal = Meal::findOrFail($request->input('meal_id'));
 
         Gate::authorize('create', [OrderItem::class, $meal->date]);

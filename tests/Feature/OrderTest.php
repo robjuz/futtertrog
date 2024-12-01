@@ -43,7 +43,7 @@ class OrderTest extends TestCase
             $orderItem = OrderItem::factory()->make();
 
             /** @var Meal $meal */
-            $meal = Meal::factory()->create(['provider'=> $order->provider->getKey()]);
+            $meal = Meal::factory()->create();
 
             $orderItem->meal()->associate($meal);
 
@@ -162,7 +162,9 @@ class OrderTest extends TestCase
     {
         Carbon::setTestNow(now()->startOfWeek()->addDays(2));
 
+        /** @var User $user1 */
         $user1 = User::factory()->create();
+        /** @var User $user2 */
         $user2 = User::factory()->create();
 
         $user2->delete();
