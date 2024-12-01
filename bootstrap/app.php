@@ -13,10 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'cast.float' => \App\Http\Middleware\CastFormValuesToFloat::class,
-            'enableLoginWithGitlab' => \App\Http\Middleware\EnableLoginWithGitlab::class,
         ]);
 
-        $middleware->append(\App\Http\Middleware\UserLocale::class);
+        $middleware->web(append: [
+            \App\Http\Middleware\UserLocale::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

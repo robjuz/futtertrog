@@ -6,6 +6,7 @@ use App\Models\User;
 use Cknow\Money\Money;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 class UserLocale
@@ -17,9 +18,9 @@ class UserLocale
      * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $language = app()->getLocale();
+        $language = App::getLocale();
 
         if (Auth::check()) {
             /** @var User $user */
@@ -28,7 +29,8 @@ class UserLocale
             $language = $user->settings->language ?? $language;
         }
 
-        app()->setLocale($language);
+
+        App::setLocale($language);
 
         Money::setLocale($language);
 
