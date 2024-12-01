@@ -104,8 +104,6 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     public function getMealsDataForDate(Carbon $date): array
     {
-        $this->login();
-
         return $this->parseResponse(
             $this->getHtml($date)
         );
@@ -245,6 +243,8 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     public function getHtml(Carbon $date): string
     {
+        $this->login();
+
         return Curl::to($this->getOrderingUrl($date, $date))
             ->setCookieFile($this->getCookieJar())
             ->get();
