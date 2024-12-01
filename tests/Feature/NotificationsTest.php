@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Events\NewOrderPossibility;
-use App\MealProviders\Basic;
 use App\MealProviders\Holzke;
 use App\Models\Meal;
 use App\Models\Order;
@@ -236,7 +235,7 @@ class NotificationsTest extends TestCase
     public function it_notifies_an_admin_when_an_closed_order_was_reopened()
     {
         /** @var Meal $meal */
-        $meal = Meal::factory(['provider' => app(Basic::class)])->inFuture()->create();
+        $meal = Meal::factory()->inFuture()->create();
 
         /** @var User $admin */
         $admin = User::factory()->create(['is_admin' => true]);

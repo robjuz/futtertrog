@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\MealProviders\Basic;
-use App\MealProviders\Weekly;
 use App\Models\Meal;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -162,8 +160,6 @@ class OrderTest extends TestCase
     /** @test */
     public function it_shows_order_details()
     {
-        Weekly::register($this->app);
-
         Carbon::setTestNow(now()->startOfWeek()->addDays(2));
 
         $user1 = User::factory()->create();
@@ -172,8 +168,8 @@ class OrderTest extends TestCase
         $user2->delete();
 
 
-        $meal1 = Meal::factory()->create(['provider' => app(Weekly::class), 'date' => now()->subDay()]);
-        $meal2 = Meal::factory()->create(['provider' => app(Weekly::class), 'date' => now()->addDay()]);
+        $meal1 = Meal::factory()->create(['date' => now()->subDay()]);
+        $meal2 = Meal::factory()->create(['date' => now()->addDay()]);
 
         $user1->order($meal1);
         $user1->order($meal2);
@@ -199,7 +195,7 @@ class OrderTest extends TestCase
     public function it_allows_to_mark_an_order_as_payed_by_a_user(){
         $user1 = User::factory()->create();
 
-        $meal1 = Meal::factory()->create(['provider' => app(Basic::class), 'date' => now()->subDay()]);
+        $meal1 = Meal::factory()->create(['date' => now()->subDay()]);
 
         $user1->order($meal1);
 

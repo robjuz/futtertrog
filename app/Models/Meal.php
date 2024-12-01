@@ -160,8 +160,12 @@ class Meal extends Model
     {
         $userId = $user->id ?? $user;
 
-        return DB::transaction(function() use ($userId, $quantity) {
-            $order = $this->provider->getOrder($this->date);
+        return DB::transaction(function () use ($userId, $quantity) {
+            if ($this->provider) {
+                $order = $this->provider->getOrder($this->date);
+            } else {
+                $order = Order::query()->firstOrCreate(['provider' => $this->getKey()], ['status' => Order::STATUS_OPEN]);
+            }
 
             /** @var OrderItem $orderItem */
             $orderItem = $order->orderItems()
@@ -183,7 +187,7 @@ class Meal extends Model
 
     public function isOrdered(User $user = null): bool
     {
-        return (bool) $this->orderItem($user);
+        return (bool)$this->orderItem($user);
     }
 
     public function orderItem(User $user = null): ?OrderItem
