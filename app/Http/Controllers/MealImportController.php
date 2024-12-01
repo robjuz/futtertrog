@@ -7,6 +7,7 @@ use App\Models\Meal;
 use App\Services\MealService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class MealImportController extends Controller
