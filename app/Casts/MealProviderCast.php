@@ -3,7 +3,6 @@
 namespace App\Casts;
 
 use App\MealProviders\AbstractMealProvider;
-use App\MealProviders\Basic;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class MealProviderCast implements CastsAttributes
@@ -19,7 +18,7 @@ class MealProviderCast implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes)
     {
-        return app()->make($value ?? basename(Basic::class));
+        return $value ? app()->make($value) : null;
     }
 
     /**

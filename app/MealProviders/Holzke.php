@@ -2,6 +2,7 @@
 
 namespace App\MealProviders;
 
+use App\Exceptions\MealProviderNotConfiguredException;
 use App\MealInfo;
 use App\MealProviders\Interfaces\HasWeeklyOrders;
 use App\Models\Order;
@@ -36,10 +37,14 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     }
 
 
-    private function getUrl($url) {
+    private function getUrl($url)
+    {
         return URL::format($this->baseUrl, $url) . '/';
     }
 
+    /**
+     * @throws MealProviderNotConfiguredException
+     */
     private function login(): void
     {
         if ($this->isLoggedIn) {
@@ -47,7 +52,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         }
 
         if (!config('services.holzke.login') || !config('services.holzke.password')) {
-            return;
+           throw new MealProviderNotConfiguredException('Holzke');
         }
 
         /** @var Element $response */
@@ -99,6 +104,8 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     public function getMealsDataForDate(Carbon $date): array
     {
+        $this->login();
+
         return $this->parseResponse(
             $this->getHtml($date)
         );
@@ -114,7 +121,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
     {
         $items = (new Document($response))->find('.menu-table tr');
         array_shift($items); //remove headings row
-        $items =  array_map(
+        $items = array_map(
             function ($mealElement) {
                 $info = new MealInfo();
 //                $info->calories = $this->extractCalories($mealElement);
@@ -191,7 +198,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
             return '';
         }
 
-        $description =  $mealText->firstChild();
+        $description = $mealText->firstChild();
         if (!$description) {
             return '';
         }
@@ -238,8 +245,6 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
      */
     public function getHtml(Carbon $date): string
     {
-        $this->login();
-
         return Curl::to($this->getOrderingUrl($date, $date))
             ->setCookieFile($this->getCookieJar())
             ->get();
@@ -350,7 +355,7 @@ class Holzke extends AbstractMealProvider implements HasWeeklyOrders
         $orderingUrl = $this->getOrderingUrl($startDate, $endDate);
         $csrfToken = $this->getCsrf($orderingUrl);
 
-        $data = $order->orderItems->groupBy('meal.external_id')->mapWithKeys(function($orderItems, $externalId) {
+        $data = $order->orderItems->groupBy('meal.external_id')->mapWithKeys(function ($orderItems, $externalId) {
             /** @var OrderItem[]|Collection $orderItems */
             return [$externalId => $orderItems->sum('quantity')];
         });

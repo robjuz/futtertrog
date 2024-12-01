@@ -5,20 +5,8 @@
     <h1>{{ __('New meal') }}</h1>
 
     <form action="{{ route('meals.store') }}" method="post">
+        <h2>{{ __('Create manually') }}</h2>
         @csrf
-
-        <label for="provider">
-            <span>{{ __('Provider') }}</span>
-            @error('provider')
-            <span>{{ $message }}</span>
-            @enderror
-        </label>
-        <select id="provider" name="provider">
-            <option value="">---</option>
-            @foreach($providers as $provider => $name)
-                <option value="{{ $provider }}">{{ $name }}</option>
-            @endforeach
-        </select>
 
         <label for="title">
             <span>{{__('Title')}}</span>
@@ -69,6 +57,7 @@
     </form>
 
     <form action="{{ route('meals.import') }}" method="post">
+        <h2>{{ __('Import meals') }}</h2>
         @csrf
 
         <label for="import_provider">

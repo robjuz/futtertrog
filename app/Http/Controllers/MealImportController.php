@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\MealProviders\AbstractMealProvider;
 use App\Models\Meal;
 use App\Services\MealService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
@@ -12,15 +13,7 @@ use Illuminate\Validation\Rule;
 
 class MealImportController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Exception
-     */
-    public function __invoke(Request $request, MealService $mealService)
+    public function __invoke(Request $request, MealService $mealService): RedirectResponse
     {
         Gate::authorize('create', Meal::class);
 

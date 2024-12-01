@@ -56,6 +56,12 @@
     </p>
 @endif
 
+@if (session('error'))
+    <p class="error-message">
+        {{ session('error') }}
+    </p>
+@endif
+
 @auth()
     <a class="sr-only skip-link skip-navigation"
        href="#main" <?php /* keep this link synchronised with main's id */ ?>
