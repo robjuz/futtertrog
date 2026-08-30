@@ -1,24 +1,24 @@
 #syntax=docker.io/docker/dockerfile:1.7-labs
 
-FROM alpine:3.20
+FROM alpine:3.24.1
 
 RUN apk --no-cache --update \
     add apache2 \
     composer \
-    php83-apache2 \
-    php83-bcmath \
-    php83-common \
-    php83-curl \
-    php83-dom \
-    php83-mbstring \
-    php83-mysqlnd \
-    php83-pdo_mysql \
-    php83-pdo_sqlite \
-    php83-xml \
-    php83-fileinfo \
-    php83-intl \
-    php83-tokenizer \
-    php83-session \
+    php85-apache2 \
+    php85-bcmath \
+    php85-common \
+    php85-curl \
+    php85-dom \
+    php85-mbstring \
+    php85-mysqlnd \
+    php85-pdo_mysql \
+    php85-pdo_sqlite \
+    php85-xml \
+    php85-fileinfo \
+    php85-intl \
+    php85-tokenizer \
+    php85-session \
     && mkdir /htdocs \
     && chown apache:apache /htdocs
 
