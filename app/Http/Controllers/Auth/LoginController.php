@@ -21,29 +21,38 @@ use Laravel\Socialite\Facades\Socialite;
  *      summary="Sign in",
  *      description="Login by email, password",
  *      operationId="login",
+ *
  *      @OA\RequestBody(
  *          required=true,
  *          description="Pass user credentials",
+ *
  *          @OA\JsonContent(
  *              title="LoginRequest",
  *              required={"email","password"},
+ *
  *              @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
  *              @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
  *          ),
  *      ),
+ *
  *      @OA\Response(
  *          response=200,
  *          description="Success",
+ *
  *          @OA\JsonContent(
  *              title="LoginResponse",
+ *
  *              @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
  *          )
  *      ),
+ *
  *      @OA\Response(
  *          response=422,
  *          description="Validation error",
+ *
  *          @OA\JsonContent(
  *             title="LoginValidationResponse",
+ *
  *             @OA\Property(property="message", type="string", example="The given data was invalid."),
  *             @OA\Property(
  *                property="errors",
@@ -51,6 +60,7 @@ use Laravel\Socialite\Facades\Socialite;
  *                @OA\Property(
  *                   property="email",
  *                   type="array",
+ *
  *                   @OA\Items(
  *                      type="string",
  *                      example={"The email field is required.","The email must be a valid email address."},
@@ -59,6 +69,7 @@ use Laravel\Socialite\Facades\Socialite;
  *             )
  *          )
  *       ),
+ *
  *      @OA\Response( response="default", ref="#/components/responses/Default" ),
  * ),
  *
@@ -73,11 +84,12 @@ use Laravel\Socialite\Facades\Socialite;
  *         response=200,
  *         description="Success"
  *      ),
- *
  *      @OA\Response(
  *         response=401,
  *         description="Returns when user is not authenticated",
+ *
  *         @OA\JsonContent(
+ *
  *            @OA\Property(property="message", type="string", example="Not authorized"),
  *         )
  *      )
@@ -100,8 +112,6 @@ class LoginController extends Controller implements HasMiddleware
 
     /**
      * Where to redirect users after login.
-     *
-     * @var string
      */
     protected string $redirectTo = '/';
 
@@ -114,10 +124,6 @@ class LoginController extends Controller implements HasMiddleware
 
     /**
      * Obtain the user information from OAuth provider.
-     *
-     * @param Request $request
-     * @param $provider
-     * @return JsonResponse|RedirectResponse
      */
     public function handleOauthCallback(Request $request, $provider): JsonResponse|RedirectResponse
     {
@@ -148,9 +154,7 @@ class LoginController extends Controller implements HasMiddleware
     /**
      * Redirect the user to the Oauth provider authentication page.
      *
-     * @param Request $request
-     * @param string $provider
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @param  Request  $request
      */
     public function redirectToOauth(string $provider): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -159,9 +163,6 @@ class LoginController extends Controller implements HasMiddleware
 
     /**
      * Send the response after the user was authenticated.
-     *
-     * @param Request $request
-     * @return RedirectResponse|JsonResponse
      */
     protected function sendLoginResponse(Request $request): JsonResponse|RedirectResponse
     {
@@ -182,9 +183,6 @@ class LoginController extends Controller implements HasMiddleware
 
     /**
      * Validate the user login request.
-     *
-     * @param Request $request
-     * @return void
      */
     protected function validateLogin(Request $request): void
     {

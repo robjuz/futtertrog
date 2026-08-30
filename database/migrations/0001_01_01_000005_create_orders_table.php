@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ class CreateOrdersTable extends Migration
             $table->string('provider')->nullable();
             $table->string('status')->default('open');
             $table->string('previous_status')->nullable();
-            $table->foreignIdFor(\App\Models\User::class)->index()->nullable();
+            $table->foreignIdFor(User::class)->index()->nullable();
             $table->date('payed_at')->nullable();
             $table->timestamps();
         });

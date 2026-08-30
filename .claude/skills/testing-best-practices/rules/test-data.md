@@ -2,9 +2,9 @@
 
 ## Each Test Makes Its Own Data
 
-Create mutable records inside each test or through a private helper that the test calls. This keeps setup visible and lets each test select its factory state.
+Create mutable records inside the test that uses them. This keeps setup visible and lets each test select its factory state.
 
-Use `setUp()` only for configuration that applies to every test in the class. Do not create records in it, because its objects remain in memory until the suite ends.
+Use `beforeEach()` only for configuration that applies to every test in the file. Do not create records in it.
 
 ## Record Construction
 
@@ -31,29 +31,17 @@ $organizations = Organization::factory()
 
 Create only the records required to arrange the behavior or support an assertion.
 
-## Data Providers
+## Datasets
 
-Use a data provider when the setup, test body, and assertions remain the same across input values.
+Use a dataset when the setup, test body, and assertions remain the same across input values.
 
 ```php
-public static function nonAdminRoles(): array
-{
-    return collect(Role::cases())
-        ->reject(fn (Role $role): bool => $role === Role::ADMIN)
-        ->mapWithKeys(fn (Role $role): array => [$role->value => [$role]])
-        ->all();
-}
-
-#[DataProvider('nonAdminRoles')]
-public function test_forbids_roles_other_than_admin(Role $role): void
-{
-    $this->actingAs(User::factory()->hasOrganization($role)->create())
+it('forbids roles other than admin', function (Role $role) {
+    actingAs(User::factory()->hasOrganization($role)->create())
         ->post('/settings')
         ->assertForbidden();
-}
+})->with(collect(Role::cases())->reject(fn (Role $role) => $role === Role::ADMIN));
 ```
-
-Declare each data provider method as `public static`.
 
 Use parameterized tests for:
 
@@ -65,4 +53,4 @@ Use parameterized tests for:
 
 Write separate tests if the cases need a different setup, a different behavior, or different assertions. One test function with a branch in the body is two tests in one function.
 
-Give each data-provider case a key that states the difference. A failure then identifies the case without requiring you to count positions.
+Give each dataset case a name that states the difference. A failure then identifies the case without requiring you to count positions.

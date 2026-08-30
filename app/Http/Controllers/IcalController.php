@@ -16,8 +16,6 @@ class IcalController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param Request $request
-     * @param OrdersRepository $ordersRepository
      * @return void
      */
     public function __invoke(Request $request, OrdersRepository $ordersRepository)
@@ -28,17 +26,15 @@ class IcalController extends Controller
             $request->input('to', null)
         );
 
-        $events = $orderItems->map(fn(OrderItem $orderItem) => (new Event())
+        $events = $orderItems->map(fn (OrderItem $orderItem) => (new Event)
             ->setOccurrence(new SingleDay(new Date($orderItem->meal->date)))
-            ->setSummary($orderItem->meal->title . ' (' . $orderItem->quantity . ')')
+            ->setSummary($orderItem->meal->title.' ('.$orderItem->quantity.')')
             ->setDescription($orderItem->meal->description ?? '')
         )->toArray();
 
-
         $calendar = new Calendar($events);
 
-        $calendarComponent = (new CalendarFactory())->createCalendar($calendar);
-
+        $calendarComponent = (new CalendarFactory)->createCalendar($calendar);
 
         return response($calendarComponent)->withHeaders(
             [

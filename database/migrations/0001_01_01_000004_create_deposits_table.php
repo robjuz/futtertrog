@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Deposit;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,10 +17,10 @@ class CreateDepositsTable extends Migration
     {
         Schema::create('deposits', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class)->index();
+            $table->foreignIdFor(User::class)->index();
             $table->bigInteger('value');
             $table->text('comment')->nullable();
-            $table->string('status')->default(\App\Models\Deposit::STATUS_OK);
+            $table->string('status')->default(Deposit::STATUS_OK);
             $table->timestamps();
         });
     }

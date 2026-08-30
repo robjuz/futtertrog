@@ -14,8 +14,6 @@ class UserLocale
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -28,7 +26,6 @@ class UserLocale
 
             $language = $user->settings->language ?? $language;
         }
-
 
         App::setLocale($language);
 

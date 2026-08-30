@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Deposit;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
@@ -28,8 +29,7 @@ class DepositTransferController extends Controller implements HasMiddleware
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -49,7 +49,7 @@ class DepositTransferController extends Controller implements HasMiddleware
 
             Deposit::create([
                 'user_id' => $request->target,
-                'value' =>  $request->value,
+                'value' => $request->value,
                 'comment' => $request->comment,
             ]);
         });

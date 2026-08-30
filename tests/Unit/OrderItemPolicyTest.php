@@ -37,13 +37,13 @@ class OrderItemPolicyTest extends TestCase
         $this->assertTrue(auth()->user()->cannot('create', [OrderItem::class, today()]));
         $this->assertTrue(auth()->user()->cannot('create', [OrderItem::class, today()->subDay()]));
 
-        //someone elses order
+        // someone elses order
         $orderItem = OrderItem::factory();
         $this->assertTrue(auth()->user()->cannot('view', $orderItem));
         $this->assertTrue(auth()->user()->cannot('update', $orderItem));
         $this->assertTrue(auth()->user()->cannot('delete', $orderItem));
 
-        //own order in future
+        // own order in future
         $futureMeal = Meal::factory()->inFuture()->create();
 
         $orderItem = OrderItem::factory()->create([
@@ -54,7 +54,7 @@ class OrderItemPolicyTest extends TestCase
         $this->assertTrue(auth()->user()->can('update', $orderItem));
         $this->assertTrue(auth()->user()->can('delete', $orderItem));
 
-        //own order in future
+        // own order in future
         $pastMeal = Meal::factory()->inPast()->create();
 
         $orderItem = OrderItem::factory()->create([

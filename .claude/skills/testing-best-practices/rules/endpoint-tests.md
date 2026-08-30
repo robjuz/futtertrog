@@ -36,7 +36,7 @@ An HTTP test shows that the endpoint performs authorization. It cannot identify 
 - Write one test for each validation rule when each failure represents a separate contract.
 - Write one test with an empty payload to assert several required fields together.
 - Assert the text of the message that the user gets. A message that is present but wrong is a defect.
-- Use a data provider with the `#[DataProvider]` attribute for input values that need the same setup and the same assertions. Use the `#[TestWith]` attribute for a small set of values.
+- Use a dataset for input values that need the same setup and the same assertions.
 
 Send an input value that is not valid through the application, and assert the error. Do not assert that an array of rules contains a string, because that assertion tests the declaration and not the behavior. Use such an assertion only for a rule that no request can reach, and write the reason in the test.
 

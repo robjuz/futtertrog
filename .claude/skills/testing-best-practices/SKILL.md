@@ -8,8 +8,8 @@ metadata:
 
 # Testing Best Practices
 
-This skill provides rules for designing Laravel tests. Each rule file explains what to do and why. Use `search-docs` for Laravel API syntax. Fetch `https://docs.phpunit.de/en/13.3/` for PHPUnit API syntax.
-This project uses PHPUnit. Follow the corresponding guidance in each rule.
+This skill provides rules for designing Laravel tests. Each rule file explains what to do and why. Use `search-docs` for Laravel and Pest API syntax.
+This project uses Pest. Follow the corresponding guidance in each rule.
 
 ## Consistency First
 
@@ -29,7 +29,8 @@ Read this section before you write a test.
 - Leave framework behavior to framework tests. Testing project configuration is not testing the framework. A constrained relationship, cast, scope, or validation rule belongs to this project.
 - Keep every test that can detect a distinct defect. When two tests detect the same defect, trim the higher-layer test to one case and report the duplication. Do not delete an existing test.
 - Write a feature test first. Write a unit test only for logic that does not use the framework.
-- Write a feature test for every behavior reachable through a request. Real-browser tests require `laravel/dusk` and a browser download, neither of which this project installs. Mention the package only if the user asks for a real-browser test.
+- Write a feature test for every behavior reachable through a request. Real-browser tests require `pestphp/pest-plugin-browser` and a browser download, neither of which this project installs. Mention the package only if the user asks for a real-browser test.
+- Judge an architecture test by the convention it protects, not by the rules above. An `arch()` test declares a rule for an entire directory, such as the parent class of every model, the classes that may use an enum, or the methods every factory declares. It intentionally checks declarations and fails when a new file breaks the convention.
 - Use the test tools that the project installs. Add a new test dependency, plugin, or browser only after the user asks for it.
 
 ## How to Apply

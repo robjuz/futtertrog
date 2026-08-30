@@ -50,7 +50,7 @@ class SettingsTest extends TestCase
             UserSettings::LANGUAGE => 'de',
             UserSettings::REDIRECT_TO_NEXT_DAY => true,
         ];
-    
+
         $this->login()->postJson(route('settings.store'), $jsonData)->assertJson($jsonData);
     }
 }

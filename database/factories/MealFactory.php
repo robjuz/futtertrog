@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
 class MealFactory extends Factory
 {
@@ -27,7 +26,7 @@ class MealFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'date' => today()->addDays(rand(1,10)),
+                'date' => today()->addDays(rand(1, 10)),
             ];
         });
     }

@@ -18,8 +18,6 @@ class NewOrderPossibility extends Notification
 
     /**
      * Create a new notification instance.
-     *
-     * @param  Carbon  $date
      */
     public function __construct(Carbon $date)
     {
@@ -43,7 +41,7 @@ class NewOrderPossibility extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {

@@ -7,6 +7,7 @@ use App\Http\Requests\DepositRequest;
 use App\Models\Deposit;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -49,8 +50,7 @@ class DepositsController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      *
-     * @param  DepositRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(DepositRequest $request)
     {
@@ -62,8 +62,7 @@ class DepositsController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      *
-     * @param  DepositRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(DepositRequest $request, Deposit $deposit)
     {
@@ -75,9 +74,7 @@ class DepositsController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      *
-     * @param  DepositDestroyRequest  $request
-     * @param  Deposit  $deposit
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @throws \Exception
      */

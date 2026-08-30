@@ -20,7 +20,7 @@ class SystemTest extends TestCase
 
         $deposite = Deposit::create([
             'user_id' => $user->id,
-            'value' => 10
+            'value' => 10,
         ]);
 
         $this->assertEquals(Money::parse(10), app('system_balance'));
@@ -36,7 +36,7 @@ class SystemTest extends TestCase
         $order = $orderItem->order;
 
         $order->update([
-            'payed_at' => now()
+            'payed_at' => now(),
         ]);
 
         $this->assertEquals(Money::parse(5), app('system_balance'));

@@ -11,8 +11,6 @@ use Tests\TestCase;
 
 class DepositTest extends TestCase
 {
-
-
     #[Test]
     public function only_admin_can_create_a_deposit()
     {
@@ -28,7 +26,7 @@ class DepositTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $deposit =  Deposit::factory()->create();
+        $deposit = Deposit::factory()->create();
 
         $this->login()
             ->delete(route('deposits.destroy', $deposit))
@@ -40,7 +38,7 @@ class DepositTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $deposit =  Deposit::factory()->raw([
+        $deposit = Deposit::factory()->raw([
             'user_id' => $user->id,
             'value' => 10,
         ]);
@@ -55,7 +53,7 @@ class DepositTest extends TestCase
     #[Test]
     public function admin_can_create_a_negative_deposit()
     {
-        $deposit =  Deposit::factory()->raw(['value' => -10]);
+        $deposit = Deposit::factory()->raw(['value' => -10]);
 
         $this->loginAsAdmin()
             ->postJson(route('deposits.store'), $deposit);
@@ -68,7 +66,7 @@ class DepositTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $deposit =  Deposit::factory()->create([
+        $deposit = Deposit::factory()->create([
             'user_id' => $user->id,
             'value' => 10,
         ]);
@@ -89,12 +87,12 @@ class DepositTest extends TestCase
         $otherUser = User::factory()->create();
 
         $this->loginAsAdmin()
-        ->postJson(route('deposits.transfer'), [
-            'source' => $user->id,
-            'target' => $otherUser->id,
-            'value' => 10.5,
-            'comment' => 'transfer'
-        ]);
+            ->postJson(route('deposits.transfer'), [
+                'source' => $user->id,
+                'target' => $otherUser->id,
+                'value' => 10.5,
+                'comment' => 'transfer',
+            ]);
 
         $this->assertEquals(Money::parse(-1050), $user->balance);
         $this->assertEquals(Money::parse(1050), $otherUser->balance);
@@ -104,11 +102,11 @@ class DepositTest extends TestCase
     public function it_shows_the_description_in_edit_view()
     {
         /** @var Deposit $deposit */
-        $deposit =  Deposit::factory()->create(['comment' => 'test description']);
+        $deposit = Deposit::factory()->create(['comment' => 'test description']);
 
         $this->loginAsAdmin();
 
-            $this->get(route('deposits.edit', $deposit))
+        $this->get(route('deposits.edit', $deposit))
             ->assertSeeText('test description');
 
     }

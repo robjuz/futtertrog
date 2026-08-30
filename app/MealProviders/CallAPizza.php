@@ -3,6 +3,7 @@
 namespace App\MealProviders;
 
 use DiDom\Document;
+use DiDom\Element;
 use Illuminate\Console\Scheduling\Schedule;
 use Ixudra\Curl\Facades\Curl;
 
@@ -18,9 +19,6 @@ class CallAPizza extends AbstractMealProvider
         $this->meals = config('services.call_a_pizza.meals');
     }
 
-    /**
-     * @return array
-     */
     public function getMealsDataForDate($date = null): array
     {
         $meals = [];
@@ -35,8 +33,7 @@ class CallAPizza extends AbstractMealProvider
     }
 
     /**
-     * @param $response
-     * @return \DiDom\Element[]|\DOMElement[]
+     * @return Element[]|\DOMElement[]
      */
     public function parseResponse($response)
     {
@@ -74,7 +71,7 @@ class CallAPizza extends AbstractMealProvider
                     $priceText = preg_replace('/[,\.]/', '', $priceText);
 
                     $meal['variants'][] = [
-                        'title' => '(' . $priceTitle . ')',
+                        'title' => '('.$priceTitle.')',
                         'price' => intval($priceText),
                     ];
                 } catch (\Throwable $e) {

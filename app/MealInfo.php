@@ -7,11 +7,14 @@ use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
-class MealInfo implements Castable, Arrayable, JsonSerializable
+class MealInfo implements Arrayable, Castable, JsonSerializable
 {
     public ?float $calories = null;
+
     public array $allergens = [];
+
     public array $tags = [];
+
     public ?string $deposit = null;
 
     public static function castUsing(array $arguments): string

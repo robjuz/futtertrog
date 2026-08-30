@@ -52,14 +52,13 @@ class GourmettaTest extends TestCase
     {
         Notification::fake();
 
-        Carbon::setTestNow(today()->addWeekday()); //ensure we test over a weekday
+        Carbon::setTestNow(today()->addWeekday()); // ensure we test over a weekday
 
         $today = today();
 
-        $settings = new UserSettings();
+        $settings = new UserSettings;
         $settings->newOrderPossibilityNotification = true;
         $settings->language = 'de';
-
 
         $tom = User::factory()->create(
             [
@@ -75,7 +74,7 @@ class GourmettaTest extends TestCase
 
             $mock->shouldReceive('getMealsDataForDateJson')
                 ->withAnyArgs()
-                ->andReturn([ 'orderDays' => []])
+                ->andReturn(['orderDays' => []])
                 ->once();
         });
 
@@ -103,12 +102,12 @@ class GourmettaTest extends TestCase
     {
         Event::fake();
 
-        Carbon::setTestNow(today()->addWeekday()); //ensure we test over a weekday
+        Carbon::setTestNow(today()->addWeekday()); // ensure we test over a weekday
 
         $this->partialMock(Gourmetta::class, function (MockInterface $mock) {
             $mock->shouldReceive('getMealsDataForDateJson')
                 ->withAnyArgs()
-                ->andReturn([ 'orderDays' => []])
+                ->andReturn(['orderDays' => []])
                 ->once();
         });
 
@@ -124,7 +123,7 @@ class GourmettaTest extends TestCase
 
             $mock->shouldReceive('getMealsDataForDateJson')
                 ->withAnyArgs()
-                ->andReturn([ 'orderDays' => []])
+                ->andReturn(['orderDays' => []])
                 ->once();
         });
 
@@ -141,9 +140,8 @@ class GourmettaTest extends TestCase
         $meal = Meal::factory()->create([
             'provider' => Gourmetta::class,
             'date' => Carbon::today(),
-            'external_id' => '111'
+            'external_id' => '111',
         ]);
-
 
         $orderItem1 = $user->order($meal);
         $order = $orderItem1->order;
@@ -154,7 +152,7 @@ class GourmettaTest extends TestCase
 
     }
 
-    public function testGetOrder()
+    public function test_get_order()
     {
         $gourmetta = app(Gourmetta::class);
 
@@ -166,7 +164,7 @@ class GourmettaTest extends TestCase
             [
                 'provider' => Gourmetta::class,
                 'date' => Carbon::today(),
-                'external_id' => '111'
+                'external_id' => '111',
             ]
         );
 
@@ -175,7 +173,6 @@ class GourmettaTest extends TestCase
         $user->order($meal);
 
         $order = $gourmetta->getOrder(now());
-
 
         $this->assertEquals(Order::STATUS_OPEN, $order->status);
         $this->assertDatabaseCount('orders', 1);
@@ -186,7 +183,7 @@ class GourmettaTest extends TestCase
         $this->assertEquals(Order::STATUS_ORDERED, $order->status);
         $this->assertDatabaseCount('orders', 1);
 
-        //---//
+        // ---//
         $order = $gourmetta->getOrder(now()->addWeek());
         $this->assertEquals(Order::STATUS_OPEN, $order->status);
         $this->assertDatabaseCount('orders', 2);

@@ -19,8 +19,6 @@ class NewOrderPossibilities extends Notification
 
     /**
      * Create a new notification instance.
-     *
-     * @param  iterable  $dates
      */
     public function __construct(iterable $dates)
     {

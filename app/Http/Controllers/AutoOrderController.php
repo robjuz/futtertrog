@@ -11,15 +11,14 @@ class AutoOrderController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  Request  $request
      * @return Response
      */
-    public function __invoke(Request $request, Order $order) {
+    public function __invoke(Request $request, Order $order)
+    {
 
         abort_unless($order->canBeAutoOrdered(), Response::HTTP_BAD_REQUEST, __('This order cannot be auto-ordered'));
 
         $order->autoOrder();
-
 
         if ($request->wantsJson()) {
             return response()->json(null);

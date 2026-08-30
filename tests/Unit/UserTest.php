@@ -13,12 +13,10 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
-
     #[Test]
     public function it_has_many_deposits()
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create();
 
         $this->assertInstanceOf(Collection::class, $user->deposits);
@@ -27,7 +25,7 @@ class UserTest extends TestCase
     #[Test]
     public function it_has_many_order_items()
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create();
 
         $this->assertInstanceOf(Collection::class, $user->orderItems);
@@ -36,22 +34,22 @@ class UserTest extends TestCase
     #[Test]
     public function it_knows_its_current_balance()
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create();
 
         $user->deposits()->saveMany([
-             Deposit::factory()->make(['value' => 1000]),
-             Deposit::factory()->make(['value' => 1500]),
+            Deposit::factory()->make(['value' => 1000]),
+            Deposit::factory()->make(['value' => 1500]),
         ]);
 
         $meal = Meal::factory()->create([
-            'price' => 5.45
+            'price' => 5.45,
         ]);
 
         OrderItem::factory()->create([
             'user_id' => $user->id,
             'meal_id' => $meal->id,
-            'quantity' => 2
+            'quantity' => 2,
         ]);
 
         $this->assertEquals(Money::parse(1410), $user->balance);

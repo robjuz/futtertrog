@@ -38,9 +38,9 @@ class CustomNotificationTest extends TestCase
                 $notification = $notification->toMail($notifable);
 
                 return $notification->subject == 'Notification' && in_array(
-                        'Notification message',
-                        $notification->introLines
-                    );
+                    'Notification message',
+                    $notification->introLines
+                );
             }
         );
     }

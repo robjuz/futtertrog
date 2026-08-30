@@ -8,12 +8,11 @@ use Illuminate\Http\Response;
 
 class DisabledNotificationController extends Controller
 {
-
     public function store(Request $request)
     {
         $validated = $request->validate(
             [
-                'date' => 'date'
+                'date' => 'date',
             ]
         );
         /** @var User $user */
@@ -32,7 +31,7 @@ class DisabledNotificationController extends Controller
     {
         $validated = $request->validate(
             [
-                'date' => 'date'
+                'date' => 'date',
             ]
         );
         /** @var User $user */

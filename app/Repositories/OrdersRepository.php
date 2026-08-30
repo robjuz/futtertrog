@@ -13,22 +13,22 @@ class OrdersRepository
     public function get(Request $request)
     {
         $from = Carbon::parse($request->get('from', today()));
-        $to = $request->has('to') && !empty($request->to) ? Carbon::parse($request->to) : null;
+        $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
 
         return Order::with(['orderItems.meal', 'orderItems.user'])
             ->withMin('meals', 'date')
             ->withMax('meals', 'date')
             ->whereHas(
                 'orderItems.meal',
-                function(Builder $qurey) use ($from, $to) {
+                function (Builder $qurey) use ($from, $to) {
                     $qurey->whereDate('date', '>=', $from->toDateString())
                         ->when(
-                            !empty($to),
+                            ! empty($to),
                             function (Builder $query) use ($to) {
                                 $query->whereDate('date', '<=', $to->toDateString());
                             }
                         );
-                    }
+                }
             )
             ->when(
                 $request->has('user_id', null),

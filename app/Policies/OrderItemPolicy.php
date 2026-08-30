@@ -26,8 +26,6 @@ class OrderItemPolicy
     /**
      * Determine whether the user can view the order.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\OrderItem  $orderItem
      * @return mixed
      */
     public function view(User $user, OrderItem $orderItem)
@@ -38,8 +36,6 @@ class OrderItemPolicy
     /**
      * Determine whether the user can create orders.
      *
-     * @param  \App\Models\User  $user
-     * @param  $date
      * @return mixed
      */
     public function create(User $user, $date)
@@ -50,8 +46,6 @@ class OrderItemPolicy
     /**
      * Determine whether the user can update the order.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\OrderItem  $orderItem
      * @return mixed
      */
     public function update(User $user, OrderItem $orderItem)
@@ -62,8 +56,6 @@ class OrderItemPolicy
     /**
      * Determine whether the user can delete the order.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\OrderItem  $orderItem
      * @return mixed
      */
     public function delete(User $user, OrderItem $orderItem)

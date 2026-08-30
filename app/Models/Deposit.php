@@ -5,6 +5,7 @@ namespace App\Models;
 use App\IdeHelperDeposit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Deposit.
@@ -13,10 +14,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property int $value
  * @property string|null $comment
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string $status
- * @property-read \App\Models\User $user
+ * @property-read User $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit query()
@@ -27,9 +29,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereValue($value)
+ *
  * @mixin \Eloquent
+ *
  * @noinspection PhpFullyQualifiedNameUsageInspection
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
+ *
  * @mixin IdeHelperDeposit
  */
 class Deposit extends Model
@@ -39,6 +44,7 @@ class Deposit extends Model
     protected $guarded = [];
 
     const STATUS_PROCESSING = 'processing';
+
     const STATUS_OK = 'ok';
 
     /**

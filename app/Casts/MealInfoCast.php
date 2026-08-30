@@ -4,6 +4,7 @@ namespace App\Casts;
 
 use App\MealInfo;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
 class MealInfoCast implements CastsAttributes
@@ -11,7 +12,7 @@ class MealInfoCast implements CastsAttributes
     /**
      * Cast the given value.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
      * @param  mixed  $values
      * @param  array  $attributes
@@ -19,7 +20,7 @@ class MealInfoCast implements CastsAttributes
      */
     public function get($model, $key, $values, $attributes)
     {
-        $mealInfo = new MealInfo();
+        $mealInfo = new MealInfo;
 
         if (! $values) {
             return $mealInfo;
@@ -37,9 +38,9 @@ class MealInfoCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
-     * @param  \App\MealInfo  $value
+     * @param  MealInfo  $value
      * @param  array  $attributes
      * @return mixed
      */

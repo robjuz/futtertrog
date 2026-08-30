@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class MealTest extends TestCase
 {
-    public function testOrderItems()
+    public function test_order_items()
     {
         $meal = Meal::factory()->create();
 
@@ -35,36 +35,36 @@ class MealTest extends TestCase
     public function hated_takes_precedence_before_preferred()
     {
 
-        $settings = new UserSettings();
+        $settings = new UserSettings;
         $settings->mealPreferences = 'preferred';
         $settings->mealAversion = 'hated';
 
         /** @var User $user */
         $user = User::factory()->create([
-            'settings' => $settings
+            'settings' => $settings,
         ]);
 
         $this->actingAs($user);
 
         /** @var Meal $preferredMeal */
         $preferredMeal = Meal::factory()->create([
-            'title' => 'preferred'
+            'title' => 'preferred',
         ]);
 
         $this->assertTrue($preferredMeal->is_preferred);
         $this->assertFalse($preferredMeal->is_hated);
 
         /** @var Meal $hatedMeal */
-        $hatedMeal =  Meal::factory()->create([
-            'title' => 'hated'
+        $hatedMeal = Meal::factory()->create([
+            'title' => 'hated',
         ]);
 
         $this->assertFalse($hatedMeal->is_preferred);
         $this->assertTrue($hatedMeal->is_hated);
 
         /** @var Meal $meal */
-        $meal =  Meal::factory()->create([
-            'title' => 'hated and preferred'
+        $meal = Meal::factory()->create([
+            'title' => 'hated and preferred',
         ]);
 
         $this->assertTrue($meal->is_hated);

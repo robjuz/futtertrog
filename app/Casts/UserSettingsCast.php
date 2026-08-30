@@ -2,17 +2,16 @@
 
 namespace App\Casts;
 
-use App\MealInfo;
 use App\UserSettings;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use InvalidArgumentException;
+use Illuminate\Database\Eloquent\Model;
 
 class UserSettingsCast implements CastsAttributes
 {
     /**
      * Cast the given value.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
      * @param  mixed  $values
      * @param  array  $attributes
@@ -20,7 +19,7 @@ class UserSettingsCast implements CastsAttributes
      */
     public function get($model, $key, $values, $attributes)
     {
-        $userSettings = new UserSettings();
+        $userSettings = new UserSettings;
 
         if (! $values) {
             return $userSettings;
@@ -38,9 +37,9 @@ class UserSettingsCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
-     * @param  \App\UserSettings  $value
+     * @param  UserSettings  $value
      * @param  array  $attributes
      * @return mixed
      */

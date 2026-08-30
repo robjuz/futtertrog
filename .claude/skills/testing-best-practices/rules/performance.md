@@ -2,7 +2,7 @@
 
 These settings apply to the project and CI, not to individual tests. Read `rules/isolation.md` for choices within a test.
 
-Fetch `https://docs.phpunit.de/en/13.3/` for PHPUnit options that make test runs faster.
+Fetch `https://pestphp.com/docs/optimizing-tests` for Pest options that make test runs faster.
 Verify each flag in the documentation before adding it to CI.
 
 Measure before changing a setting. Find the slow test first, and apply a project-wide setting only after identifying the costly work.
@@ -17,7 +17,7 @@ Measure before changing a setting. Find the slow test first, and apply a project
 
 ## Global Fakes
 
-Put these three calls in the `setUp()` of the base `TestCase` of the project:
+Put these three calls in the base `Pest.php` of the project:
 
 - `Http::preventStrayRequests()`, because one request that reaches the network can slow the suite. This catches requests made through Laravel's HTTP client. Check direct Guzzle and cURL usage separately.
 - `Sleep::fake(syncWithCarbon: true)`, so a retry and a backoff do not sleep.
@@ -25,7 +25,7 @@ Put these three calls in the `setUp()` of the base `TestCase` of the project:
 
 ## How to Run the Suite in Parallel
 
-Run `php artisan test --parallel`, which uses ParaTest, to spread tests across the machine's CPU cores. Add `--processes=N` if the default count is unsuitable for the machine or CI.
+Run `vendor/bin/pest --parallel` to spread tests across the machine's CPU cores. Add `--processes=N` if the default count is unsuitable for the machine or CI.
 
 A parallel run gives each process a separate database. Tests must meet these conditions; a test that fails only in parallel breaks one of them:
 
@@ -33,9 +33,21 @@ A parallel run gives each process a separate database. Tests must meet these con
 - The test does not depend on the order of the run.
 - The test does not share a file, a cache key, or a queue with another test. Give each process a separate name for such a resource.
 
+## How to Run Fewer Tests
+
+Run `vendor/bin/pest --parallel --tia` to run only the tests that the recent changes affect. Pest replays the cached result of each other test.
+
+Pest replays cached results rather than skipping unaffected tests. The cache includes each produced value and the covered lines and branches. Pest finds affected Laravel, Symfony, Livewire, and Inertia tests without configuration.
+
+## How to Split Tests Across CI
+
+Run `vendor/bin/pest --update-shards` to measure the time of each test. Run `vendor/bin/pest --shard=1/4` in each CI job, and change the first number for each job.
+
+Commit `tests/.pest/shards.json` so each CI job gets the same shard and the shards remain balanced by runtime rather than test count.
+
 ## How to Find a Slow Test
 
-Run `php artisan test --profile` to list the slowest tests. Start with the ten slowest tests, because the same cause often applies to the complete suite.
+Run `vendor/bin/pest --profile` to list the slowest tests. Start with the ten slowest tests, because the same cause often applies to the complete suite.
 
 If the cause of a slow test is unclear, add an event listener or temporary log entry to identify its work.
 

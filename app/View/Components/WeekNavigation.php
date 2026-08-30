@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
-
 class WeekNavigation extends Component
 {
     public Carbon $requestedDate;
+
     public MealsRepository $meals;
 
     /**
@@ -59,7 +59,7 @@ class WeekNavigation extends Component
             $classes[] = 'pot';
         }
 
-        return join(' ', $classes);
+        return implode(' ', $classes);
     }
 
     /**

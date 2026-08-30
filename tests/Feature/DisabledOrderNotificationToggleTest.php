@@ -8,7 +8,6 @@ use Tests\TestCase;
 
 class DisabledOrderNotificationToggleTest extends TestCase
 {
-
     #[Test]
     public function can_be_toggeled_for_a_specific_date()
     {

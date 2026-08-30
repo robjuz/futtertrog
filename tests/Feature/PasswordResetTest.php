@@ -35,7 +35,7 @@ class PasswordResetTest extends TestCase
             'token' => $broker->createToken($user),
             'email' => 'john@example.com',
             'password' => 'new_password',
-            'password_confirmation' => 'new_password'
+            'password_confirmation' => 'new_password',
         ]);
 
         $this->assertTrue(Hash::check('new_password', $user->fresh()->password));

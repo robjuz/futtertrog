@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class MealProviderNotConfiguredException extends Exception
@@ -20,7 +21,7 @@ class MealProviderNotConfiguredException extends Exception
     /**
      * Render the exception into an HTTP response.
      */
-    public function render(Request $request): \Illuminate\Http\RedirectResponse
+    public function render(Request $request): RedirectResponse
     {
         return back()->with('error', $this->getMessage());
     }

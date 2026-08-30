@@ -16,7 +16,7 @@ class OrderTest extends TestCase
     #[Test]
     public function it_has_many_order_items()
     {
-        /** @var \App\Models\Order $order */
+        /** @var Order $order */
         $order = Order::factory()->create();
 
         $this->assertInstanceOf(Collection::class, $order->orderItems);
@@ -29,18 +29,17 @@ class OrderTest extends TestCase
         $meal2 = Meal::factory()->create(['price' => 2]);
         $order = Order::factory()->create();
 
-        /** @var \App\Models\OrderItem $orderItem1 */
+        /** @var OrderItem $orderItem1 */
         $orderItem1 = OrderItem::factory()->make(['quantity' => 2]);
         $orderItem1->meal()->associate($meal1);
         $orderItem1->order()->associate($order);
         $orderItem1->save();
 
-        /** @var \App\Models\OrderItem $orderItem2 */
+        /** @var OrderItem $orderItem2 */
         $orderItem2 = OrderItem::factory()->make(['quantity' => 2]);
         $orderItem2->meal()->associate($meal2);
         $orderItem2->order()->associate($order);
         $orderItem2->save();
-
 
         $this->assertEquals(Money::parse(6), $order->subtotal);
     }
@@ -48,7 +47,8 @@ class OrderTest extends TestCase
     /**
      * @test
      */
-    public function it_is_payed_when_payed_at_or_user_id_is_set(){
+    public function it_is_payed_when_payed_at_or_user_id_is_set()
+    {
         $order1 = Order::create();
 
         $this->assertFalse($order1->is_payed);

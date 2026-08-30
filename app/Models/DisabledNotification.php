@@ -10,7 +10,7 @@ class DisabledNotification extends Model
     use HasFactory;
 
     protected $casts = [
-        'date' => 'datetime'
+        'date' => 'datetime',
     ];
 
     protected $guarded = [];

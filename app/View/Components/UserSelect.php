@@ -12,7 +12,9 @@ class UserSelect extends Component
 {
     /** @var Collection|User[] */
     public Collection|array $users;
-    public ? int $selected;
+
+    public ?int $selected;
+
     public $showOptionAll;
 
     /**

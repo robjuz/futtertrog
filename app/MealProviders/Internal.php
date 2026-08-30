@@ -3,7 +3,6 @@
 namespace App\MealProviders;
 
 use App\MealProviders\Interfaces\HasWeeklyOrders;
-use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Carbon;
 
@@ -24,8 +23,5 @@ class Internal extends AbstractMealProvider implements HasWeeklyOrders
         return [];
     }
 
-    public function configureSchedule(Schedule $schedule): void
-    {
-        return;
-    }
+    public function configureSchedule(Schedule $schedule): void {}
 }

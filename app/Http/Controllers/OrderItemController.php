@@ -24,10 +24,10 @@ class OrderItemController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      * @return Response
      *
      * @throws AuthorizationException
+     *
      * @OA\Get (
      *      path="/api/orders",
      *      summary="List of orders",
@@ -38,6 +38,7 @@ class OrderItemController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Success",
+     *
      *          @OA\JsonContent( ref="#/components/schemas/OrderItem" ),
      *      ),
      * )
@@ -66,7 +67,6 @@ class OrderItemController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param Request $request
      * @return Response
      *
      * @throws AuthorizationException
@@ -89,8 +89,7 @@ class OrderItemController extends Controller
     /**
      * Show the form for editing a new resource.
      *
-     * @param Request $request
-     * @param OrderItem $orderItem
+     * @param  Request  $request
      * @return Response
      *
      * @throws AuthorizationException
@@ -123,8 +122,10 @@ class OrderItemController extends Controller
      *      @OA\RequestBody(
      *          required=true,
      *          description="Pass user credentials",
+     *
      *          @OA\JsonContent(
      *              required={"date","meal_id"},
+     *
      *              @OA\Property( property="date", type="string", format="date", example="2020-02-02" ),
      *              @OA\Property( property="quantity", type="integer", example="1", minimum="1" ),
      *              @OA\Property( property="meal_id", ref="#/components/schemas/id" ),
@@ -134,6 +135,7 @@ class OrderItemController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Success",
+     *
      *          @OA\JsonContent( ref="#/components/schemas/Meal" ),
      *      ),
      * )
@@ -144,7 +146,7 @@ class OrderItemController extends Controller
             [
                 'user_id' => 'sometimes|exists:users,id',
                 'quantity' => 'sometimes|numeric|min:1,max:10',
-                'meal_id' => ['required', 'exists:meals,id', new MealWithoutVariants()],
+                'meal_id' => ['required', 'exists:meals,id', new MealWithoutVariants],
             ]
         );
 
@@ -156,7 +158,7 @@ class OrderItemController extends Controller
         /** @var User $user */
         $userId = Auth::id();
 
-        //admin can create orders for other users;
+        // admin can create orders for other users;
         if (Auth::user()->is_admin and $request->has('user_id')) {
             $userId = $request->input('user_id');
         }
@@ -178,7 +180,6 @@ class OrderItemController extends Controller
 
         return back()->with('success', __('Success'));
     }
-
 
     public function update(Request $request, OrderItem $orderItem): View|JsonResponse|RedirectResponse
     {
@@ -202,6 +203,7 @@ class OrderItemController extends Controller
         if ($request->ajax()) {
 
             $meal = $orderItem->meal;
+
             return view('meal.meal', compact('meal'));
         }
 

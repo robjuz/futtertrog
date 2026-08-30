@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
     #[Test]
     public function guests_are_not_allowed_to_manage_system_users()
     {
@@ -94,11 +93,11 @@ class UserTest extends TestCase
         $this->get(route('users.create'))->assertViewIs('user.create');
 
         $this->post(route('users.store'), $data)->assertRedirect();
-        $this->postJson(route('users.store'), $data2)->assertJsonFragment([ 'name' => 'Example2',]);
+        $this->postJson(route('users.store'), $data2)->assertJsonFragment(['name' => 'Example2']);
 
         $this->assertDatabaseHas('users', [
             'name' => $data['name'],
-            'is_admin' => true
+            'is_admin' => true,
         ]);
 
         $user = User::factory()->create(['is_admin' => true]);
@@ -106,14 +105,14 @@ class UserTest extends TestCase
         $this->get(route('users.edit', $user))->assertSee($user->name);
 
         $this->get(route('users.show', $user))->assertSee($user->name);
-        $this->getJson(route('users.show', $user))->assertJsonFragment([ 'name' => $user->name,]);
+        $this->getJson(route('users.show', $user))->assertJsonFragment(['name' => $user->name]);
 
         $this->put(route('users.update', $user), ['name' => 'John'])->assertRedirect();
         $this->putJson(route('users.update', $user), ['name' => 'John'])->assertJsonFragment(['name' => 'John']);
 
         $this->assertDatabaseHas('users', [
             'name' => 'John',
-            'is_admin' => true
+            'is_admin' => true,
         ]);
 
         $this->delete(route('users.destroy', $user))->assertRedirect();
@@ -143,7 +142,7 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $deposit =  Deposit::factory()->make(['value' => 9900]);
+        $deposit = Deposit::factory()->make(['value' => 9900]);
         $user->deposits()->save($deposit);
 
         $this->loginAsAdmin()

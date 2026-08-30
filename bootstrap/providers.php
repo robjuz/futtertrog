@@ -1,8 +1,13 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\AuthServiceProvider;
+use App\Providers\MealProvidersServiceProvider;
+use SocialiteProviders\Manager\ServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\MealProvidersServiceProvider::class,
-    App\Providers\AuthServiceProvider::class,
-    \SocialiteProviders\Manager\ServiceProvider::class
+    AppServiceProvider::class,
+    MealProvidersServiceProvider::class,
+    AuthServiceProvider::class,
+    ServiceProvider::class,
 ];

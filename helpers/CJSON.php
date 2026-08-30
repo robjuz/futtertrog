@@ -1,4 +1,5 @@
 <?php
+
 /**
  * JSON (JavaScript Object Notation) is a lightweight data-interchange
  * format. It is easy for humans to read and write. It is easy for machines
@@ -122,10 +123,10 @@ class CJSON
                 $ascii = '';
                 $strlen_var = strlen($var);
 
-               /*
-                * Iterate over every character in the string,
-                * escaping with a slash or encoding to UTF-8 where necessary
-                */
+                /*
+                 * Iterate over every character in the string,
+                 * escaping with a slash or encoding to UTF-8 where necessary
+                 */
                 for ($c = 0; $c < $strlen_var; $c++) {
                     $ord_var_c = ord($var[$c]);
 
@@ -171,8 +172,8 @@ class CJSON
                             // characters U-00000800 - U-0000FFFF, mask 1110XXXX
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
-                                         ord($var[$c + 1]),
-                                         ord($var[$c + 2]));
+                                ord($var[$c + 1]),
+                                ord($var[$c + 2]));
                             $c += 2;
                             $utf16 = self::utf8ToUTF16BE($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
@@ -182,9 +183,9 @@ class CJSON
                             // characters U-00010000 - U-001FFFFF, mask 11110XXX
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
-                                         ord($var[$c + 1]),
-                                         ord($var[$c + 2]),
-                                         ord($var[$c + 3]));
+                                ord($var[$c + 1]),
+                                ord($var[$c + 2]),
+                                ord($var[$c + 3]));
                             $c += 3;
                             $utf16 = self::utf8ToUTF16BE($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
@@ -194,10 +195,10 @@ class CJSON
                             // characters U-00200000 - U-03FFFFFF, mask 111110XX
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
-                                         ord($var[$c + 1]),
-                                         ord($var[$c + 2]),
-                                         ord($var[$c + 3]),
-                                         ord($var[$c + 4]));
+                                ord($var[$c + 1]),
+                                ord($var[$c + 2]),
+                                ord($var[$c + 3]),
+                                ord($var[$c + 4]));
                             $c += 4;
                             $utf16 = self::utf8ToUTF16BE($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
@@ -207,11 +208,11 @@ class CJSON
                             // characters U-04000000 - U-7FFFFFFF, mask 1111110X
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
-                                         ord($var[$c + 1]),
-                                         ord($var[$c + 2]),
-                                         ord($var[$c + 3]),
-                                         ord($var[$c + 4]),
-                                         ord($var[$c + 5]));
+                                ord($var[$c + 1]),
+                                ord($var[$c + 2]),
+                                ord($var[$c + 3]),
+                                ord($var[$c + 4]),
+                                ord($var[$c + 5]));
                             $c += 5;
                             $utf16 = self::utf8ToUTF16BE($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
@@ -222,40 +223,40 @@ class CJSON
                 return '"'.$ascii.'"';
 
             case 'array':
-               /*
-                * As per JSON spec if any array key is not an integer
-                * we must treat the the whole array as an object. We
-                * also try to catch a sparsely populated associative
-                * array with numeric keys here because some JS engines
-                * will create an array with empty indexes up to
-                * max_index which can cause memory issues and because
-                * the keys, which may be relevant, will be remapped
-                * otherwise.
-                *
-                * As per the ECMA and JSON specification an object may
-                * have any string as a property. Unfortunately due to
-                * a hole in the ECMA specification if the key is a
-                * ECMA reserved word or starts with a digit the
-                * parameter is only accessible using ECMAScript's
-                * bracket notation.
-                */
+                /*
+                 * As per JSON spec if any array key is not an integer
+                 * we must treat the the whole array as an object. We
+                 * also try to catch a sparsely populated associative
+                 * array with numeric keys here because some JS engines
+                 * will create an array with empty indexes up to
+                 * max_index which can cause memory issues and because
+                 * the keys, which may be relevant, will be remapped
+                 * otherwise.
+                 *
+                 * As per the ECMA and JSON specification an object may
+                 * have any string as a property. Unfortunately due to
+                 * a hole in the ECMA specification if the key is a
+                 * ECMA reserved word or starts with a digit the
+                 * parameter is only accessible using ECMAScript's
+                 * bracket notation.
+                 */
 
                 // treat as a JSON object
-                if (is_array($var) && count($var) && (array_keys($var) !== range(0, sizeof($var) - 1))) {
+                if (is_array($var) && count($var) && (array_keys($var) !== range(0, count($var) - 1))) {
                     return '{'.
-                           join(',', array_map(['CJSON', 'nameValue'],
-                                               array_keys($var),
-                                               array_values($var)))
+                           implode(',', array_map(['CJSON', 'nameValue'],
+                               array_keys($var),
+                               array_values($var)))
                            .'}';
                 }
 
                 // treat it like a regular array
-                return '['.join(',', array_map(['CJSON', 'encode'], $var)).']';
+                return '['.implode(',', array_map(['CJSON', 'encode'], $var)).']';
 
             case 'object':
                 if ($var instanceof Traversable) {
                     $vars = [];
-                    foreach ($var as $k=>$v) {
+                    foreach ($var as $k => $v) {
                         $vars[$k] = $v;
                     }
                 } else {
@@ -263,9 +264,9 @@ class CJSON
                 }
 
                 return '{'.
-                       join(',', array_map(['CJSON', 'nameValue'],
-                                           array_keys($vars),
-                                           array_values($vars)))
+                       implode(',', array_map(['CJSON', 'nameValue'],
+                           array_keys($vars),
+                           array_values($vars)))
                        .'}';
 
             default:
@@ -412,7 +413,7 @@ class CJSON
 
                             case ($ord_chrs_c & 0xE0) == 0xC0:
                                 // characters U-00000080 - U-000007FF, mask 110XXXXX
-                                //see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                                 $utf8 .= substr($chrs, $c, 2);
                                 $c++;
                                 break;
@@ -461,7 +462,7 @@ class CJSON
                             $obj = [];
                         } else {
                             $stk = [self::JSON_IN_OBJ];
-                            $obj = new stdClass();
+                            $obj = new stdClass;
                         }
                     }
 
@@ -478,7 +479,7 @@ class CJSON
                         }
                     }
 
-                    //print("\nparsing {$chrs}\n");
+                    // print("\nparsing {$chrs}\n");
 
                     $strlen_chrs = strlen($chrs);
 
@@ -491,7 +492,7 @@ class CJSON
                             // OR we've reached the end of the character list
                             $slice = substr($chrs, $top['where'], ($c - $top['where']));
                             $stk[] = ['what' => self::JSON_SLICE, 'where' => ($c + 1), 'delim' => false];
-                            //print("Found split at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
+                            // print("Found split at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
 
                             if (reset($stk) == self::JSON_IN_ARR) {
                                 // we are in an array, so just push an element onto the stack
@@ -526,38 +527,38 @@ class CJSON
                         } elseif ((($chrs[$c] == '"') || ($chrs[$c] == "'")) && ($top['what'] != self::JSON_IN_STR)) {
                             // found a quote, and we are not inside a string
                             $stk[] = ['what' => self::JSON_IN_STR, 'where' => $c, 'delim' => $chrs[$c]];
-                        //print("Found start of string at {$c}\n");
+                            // print("Found start of string at {$c}\n");
                         } elseif (($chrs[$c] == $top['delim']) &&
                                  ($top['what'] == self::JSON_IN_STR) &&
                                  (($chrs[$c - 1] != '\\') ||
                                  ($chrs[$c - 1] == '\\' && $chrs[$c - 2] == '\\'))) {
                             // found a quote, we're in a string, and it's not escaped
                             array_pop($stk);
-                        //print("Found end of string at {$c}: ".substr($chrs, $top['where'], (1 + 1 + $c - $top['where']))."\n");
+                            // print("Found end of string at {$c}: ".substr($chrs, $top['where'], (1 + 1 + $c - $top['where']))."\n");
                         } elseif (($chrs[$c] == '[') &&
                                  in_array($top['what'], [self::JSON_SLICE, self::JSON_IN_ARR, self::JSON_IN_OBJ])) {
                             // found a left-bracket, and we are in an array, object, or slice
                             $stk[] = ['what' => self::JSON_IN_ARR, 'where' => $c, 'delim' => false];
-                        //print("Found start of array at {$c}\n");
+                            // print("Found start of array at {$c}\n");
                         } elseif (($chrs[$c] == ']') && ($top['what'] == self::JSON_IN_ARR)) {
                             // found a right-bracket, and we're in an array
                             array_pop($stk);
-                        //print("Found end of array at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
+                            // print("Found end of array at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
                         } elseif (($chrs[$c] == '{') &&
                                  in_array($top['what'], [self::JSON_SLICE, self::JSON_IN_ARR, self::JSON_IN_OBJ])) {
                             // found a left-brace, and we are in an array, object, or slice
                             $stk[] = ['what' => self::JSON_IN_OBJ, 'where' => $c, 'delim' => false];
-                        //print("Found start of object at {$c}\n");
+                            // print("Found start of object at {$c}\n");
                         } elseif (($chrs[$c] == '}') && ($top['what'] == self::JSON_IN_OBJ)) {
                             // found a right-brace, and we're in an object
                             array_pop($stk);
-                        //print("Found end of object at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
+                            // print("Found end of object at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
                         } elseif (($substr_chrs_c_2 == '/*') &&
                                  in_array($top['what'], [self::JSON_SLICE, self::JSON_IN_ARR, self::JSON_IN_OBJ])) {
                             // found a comment start, and we are in an array, object, or slice
                             $stk[] = ['what' => self::JSON_IN_CMT, 'where' => $c, 'delim' => false];
                             $c++;
-                        //print("Found start of comment at {$c}\n");
+                            // print("Found start of comment at {$c}\n");
                         } elseif (($substr_chrs_c_2 == '*/') && ($top['what'] == self::JSON_IN_CMT)) {
                             // found a comment end, and we're in one now
                             array_pop($stk);
@@ -567,7 +568,7 @@ class CJSON
                                 $chrs = substr_replace($chrs, ' ', $i, 1);
                             }
 
-                            //print("Found end of comment at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
+                            // print("Found end of comment at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
                         }
                     }
 

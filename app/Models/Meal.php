@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 /**
  * @OA\Schema (
  *      required={"title", "description", "price", "date"},
+ *
  *      @OA\Property( property="id", ref="#/components/schemas/id" ),
  *      @OA\Property( property="date", type="date" ),
  *      @OA\Property( property="title", type="string"),
@@ -31,10 +32,13 @@ use Illuminate\Support\Str;
  *          property="variants",
  *          type="array",
  *          nullable=true,
+ *
  *          @OA\Items( type="object", ref="#/components/schemas/Meal" )
  *      ),
+ *
  *      @OA\Property( property="parent", type="object", ref="#/components/schemas/Meal", nullable=true ),
  *  ),
+ *
  * @mixin IdeHelperMeal
  */
 class Meal extends Model
@@ -49,7 +53,7 @@ class Meal extends Model
         'info' => MealInfoCast::class,
         'price' => MoneyIntegerCast::class,
         'provider' => MealProviderCast::class,
-        'date' => 'datetime'
+        'date' => 'datetime',
     ];
 
     public function orderItems(): HasMany
@@ -83,10 +87,10 @@ class Meal extends Model
 
     public function getIsPreferredAttribute()
     {
-        if (!isset($this->attributes['is_preferred'])) {
+        if (! isset($this->attributes['is_preferred'])) {
             $this->attributes['is_preferred'] = false;
 
-            if (Auth::check() and !$this->is_hated) {
+            if (Auth::check() and ! $this->is_hated) {
                 $preferences = Auth::user()->settings->mealPreferences;
                 $preferences = array_map('trim', explode(',', $preferences));
 
@@ -108,7 +112,7 @@ class Meal extends Model
 
     public function getIsHatedAttribute()
     {
-        if (!isset($this->attributes['is_hated'])) {
+        if (! isset($this->attributes['is_hated'])) {
             $this->attributes['is_hated'] = false;
 
             if (Auth::check()) {
@@ -133,9 +137,6 @@ class Meal extends Model
 
     /**
      * Create a new Eloquent Collection instance.
-     *
-     * @param array $models
-     * @return \App\MealCollection
      */
     public function newCollection(array $models = []): MealCollection
     {
@@ -149,7 +150,7 @@ class Meal extends Model
 
     public function scopeByProvider(Builder $query, $provider = null): Builder
     {
-        if (!$provider) {
+        if (! $provider) {
             return $query;
         }
 
@@ -165,7 +166,7 @@ class Meal extends Model
                 $order = $this->provider->getOrder($this->date);
             } else {
                 $order = Order::query()
-                    ->whereHas('meals', fn(Builder $query) => $query->whereDate('date', $this->date))
+                    ->whereHas('meals', fn (Builder $query) => $query->whereDate('date', $this->date))
                     ->firstOrCreate(['provider' => null], ['status' => Order::STATUS_OPEN]);
             }
 
@@ -187,12 +188,12 @@ class Meal extends Model
         });
     }
 
-    public function isOrdered(User $user = null): bool
+    public function isOrdered(?User $user = null): bool
     {
-        return (bool)$this->orderItem($user);
+        return (bool) $this->orderItem($user);
     }
 
-    public function orderItem(User $user = null): ?OrderItem
+    public function orderItem(?User $user = null): ?OrderItem
     {
         return OrderItem::query()
             ->whereIn('meal_id', $this->variants()->pluck('id')->merge($this->id))

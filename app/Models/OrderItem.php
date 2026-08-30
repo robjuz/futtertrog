@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @OA\Schema (
  *      required={"title", "description", "price"},
+ *
  *      @OA\Property ( property="id", ref="#/components/schemas/id" ),
  *      @OA\Property ( property="order_id", ref="#/components/schemas/id" ),
  *      @OA\Property( property="meal", ref="#/components/schemas/Meal"),
@@ -20,12 +21,14 @@ use Illuminate\Database\Eloquent\Model;
  *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
  *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
  *  ),
- * 
+ *
  *  @OA\Schema(
  *      schema="OrderItems",
  *      type="array",
+ *
  *      @OA\Items( type="object", ref="#/components/schemas/OrderItem" )
  *  ),
+ *
  * @mixin IdeHelperOrderItem
  */
 class OrderItem extends Model
@@ -41,7 +44,7 @@ class OrderItem extends Model
         'user_id' => 'integer',
         'meal_id' => 'integer',
         'quantity' => 'integer',
-        'date' => 'datetime'
+        'date' => 'datetime',
     ];
 
     public function meal()
@@ -86,6 +89,6 @@ class OrderItem extends Model
 
     public function scopePositive(Builder $query)
     {
-        return $query->where('quantity','>', 0);
+        return $query->where('quantity', '>', 0);
     }
 }

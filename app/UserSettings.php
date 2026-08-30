@@ -2,34 +2,51 @@
 
 namespace App;
 
-use App\Casts\MealInfoCast;
 use App\Casts\UserSettingsCast;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
-class UserSettings implements Castable, Arrayable, JsonSerializable
+class UserSettings implements Arrayable, Castable, JsonSerializable
 {
     const NEW_ORDER_POSSIBILITY_NOTIFICATION = 'newOrderPossibilityNotification';
+
     const NO_ORDER_NOTIFICATION = 'noOrderNotification';
+
     const NO_ORDER_FOR_NEXT_DAY_NOTIFICATION = 'noOrderForNextDayNotification';
+
     const NO_ORDER_FOR_NEXT_WEEK_NOTIFICATION = 'noOrderForNextWeekNotification';
+
     const MEAL_PREFERENCES = 'mealPreferences';
+
     const MEAL_AVERSION = 'mealAversion';
+
     const HIDE_DASHBOARD_MEAL_DESCRIPTION = 'hideDashboardMealDescription';
+
     const HIDE_ORDERING_MEAL_DESCRIPTION = 'hideOrderingMealDescription';
+
     const LANGUAGE = 'language';
+
     const REDIRECT_TO_NEXT_DAY = 'redirectToNextDay';
 
     public bool $newOrderPossibilityNotification = false;
+
     public bool $noOrderNotification = false;
+
     public bool $noOrderForNextDayNotification = false;
+
     public bool $noOrderForNextWeekNotification = false;
+
     public bool $hideDashboardMealDescription = false;
+
     public bool $hideOrderingMealDescription = false;
+
     public ?string $mealPreferences = '';
+
     public ?string $mealAversion = '';
+
     public ?string $language = null;
+
     public bool $redirectToNextDay = false;
 
     public static function castUsing(array $arguments): string

@@ -3,16 +3,17 @@
 namespace App;
 
 use App\Models\Meal;
+use App\Models\User;
 
 class OrderItemCompact
 {
     /**
-     * @var \App\Models\Meal
+     * @var Meal
      */
     public $meal;
 
     /**
-     * @var iterable|\App\Models\User[]
+     * @var iterable|User[]
      */
     public $users;
 

@@ -30,9 +30,6 @@ class MealController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
-     * @param OrdersRepository $orders
-     * @param MealsRepository $meals
      * @return Response
      *
      * @OA\Get(
@@ -45,15 +42,18 @@ class MealController extends Controller implements HasMiddleware
      *      @OA\Parameter(
      *          name="date",
      *          in="query",
+     *
      *          @OA\Schema(type="string", format="date"),
      *      ),
      *
      *      @OA\Response(
      *          response=200,
      *          description="Meals list",
+     *
      *          @OA\JsonContent(
      *              title="Meals",
      *              type="array",
+     *
      *              @OA\Items( type="object", ref="#/components/schemas/Meal" )
      *          ),
      *      ),
@@ -100,7 +100,7 @@ class MealController extends Controller implements HasMiddleware
      */
     public function create()
     {
-//        abort(404);
+        //        abort(404);
 
         Gate::authorize('create', Meal::class);
 
@@ -110,7 +110,6 @@ class MealController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      *
-     * @param MealStoreRequest $request
      * @return Response
      */
     public function store(MealStoreRequest $request)
@@ -135,8 +134,6 @@ class MealController extends Controller implements HasMiddleware
     /**
      * Display the specified resource.
      *
-     * @param Request $request
-     * @param Meal $meal
      * @return Response
      *
      * @throws AuthorizationException
@@ -155,7 +152,6 @@ class MealController extends Controller implements HasMiddleware
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Meal $meal
      * @return Response
      *
      * @throws AuthorizationException
@@ -170,8 +166,6 @@ class MealController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      *
-     * @param MealUpdateRequest $request
-     * @param Meal $meal
      * @return Response
      */
     public function update(MealUpdateRequest $request, Meal $meal)
@@ -188,8 +182,6 @@ class MealController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
-     * @param Meal $meal
      * @return Response
      *
      * @throws AuthorizationException
@@ -212,10 +204,6 @@ class MealController extends Controller implements HasMiddleware
         return redirect()->route('meals.create')->with('success', __('Deleted'));
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
     private function shouldRedirectToOtherDate(Request $request): bool
     {
         return $request->missing('date')

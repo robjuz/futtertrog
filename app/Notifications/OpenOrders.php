@@ -17,8 +17,6 @@ class OpenOrders extends Notification
 
     /**
      * Create a new notification instance.
-     *
-     * @param  string  $day
      */
     public function __construct(string $day)
     {
@@ -43,7 +41,7 @@ class OpenOrders extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {

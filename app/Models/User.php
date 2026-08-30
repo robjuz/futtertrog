@@ -5,16 +5,21 @@ namespace App\Models;
 use App\IdeHelperUser;
 use App\UserSettings;
 use Cknow\Money\Money;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
  * @OA\Schema (
  *      required={"password", "email", "name"},
+ *
  *      @OA\Property( property="id", ref="#/components/schemas/id" ),
  *      @OA\Property(property="email", type="string", format="email", description="User unique email address", example="john@example.com"),
  *      @OA\Property(property="name", type="string", example="John"),
@@ -22,26 +27,28 @@ use Illuminate\Support\Str;
  *      @OA\Property( property="created_at",type="string", format="date-time" ),
  *      @OA\Property( property="updated_at",type="string", format="date-time" ),
  * )
+ *
  * @property int $id
  * @property string $name
  * @property string $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property Carbon|null $email_verified_at
  * @property string $password
  * @property bool $is_admin
  * @property UserSettings $settings
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $api_token
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Deposit[] $deposits
+ * @property Carbon|null $deleted_at
+ * @property-read Collection|Deposit[] $deposits
  * @property-read int|null $deposits_count
  * @property-read Money $balance
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderItem[] $orderItems
+ * @property-read Collection|OrderItem[] $orderItems
  * @property-read int|null $order_items_count
  * @property-read int|null $push_subscriptions_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
@@ -61,9 +68,12 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
+ *
  * @mixin \Eloquent
+ *
  * @noinspection PhpFullyQualifiedNameUsageInspection
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
+ *
  * @mixin IdeHelperUser
  */
 class User extends Authenticatable
@@ -123,7 +133,7 @@ class User extends Authenticatable
             $orders = Money::sum(
                 Money::parse(0),
                 ...$this->orderItems->map(
-                    fn(OrderItem $orderItem) => $orderItem->meal->price->multiply($orderItem->quantity)
+                    fn (OrderItem $orderItem) => $orderItem->meal->price->multiply($orderItem->quantity)
                 )
             );
 

@@ -9,6 +9,7 @@ use Illuminate\View\View;
 class ProviderSelect extends Component
 {
     public array $providers;
+
     public $selected;
 
     /**

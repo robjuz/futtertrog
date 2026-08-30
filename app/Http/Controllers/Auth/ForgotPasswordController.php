@@ -23,6 +23,6 @@ class ForgotPasswordController extends Controller implements HasMiddleware
 
     public static function middleware()
     {
-        return ['guest' ];
+        return ['guest'];
     }
 }

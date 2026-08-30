@@ -6,8 +6,10 @@ use App\Models\Deposit;
 use App\Models\Order;
 use Cknow\Money\Money;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\ServiceProvider;
+use SocialiteProviders\Authentik\Provider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         setlocale(LC_MONETARY, 'de_DE.utf8');
 
-        Paginator::useBootstrapThree(); //default.blade.php
+        Paginator::useBootstrapThree(); // default.blade.php
 
         $this->app->bind('system_balance', function () {
             $depositesValue = Money::parse(Deposit::sum('value'));
@@ -33,8 +35,8 @@ class AppServiceProvider extends ServiceProvider
             return $depositesValue->subtract($payedOrdersValues);
         });
 
-        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
-            $event->extendSocialite('authentik', \SocialiteProviders\Authentik\Provider::class);
+        Event::listen(function (SocialiteWasCalled $event) {
+            $event->extendSocialite('authentik', Provider::class);
         });
     }
 

@@ -11,7 +11,6 @@ class MealsRepository
     private $cache = [];
 
     /**
-     * @param $date
      * @return MealCollection
      */
     public function forDate($date)

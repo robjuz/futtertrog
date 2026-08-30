@@ -41,5 +41,4 @@ class OrderItemFactory extends Factory
             ];
         });
     }
-
 }

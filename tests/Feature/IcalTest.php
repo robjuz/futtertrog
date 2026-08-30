@@ -40,14 +40,14 @@ class IcalTest extends TestCase
         $todayMeal = Meal::factory()->create(
             [
                 'date' => today(),
-                'title' => 'today meal'
+                'title' => 'today meal',
             ]
         );
 
         $tomorrowMeal = Meal::factory()->create(
             [
                 'date' => today()->addDay(),
-                'title' => 'tomorrow meal'
+                'title' => 'tomorrow meal',
             ]
         );
 
@@ -67,14 +67,14 @@ class IcalTest extends TestCase
 
         $this->login($user)
             ->get(route('meals.ical', [
-                'from' => today()->addDay()->toDateString()
+                'from' => today()->addDay()->toDateString(),
             ]))
-        ->assertSee($tomorrowMeal->title)
-        ->assertDontSee($todayMeal->title);
+            ->assertSee($tomorrowMeal->title)
+            ->assertDontSee($todayMeal->title);
 
         $this->login($user)
             ->get(route('meals.ical', [
-                'to' => today()->toDateString()
+                'to' => today()->toDateString(),
             ]))
             ->assertSee($todayMeal->title)
             ->assertDontSee($tomorrowMeal->title);
@@ -98,7 +98,6 @@ class IcalTest extends TestCase
         $this->login($user)
             ->get(route('meals.ical'))
             ->assertDontSee($orderItem->meal->title);
-
 
         /** @var Meal $meal */
         $meal = Meal::factory()->inFuture()->create();

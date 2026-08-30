@@ -5,6 +5,7 @@ namespace App\MealProviders;
 use App\MealInfo;
 use CJSON;
 use DiDom\Document;
+use DiDom\Element;
 use Illuminate\Console\Scheduling\Schedule;
 use Ixudra\Curl\Facades\Curl;
 
@@ -13,6 +14,7 @@ class Flaschenpost extends AbstractMealProvider
     private string $zipcode;
 
     private array $categories;
+
     private string $cookieJar;
 
     public function __construct()
@@ -32,9 +34,6 @@ class Flaschenpost extends AbstractMealProvider
             ->get();
     }
 
-    /**
-     * @return array
-     */
     public function getMealsDataForDate($date = null): array
     {
         $meals = [];
@@ -50,8 +49,7 @@ class Flaschenpost extends AbstractMealProvider
     }
 
     /**
-     * @param $response
-     * @return \DiDom\Element[]|\DOMElement[]
+     * @return Element[]|\DOMElement[]
      */
     public function parseResponse($response)
     {
@@ -78,13 +76,13 @@ class Flaschenpost extends AbstractMealProvider
 
         foreach ($products as $product) {
             foreach ($product['articles'] as $article) {
-                $info = new MealInfo();
+                $info = new MealInfo;
                 $info->deposit = $article['deposit'];
 
                 $meals[] = [
                     'title' => $product['name'],
                     'external_id' => $product['name'],
-                    'description' => join('<br>', [$article['shortDescription'], $article['pricePerUnit']]),
+                    'description' => implode('<br>', [$article['shortDescription'], $article['pricePerUnit']]),
                     'price' => $article['trackingNetPrice'] + $article['trackingPriceDuty'],
                     'image' => $product['imagePath'].$product['articleIdForImage'].'.png',
                     'info' => $info,

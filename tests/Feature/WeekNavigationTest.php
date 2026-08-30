@@ -36,7 +36,8 @@ class WeekNavigationTest extends TestCase
     /**
      * @test
      */
-    public function it_shows_an_ordered_label(){
+    public function it_shows_an_ordered_label()
+    {
         /** @var Meal $meal */
         $meal = Meal::factory()->create(['date' => today()]);
 
@@ -58,11 +59,13 @@ class WeekNavigationTest extends TestCase
         $view->assertDontSee(__('Ordered'));
 
     }
+
     /**
      * @test
      */
-    public function it_shows_an_notifications_disabled_icon(){
-        $settings = new UserSettings();
+    public function it_shows_an_notifications_disabled_icon()
+    {
+        $settings = new UserSettings;
         $settings->noOrderForNextWeekNotification = true;
 
         /** @var User $tom */
@@ -81,7 +84,6 @@ class WeekNavigationTest extends TestCase
 
         $view = $this->component(WeekNavigation::class);
         $view->assertSee('week-navigation__icon--notification-disabled');
-
 
     }
 }
