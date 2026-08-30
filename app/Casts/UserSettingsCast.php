@@ -17,7 +17,7 @@ class UserSettingsCast implements CastsAttributes
      * @param  array  $attributes
      * @return mixed
      */
-    public function get($model, $key, $values, $attributes)
+    public function get(Model $model, string $key, mixed $values, array $attributes): UserSettings
     {
         $userSettings = new UserSettings;
 
@@ -43,7 +43,7 @@ class UserSettingsCast implements CastsAttributes
      * @param  array  $attributes
      * @return mixed
      */
-    public function set($model, $key, $value, $attributes)
+    public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
         return json_encode($value);
     }

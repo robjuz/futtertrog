@@ -49,6 +49,11 @@ class UserSettings implements Arrayable, Castable, JsonSerializable
 
     public bool $redirectToNextDay = false;
 
+    /**
+     * Get the name of the caster class to use when casting from / to this cast target.
+     *
+     * @param  array<string, mixed>  $arguments
+     */
     public static function castUsing(array $arguments): string
     {
         return UserSettingsCast::class;
@@ -70,6 +75,9 @@ class UserSettings implements Arrayable, Castable, JsonSerializable
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();

@@ -20,7 +20,7 @@ class SystemBalance extends Component
         $this->balance = app('system_balance');
     }
 
-    public function balanceClass()
+    public function balanceClass(): string
     {
         return $this->balance->isPositive() ? 'positive-value' : 'negative-value';
     }

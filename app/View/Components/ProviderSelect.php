@@ -8,9 +8,10 @@ use Illuminate\View\View;
 
 class ProviderSelect extends Component
 {
+    /** @var array<string, string>  */
     public array $providers;
 
-    public $selected;
+    public ?string $selected;
 
     /**
      * Create a new component instance.
@@ -23,7 +24,7 @@ class ProviderSelect extends Component
         $this->selected = $request->input('provider');
     }
 
-    public function isSelected($option)
+    public function isSelected(string $option): bool
     {
         return $option === $this->selected;
     }

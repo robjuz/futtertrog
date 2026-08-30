@@ -10,26 +10,26 @@ use Illuminate\View\View;
 
 class UserSelect extends Component
 {
-    /** @var Collection|User[] */
+    /** @var Collection<User>|array<User> */
     public Collection|array $users;
 
     public ?int $selected;
 
-    public $showOptionAll;
+    public bool $showOptionAll;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(Request $request, $showOptionAll = false)
+    public function __construct(Request $request, bool $showOptionAll = false)
     {
         $this->users = User::orderBy('name')->get();
         $this->selected = $request->input('user_id');
         $this->showOptionAll = $showOptionAll;
     }
 
-    public function isSelected($option)
+    public function isSelected(int $option): bool
     {
         return $option === $this->selected;
     }
