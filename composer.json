@@ -15,7 +15,7 @@
         "ext-pdo": "*",
         "blade-ui-kit/blade-icons": "^1.2.2",
         "cknow/laravel-money": "^8.0",
-        "darkaonline/l5-swagger": "^8.6",
+        "darkaonline/l5-swagger": "^11",
         "eluceo/ical": "^2.5",
         "guzzlehttp/guzzle": "^7.15",
         "imangazaliev/didom": "^2.0",
