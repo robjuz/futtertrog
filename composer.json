@@ -15,10 +15,10 @@
         "ext-pdo": "*",
         "blade-ui-kit/blade-icons": "^1.2.2",
         "cknow/laravel-money": "^8.0",
-        "darkaonline/l5-swagger": "^8.0",
+        "darkaonline/l5-swagger": "^8.6",
         "eluceo/ical": "^2.5",
-        "guzzlehttp/guzzle": "^7.2",
-        "imangazaliev/didom": "^1.13",
+        "guzzlehttp/guzzle": "^7.15",
+        "imangazaliev/didom": "^2.0",
         "ixudra/curl": "^6.16",
         "laravel/framework": "^13",
         "laravel/socialite": "^5.0",
@@ -37,7 +37,7 @@
         "laravel/roster": "^1",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^12.5",
+        "phpunit/phpunit": "^13",
         "spatie/laravel-ignition": "^2.0"
     },
     "config": {
