@@ -3,11 +3,12 @@
 namespace Tests\Unit;
 
 use App\Models\Order;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderPolicyTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function acting_as_admin()
     {
         $order = Order::factory()->create();
@@ -22,7 +23,7 @@ class OrderPolicyTest extends TestCase
         $this->assertTrue(auth()->user()->can('delete', $order));
     }
 
-    /** @test */
+    #[Test]
     public function acting_as_user()
     {
 

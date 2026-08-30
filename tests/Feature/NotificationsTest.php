@@ -19,11 +19,12 @@ use App\ScheduledJobs\OpenOrdersForNextWeekNotification;
 use App\UserSettings;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class NotificationsTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_sent_a_no_order_for_today_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -73,7 +74,7 @@ class NotificationsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_no_order_for_next_day_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -123,7 +124,7 @@ class NotificationsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_no_order_for_next_week_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -152,7 +153,7 @@ class NotificationsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_open_order_for_next_week_notification_to_all_admins()
     {
         Notification::fake();
@@ -198,7 +199,7 @@ class NotificationsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_new_order_possibility_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -231,7 +232,7 @@ class NotificationsTest extends TestCase
     }
 
 
-    /** @test */
+    #[Test]
     public function it_notifies_an_admin_when_an_closed_order_was_reopened()
     {
         /** @var Meal $meal */
@@ -297,7 +298,7 @@ class NotificationsTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_notifies_an_admin_when_an_closed_holzke_order_was_reopened()
     {
         config(['services.holzke.enabled' => true]);
@@ -367,7 +368,7 @@ class NotificationsTest extends TestCase
     }
 
 
-    /** @test */
+    #[Test]
     public function it_does_not_sent_a_no_order_for_today_notification_to_users_that_opted_in_but_turned_off_the_notification()
     {
         Notification::fake();
@@ -390,7 +391,7 @@ class NotificationsTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_sent_a_no_order_for_next_day_notification_to_users_that_opted_in_but_turned_off_the_notification()
     {
         Notification::fake();
@@ -413,7 +414,7 @@ class NotificationsTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_sent_a_no_order_for_next_week_notification_to_users_that_opted_in_but_turned_off_the_notification()
     {
         Notification::fake();

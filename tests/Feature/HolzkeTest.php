@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class HolzkeTest extends TestCase
@@ -60,7 +61,7 @@ class HolzkeTest extends TestCase
     </tr>
 </tbody></table>';
 
-    /** @test */
+    #[Test]
     public function it_can_create_meals_from_holzke_html()
     {
         $holzkeServiceMock = Mockery::mock(Holzke::class)->makePartial();
@@ -75,7 +76,7 @@ class HolzkeTest extends TestCase
         $this->assertCount(1, $meals);
     }
 
-    /** @test */
+    #[Test]
     public function it_resolves_a_holzke_provider_from_app_container()
     {
         config(['services.holzke.enabled' => true]);
@@ -85,7 +86,7 @@ class HolzkeTest extends TestCase
         $this->assertSame(app(Holzke::class), app(Holzke::class));
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_new_order_possibility_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -132,7 +133,7 @@ class HolzkeTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_fires_a_event_when_new_meals_were_created()
     {
         Event::fake();
@@ -166,7 +167,7 @@ class HolzkeTest extends TestCase
         app(Holzke::class)->getAllUpcomingMeals();
     }
 
-//    /** @test */
+//    #[Test]
 //    public function it_allows_to_auto_order()
 //    {
 //        /** @var User $user */

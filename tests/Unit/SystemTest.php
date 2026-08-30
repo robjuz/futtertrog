@@ -7,11 +7,12 @@ use App\Models\Meal;
 use App\Models\Order;
 use App\Models\User;
 use Cknow\Money\Money;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class SystemTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_knows_it_current_balance()
     {
         /** @var User $user */

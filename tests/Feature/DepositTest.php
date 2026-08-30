@@ -6,13 +6,14 @@ use App\Models\Deposit;
 use App\Models\User;
 use Cknow\Money\Money;
 use Illuminate\Http\Response;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class DepositTest extends TestCase
 {
 
 
-    /** @test */
+    #[Test]
     public function only_admin_can_create_a_deposit()
     {
         $this->withExceptionHandling();
@@ -22,7 +23,7 @@ class DepositTest extends TestCase
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    /** @test */
+    #[Test]
     public function only_admin_can_delete_a_deposit()
     {
         $this->withExceptionHandling();
@@ -51,7 +52,7 @@ class DepositTest extends TestCase
         $this->assertEquals(10, $user->balance);
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_create_a_negative_deposit()
     {
         $deposit =  Deposit::factory()->raw(['value' => -10]);
@@ -62,7 +63,7 @@ class DepositTest extends TestCase
         $this->assertDatabaseHas('deposits', $deposit);
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_delete_a_deposit()
     {
         $user = User::factory()->create();
@@ -80,7 +81,7 @@ class DepositTest extends TestCase
         $this->assertEquals(Money::parse(0), $user->balance);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_to_make_a_transfer_from_one_user_to_other_user()
     {
         $user = User::factory()->create();

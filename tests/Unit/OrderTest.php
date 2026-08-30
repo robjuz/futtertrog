@@ -8,11 +8,12 @@ use App\Models\OrderItem;
 use App\Models\User;
 use Cknow\Money\Money;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_has_many_order_items()
     {
         /** @var \App\Models\Order $order */
@@ -21,7 +22,7 @@ class OrderTest extends TestCase
         $this->assertInstanceOf(Collection::class, $order->orderItems);
     }
 
-    /** @test */
+    #[Test]
     public function it_knows_its_subtotal()
     {
         $meal1 = Meal::factory()->create(['price' => 1]);

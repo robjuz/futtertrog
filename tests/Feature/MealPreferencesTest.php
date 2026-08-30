@@ -5,11 +5,12 @@ namespace Tests\Feature;
 use App\Models\Meal;
 use App\Models\User;
 use App\UserSettings;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MealPreferencesTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_gives_preferred_meals_higher_priority_and_hated_meals_lover_priority()
     {
         $user = User::factory()->create();

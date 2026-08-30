@@ -7,11 +7,12 @@ use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Models\User;
 use Cknow\Money\Money;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_shows_the_users_current_balance()
     {
         $user = User::factory()->create();
@@ -23,7 +24,7 @@ class DashboardTest extends TestCase
         $this->actingAs($user)->get(route('home'))->assertSee(money(10));
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_the_users_today_orders()
     {
         $user = User::factory()->create();
@@ -41,7 +42,7 @@ class DashboardTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_the_users_upcoming_orders()
     {
         $user = User::factory()->create();
@@ -58,7 +59,7 @@ class DashboardTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_the_users_deposit_history()
     {
         /** @var User $user */
@@ -72,7 +73,7 @@ class DashboardTest extends TestCase
             ->assertSee(money($deposit->value));
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_show_processing_deposits()
     {
         /** @var User $user */
@@ -86,7 +87,7 @@ class DashboardTest extends TestCase
             ->assertDontSee(money($deposit->value));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_current_system_balance()
     {
         /** @var User $user */

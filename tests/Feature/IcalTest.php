@@ -5,11 +5,12 @@ namespace Tests\Feature;
 use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class IcalTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_allows_to_export_users_order_history_to_ical()
     {
         /** @var User $user */
@@ -31,7 +32,7 @@ class IcalTest extends TestCase
             ->assertSee($orderItem->meal->title.' ('.$orderItem->quantity.')');
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_filtered_out_by_date_range()
     {
         $user = User::factory()->create();

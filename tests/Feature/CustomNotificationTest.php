@@ -6,13 +6,14 @@ use App\Models\User;
 use App\Notifications\CustomNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CustomNotificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function it_allows_the_admin_to_send_a_custom_notification_to_a_user()
     {
         Notification::fake();
@@ -44,7 +45,7 @@ class CustomNotificationTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_the_admin_to_send_a_custom_notification_to_many_users()
     {
         Notification::fake();
@@ -77,7 +78,7 @@ class CustomNotificationTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function only_admin_can_create_a_notification()
     {
         $this->login()
@@ -86,7 +87,7 @@ class CustomNotificationTest extends TestCase
             ->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function it_validated_the_request()
     {
         $this->loginAsAdmin()
@@ -101,7 +102,7 @@ class CustomNotificationTest extends TestCase
             );
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_an_admin_a_create_form()
     {
         $this->login()

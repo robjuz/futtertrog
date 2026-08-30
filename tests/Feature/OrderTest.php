@@ -9,11 +9,12 @@ use App\Models\User;
 use Cknow\Money\Money;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function guests_are_not_allowed_to_see_orders()
     {
         $this->withExceptionHandling();
@@ -22,7 +23,7 @@ class OrderTest extends TestCase
         $this->getJson(route('orders.index'))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /** @test */
+    #[Test]
     public function users_are_not_allowed_to_see_orders()
     {
         $this->withExceptionHandling();
@@ -32,7 +33,7 @@ class OrderTest extends TestCase
         $this->get(route('orders.index'))->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function it_provides_a_list_of_not_empty_orders()
     {
         /** @var \Illuminate\Support\Collection|\App\Models\Order[] $orders */
@@ -67,7 +68,7 @@ class OrderTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_dont_shows_empty_orders()
     {
         /** @var \Illuminate\Support\Collection|\App\Models\Order[] $orders */
@@ -89,7 +90,7 @@ class OrderTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_provides_a_sum_of_order_items_prices()
     {
         $meal = Meal::factory()->create([
@@ -107,7 +108,7 @@ class OrderTest extends TestCase
             ->assertSee(money(222));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_to_update_order_status()
     {
         /** @var \App\Models\Order $order */
@@ -125,7 +126,7 @@ class OrderTest extends TestCase
         $this->assertEquals(Order::STATUS_ORDERED, $order->fresh()->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_to_delete_a_order()
     {
         /** @var \App\Models\Order $order */
@@ -143,7 +144,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_stores_the_previous_status()
     {
         /** @var Order $order */
@@ -157,7 +158,7 @@ class OrderTest extends TestCase
         $this->assertEquals(Order::STATUS_OPEN, $order->previous_status);
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_order_details()
     {
         Carbon::setTestNow(now()->startOfWeek()->addDays(2));

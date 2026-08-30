@@ -15,13 +15,14 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class GourmettaTest extends TestCase
 {
     const MEAL_JSON = '{"userUuid":"12345","from":"2024-06-03","to":"2024-06-03","orderDays":[{"date":"2024-06-03","quantity":0,"orderedMeals":[{"mealId":"1717365600_1","meal":{"id":"1717365600_1","rcsMenuId":1,"date":"2024-06-03","categoryName":"Menü 1","categoryShortName":"M1","textId":"1717365600_1","nr":1,"type":"M","name":"Steinpilzcremesuppe","description":"mit Walnussravioli","tags":["VEGGIE"],"price":4.75,"multipleOrders":true,"locked":false,"deadlineOrder":"2024-06-03T08:00:00+0200","deadlineCancel":"2024-06-03T08:00:00+0200","ingredients":[],"foodAdditives":[],"allergens":[{"code":"A1","name":"Weizen"},{"code":"G","name":"Milch, Laktose"},{"code":"H3","name":"Walnüsse"},{"code":"I","name":"Sellerie"}],"matchingFilters":["Menüs","Veggie"]},"quantity":0}]}]}';
 
-    /** @test */
+    #[Test]
     public function it_can_create_meals_from_gourmetta_json()
     {
         $gourmettaServiceMock = Mockery::mock(Gourmetta::class)->makePartial();
@@ -36,7 +37,7 @@ class GourmettaTest extends TestCase
         $this->assertCount(1, $meals);
     }
 
-    /** @test */
+    #[Test]
     public function it_resolves_a_gourmetta_provider_from_app_container()
     {
         config(['services.gourmetta.enabled' => true]);
@@ -46,7 +47,7 @@ class GourmettaTest extends TestCase
         $this->assertSame(app(Gourmetta::class), app(Gourmetta::class));
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_new_order_possibility_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -97,7 +98,7 @@ class GourmettaTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_fires_a_event_when_new_meals_were_created()
     {
         Event::fake();
@@ -130,7 +131,7 @@ class GourmettaTest extends TestCase
         app(Gourmetta::class)->getAllUpcomingMeals();
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_to_auto_order()
     {
         /** @var User $user */

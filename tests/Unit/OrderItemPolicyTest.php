@@ -4,11 +4,12 @@ namespace Tests\Unit;
 
 use App\Models\Meal;
 use App\Models\OrderItem;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderItemPolicyTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function acting_as_admin()
     {
         $orderItem = OrderItem::factory()->create();
@@ -25,7 +26,7 @@ class OrderItemPolicyTest extends TestCase
         $this->assertTrue(auth()->user()->can('delete', $orderItem));
     }
 
-    /** @test */
+    #[Test]
     public function acting_as_user()
     {
 

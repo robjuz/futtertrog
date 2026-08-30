@@ -7,11 +7,12 @@ use App\Models\User;
 use App\UserSettings;
 use App\View\Components\WeekNavigation;
 use Illuminate\Support\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WeekNavigationTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_doesnt_show_the_next_week_link_when_no_order_possibilities_for_next_week_present()
     {
         $nextWeekMonday = Carbon::now()->addWeek()->startofWeek();

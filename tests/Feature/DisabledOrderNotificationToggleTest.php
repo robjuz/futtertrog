@@ -3,12 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class DisabledOrderNotificationToggleTest extends TestCase
 {
 
-    /** @test */
+    #[Test]
     public function can_be_toggeled_for_a_specific_date()
     {
         $user = User::factory()->create();

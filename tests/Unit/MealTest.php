@@ -7,6 +7,7 @@ use App\Models\User;
 use App\UserSettings;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MealTest extends TestCase
@@ -18,7 +19,7 @@ class MealTest extends TestCase
         $this->assertInstanceOf(Collection::class, $meal->orderItems);
     }
 
-    /** @test */
+    #[Test]
     public function variant_name_consist_of_parent_name_and_variant_name()
     {
         /** @var Meal $meal */
@@ -30,7 +31,7 @@ class MealTest extends TestCase
         $this->assertTrue(Str::containsAll($variant->title, [$meal->title, $variant->title]));
     }
 
-    /** @test */
+    #[Test]
     public function hated_takes_precedence_before_preferred()
     {
 
@@ -71,7 +72,7 @@ class MealTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function it_knows_it_is_ordered()
     {
 
@@ -86,7 +87,7 @@ class MealTest extends TestCase
         $this->assertTrue($meal->isOrdered($user));
     }
 
-    /** @test */
+    #[Test]
     public function it_knows_its_variant_is_ordered()
     {
 
