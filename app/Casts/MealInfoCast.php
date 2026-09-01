@@ -8,10 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
 /**
- * @template TGet of MealInfo
- * @template TSet of array<string, mixed>
- *
- * @implements CastsAttributes<TGet, TSet>
+ * @implements CastsAttributes<MealInfo, array<string, mixed>>
  */
 class MealInfoCast implements CastsAttributes
 {
@@ -26,7 +23,7 @@ class MealInfoCast implements CastsAttributes
      */
     public function get($model, $key, $values, $attributes)
     {
-        $mealInfo = new MealInfo;
+        $mealInfo = new MealInfo();
 
         if (! $values) {
             return $mealInfo;
@@ -44,21 +41,13 @@ class MealInfoCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param  Model  $model
-     * @param  string  $key
-     * @param  MealInfo  $value
-     * @param  array<string, mixed>  $attributes
-     *
-     * @phpstan-param  MealInfo<array-key, mixed>  $value
+     * @phpstan-param MealInfo<array-key, mixed> $value
+     * @phpstan-param array<string, mixed> $attributes
      *
      * @return mixed
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (! $value instanceof MealInfo) {
-            throw new InvalidArgumentException('The given value is not an MealInfo instance.');
-        }
-
         return [
             'info' => json_encode($value),
         ];

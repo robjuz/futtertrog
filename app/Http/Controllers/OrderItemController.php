@@ -71,9 +71,11 @@ class OrderItemController extends Controller
         Gate::authorize('create', OrderItem::class);
 
         if ($date = $request->query('date')) {
-            $meals = Meal::forDate(Carbon::parse($date))->doesntHave('variants')->get();
-
             $users = User::orderBy('name')->get();
+
+            /** @var \Illuminate\Support\Carbon $parsedDate */
+            $parsedDate = \Illuminate\Support\Carbon::parse($date);
+            $meals = Meal::forDate($parsedDate)->doesntHave('variants')->get();
 
             return view('user_order.create', compact('meals', 'users'));
         }
@@ -90,7 +92,9 @@ class OrderItemController extends Controller
     {
         Gate::authorize('edit', $orderItem);
 
-        $meals = Meal::forDate($orderItem->date)
+        /** @var \Illuminate\Support\Carbon $editDate */
+        $editDate = \Illuminate\Support\Carbon::instance($orderItem->date);
+        $meals = Meal::forDate($editDate)
             ->doesntHave('variants')
             ->get();
 
@@ -147,7 +151,6 @@ class OrderItemController extends Controller
 
         Gate::authorize('create', [OrderItem::class, $meal->date]);
 
-        /** @var User $user */
         $userId = Auth::id();
 
         // admin can create orders for other users;

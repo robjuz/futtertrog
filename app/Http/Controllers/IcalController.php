@@ -9,16 +9,15 @@ use Eluceo\iCal\Domain\Entity\Event;
 use Eluceo\iCal\Domain\ValueObject\Date;
 use Eluceo\iCal\Domain\ValueObject\SingleDay;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
 class IcalController extends Controller
 {
     /**
      * Handle the incoming request.
-     *
-     * @return void
      */
-    public function __invoke(Request $request, OrdersRepository $ordersRepository)
+    public function __invoke(Request $request, OrdersRepository $ordersRepository): Response
     {
         $orderItems = $ordersRepository->usersAllOrders(
             $request->user(),

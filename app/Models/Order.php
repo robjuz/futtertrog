@@ -33,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $meals_count
  * @property-read Collection|OrderItem[] $orderItems
  * @property-read int|null $order_items_count
+ * @property-read mixed $is_payed
  *
  * @method static \App\OrderCollection|static[] all($columns = ['*'])
  * @method static \App\OrderCollection|static[] get($columns = ['*'])
@@ -124,17 +125,25 @@ class Order extends Model
 
     public function getIsPayedAttribute(): bool
     {
-        return (bool) ($this->payed_at ?? $this->payedBy);
+        if (isset($this->attributes['payed_at'])) {
+            return (bool) $this->attributes['payed_at'];
+        }
+
+        return (bool) $this->payedBy;
     }
 
     /**
      * Create a new Eloquent Collection instance.
-     *
-     * @return MealCollection
      */
-    public function newCollection(array $models = []): OrderCollection
+    public function newCollection(array $models = []): \Illuminate\Database\Eloquent\Collection
     {
-        return new OrderCollection($models);
+        return new OrderCollection(
+            collect($models)->map(function ($model) {
+                assert($model instanceof self);
+
+                return $model;
+            })->values()
+        );
     }
 
     public function canBeAutoOrdered(): bool
@@ -143,7 +152,7 @@ class Order extends Model
             return false;
         }
 
-        if (! $this->provider->supportsAutoOrder() ?? false) {
+        if (! $this->provider->supportsAutoOrder()) {
             return false;
         }
 

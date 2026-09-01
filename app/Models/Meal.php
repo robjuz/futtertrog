@@ -148,9 +148,15 @@ class Meal extends Model
     /**
      * Create a new Eloquent Collection instance.
      */
-    public function newCollection(array $models = []): MealCollection
+    public function newCollection(array $models = []): \Illuminate\Database\Eloquent\Collection
     {
-        return new MealCollection($models);
+        return new MealCollection(
+            collect($models)->map(function ($model) {
+                assert($model instanceof self);
+
+                return $model;
+            })->values()
+        );
     }
 
     /**

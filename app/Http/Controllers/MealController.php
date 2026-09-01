@@ -73,12 +73,12 @@ class MealController extends Controller implements HasMiddleware
         }
 
         $requestedDate = Carbon::parse($request->query('date', today()));
-        $todayMeals = Meal::forDate($requestedDate)
+        $todayMeals = new \App\MealCollection(Meal::forDate($requestedDate)
             ->whereNull('parent_id')
             ->byProvider($request->provider)
             ->with(['variants'])
-            ->get()
-            ->sortByPreferences();
+            ->get());
+        $todayMeals->sortByPreferences();
 
         if ($request->wantsJson()) {
             return response()->json($todayMeals);

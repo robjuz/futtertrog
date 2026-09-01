@@ -7,10 +7,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @template TGet of UserSettings
- * @template TSet of string
- *
- * @implements CastsAttributes<TGet, TSet>
+ * @implements CastsAttributes<UserSettings, string>
  */
 class UserSettingsCast implements CastsAttributes
 {
@@ -18,13 +15,12 @@ class UserSettingsCast implements CastsAttributes
      * Cast the given value.
      *
      * @param  array<string, mixed>  $attributes
-     * @return UserSettings<array-key, mixed>
      *
      * @phpstan-return UserSettings<array-key, mixed>
      */
     public function get(Model $model, string $key, mixed $values, array $attributes): UserSettings
     {
-        $userSettings = new UserSettings;
+        $userSettings = new UserSettings();
 
         if (! $values) {
             return $userSettings;
@@ -42,10 +38,8 @@ class UserSettingsCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param  UserSettings  $value
-     * @param  array<string, mixed>  $attributes
-     *
-     * @phpstan-param  UserSettings<array-key, mixed>  $value
+     * @phpstan-param UserSettings<array-key, mixed> $value
+     * @phpstan-param array<string, mixed> $attributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): string
     {

@@ -7,22 +7,23 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Enumerable;
 
 class NewOrderPossibilities extends Notification
 {
     use Queueable;
 
     /**
-     * @var Carbon[]|null
+     * @var Enumerable<int, Carbon>
      */
-    private $dates;
+    private Enumerable $dates;
 
     /**
      * Create a new notification instance.
      *
-     * @param  iterable<Carbon>  $dates
+     * @param  Enumerable<int, Carbon>  $dates
      */
-    public function __construct(iterable $dates)
+    public function __construct(Enumerable $dates)
     {
         $this->dates = $dates;
     }
@@ -42,18 +43,17 @@ class NewOrderPossibilities extends Notification
 
     /**
      * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return MailMessage
      */
-    public function toMail(User $notifiable)
+    public function toMail(User $notifiable): MailMessage
     {
         $message = (new MailMessage)->subject(__('New order possibilities'));
 
         $locale = $notifiable->settings->language ?? config('app.locale');
 
         foreach ($this->dates as $date) {
-            $formatted = Carbon::parse($date)->locale($locale)->isoFormat('ddd MMM DD YYYY');
+            /** @var Carbon $carbonDate */
+            $carbonDate = $date;
+            $formatted = $carbonDate->locale($locale)->isoFormat('ddd MMM DD YYYY');
             $message->line(__('New order possibility for :day', ['day' => $formatted]));
         }
 
@@ -63,7 +63,7 @@ class NewOrderPossibilities extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  User  $notifiable
      * @return array<int, string>
      */
     public function via($notifiable)

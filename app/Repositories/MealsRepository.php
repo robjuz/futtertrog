@@ -4,17 +4,18 @@ namespace App\Repositories;
 
 use App\MealCollection;
 use App\Models\Meal;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
 class MealsRepository
 {
-    /** @var array<int, MealCollection> */
+    /** @var array<int, Collection<int, Meal>> */
     private array $cache = [];
 
     /**
-     * @return MealCollection
+     * @return Collection<int, Meal>
      */
-    public function forDate(Carbon $date)
+    public function forDate(Carbon $date): Collection
     {
         $date = Carbon::parse($date);
         $timestamp = (int) $date->timestamp;
@@ -23,15 +24,22 @@ class MealsRepository
             $this->cache[$timestamp] = Meal::doesntHave('parent')->forDate($date)->get();
         }
 
-        return $this->cache[$timestamp];
+        /** @var Collection<int, Meal> $result */
+        $result = $this->cache[$timestamp];
+
+        return $result;
     }
 
-    public function inFutureFrom(Carbon $currentDate): MealCollection
+    /**
+     * @return Collection<int, Meal>
+     */
+    public function inFutureFrom(Carbon $currentDate): Collection
     {
         $currentDate = Carbon::parse($currentDate);
 
         $nextWeekMonday = $currentDate->clone()->addWeek()->startOfWeek();
 
+        /** @var Collection<int, Meal> */
         return Meal::doesntHave('parent')
             ->whereDate('date', '>=', $nextWeekMonday)
             ->get();

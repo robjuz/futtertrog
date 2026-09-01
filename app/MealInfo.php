@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Casts\MealInfoCast;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
@@ -29,6 +30,7 @@ class MealInfo implements Arrayable, Castable, JsonSerializable
      * Get the name of the caster class to use when casting from / to this cast target.
      *
      * @param  array<string, mixed>  $arguments
+     * @return class-string<\Illuminate\Contracts\Database\Eloquent\CastsAttributes>
      */
     public static function castUsing(array $arguments): string
     {

@@ -12,7 +12,7 @@ class NewOrderPossibilities
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * @var Carbon[]
+     * @var iterable<Carbon>
      */
     public $dates;
 

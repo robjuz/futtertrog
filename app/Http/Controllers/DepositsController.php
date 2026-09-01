@@ -13,7 +13,6 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-/** @extends LengthAwarePaginator<int, Deposit> */
 class DepositsController extends Controller implements HasMiddleware
 {
     public static function middleware()

@@ -65,7 +65,7 @@ class UserController extends Controller
     {
         Gate::authorize('create', User::class);
 
-        $user = User::make($request->validated());
+        $user = new User($request->validated());
         $user->password = Hash::make($request->input('password'));
 
         $user->save();

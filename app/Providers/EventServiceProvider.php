@@ -11,16 +11,15 @@ use App\Listeners\SendOrderReopenedNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Enumerable;
 use Illuminate\Support\Facades\Event;
-use SocialiteProviders\GitLab\GitLabExtendSocialite;
-use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class EventServiceProvider extends ServiceProvider
 {
     /**
      * The event listener mappings for the application.
      *
-     * @var array<class-string, array<int, class-string>>
+     * @var array<string, list<string>>
      */
     protected $listen = [
         Registered::class => [
@@ -34,9 +33,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewOrderPossibilities::class => [
             SendNewOrderPossibilitiesNotification::class,
-        ],
-        SocialiteWasCalled::class => [
-            GitLabExtendSocialite::class.'@handle',
         ],
     ];
 
