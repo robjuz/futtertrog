@@ -38,10 +38,8 @@ class CreateAdminUser extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         if (! $name = $this->argument('name')) {
             $name = $this->ask('name');
@@ -64,5 +62,7 @@ class CreateAdminUser extends Command
                 'password' => Hash::make($password),
                 'is_admin' => true,
             ]);
+
+        return Command::SUCCESS;
     }
 }

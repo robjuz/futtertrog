@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderUpdated;
 use App\Models\Meal;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
 use App\Rules\MealWithoutVariants;
@@ -24,10 +25,6 @@ class OrderItemController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
-     *
-     * @throws AuthorizationException
-     *
      * @OA\Get (
      *      path="/api/orders",
      *      summary="List of orders",
@@ -43,7 +40,7 @@ class OrderItemController extends Controller
      *      ),
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         Gate::authorize('list', OrderItem::class);
 
@@ -67,11 +64,9 @@ class OrderItemController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
-     *
      * @throws AuthorizationException
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         Gate::authorize('create', OrderItem::class);
 
@@ -89,12 +84,9 @@ class OrderItemController extends Controller
     /**
      * Show the form for editing a new resource.
      *
-     * @param  Request  $request
-     * @return Response
-     *
      * @throws AuthorizationException
      */
-    public function edit(OrderItem $orderItem)
+    public function edit(OrderItem $orderItem): View
     {
         Gate::authorize('edit', $orderItem);
 
@@ -168,7 +160,11 @@ class OrderItemController extends Controller
             $request->input('quantity', 1)
         );
 
-        event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
+        $order = $orderItem->order;
+        $user = $orderItem->user;
+        assert($order instanceof Order);
+        assert($user instanceof User);
+        event(new OrderUpdated($order, $user, $orderItem));
 
         if ($request->wantsJson()) {
             return response()->json($orderItem, Response::HTTP_CREATED);
@@ -194,7 +190,11 @@ class OrderItemController extends Controller
         $orderItem->update($data);
         $orderItem->order->reopen();
 
-        event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
+        $order = $orderItem->order;
+        $user = $orderItem->user;
+        assert($order instanceof Order);
+        assert($user instanceof User);
+        event(new OrderUpdated($order, $user, $orderItem));
 
         if ($request->wantsJson()) {
             return response()->json($orderItem, Response::HTTP_OK);
@@ -220,7 +220,11 @@ class OrderItemController extends Controller
         $orderItem->delete();
         $orderItem->order->reopen();
 
-        event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
+        $order = $orderItem->order;
+        $user = $orderItem->user;
+        assert($order instanceof Order);
+        assert($user instanceof User);
+        event(new OrderUpdated($order, $user, $orderItem));
 
         if ($request->wantsJson()) {
             return response()->json(null, Response::HTTP_NO_CONTENT);

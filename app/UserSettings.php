@@ -7,6 +7,12 @@ use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
+/**
+ * @template TKey of array-key
+ * @template TValue of mixed
+ *
+ * @implements Arrayable<TKey, TValue>
+ */
 class UserSettings implements Arrayable, Castable, JsonSerializable
 {
     const NEW_ORDER_POSSIBILITY_NOTIFICATION = 'newOrderPossibilityNotification';

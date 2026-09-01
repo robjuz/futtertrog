@@ -10,7 +10,7 @@ use Illuminate\View\View;
 
 class UserSelect extends Component
 {
-    /** @var Collection<User>|array<User> */
+    /** @var Collection<int, User>|array<int, User> */
     public Collection|array $users;
 
     public ?int $selected;

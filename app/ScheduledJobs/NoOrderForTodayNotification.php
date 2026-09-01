@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification;
 
 class NoOrderForTodayNotification
 {
-    public function __invoke()
+    public function __invoke(): void
     {
         $users = User::query()
             ->where(function (Builder $query) {

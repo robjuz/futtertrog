@@ -2,7 +2,6 @@
 
 namespace App\View\Components;
 
-use AllowDynamicProperties;
 use App\Models\User;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
@@ -18,7 +17,9 @@ class WeekNavigation extends Component
     public Carbon $requestedDate;
 
     public MealsRepository $meals;
+
     public OrdersRepository $orders;
+
     public User $user;
 
     /**

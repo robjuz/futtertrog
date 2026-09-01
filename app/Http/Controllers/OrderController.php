@@ -6,24 +6,23 @@ use App\Models\Order;
 use App\Models\User;
 use App\Repositories\OrdersRepository;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Response
-     *
      * @throws AuthorizationException
      */
-    public function index(Request $request, OrdersRepository $ordersRepository)
+    public function index(Request $request, OrdersRepository $ordersRepository): JsonResponse|View
     {
         Gate::authorize('list', Order::class);
 
@@ -72,7 +71,7 @@ class OrderController extends Controller
         return view('order.index', compact('orders', 'from', 'to'));
     }
 
-    public function edit(Order $order)
+    public function edit(Order $order): View
     {
         $order
             ->loadMin('meals', 'date')
@@ -90,11 +89,9 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return Response
-     *
      * @throws AuthorizationException
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, Order $order): JsonResponse|RedirectResponse|Response
     {
         Gate::authorize('update', $order);
 
@@ -118,12 +115,10 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @return ResponseFactory|RedirectResponse|Response
-     *
      * @throws \Exception
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Order $order)
+    public function destroy(Request $request, Order $order): Response|RedirectResponse
     {
         Gate::authorize('delete', $order);
 

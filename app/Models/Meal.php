@@ -4,14 +4,15 @@ namespace App\Models;
 
 use App\Casts\MealInfoCast;
 use App\Casts\MealProviderCast;
-use App\IdeHelperMeal;
 use App\MealCollection;
 use Cknow\Money\Casts\MoneyIntegerCast;
+use Database\Factories\MealFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -39,10 +40,16 @@ use Illuminate\Support\Str;
  *      @OA\Property( property="parent", type="object", ref="#/components/schemas/Meal", nullable=true ),
  *  ),
  *
- * @mixin IdeHelperMeal
+ * @property-read string $title
+ * @property-read string $variant_title
+ * @property-read bool $is_preferred
+ * @property-read bool $is_hated
+ *
+ * @mixin \Eloquent
  */
 class Meal extends Model
 {
+    /** @use HasFactory<MealFactory> */
     use HasFactory;
 
     protected $guarded = ['variants'];
@@ -56,36 +63,39 @@ class Meal extends Model
         'date' => 'datetime',
     ];
 
+    /** @return HasMany<OrderItem, $this> */
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
+    /** @return HasMany<Meal, $this> */
     public function variants(): HasMany
     {
         return $this->hasMany(Meal::class, 'parent_id');
     }
 
+    /** @return BelongsTo<Meal, $this> */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Meal::class, 'parent_id');
     }
 
-    public function getTitleAttribute($value)
+    public function getTitleAttribute(?string $value): string
     {
         if ($this->parent) {
             return implode(' ', [$this->parent->title, $value]);
         }
 
-        return $value;
+        return $value ?? '';
     }
 
-    public function getVariantTitleAttribute()
+    public function getVariantTitleAttribute(): string
     {
         return $this->attributes['title'];
     }
 
-    public function getIsPreferredAttribute()
+    public function getIsPreferredAttribute(): bool
     {
         if (! isset($this->attributes['is_preferred'])) {
             $this->attributes['is_preferred'] = false;
@@ -110,7 +120,7 @@ class Meal extends Model
         return $this->attributes['is_preferred'];
     }
 
-    public function getIsHatedAttribute()
+    public function getIsHatedAttribute(): bool
     {
         if (! isset($this->attributes['is_hated'])) {
             $this->attributes['is_hated'] = false;
@@ -143,12 +153,22 @@ class Meal extends Model
         return new MealCollection($models);
     }
 
-    public function scopeForDate($query, $date)
+    /**
+     * @phpstan-param Builder<Meal> $query
+     *
+     * @return Builder<Meal>
+     */
+    public function scopeForDate(Builder $query, Carbon $date): Builder
     {
         return $query->whereDate('date', $date);
     }
 
-    public function scopeByProvider(Builder $query, $provider = null): Builder
+    /**
+     * @phpstan-param Builder<Meal> $query
+     *
+     * @return Builder<Meal>
+     */
+    public function scopeByProvider(Builder $query, ?string $provider = null): Builder
     {
         if (! $provider) {
             return $query;
@@ -157,7 +177,7 @@ class Meal extends Model
         return $query->where('provider', $provider);
     }
 
-    public function order(User|int $user, $quantity = 1): OrderItem
+    public function order(User|int $user, int $quantity = 1): OrderItem
     {
         $userId = $user->id ?? $user;
 
@@ -196,7 +216,7 @@ class Meal extends Model
     public function orderItem(?User $user = null): ?OrderItem
     {
         return OrderItem::query()
-            ->whereIn('meal_id', $this->variants()->pluck('id')->merge($this->id))
+            ->whereIn('meal_id', $this->variants()->pluck('id')->push($this->id))
             ->where('user_id', $user ? $user->id : auth()->id())
             ->where('quantity', '>', 0)
             ->first();

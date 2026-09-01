@@ -5,9 +5,12 @@ namespace App;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @extends Collection<int, Order>
+ */
 class OrderCollection extends Collection
 {
-    public function canBeAutoOrdered()
+    public function canBeAutoOrdered(): bool
     {
         if ($this->isEmpty()) {
             return false;

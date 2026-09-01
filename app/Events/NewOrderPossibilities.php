@@ -18,6 +18,8 @@ class NewOrderPossibilities
 
     /**
      * Create a new event instance.
+     *
+     * @param  iterable<Carbon>  $dates
      */
     public function __construct(iterable $dates)
     {

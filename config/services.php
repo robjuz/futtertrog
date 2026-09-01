@@ -65,12 +65,12 @@ return [
     'call_a_pizza' => [
         'enabled' => (bool) env('CALL_A_PIZZA_ENABLED', false),
         'location' => env('CALL_A_PIZZA_LOCATION', 'dresden_loebtau_sued'),
-        'meals' => json_decode(env('CALL_A_PIZZA_CATEGORIES', '["pizza/pizza-klassiker", "burger"]')),
+        'meals' => json_decode((string) env('CALL_A_PIZZA_CATEGORIES', '["pizza/pizza-klassiker", "burger"]')),
     ],
 
     'flaschenpost' => [
         'enabled' => (bool) env('FLASCHENPOST_ENABLED', false),
         'zipcode' => env('FLASCHENPOST_ZIPCODE', '01159'),
-        'categories' => json_decode(env('FLASCHENPOST_CATEGORIES', '["limonade/cola"]')),
+        'categories' => json_decode((string) env('FLASCHENPOST_CATEGORIES', '["limonade/cola"]')),
     ],
 ];

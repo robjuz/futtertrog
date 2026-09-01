@@ -6,16 +6,14 @@ use App\Models\Deposit;
 use App\Models\User;
 use Cknow\Money\Money;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     /**
      * Show the application dashboard.
-     *
-     * @return Response
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): View
     {
 
         /** @var User $user */

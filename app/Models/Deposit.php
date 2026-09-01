@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\IdeHelperDeposit;
+use Database\Factories\DepositFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -34,11 +35,10 @@ use Illuminate\Support\Carbon;
  *
  * @noinspection PhpFullyQualifiedNameUsageInspection
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
- *
- * @mixin IdeHelperDeposit
  */
 class Deposit extends Model
 {
+    /** @use HasFactory<DepositFactory> */
     use HasFactory;
 
     protected $guarded = [];
@@ -55,10 +55,11 @@ class Deposit extends Model
      */
     public function setValueAttribute($value)
     {
-        $this->attributes['value'] = is_float($value) ? intval(100 * $value) : $value;
+        $this->attributes['value'] = $value;
     }
 
-    public function user()
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

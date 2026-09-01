@@ -27,7 +27,7 @@ class OpenOrders extends Notification
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray($notifiable)
     {
@@ -54,7 +54,7 @@ class OpenOrders extends Notification
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
+     * @return array<int, string>
      */
     public function via($notifiable)
     {

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\IdeHelperUser;
 use App\UserSettings;
 use Cknow\Money\Money;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,7 +34,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property bool $is_admin
- * @property UserSettings $settings
+ * @property UserSettings<array-key, mixed> $settings
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -43,7 +43,7 @@ use Illuminate\Support\Str;
  * @property-read Collection|Deposit[] $deposits
  * @property-read int|null $deposits_count
  * @property-read Money $balance
- * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification>|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection|OrderItem[] $orderItems
  * @property-read int|null $order_items_count
@@ -72,20 +72,19 @@ use Illuminate\Support\Str;
  * @mixin \Eloquent
  *
  * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
- *
- * @mixin IdeHelperUser
  */
 class User extends Authenticatable
 {
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use Notifiable;
     use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'is_admin' => 'boolean',
@@ -96,14 +95,14 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -119,12 +118,13 @@ class User extends Authenticatable
         });
     }
 
-    public function deposits()
+    /** @return HasMany<Deposit, $this> */
+    public function deposits(): HasMany
     {
         return $this->hasMany(Deposit::class)->latest();
     }
 
-    public function getBalanceAttribute()
+    public function getBalanceAttribute(): Money
     {
         if (empty($this->attributes['balance'])) {
             $this->loadMissing('orderItems.meal');
@@ -148,30 +148,33 @@ class User extends Authenticatable
         return $this->attributes['balance'];
     }
 
-    public function markAsAdmin()
+    public function markAsAdmin(): bool
     {
         return $this->forceFill([
             'is_admin' => true,
         ])->save();
     }
 
-    public function orderItems()
+    /** @return HasMany<OrderItem, $this> */
+    public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payedOrders()
+    /** @return HasMany<Order, $this> */
+    public function payedOrders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-    public function generateApiToken()
+    public function generateApiToken(): static
     {
         $this->api_token = Str::random(10);
 
         return $this;
     }
 
+    /** @return HasMany<OrderItem, $this> */
     public function futureOrders(): HasMany
     {
         return $this->orderItems()
@@ -180,6 +183,7 @@ class User extends Authenticatable
             ->whereRelation('meal', 'date', '>', today());
     }
 
+    /** @return HasMany<OrderItem, $this> */
     public function orderHistory(): HasMany
     {
         return $this->orderItems()
@@ -188,6 +192,7 @@ class User extends Authenticatable
             ->latest();
     }
 
+    /** @return HasMany<DisabledNotification, $this> */
     public function disabledNotifications(): HasMany
     {
         return $this->hasMany(DisabledNotification::class);

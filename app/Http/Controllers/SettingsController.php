@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\UserSettings;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -14,10 +14,8 @@ class SettingsController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return JsonResponse|View
      */
-    public function index(Request $request)
+    public function index(Request $request): View|JsonResponse
     {
         $settings = $request->user()->settings ?? [];
 
@@ -30,10 +28,8 @@ class SettingsController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse|RedirectResponse
     {
         $settings = $request->validate([
             UserSettings::NEW_ORDER_POSSIBILITY_NOTIFICATION => ['required', 'boolean'],

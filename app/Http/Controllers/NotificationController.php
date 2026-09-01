@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Notifications\CustomNotification;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\View\View;
 
 class NotificationController extends Controller
 {
-    public function create()
+    public function create(): View
     {
         Gate::authorize('create', CustomNotification::class);
 
@@ -19,7 +21,7 @@ class NotificationController extends Controller
         return view('notification.create', compact('users'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         Gate::authorize('create', CustomNotification::class);
 

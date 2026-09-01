@@ -92,6 +92,11 @@ abstract class AbstractMealProvider implements \JsonSerializable
         throw new Exception('Not implemented');
     }
 
+    public function updateOrder(Order $order)
+    {
+        throw new Exception('Not implemented');
+    }
+
     /**
      * Per default create one order pro day
      */

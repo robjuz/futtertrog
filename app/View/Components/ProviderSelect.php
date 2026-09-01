@@ -8,7 +8,7 @@ use Illuminate\View\View;
 
 class ProviderSelect extends Component
 {
-    /** @var array<string, string>  */
+    /** @var array<string, string> */
     public array $providers;
 
     public ?string $selected;

@@ -125,7 +125,7 @@ class LoginController extends Controller implements HasMiddleware
     /**
      * Obtain the user information from OAuth provider.
      */
-    public function handleOauthCallback(Request $request, $provider): JsonResponse|RedirectResponse
+    public function handleOauthCallback(Request $request, string $provider): JsonResponse|RedirectResponse
     {
         $oauthProvider = Socialite::driver($provider);
 
@@ -153,8 +153,6 @@ class LoginController extends Controller implements HasMiddleware
 
     /**
      * Redirect the user to the Oauth provider authentication page.
-     *
-     * @param  Request  $request
      */
     public function redirectToOauth(string $provider): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -167,7 +165,7 @@ class LoginController extends Controller implements HasMiddleware
     protected function sendLoginResponse(Request $request): JsonResponse|RedirectResponse
     {
         if ($request->wantsJson()) {
-            return $this->guard()->user();
+            return response()->json($this->guard()->user());
         }
 
         $request->session()->regenerate();

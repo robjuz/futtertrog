@@ -6,16 +6,21 @@ use App\UserSettings;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @template TGet of UserSettings
+ * @template TSet of string
+ *
+ * @implements CastsAttributes<TGet, TSet>
+ */
 class UserSettingsCast implements CastsAttributes
 {
     /**
      * Cast the given value.
      *
-     * @param  Model  $model
-     * @param  string  $key
-     * @param  mixed  $values
-     * @param  array  $attributes
-     * @return mixed
+     * @param  array<string, mixed>  $attributes
+     * @return UserSettings<array-key, mixed>
+     *
+     * @phpstan-return UserSettings<array-key, mixed>
      */
     public function get(Model $model, string $key, mixed $values, array $attributes): UserSettings
     {
@@ -37,14 +42,13 @@ class UserSettingsCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param  Model  $model
-     * @param  string  $key
      * @param  UserSettings  $value
-     * @param  array  $attributes
-     * @return mixed
+     * @param  array<string, mixed>  $attributes
+     *
+     * @phpstan-param  UserSettings<array-key, mixed>  $value
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        return json_encode($value);
+        return json_encode($value) ?: '{}';
     }
 }

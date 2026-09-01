@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification;
 
 class NoOrderForNextDayNotification
 {
-    public function __invoke()
+    public function __invoke(): void
     {
         $nextDay = today()->addWeekday();
         $users = User::query()

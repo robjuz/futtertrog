@@ -168,9 +168,9 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
-    public function restore(Request $request, $user)
+    public function restore(Request $request, User $user): JsonResponse|RedirectResponse
     {
-        User::withTrashed()->findOrFail($user)->restore();
+        $user->restore();
 
         Gate::authorize('restore', $user);
 

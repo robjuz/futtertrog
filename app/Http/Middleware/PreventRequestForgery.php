@@ -16,7 +16,7 @@ class PreventRequestForgery extends Middleware
     /**
      * The URIs that should be excluded from CSRF verification.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $except = [
         'login',

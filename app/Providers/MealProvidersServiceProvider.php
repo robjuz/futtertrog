@@ -11,6 +11,7 @@ use Illuminate\Support\ServiceProvider;
 
 class MealProvidersServiceProvider extends ServiceProvider
 {
+    /** @var array<int, string> */
     private array $bundledProviders = [
         Holzke::class,
         CallAPizza::class,
@@ -40,7 +41,7 @@ class MealProvidersServiceProvider extends ServiceProvider
         $registeredProviders = [];
 
         foreach ($this->bundledProviders as $provider) {
-            if (call_user_func([$provider, 'register'], $this->app)) {
+            if ($provider::register($this->app)) {
                 $registeredProviders[class_basename($provider)] = $this->app->make($provider)->getName();
             }
         }

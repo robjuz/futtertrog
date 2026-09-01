@@ -9,5 +9,8 @@ parameters:
         - config/
         - database/
         - routes/
-
+    
     level: 7
+    
+    excludePaths:
+        - app/MealProviders/*

@@ -7,6 +7,12 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
+/**
+ * @template TGet of MealInfo
+ * @template TSet of array<string, mixed>
+ *
+ * @implements CastsAttributes<TGet, TSet>
+ */
 class MealInfoCast implements CastsAttributes
 {
     /**
@@ -15,7 +21,7 @@ class MealInfoCast implements CastsAttributes
      * @param  Model  $model
      * @param  string  $key
      * @param  mixed  $values
-     * @param  array  $attributes
+     * @param  array<string, mixed>  $attributes
      * @return mixed
      */
     public function get($model, $key, $values, $attributes)
@@ -41,7 +47,10 @@ class MealInfoCast implements CastsAttributes
      * @param  Model  $model
      * @param  string  $key
      * @param  MealInfo  $value
-     * @param  array  $attributes
+     * @param  array<string, mixed>  $attributes
+     *
+     * @phpstan-param  MealInfo<array-key, mixed>  $value
+     *
      * @return mixed
      */
     public function set($model, $key, $value, $attributes)

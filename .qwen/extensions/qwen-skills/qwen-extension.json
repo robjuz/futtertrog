@@ -1,0 +1,20 @@
+{
+  "name": "qwen-skills",
+  "version": "1.0.0",
+  "displayName": {
+    "en": "Qwen Skills"
+  },
+  "description": "Imported domain-specific skills from .claude/skills — testing best practices, Laravel best practices, Tailwind CSS, Livewire, Flux UI, Fortify, Blaze optimization, Socialite, and convention inference.",
+  "contextFileName": "QWEN.md",
+  "skills": [
+    "skills/testing-best-practices/SKILL.md",
+    "skills/laravel-best-practices/SKILL.md",
+    "skills/tailwindcss-development/SKILL.md",
+    "skills/livewire-development/SKILL.md",
+    "skills/fluxui-development/SKILL.md",
+    "skills/fortify-development/SKILL.md",
+    "skills/socialite-development/SKILL.md",
+    "skills/blaze-optimize/SKILL.md",
+    "skills/infer-conventions/SKILL.md"
+  ]
+}

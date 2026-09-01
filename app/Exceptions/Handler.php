@@ -4,8 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Sentry\Laravel\Integration;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -13,7 +13,7 @@ class Handler extends ExceptionHandler
     /**
      * A list of the exception types that are not reported.
      *
-     * @var array
+     * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
         //
@@ -22,7 +22,7 @@ class Handler extends ExceptionHandler
     /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $dontFlash = [
         'password',
@@ -44,9 +44,8 @@ class Handler extends ExceptionHandler
      *
      * @param  Request  $request
      * @param  \Exception  $exception
-     * @return Response
      */
-    public function render($request, Throwable $exception)
+    public function render($request, Throwable $exception): Response
     {
         return parent::render($request, $exception);
     }

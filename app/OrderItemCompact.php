@@ -12,16 +12,17 @@ class OrderItemCompact
      */
     public $meal;
 
-    /**
-     * @var iterable|User[]
-     */
-    public $users;
+    /** @var iterable<User> */
+    public iterable $users;
 
     /**
      * @var int
      */
     public $quantity;
 
+    /**
+     * @param  iterable<User>  $users
+     */
     public function __construct(Meal $meal, iterable $users, int $quantity)
     {
         $this->meal = $meal;

@@ -7,6 +7,12 @@ use App\MealProviders\Internal;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @template TGet of AbstractMealProvider
+ * @template TSet of mixed
+ *
+ * @implements CastsAttributes<TGet, TSet>
+ */
 class MealProviderCast implements CastsAttributes
 {
     /**

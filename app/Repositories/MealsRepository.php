@@ -8,23 +8,25 @@ use Illuminate\Support\Carbon;
 
 class MealsRepository
 {
-    private $cache = [];
+    /** @var array<int, MealCollection> */
+    private array $cache = [];
 
     /**
      * @return MealCollection
      */
-    public function forDate($date)
+    public function forDate(Carbon $date)
     {
         $date = Carbon::parse($date);
+        $timestamp = (int) $date->timestamp;
 
-        if (empty($this->cache[$date->timestamp])) {
-            $this->cache[$date->timestamp] = Meal::doesntHave('parent')->forDate($date)->get();
+        if (empty($this->cache[$timestamp])) {
+            $this->cache[$timestamp] = Meal::doesntHave('parent')->forDate($date)->get();
         }
 
-        return $this->cache[$date->timestamp];
+        return $this->cache[$timestamp];
     }
 
-    public function inFutureFrom($currentDate)
+    public function inFutureFrom(Carbon $currentDate): MealCollection
     {
         $currentDate = Carbon::parse($currentDate);
 

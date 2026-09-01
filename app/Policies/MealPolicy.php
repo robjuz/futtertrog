@@ -10,11 +10,13 @@ class MealPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
+    public function before(User $user, string $ability): ?bool
     {
         if ($user->is_admin) {
             return true;
         }
+
+        return null;
     }
 
     /**

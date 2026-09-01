@@ -3,14 +3,19 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class OrdersRepository
 {
-    public function get(Request $request)
+    /**
+     * @return Collection<int, Order>
+     */
+    public function get(Request $request): Collection
     {
         $from = Carbon::parse($request->get('from', today()));
         $to = $request->has('to') && ! empty($request->to) ? Carbon::parse($request->to) : null;
@@ -39,7 +44,10 @@ class OrdersRepository
             ->get();
     }
 
-    public function usersAllOrders(User $user, $fromDate = null, $toDate = null)
+    /**
+     * @return Collection<int, OrderItem>
+     */
+    public function usersAllOrders(User $user, ?Carbon $fromDate = null, ?Carbon $toDate = null): Collection
     {
         $fromDate = $fromDate ? Carbon::parse($fromDate)->toDateString() : null;
         $toDate = $toDate ? Carbon::parse($toDate)->toDateString() : null;

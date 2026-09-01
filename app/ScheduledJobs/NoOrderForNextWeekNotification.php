@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification;
 
 class NoOrderForNextWeekNotification
 {
-    public function __invoke()
+    public function __invoke(): void
     {
         $nextMonday = today()->addWeek()->startOfWeek();
         $nextSunday = today()->addWeek()->endOfWeek();

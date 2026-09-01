@@ -11,14 +11,16 @@ class OrderItemPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
+    public function before(User $user, string $ability): ?bool
     {
         if ($user->is_admin) {
             return true;
         }
+
+        return null;
     }
 
-    public function list(User $user)
+    public function list(User $user): bool
     {
         return true;
     }
@@ -38,7 +40,7 @@ class OrderItemPolicy
      *
      * @return mixed
      */
-    public function create(User $user, $date)
+    public function create(User $user, Carbon $date)
     {
         return Carbon::parse($date)->isAfter(today());
     }
