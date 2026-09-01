@@ -7,63 +7,64 @@ use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Models\User;
 use Cknow\Money\Money;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_shows_the_users_current_balance()
     {
         $user = User::factory()->create();
 
         $user->deposits()->create([
-            'value' => 10
+            'value' => 10,
         ]);
 
         $this->actingAs($user)->get(route('home'))->assertSee(money(10));
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_the_users_today_orders()
     {
         $user = User::factory()->create();
 
-        $orderItems = OrderItem::factory()->count( 10)->create([
-            'user_id' => $user->id
+        $orderItems = OrderItem::factory()->count(10)->create([
+            'user_id' => $user->id,
         ]);
 
         $response = $this->login($user)->get(route('home'));
 
         foreach ($orderItems as $orderItem) {
             $response->assertSee($orderItem->meal->title);
-            $response->assertSee(__('futtertrog.orderStatus.' . $orderItem->status));
+            $response->assertSee(__('futtertrog.orderStatus.'.$orderItem->status));
         }
 
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_the_users_upcoming_orders()
     {
         $user = User::factory()->create();
 
         $orderItems = OrderItem::factory()->count(5)->create([
             'user_id' => $user->id,
-            'meal_id' => Meal::factory()->inFuture()
+            'meal_id' => Meal::factory()->inFuture(),
         ]);
 
         $response = $this->login($user)->get(route('home'));
         foreach ($orderItems as $orderItem) {
             $response->assertSee($orderItem->meal->title);
-            $response->assertSee(__('futtertrog.orderStatus.' . $orderItem->status));
+            $response->assertSee(__('futtertrog.orderStatus.'.$orderItem->status));
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_the_users_deposit_history()
     {
         /** @var User $user */
         $user = User::factory()->create();
-        $deposit =  Deposit::factory()->make(['status' => Deposit::STATUS_OK]);
+        $deposit = Deposit::factory()->make(['status' => Deposit::STATUS_OK]);
 
         $user->deposits()->save($deposit);
 
@@ -72,12 +73,12 @@ class DashboardTest extends TestCase
             ->assertSee(money($deposit->value));
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_show_processing_deposits()
     {
         /** @var User $user */
         $user = User::factory()->create();
-        $deposit =  Deposit::factory()->make(['status' => Deposit::STATUS_PROCESSING]);
+        $deposit = Deposit::factory()->make(['status' => Deposit::STATUS_PROCESSING]);
 
         $user->deposits()->save($deposit);
 
@@ -86,7 +87,7 @@ class DashboardTest extends TestCase
             ->assertDontSee(money($deposit->value));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_current_system_balance()
     {
         /** @var User $user */
@@ -99,10 +100,10 @@ class DashboardTest extends TestCase
             ->assertDontSee(__('System balance'))
             ->assertDontSee(Money::parse(10));
 
-         $this->loginAsAdmin()
-             ->get(route('home'))
-             ->assertSee(__('System balance'))
-             ->assertSee(Money::parse(10));
+        $this->loginAsAdmin()
+            ->get(route('home'))
+            ->assertSee(__('System balance'))
+            ->assertSee(Money::parse(10));
     }
 
     /**
@@ -135,10 +136,9 @@ class DashboardTest extends TestCase
             ->get(route('home'))
             ->assertDontSee($meal->title);
 
-
-//        foreach ($orderItems as $orderItem) {
-//            $response->assertSee($orderItem->meal->title);
-//            $response->assertSee(__('futtertrog.orderStatus.' . $orderItem->status));
-//        }
+        //        foreach ($orderItems as $orderItem) {
+        //            $response->assertSee($orderItem->meal->title);
+        //            $response->assertSee(__('futtertrog.orderStatus.' . $orderItem->status));
+        //        }
     }
 }

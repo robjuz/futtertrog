@@ -9,18 +9,15 @@ use Eluceo\iCal\Domain\Entity\Event;
 use Eluceo\iCal\Domain\ValueObject\Date;
 use Eluceo\iCal\Domain\ValueObject\SingleDay;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
 class IcalController extends Controller
 {
     /**
      * Handle the incoming request.
-     *
-     * @param Request $request
-     * @param OrdersRepository $ordersRepository
-     * @return void
      */
-    public function __invoke(Request $request, OrdersRepository $ordersRepository)
+    public function __invoke(Request $request, OrdersRepository $ordersRepository): Response
     {
         $orderItems = $ordersRepository->usersAllOrders(
             $request->user(),
@@ -28,17 +25,15 @@ class IcalController extends Controller
             $request->input('to', null)
         );
 
-        $events = $orderItems->map(fn(OrderItem $orderItem) => (new Event())
+        $events = $orderItems->map(fn (OrderItem $orderItem) => (new Event)
             ->setOccurrence(new SingleDay(new Date($orderItem->meal->date)))
-            ->setSummary($orderItem->meal->title . ' (' . $orderItem->quantity . ')')
+            ->setSummary($orderItem->meal->title.' ('.$orderItem->quantity.')')
             ->setDescription($orderItem->meal->description ?? '')
         )->toArray();
 
-
         $calendar = new Calendar($events);
 
-        $calendarComponent = (new CalendarFactory())->createCalendar($calendar);
-
+        $calendarComponent = (new CalendarFactory)->createCalendar($calendar);
 
         return response($calendarComponent)->withHeaders(
             [

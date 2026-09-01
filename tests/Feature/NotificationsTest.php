@@ -19,11 +19,12 @@ use App\ScheduledJobs\OpenOrdersForNextWeekNotification;
 use App\UserSettings;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class NotificationsTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_sent_a_no_order_for_today_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -32,7 +33,7 @@ class NotificationsTest extends TestCase
         $john = User::factory()->create();
 
         // User with orders and notification disabled
-        $peterSettings = new UserSettings();
+        $peterSettings = new UserSettings;
         $peterSettings->noOrderNotification = true;
         /** @var User $peter */
         $peter = User::factory()->create(
@@ -44,7 +45,7 @@ class NotificationsTest extends TestCase
         $peter->order($meal);
 
         // User without orders and notification enabled
-        $tomSettings = new UserSettings();
+        $tomSettings = new UserSettings;
         $tomSettings->noOrderNotification = true;
         $tom = User::factory()->create(
             [
@@ -57,7 +58,7 @@ class NotificationsTest extends TestCase
         Notification::assertNotSentTo($john, NoOrder::class);
         Notification::assertNotSentTo($peter, NoOrder::class);
         Notification::assertSentTo($tom, NoOrder::class, function ($message, $channels, $notifialble) {
-            $toArray =  $message->toArray($notifialble);
+            $toArray = $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
 
             $day = __('calendar.today');
@@ -73,7 +74,7 @@ class NotificationsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_no_order_for_next_day_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -81,9 +82,8 @@ class NotificationsTest extends TestCase
         // User with no orders and notification disabled
         $john = User::factory()->create();
 
-
         // User with orders and notification disabled
-        $peterSettings = new UserSettings();
+        $peterSettings = new UserSettings;
         $peterSettings->noOrderForNextDayNotification = true;
         /** @var User $peter */
         $peter = User::factory()->create(
@@ -91,11 +91,11 @@ class NotificationsTest extends TestCase
                 'settings' => $peterSettings,
             ]
         );
-        $meal = Meal::factory()->create(['date' => today()->addWeekday(),]);
+        $meal = Meal::factory()->create(['date' => today()->addWeekday()]);
         $peter->order($meal);
 
         // User without orders and notification enabled
-        $tomSettings = new UserSettings();
+        $tomSettings = new UserSettings;
         $tomSettings->noOrderForNextDayNotification = true;
         $tom = User::factory()->create(
             [
@@ -103,16 +103,15 @@ class NotificationsTest extends TestCase
             ]
         );
 
-
-        (new NoOrderForNextDayNotification())();
+        (new NoOrderForNextDayNotification)();
 
         Notification::assertNotSentTo($john, NoOrder::class);
         Notification::assertNotSentTo($peter, NoOrder::class);
         Notification::assertSentTo($tom, NoOrder::class, function ($message, $channels, $notifialble) {
-            $toArray =  $message->toArray($notifialble);
+            $toArray = $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
 
-            $day = __('calendar.' . today()->addWeekdays()->englishDayOfWeek);
+            $day = __('calendar.'.today()->addWeekdays()->englishDayOfWeek);
 
             return $toArray['title'] === __('This is a friendly reminder.')
                 && $toArray['body'] === __('You have ordered no food for!', ['day' => $day])
@@ -123,22 +122,22 @@ class NotificationsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_no_order_for_next_week_notification_to_users_that_opted_in()
     {
         Notification::fake();
 
         $john = User::factory()->create();
 
-        $tomSettings = new UserSettings();
+        $tomSettings = new UserSettings;
         $tomSettings->noOrderForNextWeekNotification = true;
         $tom = User::factory()->create(['settings' => $tomSettings]);
 
-        (new NoOrderForNextWeekNotification())();
+        (new NoOrderForNextWeekNotification)();
 
         Notification::assertNotSentTo($john, NoOrder::class);
         Notification::assertSentTo($tom, NoOrder::class, function ($message, $channels, $notifialble) {
-            $toArray =  $message->toArray($notifialble);
+            $toArray = $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
 
             $day = __('Next week');
@@ -152,18 +151,16 @@ class NotificationsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_open_order_for_next_week_notification_to_all_admins()
     {
         Notification::fake();
 
         $admin = User::factory()->admin()->create();
 
-
         // (new OpenOrdersForNextWeekNotification())();
 
         Notification::assertNotSentTo($admin, OpenOrders::class);
-
 
         $nextMonday = today()->addWeek()->startOfWeek();
 
@@ -178,16 +175,13 @@ class NotificationsTest extends TestCase
                 'meal_id' => $meal->id,
             ]);
 
-
-
-        (new OpenOrdersForNextWeekNotification())();
+        (new OpenOrdersForNextWeekNotification)();
 
         Notification::assertSentTo($admin, OpenOrders::class);
 
-        Notification::assertSentTo($admin, OpenOrders::class, function ($message, $channels, $notifiable) use ($nextMonday) {
-            $toArray =  $message->toArray($notifiable);
+        Notification::assertSentTo($admin, OpenOrders::class, function ($message, $channels, $notifiable) {
+            $toArray = $message->toArray($notifiable);
             $toMail = $message->toMail($notifiable);
-
 
             return $toArray['title'] === __('This is a friendly reminder.')
                 && $toArray['body'] === __('There is an open order!', ['day' => __('Next week')])
@@ -198,7 +192,7 @@ class NotificationsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_new_order_possibility_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -207,7 +201,7 @@ class NotificationsTest extends TestCase
 
         $john = User::factory()->create();
 
-        $tomSettings = new UserSettings();
+        $tomSettings = new UserSettings;
         $tomSettings->newOrderPossibilityNotification = true;
         $tom = User::factory()->create(['settings' => $tomSettings]);
 
@@ -216,9 +210,8 @@ class NotificationsTest extends TestCase
         Notification::assertNotSentTo($john, NewOrderPossibilityNotification::class);
 
         Notification::assertSentTo($tom, NewOrderPossibilityNotification::class, function ($message, $channels, $notifialble) use ($today) {
-            $toArray =  $message->toArray($notifialble);
+            $toArray = $message->toArray($notifialble);
             $toMail = $message->toMail($notifialble);
-
 
             $day = $today->format(trans('futtertrog.date_format'));
 
@@ -230,8 +223,7 @@ class NotificationsTest extends TestCase
         });
     }
 
-
-    /** @test */
+    #[Test]
     public function it_notifies_an_admin_when_an_closed_order_was_reopened()
     {
         /** @var Meal $meal */
@@ -248,7 +240,6 @@ class NotificationsTest extends TestCase
             'status' => Order::STATUS_ORDERED,
         ]);
 
-
         Notification::fake();
         Mail::fake();
 
@@ -258,7 +249,7 @@ class NotificationsTest extends TestCase
         $this->login($user);
         $this->post(route('order_items.store'), [
             'user_id' => $user->id,
-            'meal_id' => $meal->id
+            'meal_id' => $meal->id,
         ]);
 
         // Admin should be notified
@@ -286,7 +277,7 @@ class NotificationsTest extends TestCase
         $this->post(route('order_items.store'), [
             'date' => $meal->date_from,
             'user_id' => $user2->id,
-            'meal_id' => $meal->id
+            'meal_id' => $meal->id,
         ]);
 
         // Admin should not be notified again
@@ -297,7 +288,7 @@ class NotificationsTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_notifies_an_admin_when_an_closed_holzke_order_was_reopened()
     {
         config(['services.holzke.enabled' => true]);
@@ -317,7 +308,6 @@ class NotificationsTest extends TestCase
             'status' => Order::STATUS_ORDERED,
         ]);
 
-
         Notification::fake();
         Mail::fake();
 
@@ -327,7 +317,7 @@ class NotificationsTest extends TestCase
         $this->login($user);
         $this->post(route('order_items.store'), [
             'user_id' => $user->id,
-            'meal_id' => $meal->id
+            'meal_id' => $meal->id,
         ]);
 
         // Admin should be notified
@@ -355,7 +345,7 @@ class NotificationsTest extends TestCase
         $this->post(route('order_items.store'), [
             'date' => $meal->date_from,
             'user_id' => $user2->id,
-            'meal_id' => $meal->id
+            'meal_id' => $meal->id,
         ]);
 
         // Admin should not be notified again
@@ -366,13 +356,12 @@ class NotificationsTest extends TestCase
         );
     }
 
-
-    /** @test */
+    #[Test]
     public function it_does_not_sent_a_no_order_for_today_notification_to_users_that_opted_in_but_turned_off_the_notification()
     {
         Notification::fake();
 
-        $settings = new UserSettings();
+        $settings = new UserSettings;
         $settings->noOrderNotification = true;
 
         /** @var User $tom */
@@ -390,12 +379,12 @@ class NotificationsTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_sent_a_no_order_for_next_day_notification_to_users_that_opted_in_but_turned_off_the_notification()
     {
         Notification::fake();
 
-        $settings = new UserSettings();
+        $settings = new UserSettings;
         $settings->noOrderForNextDayNotification = true;
 
         /** @var User $tom */
@@ -407,18 +396,18 @@ class NotificationsTest extends TestCase
 
         $tom->disabledNotifications()->create(['date' => today()->addDay()]);
 
-        (new NoOrderForNextDayNotification())();
+        (new NoOrderForNextDayNotification)();
 
         Notification::assertNotSentTo($tom, NoOrder::class);
 
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_sent_a_no_order_for_next_week_notification_to_users_that_opted_in_but_turned_off_the_notification()
     {
         Notification::fake();
 
-        $settings = new UserSettings();
+        $settings = new UserSettings;
         $settings->noOrderForNextWeekNotification = true;
 
         /** @var User $tom */
@@ -430,7 +419,7 @@ class NotificationsTest extends TestCase
 
         $tom->disabledNotifications()->create(['date' => today()->addWeek()]);
 
-        (new NoOrderForNextWeekNotification())();
+        (new NoOrderForNextWeekNotification)();
 
         Notification::assertNotSentTo($tom, NoOrder::class);
 

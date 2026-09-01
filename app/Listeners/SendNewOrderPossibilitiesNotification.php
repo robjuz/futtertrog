@@ -6,6 +6,7 @@ use App\Events\NewOrderPossibilities;
 use App\Models\User;
 use App\Notifications\NewOrderPossibilities as NewOrderPossibilitiesNotification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Enumerable;
 use Illuminate\Support\Facades\Notification;
 
 class SendNewOrderPossibilitiesNotification
@@ -13,11 +14,13 @@ class SendNewOrderPossibilitiesNotification
     /**
      * Handle the event.
      *
-     * @param NewOrderPossibilities $event
      * @return void
      */
     public function handle(NewOrderPossibilities $event)
     {
+        /** @var Enumerable<int, \Illuminate\Support\Carbon> $dates */
+        $dates = collect($event->dates);
+
         $users = User::query()
             ->where(function (Builder $query) {
                 $query->where('settings->newOrderPossibilityNotification', '1')
@@ -25,6 +28,6 @@ class SendNewOrderPossibilitiesNotification
             })
             ->get();
 
-        Notification::send($users, new NewOrderPossibilitiesNotification($event->dates));
+        Notification::send($users, new NewOrderPossibilitiesNotification($dates));
     }
 }

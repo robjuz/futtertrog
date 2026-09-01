@@ -27,11 +27,10 @@ abstract class AbstractMealProvider implements \JsonSerializable
         $configKey = Str::snake($name);
 
         if (config("services.{$configKey}")) {
-            if (!config("services.{$configKey}.enabled")) {
+            if (! config("services.{$configKey}.enabled")) {
                 return false;
             }
         }
-
 
         $app->singleton(static::class, static::class);
 
@@ -93,10 +92,13 @@ abstract class AbstractMealProvider implements \JsonSerializable
         throw new Exception('Not implemented');
     }
 
+    public function updateOrder(Order $order)
+    {
+        throw new Exception('Not implemented');
+    }
+
     /**
      * Per default create one order pro day
-     *
-     * @return Order
      */
     public function getOrder($date = null): Order
     {
@@ -111,9 +113,8 @@ abstract class AbstractMealProvider implements \JsonSerializable
                     ->whereDate('date', '<=', $date->endOfWeek());
             });
         } else {
-            $query = $query->whereHas('meals', fn(Builder $query) => $query->whereDate('date', $date));
+            $query = $query->whereHas('meals', fn (Builder $query) => $query->whereDate('date', $date));
         }
-
 
         return $query->firstOrCreate(['provider' => $this->getKey()], ['status' => Order::STATUS_OPEN]);
     }
@@ -128,7 +129,7 @@ abstract class AbstractMealProvider implements \JsonSerializable
     public function jsonSerialize(): mixed
     {
         return [
-            'name' => $this->__toString()
+            'name' => $this->__toString(),
         ];
     }
 

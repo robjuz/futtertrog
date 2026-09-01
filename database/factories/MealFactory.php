@@ -2,20 +2,23 @@
 
 namespace Database\Factories;
 
+use App\Models\Meal;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
+/**
+ * @extends Factory<Meal>
+ */
 class MealFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'price' => $this->faker->randomNumber('3'),
+            'price' => $this->faker->randomNumber(3),
             'title' => $this->faker->sentence,
             'description' => $this->faker->sentences(1, true),
             'date' => today()->toDateTimeString(),
@@ -23,16 +26,16 @@ class MealFactory extends Factory
         ];
     }
 
-    public function inFuture()
+    public function inFuture(): static
     {
         return $this->state(function (array $attributes) {
             return [
-                'date' => today()->addDays(rand(1,10)),
+                'date' => today()->addDays(rand(1, 10)),
             ];
         });
     }
 
-    public function inPast()
+    public function inPast(): static
     {
         return $this->state(function (array $attributes) {
             return [

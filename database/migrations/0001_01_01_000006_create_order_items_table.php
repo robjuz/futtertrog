@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Meal;
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,9 +18,9 @@ class CreateOrderItemsTable extends Migration
     {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Order::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(\App\Models\User::class);
-            $table->foreignIdFor(\App\Models\Meal::class);
+            $table->foreignIdFor(Order::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Meal::class);
             $table->tinyInteger('quantity')->default(1);
             $table->timestamps();
         });

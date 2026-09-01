@@ -2,13 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MealImportTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function only_admin_can_import_meals_from_providers()
     {
         $this->withExceptionHandling();

@@ -3,12 +3,12 @@
 namespace App\View\Components;
 
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\View\Component;
 
 class DisableNoOrderNotification extends Component
 {
-
     public Carbon $date;
 
     public User $user;
@@ -27,7 +27,7 @@ class DisableNoOrderNotification extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View|\Closure|string
      */
     public function render()
     {

@@ -7,11 +7,12 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function guest_can_obtain_a_password_reset_link()
     {
         Notification::fake();
@@ -23,7 +24,7 @@ class PasswordResetTest extends TestCase
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_reset_his_password()
     {
         $user = User::factory()->create(['email' => 'john@example.com']);
@@ -34,7 +35,7 @@ class PasswordResetTest extends TestCase
             'token' => $broker->createToken($user),
             'email' => 'john@example.com',
             'password' => 'new_password',
-            'password_confirmation' => 'new_password'
+            'password_confirmation' => 'new_password',
         ]);
 
         $this->assertTrue(Hash::check('new_password', $user->fresh()->password));

@@ -7,18 +7,19 @@ use App\Models\User;
 use App\UserSettings;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MealTest extends TestCase
 {
-    public function testOrderItems()
+    public function test_order_items()
     {
         $meal = Meal::factory()->create();
 
         $this->assertInstanceOf(Collection::class, $meal->orderItems);
     }
 
-    /** @test */
+    #[Test]
     public function variant_name_consist_of_parent_name_and_variant_name()
     {
         /** @var Meal $meal */
@@ -30,40 +31,40 @@ class MealTest extends TestCase
         $this->assertTrue(Str::containsAll($variant->title, [$meal->title, $variant->title]));
     }
 
-    /** @test */
+    #[Test]
     public function hated_takes_precedence_before_preferred()
     {
 
-        $settings = new UserSettings();
+        $settings = new UserSettings;
         $settings->mealPreferences = 'preferred';
         $settings->mealAversion = 'hated';
 
         /** @var User $user */
         $user = User::factory()->create([
-            'settings' => $settings
+            'settings' => $settings,
         ]);
 
         $this->actingAs($user);
 
         /** @var Meal $preferredMeal */
         $preferredMeal = Meal::factory()->create([
-            'title' => 'preferred'
+            'title' => 'preferred',
         ]);
 
         $this->assertTrue($preferredMeal->is_preferred);
         $this->assertFalse($preferredMeal->is_hated);
 
         /** @var Meal $hatedMeal */
-        $hatedMeal =  Meal::factory()->create([
-            'title' => 'hated'
+        $hatedMeal = Meal::factory()->create([
+            'title' => 'hated',
         ]);
 
         $this->assertFalse($hatedMeal->is_preferred);
         $this->assertTrue($hatedMeal->is_hated);
 
         /** @var Meal $meal */
-        $meal =  Meal::factory()->create([
-            'title' => 'hated and preferred'
+        $meal = Meal::factory()->create([
+            'title' => 'hated and preferred',
         ]);
 
         $this->assertTrue($meal->is_hated);
@@ -71,7 +72,7 @@ class MealTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function it_knows_it_is_ordered()
     {
 
@@ -86,7 +87,7 @@ class MealTest extends TestCase
         $this->assertTrue($meal->isOrdered($user));
     }
 
-    /** @test */
+    #[Test]
     public function it_knows_its_variant_is_ordered()
     {
 

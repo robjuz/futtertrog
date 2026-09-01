@@ -8,7 +8,7 @@ return [
         'background_color' => '#f8fafc',
         'theme_color' => '#0177da',
         'display' => 'standalone',
-        'orientation'=> 'any',
+        'orientation' => 'any',
         'status_bar' => 'black',
         'icons' => [
             '72x72' => [

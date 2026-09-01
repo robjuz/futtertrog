@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class DisabledNotificationController extends Controller
 {
-
-    public function store(Request $request)
+    public function store(Request $request): Response|RedirectResponse
     {
         $validated = $request->validate(
             [
-                'date' => 'date'
+                'date' => 'date',
             ]
         );
         /** @var User $user */
@@ -28,11 +28,11 @@ class DisabledNotificationController extends Controller
         return back()->with('success', __('Success'));
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request): Response|RedirectResponse
     {
         $validated = $request->validate(
             [
-                'date' => 'date'
+                'date' => 'date',
             ]
         );
         /** @var User $user */

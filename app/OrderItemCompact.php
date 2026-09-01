@@ -3,24 +3,26 @@
 namespace App;
 
 use App\Models\Meal;
+use App\Models\User;
 
 class OrderItemCompact
 {
     /**
-     * @var \App\Models\Meal
+     * @var Meal
      */
     public $meal;
 
-    /**
-     * @var iterable|\App\Models\User[]
-     */
-    public $users;
+    /** @var iterable<User> */
+    public iterable $users;
 
     /**
      * @var int
      */
     public $quantity;
 
+    /**
+     * @param  iterable<User>  $users
+     */
     public function __construct(Meal $meal, iterable $users, int $quantity)
     {
         $this->meal = $meal;

@@ -14,11 +14,13 @@ use Cknow\Money\Money;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
 
 class MealTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function only_admin_can_create_a_meal()
     {
 
@@ -51,7 +53,7 @@ class MealTest extends TestCase
         $this->assertDatabaseHas('meals', $meal);
     }
 
-    /** @test */
+    #[Test]
     public function only_admin_can_update_a_meal()
     {
         $meal = Meal::factory()->create();
@@ -59,9 +61,8 @@ class MealTest extends TestCase
         $attributes = [
             'title' => 'Changed title',
             'description' => 'Changed description',
-            'price' => 100
+            'price' => 100,
         ];
-
 
         $this->login()->withExceptionHandling();
 
@@ -88,23 +89,22 @@ class MealTest extends TestCase
             ->assertJsonFragment([
                 'title' => 'Changed title',
                 'description' => 'Changed description',
-                'price' => Money::parse(100)
+                'price' => Money::parse(100),
             ]);
 
         $this->assertDatabaseHas('meals', [
             'title' => 'Changed title',
             'description' => 'Changed description',
-            'price' => Money::parse(100)->getAmount()
+            'price' => Money::parse(100)->getAmount(),
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_delete_a_meal()
     {
         $meal = Meal::factory()->create();
 
         $this->loginAsAdmin();
-
 
         $this->delete(route('meals.destroy', $meal))
             ->assertRedirect(route('meals.create'));
@@ -116,7 +116,7 @@ class MealTest extends TestCase
         $this->assertDatabaseMissing('meals', $meal->only('title'));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_create_a_meal_and_stay_on_the_create_page()
     {
         $meal = Meal::factory()->raw();
@@ -127,7 +127,7 @@ class MealTest extends TestCase
             ->assertRedirect(route('meals.create'));
     }
 
-    /** @test */
+    #[Test]
     public function guests_are_not_allowed_to_create_meals()
     {
         $this->withExceptionHandling();
@@ -138,7 +138,7 @@ class MealTest extends TestCase
         $this->postJson(route('meals.store'))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /** @test */
+    #[Test]
     public function guests_are_not_allowed_to_see_meals()
     {
         $this->withExceptionHandling();
@@ -147,7 +147,7 @@ class MealTest extends TestCase
         $this->getJson(route('meals.index'))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /** @test */
+    #[Test]
     public function guests_are_not_allowed_to_edit_meals()
     {
         $meal = Meal::factory()->create();
@@ -160,7 +160,7 @@ class MealTest extends TestCase
         $this->putJson(route('meals.update', $meal))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /** @test */
+    #[Test]
     public function guests_and_users_are_not_allowed_to_delete_meals()
     {
         $meal = Meal::factory()->create();
@@ -170,13 +170,12 @@ class MealTest extends TestCase
         $this->delete(route('meals.destroy', $meal))->assertRedirect(route('login'));
         $this->deleteJson(route('meals.destroy', $meal))->assertStatus(Response::HTTP_UNAUTHORIZED);
 
-
         $this->login()
             ->delete(route('meals.destroy', $meal))
             ->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guests_and_users_are_not_allowed_to_see_meal_details()
     {
         $meal = Meal::factory()->create();
@@ -191,7 +190,7 @@ class MealTest extends TestCase
             ->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function meals_can_be_filtered_down_by_date()
     {
         /** @var User $user */
@@ -217,7 +216,7 @@ class MealTest extends TestCase
             ->assertDontSee($meal2->title);
     }
 
-    /** @test */
+    #[Test]
     public function is_shows_meals_for_the_current_day()
     {
         /** @var Meal $meal1 */
@@ -259,7 +258,7 @@ class MealTest extends TestCase
             ->assertDontSee($meal2->title);
     }
 
-    /** @test */
+    #[Test]
     public function meal_variants_are_listed_as_relations_in_json_response()
     {
         /** @var Meal $meal */
@@ -278,19 +277,18 @@ class MealTest extends TestCase
                     'title' => $meal->title,
                     'variants' => [
                         [
-                            'title' => $variant->title
-                        ]
-                    ]
-                ]
+                            'title' => $variant->title,
+                        ],
+                    ],
+                ],
             ])
             ->assertJsonCount(1);
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_meal_details()
     {
         $meal = Meal::factory()->create();
-
 
         $this->loginAsAdmin();
 
@@ -301,37 +299,36 @@ class MealTest extends TestCase
             ->assertJsonFragment($meal->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_an_exception_when_trying_to_delete_on_ordered_meal()
     {
-        //$this->withExceptionHandling();
+        // $this->withExceptionHandling();
 
         $meal = Meal::factory()->create();
 
         $meal->orderItems()->save(OrderItem::factory()->make());
 
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        $this->expectException(HttpException::class);
         $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_send_a_notifications_when_a_new_meal_was_created_when_user_opted_in()
     {
-        $johnSettings = new UserSettings();
+        $johnSettings = new UserSettings;
         $johnSettings->newOrderPossibilityNotification = true;
 
         /** @var User $john */
         $john = User::factory()->create([
-            'settings' => $johnSettings
+            'settings' => $johnSettings,
         ]);
 
-
-        $saraSettings = new UserSettings();
+        $saraSettings = new UserSettings;
         $saraSettings->newOrderPossibilityNotification = false;
 
         /** @var User $sara */
         $sara = User::factory()->create([
-            'settings' => $saraSettings
+            'settings' => $saraSettings,
         ]);
 
         Notification::fake();
@@ -344,7 +341,7 @@ class MealTest extends TestCase
         Notification::assertNotSentTo($sara, \App\Notifications\NewOrderPossibility::class);
     }
 
-    /** @test */
+    #[Test]
     public function meals_can_be_filtered_by_provider()
     {
         config(['services.call_a_pizza.enabled' => true]);
@@ -391,27 +388,25 @@ class MealTest extends TestCase
      */
     public function it_redirects_to_the_next_day_without_orders_when_user_opted_in()
     {
-        $johnSettings = new UserSettings();
+        $johnSettings = new UserSettings;
         $johnSettings->redirectToNextDay = true;
 
         /** @var User $john */
         $john = User::factory()->create(
             [
-                'settings' => $johnSettings
+                'settings' => $johnSettings,
             ]
         );
 
-
-        $saraSettings = new UserSettings();
+        $saraSettings = new UserSettings;
         $saraSettings->redirectToNextDay = false;
 
         /** @var User $sara */
         $sara = User::factory()->create(
             [
-                'settings' => $saraSettings
+                'settings' => $saraSettings,
             ]
         );
-
 
         /** @var Meal $meal1 */
         $meal1 = Meal::factory()->create(
@@ -424,7 +419,7 @@ class MealTest extends TestCase
 
         Meal::factory()->create(
             [
-                'date' => $dateToRedirect
+                'date' => $dateToRedirect,
             ]
         );
 

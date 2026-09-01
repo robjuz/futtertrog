@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use App\IdeHelperDeposit;
+use Database\Factories\DepositFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Deposit.
@@ -13,10 +15,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property int $value
  * @property string|null $comment
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string $status
- * @property-read \App\Models\User $user
+ * @property-read User $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit query()
@@ -27,18 +30,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deposit whereValue($value)
+ *
  * @mixin \Eloquent
+ *
  * @noinspection PhpFullyQualifiedNameUsageInspection
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
- * @mixin IdeHelperDeposit
  */
 class Deposit extends Model
 {
+    /** @use HasFactory<DepositFactory> */
     use HasFactory;
 
     protected $guarded = [];
 
     const STATUS_PROCESSING = 'processing';
+
     const STATUS_OK = 'ok';
 
     /**
@@ -49,10 +55,11 @@ class Deposit extends Model
      */
     public function setValueAttribute($value)
     {
-        $this->attributes['value'] = is_float($value) ? intval(100 * $value) : $value;
+        $this->attributes['value'] = $value;
     }
 
-    public function user()
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

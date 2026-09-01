@@ -7,11 +7,12 @@ use App\Models\Meal;
 use App\Models\Order;
 use App\Models\User;
 use Cknow\Money\Money;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class SystemTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_knows_it_current_balance()
     {
         /** @var User $user */
@@ -19,7 +20,7 @@ class SystemTest extends TestCase
 
         $deposite = Deposit::create([
             'user_id' => $user->id,
-            'value' => 10
+            'value' => 10,
         ]);
 
         $this->assertEquals(Money::parse(10), app('system_balance'));
@@ -35,7 +36,7 @@ class SystemTest extends TestCase
         $order = $orderItem->order;
 
         $order->update([
-            'payed_at' => now()
+            'payed_at' => now(),
         ]);
 
         $this->assertEquals(Money::parse(5), app('system_balance'));

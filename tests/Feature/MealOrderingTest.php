@@ -9,11 +9,12 @@ use App\Models\OrderItem;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MealOrderingTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function user_can_order_a_meal_for_himself()
     {
         /** @var Meal $meal */
@@ -21,17 +22,17 @@ class MealOrderingTest extends TestCase
 
         $this->login();
         $this->post(route('order_items.store'), [
-            'meal_id' => $meal->id
+            'meal_id' => $meal->id,
         ]);
 
         $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
 
         $this->postJson(route('order_items.store'), [
-            'meal_id' => $meal->id
+            'meal_id' => $meal->id,
         ])->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_order_a_meal_for_other_users()
     {
         /** @var Meal $meal */
@@ -43,14 +44,14 @@ class MealOrderingTest extends TestCase
         $this->login()
             ->post(route('order_items.store'), [
                 'user_id' => $user->id,
-                'meal_id' => $meal->id
+                'meal_id' => $meal->id,
             ]);
 
         $this->assertFalse($user->orderItems()->where('meal_id', $meal->id)->exists());
         $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_order_a_meal_located_in_the_past()
     {
         /** @var Meal $meal */
@@ -59,12 +60,12 @@ class MealOrderingTest extends TestCase
         $this->login()
             ->withExceptionHandling()
             ->post(route('order_items.store'), [
-                'meal_id' => $meal->id
+                'meal_id' => $meal->id,
             ])
             ->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_order_a_meal_for_other_users()
     {
         /** @var Meal $meal */
@@ -80,14 +81,14 @@ class MealOrderingTest extends TestCase
         $this->loginAsAdmin()
             ->post(route('order_items.store'), [
                 'user_id' => $user->id,
-                'meal_id' => $meal->id
+                'meal_id' => $meal->id,
             ]);
 
         $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
         $this->assertTrue($user->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
-    /** @test */
+    #[Test]
     public function guests_cannot_order_meals()
     {
         $this->withExceptionHandling();
@@ -96,7 +97,7 @@ class MealOrderingTest extends TestCase
         $this->postJson(route('order_items.store'))->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function it_dispatches_an_event_when_an_order_was_reopened()
     {
         /** @var Meal $meal1 */
@@ -105,7 +106,7 @@ class MealOrderingTest extends TestCase
         /** @var Meal $meal2 */
         $meal2 = Meal::factory([
             'date' => today()->addDay(),
-            'provider' => $meal1->provider
+            'provider' => $meal1->provider,
         ])->create();
 
         /** @var User $user */
@@ -125,12 +126,13 @@ class MealOrderingTest extends TestCase
 
         $this->post(route('order_items.store'), [
             'user_id' => $user->id,
-            'meal_id' => $meal2->id
+            'meal_id' => $meal2->id,
         ]);
 
         // En event is dispatched
         Event::assertDispatched(OrderUpdated::class, function ($event) use ($order, $user, $meal2) {
             $orderItem = $order->orderItems()->whereMealId($meal2->id)->first();
+
             return $event->order->is($order)
                 && $event->user->is($user)
                 && $event->orderItem->is($orderItem);
@@ -146,7 +148,7 @@ class MealOrderingTest extends TestCase
         /** @var Meal $meal2 */
         $meal2 = Meal::factory([
             'date' => today()->addDay(),
-            'provider' => $meal1->provider
+            'provider' => $meal1->provider,
         ])->create();
 
         /** @var User $user */
@@ -173,7 +175,7 @@ class MealOrderingTest extends TestCase
         $this->assertEquals(Order::STATUS_OPEN, $order->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_provides_a_list_of_order_items()
     {
         $user = User::factory()->create();
@@ -187,7 +189,7 @@ class MealOrderingTest extends TestCase
             ->assertJsonFragment($orderItem->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_all_order_items()
     {
         $orderItem = OrderItem::factory()->create();
@@ -197,7 +199,7 @@ class MealOrderingTest extends TestCase
             ->assertJsonFragment($orderItem->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_order_items_from_other_users()
     {
         $user = User::factory()->create();
@@ -214,7 +216,7 @@ class MealOrderingTest extends TestCase
             ->assertJsonMissingExact(['user_id' => $orderItem2->user_id]);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_to_delete_an_order_item()
     {
         $user = User::factory()->create();
@@ -237,7 +239,7 @@ class MealOrderingTest extends TestCase
         $this->assertDatabaseMissing('order_items', $orderItem->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_disallows_to_delete_an_order_item_in_the_past()
     {
         $user = User::factory()->create();
@@ -263,7 +265,7 @@ class MealOrderingTest extends TestCase
         $this->assertDatabaseHas('order_items', $orderItem->only(['order_id', 'user_id', 'meal_id', 'quantity']));
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_a_delete_order_button_for_a_ordered_meal()
     {
         /** @var Meal $meal */
@@ -283,8 +285,7 @@ class MealOrderingTest extends TestCase
             ->assertSee(__('Delete order'));
     }
 
-
-    /** @test */
+    #[Test]
     public function it_shows_a_delete_order_button_for_a_ordered_meal_variant()
     {
         /** @var Meal $meal */
@@ -294,7 +295,6 @@ class MealOrderingTest extends TestCase
         $variant = $meal->variants()->save(
             Meal::factory()->make(['date' => $meal->date])
         );
-
 
         /** @var User $user */
         $user = User::factory()->create();
@@ -310,7 +310,7 @@ class MealOrderingTest extends TestCase
             ->assertSee(__('Delete order'));
     }
 
-    /** @test */
+    #[Test]
     public function it_only_allows_to_order_a_meal_variant_in_meal_with_variants()
     {
         /** @var Meal $meal */
@@ -325,7 +325,7 @@ class MealOrderingTest extends TestCase
 
         $this->post(route('order_items.store'), [
             'date' => $variant->date->toDateString(),
-            'meal_id' => $variant->id
+            'meal_id' => $variant->id,
         ]);
 
         $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $variant->id)->exists());
@@ -333,14 +333,14 @@ class MealOrderingTest extends TestCase
         $this
             ->withExceptionHandling()
             ->post(route('order_items.store'), [
-                'meal_id' => $meal->id
+                'meal_id' => $meal->id,
             ])
             ->assertSessionHasErrors('meal_id');
 
         $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_only_meal_variants_in_order_item_create_form()
     {
         /** @var Meal $meal */
@@ -349,8 +349,8 @@ class MealOrderingTest extends TestCase
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
             Meal::factory()->make([
-                    'date' => $meal->date,
-                ]
+                'date' => $meal->date,
+            ]
             )
         );
 
@@ -360,11 +360,11 @@ class MealOrderingTest extends TestCase
             'date' => $meal->date->toDateString(),
         ]))
             ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
-                return $meals->contains($variant) && !$meals->contains($meal);
+                return $meals->contains($variant) && ! $meals->contains($meal);
             });
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_only_meal_variants_in_order_item_edit_form()
     {
         /** @var User $user */
@@ -376,8 +376,8 @@ class MealOrderingTest extends TestCase
         /** @var Meal $variant */
         $variant = $meal->variants()->save(
             Meal::factory()->make([
-                    'date' => $meal->date,
-                ]
+                'date' => $meal->date,
+            ]
             )
         );
 
@@ -386,7 +386,7 @@ class MealOrderingTest extends TestCase
 
         $this->get(route('order_items.edit', $orderItem))
             ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
-                return $meals->contains($variant) && !$meals->contains($meal);
+                return $meals->contains($variant) && ! $meals->contains($meal);
             });
     }
 }

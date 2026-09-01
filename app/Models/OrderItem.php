@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
-use App\IdeHelperOrderItem;
+use Carbon\Carbon;
+use Cknow\Money\Money;
+use Database\Factories\OrderItemFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\OrderItem.
  *
  * @OA\Schema (
  *      required={"title", "description", "price"},
+ *
  *      @OA\Property ( property="id", ref="#/components/schemas/id" ),
  *      @OA\Property ( property="order_id", ref="#/components/schemas/id" ),
  *      @OA\Property( property="meal", ref="#/components/schemas/Meal"),
@@ -20,16 +24,23 @@ use Illuminate\Database\Eloquent\Model;
  *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
  *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
  *  ),
- * 
+ *
  *  @OA\Schema(
  *      schema="OrderItems",
  *      type="array",
+ *
  *      @OA\Items( type="object", ref="#/components/schemas/OrderItem" )
  *  ),
- * @mixin IdeHelperOrderItem
+ *
+ * @property-read mixed $subtotal
+ * @property-read mixed $status
+ * @property-read mixed $date
+ *
+ * @mixin \Eloquent
  */
 class OrderItem extends Model
 {
+    /** @use HasFactory<OrderItemFactory> */
     use HasFactory;
 
     protected $guarded = [];
@@ -41,51 +52,75 @@ class OrderItem extends Model
         'user_id' => 'integer',
         'meal_id' => 'integer',
         'quantity' => 'integer',
-        'date' => 'datetime'
+        'date' => 'datetime',
     ];
 
-    public function meal()
+    /**
+     * @return BelongsTo<Meal, $this>
+     */
+    public function meal(): BelongsTo
     {
         return $this->belongsTo(Meal::class);
     }
 
-    public function user()
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function order()
+    /**
+     * @return BelongsTo<Order, $this>
+     */
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    public function getSubtotalAttribute()
+    public function getSubtotalAttribute(): Money
     {
         return $this->meal->price->multiply($this->quantity);
     }
 
-    public function getStatusAttribute()
+    public function getStatusAttribute(): string
     {
         return $this->order->status;
     }
 
-    public function getDateAttribute()
+    public function getDateAttribute(): Carbon
     {
         return $this->meal->date;
     }
 
+    /**
+     * @phpstan-param Builder<OrderItem> $query
+     *
+     * @return Builder<OrderItem>
+     */
     public function scopeToday(Builder $query): Builder
     {
         return $query->whereRelation('meal', 'date', today());
     }
 
-    public function scopeDate(Builder $query, $date): Builder
+    /**
+     * @phpstan-param Builder<OrderItem> $query
+     *
+     * @return Builder<OrderItem>
+     */
+    public function scopeDate(Builder $query, Carbon $date): Builder
     {
         return $query->whereRelation('meal', 'date', $date);
     }
 
-    public function scopePositive(Builder $query)
+    /**
+     * @phpstan-param Builder<OrderItem> $query
+     *
+     * @return Builder<OrderItem>
+     */
+    public function scopePositive(Builder $query): Builder
     {
-        return $query->where('quantity','>', 0);
+        return $query->where('quantity', '>', 0);
     }
 }

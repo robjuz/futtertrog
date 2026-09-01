@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Middleware\CastFormValuesToFloat;
+use App\Http\Middleware\UserLocale;
+use App\ScheduledJobs\NoOrderForNextDayNotification;
+use App\ScheduledJobs\NoOrderForTodayNotification;
+use App\ScheduledJobs\OpenOrdersForNextWeekNotification;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-
-use App\ScheduledJobs\NoOrderForNextDayNotification;
-use App\ScheduledJobs\NoOrderForTodayNotification;
-use App\ScheduledJobs\OpenOrdersForNextWeekNotification;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,11 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'cast.float' => \App\Http\Middleware\CastFormValuesToFloat::class,
+            'cast.float' => CastFormValuesToFloat::class,
         ]);
 
         $middleware->web(append: [
-            \App\Http\Middleware\UserLocale::class,
+            UserLocale::class,
         ]);
 
     })
@@ -38,7 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $schedule->call(new NoOrderForNextDayNotification)->weekdays()->at('10:00');
 
-        $schedule->call(new OpenOrdersForNextWeekNotification())
+        $schedule->call(new OpenOrdersForNextWeekNotification)
             ->days([4, 5])
             ->at('10:00');
     })

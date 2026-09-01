@@ -5,28 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\User;
 use App\Repositories\OrdersRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
-    public function index(Request $request, OrdersRepository $ordersRepository)
+    public function index(Request $request, OrdersRepository $ordersRepository): JsonResponse|View
     {
         Gate::authorize('list', Order::class);
 
-        $from = $request->has('from') && !empty($request->from) ? $request->date('from') : null;
-        $to = $request->has('to') && !empty($request->to) ? $request->date('to') : null;
+        $from = $request->has('from') && ! empty($request->from) ? $request->date('from') : null;
+        $to = $request->has('to') && ! empty($request->to) ? $request->date('to') : null;
 
         $orders = Order::query()
             ->withMin('meals', 'date')
@@ -34,29 +35,29 @@ class OrderController extends Controller
             ->with('orderItems.meal')
             ->whereHas(
                 'orderItems.meal',
-                fn(Builder $query) => $query->when(
+                fn (Builder $query) => $query->when(
                     $from,
-                    fn(Builder $query) => $query->whereDate('date', '>=', $from->toDateString())
+                    fn (Builder $query) => $query->whereDate('date', '>=', $from->toDateString())
                 )->when(
                     $to,
-                    fn(Builder $query) => $query->whereDate('date', '<=', $to->toDateString())
+                    fn (Builder $query) => $query->whereDate('date', '<=', $to->toDateString())
                 )
             )
             ->when(
                 $request->input('user_id'),
-                fn(Builder $query) => $query->whereRelation('orderItems', 'user_id', $request->input('user_id'))
+                fn (Builder $query) => $query->whereRelation('orderItems', 'user_id', $request->input('user_id'))
             )
             ->when(
                 $request->input('provider'),
-                fn(Builder $query) => $query->whereRelation('orderItems', 'provider', $request->input('provider'))
+                fn (Builder $query) => $query->whereRelation('orderItems', 'provider', $request->input('provider'))
             )
             ->when(
                 $request->input('status'),
-                fn(Builder $query) => $query->whereRelation('orderItems', 'status', $request->input('status'))
+                fn (Builder $query) => $query->whereRelation('orderItems', 'status', $request->input('status'))
             )
             ->when(
                 $request->filled('payed'),
-                fn(Builder $query) => $request->input('payed')
+                fn (Builder $query) => $request->input('payed')
                     ? $query->whereNotNull('payed_at')
                     : $query->whereNull('payed_at')
             )
@@ -70,14 +71,14 @@ class OrderController extends Controller
         return view('order.index', compact('orders', 'from', 'to'));
     }
 
-    public function edit(Order $order)
+    public function edit(Order $order): View
     {
         $order
             ->loadMin('meals', 'date')
             ->loadMax('meals', 'date')
             ->load([
                 'orderItems.meal',
-                'orderItems.user' => fn($q) => $q->withTrashed()
+                'orderItems.user' => fn ($q) => $q->withTrashed(),
             ]);
 
         $users = User::all();
@@ -88,13 +89,9 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Order $order
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, Order $order): JsonResponse|RedirectResponse|Response
     {
         Gate::authorize('update', $order);
 
@@ -118,14 +115,10 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
-     * @param \App\Models\Order $order
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|Response
-     *
      * @throws \Exception
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
-    public function destroy(Request $request, Order $order)
+    public function destroy(Request $request, Order $order): Response|RedirectResponse
     {
         Gate::authorize('delete', $order);
 

@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Models\User;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
 use Carbon\CarbonPeriod;
@@ -11,11 +12,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
-
 class WeekNavigation extends Component
 {
     public Carbon $requestedDate;
+
     public MealsRepository $meals;
+
+    public OrdersRepository $orders;
+
+    public User $user;
 
     /**
      * Create a new component instance.
@@ -34,14 +39,14 @@ class WeekNavigation extends Component
         $this->user = Auth::user();
     }
 
-    public function notificationDisabled($date)
+    public function notificationDisabled(Carbon $date): bool
     {
         return $this->user->disabledNotifications()
             ->where('date', $date)
             ->exists();
     }
 
-    public function listItemClasses($date)
+    public function listItemClasses(Carbon $date): string
     {
         $classes = [];
 
@@ -59,15 +64,13 @@ class WeekNavigation extends Component
             $classes[] = 'pot';
         }
 
-        return join(' ', $classes);
+        return implode(' ', $classes);
     }
 
     /**
      * Get the view / contents that represent the component.
-     *
-     * @return View|string
      */
-    public function render()
+    public function render(): View|string
     {
         $previousWeek = $this->requestedDate->clone()->subWeek()->startOfWeek();
 

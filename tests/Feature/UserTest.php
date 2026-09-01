@@ -6,12 +6,12 @@ use App\Models\Deposit;
 use App\Models\OrderItem;
 use App\Models\User;
 use Illuminate\Http\Response;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
-    /** @test */
+    #[Test]
     public function guests_are_not_allowed_to_manage_system_users()
     {
         $this->withExceptionHandling();
@@ -38,7 +38,7 @@ class UserTest extends TestCase
         $this->deleteJson(route('users.destroy', 1))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /** @test */
+    #[Test]
     public function users_are_not_allowed_to_manage_system_users()
     {
         $this->withExceptionHandling();
@@ -56,7 +56,7 @@ class UserTest extends TestCase
         $this->delete(route('users.destroy', $user))->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_a_list_of_system_users()
     {
         $user = User::factory()->create();
@@ -71,7 +71,7 @@ class UserTest extends TestCase
         $jsonResponse->assertJsonFragment($user->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_manage_users()
     {
         $data = User::factory()->raw([
@@ -93,11 +93,11 @@ class UserTest extends TestCase
         $this->get(route('users.create'))->assertViewIs('user.create');
 
         $this->post(route('users.store'), $data)->assertRedirect();
-        $this->postJson(route('users.store'), $data2)->assertJsonFragment([ 'name' => 'Example2',]);
+        $this->postJson(route('users.store'), $data2)->assertJsonFragment(['name' => 'Example2']);
 
         $this->assertDatabaseHas('users', [
             'name' => $data['name'],
-            'is_admin' => true
+            'is_admin' => true,
         ]);
 
         $user = User::factory()->create(['is_admin' => true]);
@@ -105,14 +105,14 @@ class UserTest extends TestCase
         $this->get(route('users.edit', $user))->assertSee($user->name);
 
         $this->get(route('users.show', $user))->assertSee($user->name);
-        $this->getJson(route('users.show', $user))->assertJsonFragment([ 'name' => $user->name,]);
+        $this->getJson(route('users.show', $user))->assertJsonFragment(['name' => $user->name]);
 
         $this->put(route('users.update', $user), ['name' => 'John'])->assertRedirect();
         $this->putJson(route('users.update', $user), ['name' => 'John'])->assertJsonFragment(['name' => 'John']);
 
         $this->assertDatabaseHas('users', [
             'name' => 'John',
-            'is_admin' => true
+            'is_admin' => true,
         ]);
 
         $this->delete(route('users.destroy', $user))->assertRedirect();
@@ -122,7 +122,7 @@ class UserTest extends TestCase
         $this->deleteJson(route('users.destroy', $user))->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_users_order_history()
     {
         $user = User::factory()->create();
@@ -142,7 +142,7 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $deposit =  Deposit::factory()->make(['value' => 9900]);
+        $deposit = Deposit::factory()->make(['value' => 9900]);
         $user->deposits()->save($deposit);
 
         $this->loginAsAdmin()
@@ -150,7 +150,7 @@ class UserTest extends TestCase
             ->assertSee(99);
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_see_users_current_balance()
     {
         $user = User::factory()->create();
@@ -163,7 +163,7 @@ class UserTest extends TestCase
             ->assertSee(20);
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_delete_another_user()
     {
         $this->withExceptionHandling();
@@ -175,7 +175,7 @@ class UserTest extends TestCase
         $this->login()->deleteJson(route('users.destroy', $user))->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_delete_a_user()
     {
         $this->withExceptionHandling();
@@ -191,7 +191,7 @@ class UserTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_restore_a_user()
     {
         $this->withExceptionHandling();

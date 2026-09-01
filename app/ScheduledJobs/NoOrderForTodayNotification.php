@@ -9,17 +9,17 @@ use Illuminate\Support\Facades\Notification;
 
 class NoOrderForTodayNotification
 {
-    public function __invoke()
+    public function __invoke(): void
     {
         $users = User::query()
-            ->where(function(Builder $query) {
+            ->where(function (Builder $query) {
                 $query->where('settings->noOrderNotification', '1')
                     ->orWhere('settings->noOrderNotification', true);
             })
             ->whereDoesntHave('orderItems.meal', function (Builder $q) {
                 return $q->whereDate('date', today());
             })
-            ->whereDoesntHave('disabledNotifications', function(Builder $q) {
+            ->whereDoesntHave('disabledNotifications', function (Builder $q) {
                 return $q->where('date', today());
             })
             ->get();

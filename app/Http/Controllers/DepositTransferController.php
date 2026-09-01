@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Deposit;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class DepositTransferController extends Controller implements HasMiddleware
 {
@@ -18,7 +20,7 @@ class DepositTransferController extends Controller implements HasMiddleware
         ];
     }
 
-    public function create()
+    public function create(): View
     {
         $users = User::orderBy('name')->get();
 
@@ -27,11 +29,8 @@ class DepositTransferController extends Controller implements HasMiddleware
 
     /**
      * Handle the incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'source' => 'required|exists:users,id',
@@ -49,7 +48,7 @@ class DepositTransferController extends Controller implements HasMiddleware
 
             Deposit::create([
                 'user_id' => $request->target,
-                'value' =>  $request->value,
+                'value' => $request->value,
                 'comment' => $request->comment,
             ]);
         });

@@ -3,28 +3,28 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
-
-    /** @test */
+    #[Test]
     public function it_allows_to_login_with_email_and_password()
     {
         User::factory()->create([
             'name' => 'John Doe',
-            'email' => 'john-doe@example.com'
+            'email' => 'john-doe@example.com',
         ]);
 
         $this->post(route('login'), [
             'email' => 'john-doe@example.com',
-            'password' => 'secret'
+            'password' => 'secret',
         ]);
 
         $this->assertAuthenticated();
     }
 
-    /** @test */
+    #[Test]
     public function authenticated_users_cannot_access_the_login_page()
     {
         $this->login()

@@ -9,11 +9,13 @@ use App\Models\User;
 use Cknow\Money\Money;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function guests_are_not_allowed_to_see_orders()
     {
         $this->withExceptionHandling();
@@ -22,7 +24,7 @@ class OrderTest extends TestCase
         $this->getJson(route('orders.index'))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /** @test */
+    #[Test]
     public function users_are_not_allowed_to_see_orders()
     {
         $this->withExceptionHandling();
@@ -32,13 +34,13 @@ class OrderTest extends TestCase
         $this->get(route('orders.index'))->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function it_provides_a_list_of_not_empty_orders()
     {
-        /** @var \Illuminate\Support\Collection|\App\Models\Order[] $orders */
+        /** @var Collection|Order[] $orders */
         $orders = Order::factory()->count(5)->create();
 
-        $orders->each(function($order) {
+        $orders->each(function ($order) {
             /** @var OrderItem $orderItem */
             $orderItem = OrderItem::factory()->make();
 
@@ -55,22 +57,21 @@ class OrderTest extends TestCase
         $response = $this->get(route('orders.index'));
         $jsonResponse = $this->getJson(route('orders.index'));
 
-
         foreach ($orders as $order) {
             $response->assertSee($order->provider);
             $response->assertSee($order->subtotal);
 
             $jsonResponse->assertJsonFragment([
                 'provider' => $order->provider->getName(),
-                'subtotal' => $order->subtotal
+                'subtotal' => $order->subtotal,
             ]);
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_dont_shows_empty_orders()
     {
-        /** @var \Illuminate\Support\Collection|\App\Models\Order[] $orders */
+        /** @var Collection|Order[] $orders */
         $orders = Order::factory()->count(5)->create();
 
         $this->loginAsAdmin();
@@ -78,28 +79,27 @@ class OrderTest extends TestCase
         $response = $this->get(route('orders.index'));
         $jsonResponse = $this->getJson(route('orders.index'));
 
-
         foreach ($orders as $order) {
             $response->assertDontSee($order->subtotal);
 
             $jsonResponse->assertJsonMissing([
                 'provider' => $order->provider,
-                'subtotal' => $order->subtotal
+                'subtotal' => $order->subtotal,
             ]);
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_provides_a_sum_of_order_items_prices()
     {
         $meal = Meal::factory()->create([
             'date' => today(),
-            'price' => 111
+            'price' => 111,
         ]);
 
         OrderItem::factory()->create([
             'meal_id' => $meal->id,
-            'quantity' => 2
+            'quantity' => 2,
         ]);
 
         $this->loginAsAdmin()
@@ -107,10 +107,10 @@ class OrderTest extends TestCase
             ->assertSee(money(222));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_to_update_order_status()
     {
-        /** @var \App\Models\Order $order */
+        /** @var Order $order */
         $order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
         $this->loginAsAdmin()
             ->put(route('orders.update', $order), ['status' => Order::STATUS_ORDERED])
@@ -125,17 +125,17 @@ class OrderTest extends TestCase
         $this->assertEquals(Order::STATUS_ORDERED, $order->fresh()->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_to_delete_a_order()
     {
-        /** @var \App\Models\Order $order */
+        /** @var Order $order */
         $order = Order::factory()->create();
         $this->loginAsAdmin()
             ->delete(route('orders.destroy', $order))
             ->assertRedirect();
         $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
 
-        /** @var \App\Models\Order $order */
+        /** @var Order $order */
         $order = Order::factory()->create();
         $this->loginAsAdmin()
             ->deleteJson(route('orders.destroy', $order))
@@ -143,7 +143,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_stores_the_previous_status()
     {
         /** @var Order $order */
@@ -157,7 +157,7 @@ class OrderTest extends TestCase
         $this->assertEquals(Order::STATUS_OPEN, $order->previous_status);
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_order_details()
     {
         Carbon::setTestNow(now()->startOfWeek()->addDays(2));
@@ -168,7 +168,6 @@ class OrderTest extends TestCase
         $user2 = User::factory()->create();
 
         $user2->delete();
-
 
         $meal1 = Meal::factory()->create(['date' => now()->subDay()]);
         $meal2 = Meal::factory()->create(['date' => now()->addDay()]);
@@ -194,7 +193,8 @@ class OrderTest extends TestCase
     /**
      * @test
      */
-    public function it_allows_to_mark_an_order_as_payed_by_a_user(){
+    public function it_allows_to_mark_an_order_as_payed_by_a_user()
+    {
         $user1 = User::factory()->create();
 
         $meal1 = Meal::factory()->create(['date' => now()->subDay()]);

@@ -4,17 +4,21 @@ namespace Database\Factories;
 
 use App\Models\Meal;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<OrderItem>
+ */
 class OrderItemFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'order_id' => Order::factory(),
@@ -24,7 +28,7 @@ class OrderItemFactory extends Factory
         ];
     }
 
-    public function inFuture()
+    public function inFuture(): static
     {
         return $this->state(function (array $attributes) {
             return [
@@ -33,7 +37,7 @@ class OrderItemFactory extends Factory
         });
     }
 
-    public function inPast()
+    public function inPast(): static
     {
         return $this->state(function (array $attributes) {
             return [
@@ -41,5 +45,4 @@ class OrderItemFactory extends Factory
             ];
         });
     }
-
 }

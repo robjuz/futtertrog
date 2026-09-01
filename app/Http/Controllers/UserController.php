@@ -6,20 +6,23 @@ use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Deposit;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @return JsonResponse|View
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
@@ -40,9 +43,9 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\View\View
+     * @return View
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function create()
     {
@@ -54,16 +57,15 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  UserStoreRequest  $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @return JsonResponse|RedirectResponse
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function store(UserStoreRequest $request)
     {
         Gate::authorize('create', User::class);
 
-        $user = User::make($request->validated());
+        $user = new User($request->validated());
         $user->password = Hash::make($request->input('password'));
 
         $user->save();
@@ -78,11 +80,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @return JsonResponse|View
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function show(Request $request, User $user)
     {
@@ -110,10 +110,9 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @return JsonResponse|View
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function edit(User $user)
     {
@@ -125,11 +124,9 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  UserUpdateRequest  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @return JsonResponse|RedirectResponse
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function update(UserUpdateRequest $request, User $user)
     {
@@ -153,12 +150,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\RedirectResponse|Response
+     * @return RedirectResponse|Response
      *
      * @throws \Exception
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function destroy(Request $request, User $user)
     {
@@ -173,9 +168,9 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
-    public function restore(Request $request, $user)
+    public function restore(Request $request, User $user): JsonResponse|RedirectResponse
     {
-        User::withTrashed()->findOrFail($user)->restore();
+        $user->restore();
 
         Gate::authorize('restore', $user);
 

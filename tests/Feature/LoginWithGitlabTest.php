@@ -3,12 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Laravel\Socialite\Facades\Socialite;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class LoginWithGitlabTest extends TestCase
@@ -54,7 +52,7 @@ class LoginWithGitlabTest extends TestCase
 
         $user = User::factory()->create(
             [
-                'email' => 'test@example.com'
+                'email' => 'test@example.com',
             ]
         );
 
@@ -74,7 +72,7 @@ class LoginWithGitlabTest extends TestCase
 
         $user = User::factory()->create(
             [
-                'email' => 'test@example.com'
+                'email' => 'test@example.com',
             ]
         );
 

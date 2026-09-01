@@ -15,10 +15,12 @@ use Ixudra\Curl\Facades\Curl;
 
 class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
 {
-
     const LOGIN_URL = '/login';
+
     private string $baseUrl = 'https://bestellung-rest.gourmetta.de';
+
     private string $token = '';
+
     private string $userId = '';
 
     public function supportsAutoOrder(): bool
@@ -34,6 +36,7 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
     public function getMealsDataForDateJson(Carbon $date)
     {
         $this->login();
+
         return Curl::to($this->getOrderUrl())
             ->withBearer($this->token)
             ->asJsonResponse(true)
@@ -42,8 +45,6 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
     }
 
     /**
-     * @param Carbon $date
-     *
      * @throws InvalidSelectorException
      */
     public function getMealsDataForDate(Carbon $date): array
@@ -54,13 +55,14 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
 
         return collect($response['orderDays'])
             ->flatten(3)
-            ->filter(fn($item) => is_array($item))
+            ->filter(fn ($item) => is_array($item))
             ->map(function ($meal) {
-                $info = new MealInfo();
+                $info = new MealInfo;
                 $info->allergens = array_column($meal['allergens'], 'name');
                 $info->tags = $meal['tags'];
+
                 return [
-                    'title' => $meal['categoryName'] . ' - ' . $meal['name'],
+                    'title' => $meal['categoryName'].' - '.$meal['name'],
                     'description' => $meal['description'],
                     'price' => $meal['price'],
                     'external_id' => $meal['id'],
@@ -76,7 +78,7 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
             return;
         }
 
-        if (!config('services.gourmetta.login') || !config('services.gourmetta.password')) {
+        if (! config('services.gourmetta.login') || ! config('services.gourmetta.password')) {
             return;
         }
 
@@ -95,7 +97,7 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
         $this->token = $response->token;
 
         $tks = \explode('.', $this->token);
-        list($headb64, $bodyb64, $cryptob64) = $tks;
+        [$headb64, $bodyb64, $cryptob64] = $tks;
 
         $decoded = json_decode(base64_decode($bodyb64));
 
@@ -107,17 +109,14 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
         return URL::format($this->baseUrl, $url);
     }
 
-    /**
-     * @return string
-     */
     private function getOrderUrl(): string
     {
-        return $this->getUrl("/users/" . $this->userId . "/order");
+        return $this->getUrl('/users/'.$this->userId.'/order');
     }
 
     public function configureSchedule(Schedule $schedule): void
     {
-        if (!config('services.gourmetta.schedule')) {
+        if (! config('services.gourmetta.schedule')) {
             return;
         }
 
@@ -174,16 +173,12 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
         );
     }
 
-    /**
-     * @param Order $order
-     * @return array
-     */
     public function prepareOrderItems(Order $order): array
     {
         $data =
             [
                 'orderDays' => $order->orderItems()
-                    ->whereHas('meal', fn($q) => $q->whereDate('date', '>=', now()))
+                    ->whereHas('meal', fn ($q) => $q->whereDate('date', '>=', now()))
                     ->get()
                     ->groupBy('meal.date')
                     ->map(
@@ -195,14 +190,15 @@ class Gourmetta extends AbstractMealProvider implements HasWeeklyOrders
                                     function ($orderItems, $externalId) {
                                         return [
                                             'mealId' => $externalId,
-                                            'quantity' => $orderItems->sum('quantity')
+                                            'quantity' => $orderItems->sum('quantity'),
                                         ];
                                     }
-                                )->values()->toArray()
+                                )->values()->toArray(),
                             ];
                         }
-                    )->values()->toArray()
+                    )->values()->toArray(),
             ];
+
         return $data;
     }
 }

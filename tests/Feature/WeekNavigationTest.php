@@ -7,11 +7,12 @@ use App\Models\User;
 use App\UserSettings;
 use App\View\Components\WeekNavigation;
 use Illuminate\Support\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WeekNavigationTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_doesnt_show_the_next_week_link_when_no_order_possibilities_for_next_week_present()
     {
         $nextWeekMonday = Carbon::now()->addWeek()->startofWeek();
@@ -35,7 +36,8 @@ class WeekNavigationTest extends TestCase
     /**
      * @test
      */
-    public function it_shows_an_ordered_label(){
+    public function it_shows_an_ordered_label()
+    {
         /** @var Meal $meal */
         $meal = Meal::factory()->create(['date' => today()]);
 
@@ -57,11 +59,13 @@ class WeekNavigationTest extends TestCase
         $view->assertDontSee(__('Ordered'));
 
     }
+
     /**
      * @test
      */
-    public function it_shows_an_notifications_disabled_icon(){
-        $settings = new UserSettings();
+    public function it_shows_an_notifications_disabled_icon()
+    {
+        $settings = new UserSettings;
         $settings->noOrderForNextWeekNotification = true;
 
         /** @var User $tom */
@@ -80,7 +84,6 @@ class WeekNavigationTest extends TestCase
 
         $view = $this->component(WeekNavigation::class);
         $view->assertSee('week-navigation__icon--notification-disabled');
-
 
     }
 }

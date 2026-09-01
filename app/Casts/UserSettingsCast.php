@@ -2,23 +2,23 @@
 
 namespace App\Casts;
 
-use App\MealInfo;
 use App\UserSettings;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use InvalidArgumentException;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @implements CastsAttributes<UserSettings, string>
+ */
 class UserSettingsCast implements CastsAttributes
 {
     /**
      * Cast the given value.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  string  $key
-     * @param  mixed  $values
-     * @param  array  $attributes
-     * @return mixed
+     * @param  array<string, mixed>  $attributes
+     *
+     * @phpstan-return UserSettings<array-key, mixed>
      */
-    public function get($model, $key, $values, $attributes)
+    public function get(Model $model, string $key, mixed $values, array $attributes): UserSettings
     {
         $userSettings = new UserSettings();
 
@@ -38,14 +38,11 @@ class UserSettingsCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  string  $key
-     * @param  \App\UserSettings  $value
-     * @param  array  $attributes
-     * @return mixed
+     * @phpstan-param UserSettings<array-key, mixed> $value
+     * @phpstan-param array<string, mixed> $attributes
      */
-    public function set($model, $key, $value, $attributes)
+    public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        return json_encode($value);
+        return json_encode($value) ?: '{}';
     }
 }

@@ -6,9 +6,12 @@ use App\Http\Requests\DepositDestroyRequest;
 use App\Http\Requests\DepositRequest;
 use App\Models\Deposit;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\View\View;
 
 class DepositsController extends Controller implements HasMiddleware
 {
@@ -19,7 +22,8 @@ class DepositsController extends Controller implements HasMiddleware
         ];
     }
 
-    public function index(Request $request)
+    /** @return LengthAwarePaginator<int, Deposit> */
+    public function index(Request $request): View|LengthAwarePaginator
     {
         $deposits = Deposit::with(['user' => function ($q) {
             $q->withTrashed();
@@ -32,14 +36,14 @@ class DepositsController extends Controller implements HasMiddleware
         return view('deposit.index', compact('deposits'));
     }
 
-    public function create()
+    public function create(): View
     {
         $users = User::orderBy('name')->get();
 
         return view('deposit.create', compact('users'));
     }
 
-    public function edit(Deposit $deposit)
+    public function edit(Deposit $deposit): View
     {
         $users = User::orderBy('name')->withTrashed()->get();
 
@@ -48,11 +52,8 @@ class DepositsController extends Controller implements HasMiddleware
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  DepositRequest  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(DepositRequest $request)
+    public function store(DepositRequest $request): RedirectResponse
     {
         Deposit::create($request->validated());
 
@@ -61,11 +62,8 @@ class DepositsController extends Controller implements HasMiddleware
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  DepositRequest  $request
-     * @return \Illuminate\Http\Response
      */
-    public function update(DepositRequest $request, Deposit $deposit)
+    public function update(DepositRequest $request, Deposit $deposit): RedirectResponse
     {
         $deposit->update($request->validated());
 
@@ -75,13 +73,10 @@ class DepositsController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      *
-     * @param  DepositDestroyRequest  $request
-     * @param  Deposit  $deposit
-     * @return \Illuminate\Http\Response
      *
      * @throws \Exception
      */
-    public function destroy(DepositDestroyRequest $request, Deposit $deposit)
+    public function destroy(DepositDestroyRequest $request, Deposit $deposit): RedirectResponse
     {
         $deposit->delete();
 

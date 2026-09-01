@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -11,15 +13,14 @@ class AutoOrderController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  Request  $request
-     * @return Response
+     * @return JsonResponse|RedirectResponse
      */
-    public function __invoke(Request $request, Order $order) {
+    public function __invoke(Request $request, Order $order)
+    {
 
         abort_unless($order->canBeAutoOrdered(), Response::HTTP_BAD_REQUEST, __('This order cannot be auto-ordered'));
 
         $order->autoOrder();
-
 
         if ($request->wantsJson()) {
             return response()->json(null);

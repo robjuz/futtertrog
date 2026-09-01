@@ -14,28 +14,28 @@ class OrderItemTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testUser()
+    public function test_user()
     {
         $orderItem = OrderItem::factory()->create();
 
         $this->assertInstanceOf(User::class, $orderItem->user);
     }
 
-    public function testMeal()
+    public function test_meal()
     {
         $orderItem = OrderItem::factory()->create();
 
         $this->assertInstanceOf(Meal::class, $orderItem->meal);
     }
 
-    public function testOrder()
+    public function test_order()
     {
         $orderItem = OrderItem::factory()->create();
 
         $this->assertInstanceOf(Order::class, $orderItem->order);
     }
 
-    public function testGetSubtotalAttribute()
+    public function test_get_subtotal_attribute()
     {
         $meal = Meal::factory()->create(['price' => 1]);
 
@@ -46,7 +46,8 @@ class OrderItemTest extends TestCase
         $this->assertEquals(Money::parse(2), $orderItem->subtotal);
     }
 
-    public function testGetStatusAttribute() {
+    public function test_get_status_attribute()
+    {
 
         /** @var OrderItem $orderItem */
         $orderItem = OrderItem::factory()->create();

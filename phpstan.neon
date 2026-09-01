@@ -1,0 +1,27 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    paths:
+        - app/
+        - bootstrap/app.php
+        - config/
+        - database/
+        - routes/
+
+    level: 7
+
+    excludePaths:
+        - app/MealProviders/*
+
+    treatPhpDocTypesAsCertain: false
+
+    ignores:
+        - '#Parameter #3 \\\$value \(App\\\\MealInfo.*of method.*MealInfoCast::set\(\) should be compatible#m'
+        - '#Parameter #3 \\\$value \(App\\\\UserSettings.*of method.*UserSettingsCast::set\(\) should be compatible#m'
+        - '#Method App\\\\MealInfo::castUsing\(\) return type with generic interface Illuminate\\\\Contracts\\\\Database\\\\Eloquent\\\\CastsAttributes does not specify its types#m'
+        - '#Method App\\\\UserSettings::castUsing\(\) return type with generic interface Illuminate\\\\Contracts\\\\Database\\\\Eloquent\\\\CastsAttributes does not specify its types#m'
+        - '#Method App\\\\Models\\\\Meal::newCollection\(\) should return Illuminate\\\\Database\\\\Eloquent\\\\Collection<\(int\|string\),\s*static\(App\\\\Models\\\\Meal\)\> but returns App\\\\MealCollection\.#m'
+        - '#Method App\\\\Models\\\\Order::newCollection\(\) should return Illuminate\\\\Database\\\\Eloquent\\\\Collection<\(int\|string\),\s*static\(App\\\\Models\\\\Order\)\> but returns App\\\\OrderCollection\.#m'
+        - '#Cannot call method isoFormat\(\) on Illuminate\\\\Support\\\\Carbon\|string\.#m'

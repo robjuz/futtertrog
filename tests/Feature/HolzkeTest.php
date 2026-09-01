@@ -15,11 +15,12 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class HolzkeTest extends TestCase
 {
-    const MEAL_HTML= '<table class="menu-table menu-week-grid-normal weekdayCount1" id="menu-table_KW">
+    const MEAL_HTML = '<table class="menu-table menu-week-grid-normal weekdayCount1" id="menu-table_KW">
   <tbody><tr>
     <th class="weekday"></th>
       <th class="weekday ">
@@ -60,7 +61,7 @@ class HolzkeTest extends TestCase
     </tr>
 </tbody></table>';
 
-    /** @test */
+    #[Test]
     public function it_can_create_meals_from_holzke_html()
     {
         $holzkeServiceMock = Mockery::mock(Holzke::class)->makePartial();
@@ -75,7 +76,7 @@ class HolzkeTest extends TestCase
         $this->assertCount(1, $meals);
     }
 
-    /** @test */
+    #[Test]
     public function it_resolves_a_holzke_provider_from_app_container()
     {
         config(['services.holzke.enabled' => true]);
@@ -85,19 +86,18 @@ class HolzkeTest extends TestCase
         $this->assertSame(app(Holzke::class), app(Holzke::class));
     }
 
-    /** @test */
+    #[Test]
     public function it_sent_a_new_order_possibility_notification_to_users_that_opted_in()
     {
         Notification::fake();
 
-        Carbon::setTestNow(today()->addWeekday()); //ensure we test over a weekday
+        Carbon::setTestNow(today()->addWeekday()); // ensure we test over a weekday
 
         $today = today();
 
-        $settings = new UserSettings();
+        $settings = new UserSettings;
         $settings->newOrderPossibilityNotification = true;
         $settings->language = 'de';
-
 
         $tom = User::factory()->create(
             [
@@ -107,20 +107,20 @@ class HolzkeTest extends TestCase
 
         $this->partialMock(Holzke::class, function (MockInterface $mock) {
             $mock->shouldReceive('getHtml')
-            ->withAnyArgs()
-            ->andReturn(self::MEAL_HTML)
-            ->once();
+                ->withAnyArgs()
+                ->andReturn(self::MEAL_HTML)
+                ->once();
 
             $mock->shouldReceive('getHtml')
-            ->withAnyArgs()
-            ->andReturn('<div></div>')
-            ->once();
+                ->withAnyArgs()
+                ->andReturn('<div></div>')
+                ->once();
         });
 
-       app(Holzke::class)->getAllUpcomingMeals();
+        app(Holzke::class)->getAllUpcomingMeals();
 
         Notification::assertSentTo($tom, NewOrderPossibilitiesNotification::class, function ($message, $channels, User $notifiable) use ($today) {
-            $toArray =  $message->toArray($notifiable);
+            $toArray = $message->toArray($notifiable);
             $toMail = $message->toMail($notifiable);
 
             $day = $today->locale($notifiable->settings->language)->isoFormat('ddd MMM DD YYYY');
@@ -132,12 +132,12 @@ class HolzkeTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function it_fires_a_event_when_new_meals_were_created()
     {
         Event::fake();
 
-        Carbon::setTestNow(today()->addWeekday()); //ensure we test over a weekday
+        Carbon::setTestNow(today()->addWeekday()); // ensure we test over a weekday
 
         $this->partialMock(Holzke::class, function (MockInterface $mock) {
 
@@ -166,61 +166,61 @@ class HolzkeTest extends TestCase
         app(Holzke::class)->getAllUpcomingMeals();
     }
 
-//    /** @test */
-//    public function it_allows_to_auto_order()
-//    {
-//        /** @var User $user */
-//        $user = User::factory()->create();
-//
-//        /** @var Meal $meal1 */
-//        $meal = Meal::factory()->create([
-//            'provider' => Holzke::class,
-//            'date' => Carbon::today(),
-//            'external_id' => '111'
-//        ]);
-//
-//        /** @var Meal $meal1 */
-//        $meal2 = Meal::factory()->create([
-//            'provider' => Holzke::class,
-//            'date' => Carbon::today()->addWeek(),
-//            'external_id' => '222'
-//        ]);
-//
-//        $orderItem1 = $user->order($meal);
-//        $order1 = $orderItem1->order;
-//        $order2 = $user->order($meal2)->order;
-//
-//        $this->assertTrue($order1->canBeAutoOrdered());
-//        $this->assertTrue($order2->canBeAutoOrdered());
-//
-//
-//        $this->partialMock(Holzke::class, function (MockInterface $mock) {
-//            $mock->shouldReceive('getKey')
-//                ->andReturn('Holzke');
-//        });
-//
-//        app(Holzke::class)->autoOrder();
-//
-//        $order1->refresh();
-//
-//        $this->assertEquals('123', $order1->external_id);
-//        $this->assertEquals(Order::STATUS_ORDERED, $order1->status);
-//
-//        $this->assertNull($order2->fresh()->external_id);
-//        $this->assertEquals(Order::STATUS_OPEN, $order2->status);
-//
-//        $this->login($user)
-//            ->putJson(route('order_items.update', $orderItem1), ['quantity' => 2]);
-//
-//        $order1->refresh();
-//
-//        $this->assertEquals(Order::STATUS_OPEN, $order1->status);
-//
-//        $this->assertTrue($order1->canBeAutoOrdered());
-//        $this->assertTrue($order1->canBeUpdated());
-//    }
+    //    #[Test]
+    //    public function it_allows_to_auto_order()
+    //    {
+    //        /** @var User $user */
+    //        $user = User::factory()->create();
+    //
+    //        /** @var Meal $meal1 */
+    //        $meal = Meal::factory()->create([
+    //            'provider' => Holzke::class,
+    //            'date' => Carbon::today(),
+    //            'external_id' => '111'
+    //        ]);
+    //
+    //        /** @var Meal $meal1 */
+    //        $meal2 = Meal::factory()->create([
+    //            'provider' => Holzke::class,
+    //            'date' => Carbon::today()->addWeek(),
+    //            'external_id' => '222'
+    //        ]);
+    //
+    //        $orderItem1 = $user->order($meal);
+    //        $order1 = $orderItem1->order;
+    //        $order2 = $user->order($meal2)->order;
+    //
+    //        $this->assertTrue($order1->canBeAutoOrdered());
+    //        $this->assertTrue($order2->canBeAutoOrdered());
+    //
+    //
+    //        $this->partialMock(Holzke::class, function (MockInterface $mock) {
+    //            $mock->shouldReceive('getKey')
+    //                ->andReturn('Holzke');
+    //        });
+    //
+    //        app(Holzke::class)->autoOrder();
+    //
+    //        $order1->refresh();
+    //
+    //        $this->assertEquals('123', $order1->external_id);
+    //        $this->assertEquals(Order::STATUS_ORDERED, $order1->status);
+    //
+    //        $this->assertNull($order2->fresh()->external_id);
+    //        $this->assertEquals(Order::STATUS_OPEN, $order2->status);
+    //
+    //        $this->login($user)
+    //            ->putJson(route('order_items.update', $orderItem1), ['quantity' => 2]);
+    //
+    //        $order1->refresh();
+    //
+    //        $this->assertEquals(Order::STATUS_OPEN, $order1->status);
+    //
+    //        $this->assertTrue($order1->canBeAutoOrdered());
+    //        $this->assertTrue($order1->canBeUpdated());
+    //    }
 
-    public function testGetOrder()
+    public function test_get_order()
     {
         $holzke = app(Holzke::class);
 
@@ -232,7 +232,7 @@ class HolzkeTest extends TestCase
             [
                 'provider' => Holzke::class,
                 'date' => Carbon::today(),
-                'external_id' => '111'
+                'external_id' => '111',
             ]
         );
 
@@ -241,7 +241,6 @@ class HolzkeTest extends TestCase
         $user->order($meal);
 
         $order = $holzke->getOrder(now());
-
 
         $this->assertEquals(Order::STATUS_OPEN, $order->status);
         $this->assertDatabaseCount('orders', 1);
@@ -252,7 +251,7 @@ class HolzkeTest extends TestCase
         $this->assertEquals(Order::STATUS_ORDERED, $order->status);
         $this->assertDatabaseCount('orders', 1);
 
-        //---//
+        // ---//
         $order = $holzke->getOrder(now()->addWeek());
         $this->assertEquals(Order::STATUS_OPEN, $order->status);
         $this->assertDatabaseCount('orders', 2);

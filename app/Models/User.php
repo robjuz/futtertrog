@@ -2,19 +2,24 @@
 
 namespace App\Models;
 
-use App\IdeHelperUser;
 use App\UserSettings;
 use Cknow\Money\Money;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
  * @OA\Schema (
  *      required={"password", "email", "name"},
+ *
  *      @OA\Property( property="id", ref="#/components/schemas/id" ),
  *      @OA\Property(property="email", type="string", format="email", description="User unique email address", example="john@example.com"),
  *      @OA\Property(property="name", type="string", example="John"),
@@ -22,26 +27,28 @@ use Illuminate\Support\Str;
  *      @OA\Property( property="created_at",type="string", format="date-time" ),
  *      @OA\Property( property="updated_at",type="string", format="date-time" ),
  * )
+ *
  * @property int $id
  * @property string $name
  * @property string $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property Carbon|null $email_verified_at
  * @property string $password
  * @property bool $is_admin
- * @property UserSettings $settings
+ * @property UserSettings<array-key, mixed> $settings
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $api_token
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Deposit[] $deposits
+ * @property Carbon|null $deleted_at
+ * @property-read Collection|Deposit[] $deposits
  * @property-read int|null $deposits_count
  * @property-read Money $balance
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification>|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderItem[] $orderItems
+ * @property-read Collection|OrderItem[] $orderItems
  * @property-read int|null $order_items_count
  * @property-read int|null $push_subscriptions_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
@@ -61,21 +68,23 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
+ *
  * @mixin \Eloquent
+ *
  * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
- * @mixin IdeHelperUser
  */
 class User extends Authenticatable
 {
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use Notifiable;
     use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'is_admin' => 'boolean',
@@ -86,14 +95,14 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -109,12 +118,13 @@ class User extends Authenticatable
         });
     }
 
-    public function deposits()
+    /** @return HasMany<Deposit, $this> */
+    public function deposits(): HasMany
     {
         return $this->hasMany(Deposit::class)->latest();
     }
 
-    public function getBalanceAttribute()
+    public function getBalanceAttribute(): Money
     {
         if (empty($this->attributes['balance'])) {
             $this->loadMissing('orderItems.meal');
@@ -123,7 +133,7 @@ class User extends Authenticatable
             $orders = Money::sum(
                 Money::parse(0),
                 ...$this->orderItems->map(
-                    fn(OrderItem $orderItem) => $orderItem->meal->price->multiply($orderItem->quantity)
+                    fn (OrderItem $orderItem) => $orderItem->meal->price->multiply($orderItem->quantity)
                 )
             );
 
@@ -138,30 +148,33 @@ class User extends Authenticatable
         return $this->attributes['balance'];
     }
 
-    public function markAsAdmin()
+    public function markAsAdmin(): bool
     {
         return $this->forceFill([
             'is_admin' => true,
         ])->save();
     }
 
-    public function orderItems()
+    /** @return HasMany<OrderItem, $this> */
+    public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payedOrders()
+    /** @return HasMany<Order, $this> */
+    public function payedOrders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-    public function generateApiToken()
+    public function generateApiToken(): static
     {
         $this->api_token = Str::random(10);
 
         return $this;
     }
 
+    /** @return HasMany<OrderItem, $this> */
     public function futureOrders(): HasMany
     {
         return $this->orderItems()
@@ -170,6 +183,7 @@ class User extends Authenticatable
             ->whereRelation('meal', 'date', '>', today());
     }
 
+    /** @return HasMany<OrderItem, $this> */
     public function orderHistory(): HasMany
     {
         return $this->orderItems()
@@ -178,6 +192,7 @@ class User extends Authenticatable
             ->latest();
     }
 
+    /** @return HasMany<DisabledNotification, $this> */
     public function disabledNotifications(): HasMany
     {
         return $this->hasMany(DisabledNotification::class);

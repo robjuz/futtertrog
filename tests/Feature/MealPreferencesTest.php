@@ -5,16 +5,17 @@ namespace Tests\Feature;
 use App\Models\Meal;
 use App\Models\User;
 use App\UserSettings;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MealPreferencesTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_gives_preferred_meals_higher_priority_and_hated_meals_lover_priority()
     {
         $user = User::factory()->create();
 
-        $settings = new UserSettings();
+        $settings = new UserSettings;
         $settings->mealPreferences = 'pancake';
         $settings->mealAversion = 'pumpkin';
 
@@ -22,22 +23,22 @@ class MealPreferencesTest extends TestCase
         $user->save();
 
         $meal1 = Meal::factory()->create([
-            'description' => 'pumpkin'
+            'description' => 'pumpkin',
         ]);
         $meal2 = Meal::factory()->create([
-            'description' => 'pancake'
+            'description' => 'pancake',
         ]);
         $meal3 = Meal::factory()->create([
-            'description' => 'meal_3'
+            'description' => 'meal_3',
         ]);
         $meal4 = Meal::factory()->create([
-            'description' => 'meal_4'
+            'description' => 'meal_4',
         ]);
         $meal5 = Meal::factory()->create([
-            'title' => 'pumpkin'
+            'title' => 'pumpkin',
         ]);
         $meal6 = Meal::factory()->create([
-            'title' => 'pancake'
+            'title' => 'pancake',
         ]);
 
         $this->login($user)

@@ -3,11 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Meal;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MealVariantsTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function a_meal_can_have_variants()
     {
         /** @var Meal $meal */
@@ -23,7 +24,7 @@ class MealVariantsTest extends TestCase
         $this->assertCount(1, $meal->fresh()->variants);
     }
 
-    /** @test */
+    #[Test]
     public function a_variant_knows_his_parent()
     {
         /** @var Meal $meal */

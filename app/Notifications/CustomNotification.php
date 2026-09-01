@@ -22,9 +22,6 @@ class CustomNotification extends Notification
 
     /**
      * Create a new notification instance.
-     *
-     * @param  string  $subject
-     * @param  string  $body
      */
     public function __construct(string $subject, string $body)
     {
@@ -36,7 +33,7 @@ class CustomNotification extends Notification
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
+     * @return array<int, string>
      */
     public function via($notifiable)
     {
@@ -47,7 +44,7 @@ class CustomNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
@@ -59,7 +56,7 @@ class CustomNotification extends Notification
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray($notifiable)
     {
