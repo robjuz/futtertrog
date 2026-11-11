@@ -3,76 +3,279 @@
 namespace Tests\Feature;
 
 use App\Events\NewOrderPossibilities;
-use App\MealProviders\Holzke;
+use App\Events\NewOrderPossibility;
 use App\Models\Meal;
-use App\Models\Order;
-use App\Models\User;
 use App\Notifications\NewOrderPossibilities as NewOrderPossibilitiesNotification;
+use App\MealProviders\CallAPizza;
+use App\MealProviders\Holzke;
+use App\Models\Order;
 use App\Providers\MealProvidersServiceProvider;
+use App\Services\MealService;
+use App\Models\User;
 use App\UserSettings;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Request;
+use Ixudra\Curl\Builder;
+use Ixudra\Curl\Facades\Curl;
 use Mockery;
-use Mockery\MockInterface;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Notification;
+use Mockery\MockInterface;
+use function PHPUnit\Framework\once;
 
 class HolzkeTest extends TestCase
 {
-    const MEAL_HTML= '<table class="menu-table menu-week-grid-normal weekdayCount1" id="menu-table_KW">
-  <tbody><tr>
-    <th class="weekday"></th>
-      <th class="weekday ">
-        Montag<br>
-        <date>03.04.2023</date>
-      </th>
-    </tr>
-    <tr>
-      <th class="mealtitel menuhash-96e587 menu-1">
-        Menü 1   blank
+    private const BESTELLER_ID = '105094-holzke-abc';
+    private const MANDANT_ID = '105094-holzke';
 
-      </th>
+    private static function mealPlan(Carbon $date, array $menus = null): array
+    {
+        $day = $date->toDateString();
+        $menus ??= [
+            '1' => ['Menü 1   blank', 'Lauch-Käse-Suppe mit Porree dazu 1 Scheibe Weißbrot[br][br][h]1, A, G, A1[/h][br][h]1.327,6 kcal; 1,9 BE[/h]', 5.45, false],
+            '2' => ['Menü 2   schwarz', 'Butterspirelli mit Jagdwurst[br][br][h]2, 3, A[/h]', 5.95, false],
+            '3' => ['Menü 3   rot', '', 7.55, false],
+            '4' => ['Menü 4   blau', 'Gesperrtes Gericht', 6.30, true],
+        ];
 
-<td mealid="01" splanid="2318182" day="2023-04-03" class="
-           meal
-           menuGroup_0
-           Menü 1   blank
+        $tagesMenues = [];
+        $menuetexte = [];
+        foreach ($menus as $nr => [$title, $text, $price, $locked]) {
+            $id = "{$date->timestamp}_{$nr}";
+            $tagesMenues[$nr] = [
+                'menueTextId' => $id,
+                'preis' => ['betrag' => $price, 'waehrung' => 'EUR'],
+                'bezeichnung' => $title,
+                'kurzBez' => "M{$nr}",
+            ];
+            $menuetexte[$id] = [
+                'bezeichnung' => $title,
+                'gesperrt' => $locked,
+                'menueText' => $text,
+                'menueNr' => (int)$nr,
+            ];
+        }
 
-           td1" for="">
-  <meal>
-    <mealtxt>
-      <span id="mealtext">Grüne Bohneneintopf mit Kasslerstückchen und 1 Roggenbrötchen<br><br><sup>2, 3, A, F, G, I, A1, A2, A3</sup><br><sup>320,3 kcal; 3,3 BE</sup></span>
-      <br>
-      <sub>
-      </sub>
-    </mealtxt>
-  </meal>
-   <!-- endet am Ende der Meal-Cell -->
-    <cellfooter>
-        <row>
-        <!-- number input is needed for IE9 support -->
+        return [
+            'kunden' => [
+                self::BESTELLER_ID => [
+                    'bestellerId' => self::BESTELLER_ID,
+                    'speisePlanTage' => [
+                        $day => ['datum' => $day, 'zustellPause' => false, 'tagesMenues' => $tagesMenues],
+                    ],
+                ],
+            ],
+            'menuetexte' => $menuetexte,
+        ];
+    }
 
-        </row>
+    private static function apiResponse(array $content, string $token = 'token-next'): array
+    {
+        return ['code' => 7102, 'content' => $content, 'token' => $token];
+    }
 
-    </cellfooter>
-   <!-- if meal.menueText -->
-</td>
-    </tr>
-</tbody></table>';
+    private function fakeApi(array $callResponses): void
+    {
+        config(['services.holzke.login' => 'user', 'services.holzke.password' => 'secret']);
+
+        Http::fake([
+            Holzke::API_URL . '/login' => Http::response(self::apiResponse([
+                'mandantId' => self::MANDANT_ID,
+                'bestellerId' => self::BESTELLER_ID,
+            ], 'token-login')),
+            Holzke::API_URL . '/call' => Http::sequence($callResponses),
+        ]);
+    }
 
     /** @test */
-    public function it_can_create_meals_from_holzke_html()
+    public function it_can_create_meals_from_the_holzke_meal_plan()
     {
+        $date = today();
         $holzkeServiceMock = Mockery::mock(Holzke::class)->makePartial();
 
-        $holzkeServiceMock->shouldReceive('getHtml')
+        $holzkeServiceMock->shouldReceive('getMealPlan')
             ->withAnyArgs()
-            ->andReturn(self::MEAL_HTML)
+            ->andReturn(self::mealPlan($date))
             ->once();
 
-        $meals = $holzkeServiceMock->getMealsDataForDate(today());
+        $meals = $holzkeServiceMock->getMealsDataForDate($date);
 
-        $this->assertCount(1, $meals);
+        $this->assertCount(2, $meals);
+        $this->assertSame('Menü 1 blank', $meals[0]['title']);
+        $this->assertSame('Lauch-Käse-Suppe mit Porree dazu 1 Scheibe Weißbrot', $meals[0]['description']);
+        $this->assertSame(545, $meals[0]['price']);
+        $this->assertSame("{$date->timestamp}_1", $meals[0]['external_id']);
+        $this->assertSame(1327.6, $meals[0]['info']->calories);
+        $this->assertSame(['1', 'A', 'G', 'A1'], $meals[0]['info']->allergens);
+    }
+
+    /** @test */
+    public function it_logs_in_and_fetches_the_meal_plan_from_the_api()
+    {
+        $date = today();
+        $this->fakeApi([Http::response(self::apiResponse(self::mealPlan($date)))]);
+
+        $meals = (new Holzke())->getMealsDataForDate($date);
+
+        $this->assertCount(2, $meals);
+
+        Http::assertSent(fn(Request $request) => $request->url() === Holzke::API_URL . '/login'
+            && $request['command'] === 'kunde/LoginAPI_1_5_1'
+            && $request['parameter']['mandantId'] === Holzke::MANDANT_ID
+            && $request['parameter']['login'] === 'user'
+            && $request['parameter']['passwd'] === 'secret');
+
+        Http::assertSent(fn(Request $request) => $request->url() === Holzke::API_URL . '/call'
+            && $request['command'] === 'speiseplan/kundeAPI_1_5_1'
+            && $request['token'] === 'token-login'
+            && $request['parameter']['mandantId'] === self::MANDANT_ID
+            && $request['parameter']['bestellerId[0]'] === self::BESTELLER_ID
+            && $request['parameter']['von'] === $date->toDateString());
+    }
+
+    /** @test */
+    public function it_throws_a_descriptive_exception_when_the_api_fails()
+    {
+        config(['services.holzke.login' => 'user', 'services.holzke.password' => 'secret']);
+        Http::fake([Holzke::API_URL . '/login' => Http::response(['content' => ['name' => 'login_fehlgeschlagen']], 401)]);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Holzke: 'kunde/LoginAPI_1_5_1' failed with HTTP 401");
+
+        (new Holzke())->getMealsDataForDate(today());
+    }
+
+    /** @test */
+    public function it_places_an_order_by_syncing_the_quantities_of_the_week()
+    {
+        Carbon::setTestNow(Carbon::parse('2026-11-11 08:00'));
+        $monday = Carbon::parse('2026-11-09');
+        $tuesday = Carbon::parse('2026-11-10');
+        $wednesday = Carbon::parse('2026-11-11');
+
+        $user = User::factory()->create();
+        $meal = Meal::factory()->create([
+            'provider' => app(Holzke::class),
+            'date' => $wednesday,
+            'external_id' => "{$wednesday->timestamp}_2",
+        ]);
+        $orderItem = $user->order($meal);
+        $orderItem->update(['quantity' => 2]);
+        $order = $orderItem->order;
+
+        $menu = fn(Carbon $date, int $nr, int $mengeAlt) => [
+            'menueId' => $nr, 'menueTextId' => "{$date->timestamp}_{$nr}", 'menueNr' => $nr,
+            'mengeAlt' => $mengeAlt, 'mengeNeu' => $mengeAlt, 'error' => false,
+        ];
+        $existing = ['kunden' => [self::BESTELLER_ID => ['tage' => [
+            $monday->toDateString() => ['datum' => $monday->toDateString(), 'bestellMenues' => ['1' => $menu($monday, 1, 1)]],
+            $wednesday->toDateString() => ['datum' => $wednesday->toDateString(), 'bestellMenues' => [
+                '1' => $menu($wednesday, 1, 1),
+                '2' => $menu($wednesday, 2, 0),
+            ]],
+        ]]]];
+
+        $deadline = fn(Carbon $date, int $nr, string $at) => [
+            'menueTextId' => "{$date->timestamp}_{$nr}", 'bestellschluss' => $at, 'abbestellschluss' => $at,
+        ];
+        $deadlines = ['menuetexte' => [
+            "{$wednesday->timestamp}_2" => ['bezeichnung' => 'Menü 2', 'kurzBez' => 'M2', 'menueNr' => 2, 'menueText' => 'Spirelli'],
+        ], 'kunden' => [self::BESTELLER_ID => ['speisePlanTage' => [
+            $monday->toDateString() => ['tagesMenues' => ['1' => $deadline($monday, 1, '2026-11-09T07:30:00+0100')]],
+            $tuesday->toDateString() => ['tagesMenues' => ['1' => $deadline($tuesday, 1, '2026-11-10T07:30:00+0100')]],
+            $wednesday->toDateString() => ['tagesMenues' => [
+                '1' => $deadline($wednesday, 1, '2026-11-11T09:30:00+0100'),
+                '2' => $deadline($wednesday, 2, '2026-11-11T09:30:00+0100'),
+            ]],
+        ]]]];
+
+        $this->fakeApi([
+            Http::response(self::apiResponse($existing, 'token-2')),
+            Http::response(self::apiResponse($deadlines, 'token-3')),
+            Http::response(self::apiResponse(['kunden' => [self::BESTELLER_ID => ['error' => false, 'tage' => []]]])),
+        ]);
+
+        app(Holzke::class)->placeOrder($order);
+
+        Http::assertSent(fn(Request $request) => ($request['command'] ?? null) === 'bestellungen/getAPI_1_5'
+            && $request['parameter']['von'] === '2026-11-09'
+            && $request['parameter']['bis'] === '2026-11-15');
+
+        Http::assertSent(function (Request $request) use ($monday, $wednesday) {
+            if (($request['command'] ?? null) !== 'bestellungen/commit') {
+                return false;
+            }
+            $changes = json_decode($request['parameter']['bestellaenderungen'], true);
+            $days = $changes['kunden'][self::BESTELLER_ID]['tage'];
+
+            return $request['token'] === 'token-3'
+                && $request['parameter']['bestellerId'] === self::BESTELLER_ID
+                && $changes['kunden'][self::BESTELLER_ID]['von'] === $monday->toDateString()
+                && $changes['kunden'][self::BESTELLER_ID]['bis'] === $wednesday->toDateString()
+                // monday is past its deadline and therefore left unchanged
+                && $days[$monday->toDateString()]['bestellMenues']['1']['mengeNeu'] === 1
+                && $days[$wednesday->toDateString()]['bestellMenues']['1']['mengeNeu'] === 0
+                && $days[$wednesday->toDateString()]['bestellMenues']['2']['mengeNeu'] === 2
+                && array_keys($changes['menuetexte']) === ["{$wednesday->timestamp}_2"]
+                && $changes['menuetexte']["{$wednesday->timestamp}_2"]['text'] === 'Spirelli';
+        });
+
+        $this->assertEquals(Order::STATUS_ORDERED, $order->fresh()->status);
+        $this->assertSame('2026-11-09/2026-11-15', $order->fresh()->external_id);
+    }
+
+    /** @test */
+    public function it_logs_in_again_when_the_session_expired()
+    {
+        $date = today();
+        $this->fakeApi([
+            Http::response(['content' => ['name' => 'token_ungueltig']], 401),
+            Http::response(self::apiResponse(self::mealPlan($date))),
+        ]);
+
+        $meals = (new Holzke())->getMealsDataForDate($date);
+
+        $this->assertCount(2, $meals);
+        Http::assertSentCount(4);
+    }
+
+    /** @test */
+    public function it_does_not_mark_the_order_as_ordered_when_holzke_rejects_it()
+    {
+        $date = Carbon::parse('2026-11-11');
+        $user = User::factory()->create();
+        $meal = Meal::factory()->create([
+            'provider' => app(Holzke::class),
+            'date' => $date,
+            'external_id' => "{$date->timestamp}_1",
+        ]);
+        $user->order($meal);
+        $order = $meal->orderItems()->first()->order;
+
+        $day = ['datum' => $date->toDateString(), 'bestellMenues' => ['1' => [
+            'menueTextId' => "{$date->timestamp}_1", 'mengeAlt' => 0, 'mengeNeu' => 0, 'error' => false,
+        ]]];
+        $rejected = $day;
+        $rejected['bestellMenues']['1']['error'] = true;
+
+        $this->fakeApi([
+            Http::response(self::apiResponse(['kunden' => [self::BESTELLER_ID => ['tage' => [$date->toDateString() => $day]]]])),
+            Http::response(self::apiResponse(['kunden' => []])),
+            Http::response(self::apiResponse(['kunden' => [self::BESTELLER_ID => ['error' => false, 'tage' => [$date->toDateString() => $rejected]]]])),
+        ]);
+
+        try {
+            app(Holzke::class)->placeOrder($order);
+            $this->fail('Expected exception');
+        } catch (\RuntimeException $exception) {
+            $this->assertStringContainsString('Holzke: order rejected', $exception->getMessage());
+        }
+
+        $this->assertEquals(Order::STATUS_OPEN, $order->fresh()->status);
     }
 
     /** @test */
@@ -106,14 +309,14 @@ class HolzkeTest extends TestCase
         );
 
         $this->partialMock(Holzke::class, function (MockInterface $mock) {
-            $mock->shouldReceive('getHtml')
+            $mock->shouldReceive('getMealPlan')
             ->withAnyArgs()
-            ->andReturn(self::MEAL_HTML)
+            ->andReturn(self::mealPlan(today()))
             ->once();
 
-            $mock->shouldReceive('getHtml')
+            $mock->shouldReceive('getMealPlan')
             ->withAnyArgs()
-            ->andReturn('<div></div>')
+            ->andReturn([])
             ->once();
         });
 
@@ -141,9 +344,9 @@ class HolzkeTest extends TestCase
 
         $this->partialMock(Holzke::class, function (MockInterface $mock) {
 
-            $mock->shouldReceive('getHtml')
+            $mock->shouldReceive('getMealPlan')
                 ->withAnyArgs()
-                ->andReturn('<div></div>')
+                ->andReturn([])
                 ->once();
         });
 
@@ -152,14 +355,14 @@ class HolzkeTest extends TestCase
         Event::assertNotDispatched(NewOrderPossibilities::class);
 
         $this->partialMock(Holzke::class, function (MockInterface $mock) {
-            $mock->shouldReceive('getHtml')
+            $mock->shouldReceive('getMealPlan')
                 ->withAnyArgs()
-                ->andReturn(self::MEAL_HTML)
+                ->andReturn(self::mealPlan(today()))
                 ->once();
 
-            $mock->shouldReceive('getHtml')
+            $mock->shouldReceive('getMealPlan')
                 ->withAnyArgs()
-                ->andReturn('<div></div>')
+                ->andReturn([])
                 ->once();
         });
 
