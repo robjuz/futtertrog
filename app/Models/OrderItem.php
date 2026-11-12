@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use OpenApi\Attributes as OA;
+
 use App\IdeHelperOrderItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,24 +12,45 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\OrderItem.
  *
- * @OA\Schema (
- *      required={"title", "description", "price"},
- *      @OA\Property ( property="id", ref="#/components/schemas/id" ),
- *      @OA\Property ( property="order_id", ref="#/components/schemas/id" ),
- *      @OA\Property( property="meal", ref="#/components/schemas/Meal"),
- *      @OA\Property( property="user", ref="#/components/schemas/User"),
- *      @OA\Property( property="quantity", type="number"),
- *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
- *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
- *  ),
- * 
- *  @OA\Schema(
- *      schema="OrderItems",
- *      type="array",
- *      @OA\Items( type="object", ref="#/components/schemas/OrderItem" )
- *  ),
  * @mixin IdeHelperOrderItem
  */
+#[OA\Schema(
+    required: ["title", "description", "price"],
+    properties: [new OA\Property(
+        property: "id",
+        ref: "#/components/schemas/id"
+    ), new OA\Property(
+        property: "order_id",
+        ref: "#/components/schemas/id"
+    ), new OA\Property(
+        property: "meal",
+        ref: "#/components/schemas/Meal"
+    ), new OA\Property(
+        property: "user",
+        ref: "#/components/schemas/User"
+    ), new OA\Property(
+        property: "quantity",
+        type: "number"
+    ), new OA\Property(
+        property: "created_at",
+        type: "string",
+        format: "date-time",
+        readOnly: true
+    ), new OA\Property(
+        property: "updated_at",
+        type: "string",
+        format: "date-time",
+        readOnly: true
+    )]
+)]
+#[OA\Schema(
+    schema: "OrderItems",
+    type: "array",
+    items: new OA\Items(
+        type: "object",
+        ref: "#/components/schemas/OrderItem"
+    )
+)]
 class OrderItem extends Model
 {
     use HasFactory;

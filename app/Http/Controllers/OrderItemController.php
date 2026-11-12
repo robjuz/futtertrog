@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use OpenApi\Attributes as OA;
+
 use App\Events\OrderUpdated;
 use App\Models\Meal;
 use App\Models\OrderItem;
@@ -28,20 +30,21 @@ class OrderItemController extends Controller
      * @return Response
      *
      * @throws AuthorizationException
-     * @OA\Get (
-     *      path="/api/orders",
-     *      summary="List of orders",
-     *      description="List of orders for today and upcoming days",
-     *      operationId="order_items.index",
-     *      security={ {"bearer": {} }},
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Success",
-     *          @OA\JsonContent( ref="#/components/schemas/OrderItem" ),
-     *      ),
-     * )
      */
+    #[OA\Get(
+        path: "/api/orders",
+        summary: "List of orders",
+        description: "List of orders for today and upcoming days",
+        operationId: "order_items.index",
+        security: [["bearer" => []]],
+        responses: [new OA\Response(
+            response: 200,
+            description: "Success",
+            content: new OA\JsonContent(
+                ref: "#/components/schemas/OrderItem"
+            )
+        )]
+    )]
     public function index(Request $request)
     {
         Gate::authorize('list', OrderItem::class);
@@ -112,32 +115,42 @@ class OrderItemController extends Controller
      * Store a newly created resource in storage.
      *
      * @throws AuthorizationException
-     *
-     * @OA\Post (
-     *      path="/api/place_order",
-     *      summary="Place order",
-     *      description="Order a given meal for a given date",
-     *      operationId="order_items.store",
-     *      security={ {"bearer": {} }},
-     *
-     *      @OA\RequestBody(
-     *          required=true,
-     *          description="Pass user credentials",
-     *          @OA\JsonContent(
-     *              required={"date","meal_id"},
-     *              @OA\Property( property="date", type="string", format="date", example="2020-02-02" ),
-     *              @OA\Property( property="quantity", type="integer", example="1", minimum="1" ),
-     *              @OA\Property( property="meal_id", ref="#/components/schemas/id" ),
-     *          ),
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Success",
-     *          @OA\JsonContent( ref="#/components/schemas/Meal" ),
-     *      ),
-     * )
      */
+    #[OA\Post(
+        path: "/api/place_order",
+        summary: "Place order",
+        description: "Order a given meal for a given date",
+        operationId: "order_items.store",
+        security: [["bearer" => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Pass user credentials",
+            content: new OA\JsonContent(
+                required: ["date", "meal_id"],
+                properties: [new OA\Property(
+                    property: "date",
+                    type: "string",
+                    format: "date",
+                    example: "2020-02-02"
+                ), new OA\Property(
+                    property: "quantity",
+                    type: "integer",
+                    example: "1",
+                    minimum: 1
+                ), new OA\Property(
+                    property: "meal_id",
+                    ref: "#/components/schemas/id"
+                )]
+            )
+        ),
+        responses: [new OA\Response(
+            response: 200,
+            description: "Success",
+            content: new OA\JsonContent(
+                ref: "#/components/schemas/Meal"
+            )
+        )]
+    )]
     public function store(Request $request): View|RedirectResponse|JsonResponse
     {
         $request->validate(

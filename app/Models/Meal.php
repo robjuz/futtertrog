@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use OpenApi\Attributes as OA;
+
 use App\Casts\MealInfoCast;
 use App\Casts\MealProviderCast;
 use App\IdeHelperMeal;
@@ -17,26 +19,54 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
- * @OA\Schema (
- *      required={"title", "description", "price", "date"},
- *      @OA\Property( property="id", ref="#/components/schemas/id" ),
- *      @OA\Property( property="date", type="date" ),
- *      @OA\Property( property="title", type="string"),
- *      @OA\Property( property="variant_title", type="string"),
- *      @OA\Property( property="description", type="string"),
- *      @OA\Property( property="price", type="number", format="float"),
- *      @OA\Property( property="created_at",type="string", format="date-time", readOnly="true" ),
- *      @OA\Property( property="updated_at",type="string", format="date-time", readOnly="true" ),
- *      @OA\Property(
- *          property="variants",
- *          type="array",
- *          nullable=true,
- *          @OA\Items( type="object", ref="#/components/schemas/Meal" )
- *      ),
- *      @OA\Property( property="parent", type="object", ref="#/components/schemas/Meal", nullable=true ),
- *  ),
  * @mixin IdeHelperMeal
  */
+#[OA\Schema(
+    required: ["title", "description", "price", "date"],
+    properties: [new OA\Property(
+        property: "id",
+        ref: "#/components/schemas/id"
+    ), new OA\Property(
+        property: "date",
+        type: "date"
+    ), new OA\Property(
+        property: "title",
+        type: "string"
+    ), new OA\Property(
+        property: "variant_title",
+        type: "string"
+    ), new OA\Property(
+        property: "description",
+        type: "string"
+    ), new OA\Property(
+        property: "price",
+        type: "number",
+        format: "float"
+    ), new OA\Property(
+        property: "created_at",
+        type: "string",
+        format: "date-time",
+        readOnly: true
+    ), new OA\Property(
+        property: "updated_at",
+        type: "string",
+        format: "date-time",
+        readOnly: true
+    ), new OA\Property(
+        property: "variants",
+        type: "array",
+        nullable: true,
+        items: new OA\Items(
+            type: "object",
+            ref: "#/components/schemas/Meal"
+        )
+    ), new OA\Property(
+        property: "parent",
+        type: "object",
+        ref: "#/components/schemas/Meal",
+        nullable: true
+    )]
+)]
 class Meal extends Model
 {
     use HasFactory;

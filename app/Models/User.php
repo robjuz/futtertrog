@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use OpenApi\Attributes as OA;
+
 use App\IdeHelperUser;
 use App\UserSettings;
 use Cknow\Money\Money;
@@ -13,15 +15,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
 /**
- * @OA\Schema (
- *      required={"password", "email", "name"},
- *      @OA\Property( property="id", ref="#/components/schemas/id" ),
- *      @OA\Property(property="email", type="string", format="email", description="User unique email address", example="john@example.com"),
- *      @OA\Property(property="name", type="string", example="John"),
- *      @OA\Property(property="api_token", type="string", readOnly="true"),
- *      @OA\Property( property="created_at",type="string", format="date-time" ),
- *      @OA\Property( property="updated_at",type="string", format="date-time" ),
- * )
  * @property int $id
  * @property string $name
  * @property string $email
@@ -66,6 +59,35 @@ use Illuminate\Support\Str;
  * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  * @mixin IdeHelperUser
  */
+#[OA\Schema(
+    required: ["password", "email", "name"],
+    properties: [new OA\Property(
+        property: "id",
+        ref: "#/components/schemas/id"
+    ), new OA\Property(
+        property: "email",
+        type: "string",
+        format: "email",
+        description: "User unique email address",
+        example: "john@example.com"
+    ), new OA\Property(
+        property: "name",
+        type: "string",
+        example: "John"
+    ), new OA\Property(
+        property: "api_token",
+        type: "string",
+        readOnly: true
+    ), new OA\Property(
+        property: "created_at",
+        type: "string",
+        format: "date-time"
+    ), new OA\Property(
+        property: "updated_at",
+        type: "string",
+        format: "date-time"
+    )]
+)]
 class User extends Authenticatable
 {
     use HasFactory;

@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8080"
+            "url": "http://localhost"
         }
     ],
     "paths": {
@@ -216,8 +216,8 @@
                                     },
                                     "quantity": {
                                         "type": "integer",
-                                        "minimum": "1",
-                                        "example": "1"
+                                        "example": "1",
+                                        "minimum": 1
                                     },
                                     "meal_id": {
                                         "$ref": "#/components/schemas/id"
@@ -336,12 +336,12 @@
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": "true"
+                        "readOnly": true
                     },
                     "updated_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": "true"
+                        "readOnly": true
                     },
                     "variants": {
                         "type": "array",
@@ -351,7 +351,20 @@
                         "nullable": true
                     },
                     "parent": {
-                        "$ref": "#/components/schemas/Meal"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Meal"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
+                            }
+                        ],
+                        "type": "object",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -381,12 +394,12 @@
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": "true"
+                        "readOnly": true
                     },
                     "updated_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": "true"
+                        "readOnly": true
                     }
                 },
                 "type": "object"
@@ -419,7 +432,7 @@
                     },
                     "api_token": {
                         "type": "string",
-                        "readOnly": "true"
+                        "readOnly": true
                     },
                     "created_at": {
                         "type": "string",
@@ -459,7 +472,7 @@
                 "in": "query",
                 "schema": {
                     "type": "integer",
-                    "minimum": "1"
+                    "minimum": 1
                 }
             },
             "per_page_in_query": {
@@ -467,7 +480,7 @@
                 "in": "query",
                 "schema": {
                     "type": "integer",
-                    "minimum": "1"
+                    "minimum": 1
                 }
             }
         },

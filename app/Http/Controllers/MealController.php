@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use OpenApi\Attributes as OA;
+
 use App\Events\NewOrderPossibility;
 use App\Http\Requests\MealStoreRequest;
 use App\Http\Requests\MealUpdateRequest;
@@ -34,31 +36,34 @@ class MealController extends Controller implements HasMiddleware
      * @param OrdersRepository $orders
      * @param MealsRepository $meals
      * @return Response
-     *
-     * @OA\Get(
-     *      path="/api/order_possibilities",
-     *      summary="Meals for given date",
-     *      description="Shows the meals for the current or given date",
-     *      operationId="meals.index",
-     *      security={ {"bearer": {} }},
-     *
-     *      @OA\Parameter(
-     *          name="date",
-     *          in="query",
-     *          @OA\Schema(type="string", format="date"),
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Meals list",
-     *          @OA\JsonContent(
-     *              title="Meals",
-     *              type="array",
-     *              @OA\Items( type="object", ref="#/components/schemas/Meal" )
-     *          ),
-     *      ),
-     * )
      */
+    #[OA\Get(
+        path: "/api/order_possibilities",
+        summary: "Meals for given date",
+        description: "Shows the meals for the current or given date",
+        operationId: "meals.index",
+        security: [["bearer" => []]],
+        parameters: [new OA\Parameter(
+            name: "date",
+            in: "query",
+            schema: new OA\Schema(
+                type: "string",
+                format: "date"
+            )
+        )],
+        responses: [new OA\Response(
+            response: 200,
+            description: "Meals list",
+            content: new OA\JsonContent(
+                title: "Meals",
+                type: "array",
+                items: new OA\Items(
+                    type: "object",
+                    ref: "#/components/schemas/Meal"
+                )
+            )
+        )]
+    )]
     public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
     {
         /** @var User $user */
