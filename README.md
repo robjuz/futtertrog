@@ -2,6 +2,21 @@
 
 An easy system to organize yours and your coworkers lunch orders.
 
+## Versions and Docker tags
+
+The `1.x` branch is the current stable version. Development of version 2 takes place on `master`.
+
+| Docker tag | Source |
+|------------|--------|
+| `latest` | Stable `1.x` branch only |
+| `edge` | Version 2 development on `master` |
+| `1.x`, `master` | Corresponding branch |
+| Release tag (for example `1.2.3`) | Corresponding Git tag |
+
+Release tags do not update `latest`. Pull requests targeting either branch are built and tested without publishing Docker images.
+
+Apply the workflow configuration to both `master` and `1.x`: GitHub Actions reads workflows from the ref that triggers each run.
+
 ## Installation
 
 ### Using git
