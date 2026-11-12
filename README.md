@@ -189,6 +189,8 @@ AUTHENTIK_CLIENT_SECRET=
 
 ### Laravel Boost (Codex, Claude Code and OpenCode)
 
+#### First-time setup
+
 Laravel Boost is a development dependency. After cloning, use a PHP 8.5 interpreter
 with the application's required extensions and configure a local `.env`, then run:
 
@@ -197,16 +199,41 @@ composer install
 php artisan boost:install
 ```
 
-Select Codex, Claude Code and OpenCode. The installer creates the local MCP
-configurations and skill copies; these generated files are ignored by Git. Reopen
-the project / agent session afterward. Codex must trust the project to load its
-project MCP configuration. Preserve existing local agent settings when installing.
+`composer install` installs the dependency; `php artisan boost:install` is also
+required once in each fresh checkout. It creates local MCP configuration and skill
+copies, which are ignored by Git. The supported agents are Codex, Claude Code and
+OpenCode. The shared selection in `boost.json` is reused by the installer. Reopen
+the project or agent session afterward and confirm that the Laravel Boost MCP
+server is connected in the client. Codex must trust the project to load its MCP
+configuration. Preserve existing local agent settings when installing.
+
+#### Using Boost
+
+Boost is an agent tool server, not a separate chat or web application. Ask your
+agent for ordinary development help; Boost MCP tools can search Laravel
+documentation, inspect the database schema, run read-only database queries and
+review browser and application logs. For captured profiling data, the
+`debug-using-debugbar` skill reads Laravel Debugbar data through Artisan commands.
+Installed skills activate when relevant and can also be requested by name. For
+example:
+
+- “Inspect the project and database schema before implementing this change.”
+- “Use the `testing-best-practices` skill to add focused tests for this endpoint.”
+- “Use `debug-using-debugbar` to investigate the captured request and explain its slow queries.”
+
+For a rule that should be shared with the team, ask the agent to “Remember that …”
+and have it record the rule with Boost's `record-rule` tool. Reviewed project rules
+are committed under `.ai/rules` and shared with everyone. The `infer-conventions`
+skill runs only when explicitly requested; it analyzes project patterns and records
+reviewed conventions.
 
 The shared agent selection in `boost.json` and guidelines in `AGENTS.md` are tracked.
 Boost preserves custom instructions outside the `<laravel-boost-guidelines>` block
 in `AGENTS.md`. Shared sources under `.ai/rules`, `.ai/guidelines` and `.ai/skills`
 are also tracked when present; put custom skills in `.ai/skills` rather than the
 generated agent skill directories.
+
+#### Updating Boost
 
 `composer update` automatically refreshes generated guidance and skills through
 `boost:update`. To refresh them manually, run `php artisan boost:update`. This does
