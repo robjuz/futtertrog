@@ -187,6 +187,41 @@ AUTHENTIK_CLIENT_SECRET=
 
 ## Local Development
 
+### Laravel Boost (Codex, Claude Code and OpenCode)
+
+Laravel Boost is a development dependency. After cloning, use a PHP 8.5 interpreter
+with the application's required extensions and configure a local `.env`, then run:
+
+```shell
+composer install
+php artisan boost:install
+```
+
+Select Codex, Claude Code and OpenCode. The installer creates the local MCP
+configurations and skill copies; these generated files are ignored by Git. Reopen
+the project / agent session afterward. Codex must trust the project to load its
+project MCP configuration. Preserve existing local agent settings when installing.
+
+The shared agent selection in `boost.json` and guidelines in `AGENTS.md` are tracked.
+Boost preserves custom instructions outside the `<laravel-boost-guidelines>` block
+in `AGENTS.md`. Shared sources under `.ai/rules`, `.ai/guidelines` and `.ai/skills`
+are also tracked when present; put custom skills in `.ai/skills` rather than the
+generated agent skill directories.
+
+`composer update` automatically refreshes generated guidance and skills through
+`boost:update`. To refresh them manually, run `php artisan boost:update`. This does
+not regenerate MCP configuration; use `php artisan boost:install --mcp` for that.
+
+Boost can inspect application data and run code: use it with a local development
+database. Production images use `composer install --no-dev`, which does not run
+the post-update hook. Do not use `composer update --no-dev`: the hook cannot invoke
+`boost:update` when the development dependency is absent.
+
+See the [Laravel Boost documentation](https://laravel.com/docs/13.x/boost) for details.
+
+API documentation uses PHP OpenAPI attributes and can be regenerated with
+`php artisan l5-swagger:generate`.
+
 ### Debugging
 to enable general debugging logs, set the `APP_DEBUG=true` in the `.env` file
 

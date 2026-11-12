@@ -7,6 +7,12 @@
 /vendor
 /.idea
 /.vscode
+/.mcp.json
+/.codex/config.toml
+/opencode.json
+/.agents/skills/
+/.claude/skills/
+/.junie/
 /nbproject
 /.vagrant
 Homestead.json

@@ -11,6 +11,15 @@ codecov.yml
 docker-compose.yml
 Dockerfile
 vendor
+.mcp.json
+.codex
+opencode.json
+.agents
+.claude
+.junie
+AGENTS.md
+boost.json
+.ai
 
 .env
 .env.*
