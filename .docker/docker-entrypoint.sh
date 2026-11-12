@@ -31,8 +31,8 @@ sed -i 's/#LoadModule\ deflate_module/LoadModule\ deflate_module/' /etc/apache2/
 sed -i 's/#LoadModule\ expires_module/LoadModule\ expires_module/' /etc/apache2/httpd.conf
 
 # Modify php memory limit and timezone
-sed -i "s/memory_limit = .*/memory_limit = ${PHP_MEMORY_LIMIT}/" /etc/php83/php.ini
-sed -i "s#^;date.timezone =\$#date.timezone = \"${TZ}\"#" /etc/php83/php.ini
+sed -i "s/memory_limit = .*/memory_limit = ${PHP_MEMORY_LIMIT}/" /etc/php85/php.ini
+sed -i "s#^;date.timezone =\$#date.timezone = \"${TZ}\"#" /etc/php85/php.ini
 
 umask 0022
 if [[ "$1" = "httpd" ]]; then

@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function guest_can_obtain_a_password_reset_link()
     {
         Notification::fake();
@@ -23,7 +23,7 @@ class PasswordResetTest extends TestCase
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function guest_can_reset_his_password()
     {
         $user = User::factory()->create(['email' => 'john@example.com']);

@@ -2,7 +2,7 @@ services:
   app:
     extra_hosts:
       - 'host.docker.internal:host-gateway'
-    image: thecodingmachine/php:8.3-v4-apache
+    image: thecodingmachine/php:8.5.12-v5-apache
     expose:
       - 80
     volumes:

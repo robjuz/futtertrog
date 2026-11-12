@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class OrderPolicyTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function acting_as_admin()
     {
         $order = Order::factory()->create();
@@ -22,7 +22,7 @@ class OrderPolicyTest extends TestCase
         $this->assertTrue(auth()->user()->can('delete', $order));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function acting_as_user()
     {
 

@@ -32,7 +32,7 @@ class HolzkeTest extends TestCase
     private const BESTELLER_ID = '105094-holzke-abc';
     private const MANDANT_ID = '105094-holzke';
 
-    private static function mealPlan(Carbon $date, array $menus = null): array
+    private static function mealPlan(Carbon $date, ?array $menus = null): array
     {
         $day = $date->toDateString();
         $menus ??= [
@@ -91,7 +91,7 @@ class HolzkeTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_create_meals_from_the_holzke_meal_plan()
     {
         $date = today();
@@ -113,7 +113,7 @@ class HolzkeTest extends TestCase
         $this->assertSame(['1', 'A', 'G', 'A1'], $meals[0]['info']->allergens);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_logs_in_and_fetches_the_meal_plan_from_the_api()
     {
         $date = today();
@@ -137,7 +137,7 @@ class HolzkeTest extends TestCase
             && $request['parameter']['von'] === $date->toDateString());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_throws_a_descriptive_exception_when_the_api_fails()
     {
         config(['services.holzke.login' => 'user', 'services.holzke.password' => 'secret']);
@@ -149,7 +149,7 @@ class HolzkeTest extends TestCase
         (new Holzke())->getMealsDataForDate(today());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_places_an_order_by_syncing_the_quantities_of_the_week()
     {
         Carbon::setTestNow(Carbon::parse('2026-11-11 08:00'));
@@ -228,7 +228,7 @@ class HolzkeTest extends TestCase
         $this->assertSame('2026-11-09/2026-11-15', $order->fresh()->external_id);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_logs_in_again_when_the_session_expired()
     {
         $date = today();
@@ -243,7 +243,7 @@ class HolzkeTest extends TestCase
         Http::assertSentCount(4);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_mark_the_order_as_ordered_when_holzke_rejects_it()
     {
         $date = Carbon::parse('2026-11-11');
@@ -278,7 +278,7 @@ class HolzkeTest extends TestCase
         $this->assertEquals(Order::STATUS_OPEN, $order->fresh()->status);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_resolves_a_holzke_provider_from_app_container()
     {
         config(['services.holzke.enabled' => true]);
@@ -288,7 +288,7 @@ class HolzkeTest extends TestCase
         $this->assertSame(app(Holzke::class), app(Holzke::class));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_sent_a_new_order_possibility_notification_to_users_that_opted_in()
     {
         Notification::fake();
@@ -335,7 +335,7 @@ class HolzkeTest extends TestCase
         });
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_fires_a_event_when_new_meals_were_created()
     {
         Event::fake();
@@ -369,7 +369,7 @@ class HolzkeTest extends TestCase
         app(Holzke::class)->getAllUpcomingMeals();
     }
 
-//    /** @test */
+//    #[\PHPUnit\Framework\Attributes\Test]
 //    public function it_allows_to_auto_order()
 //    {
 //        /** @var User $user */

@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_to_login_page_after_logout()
     {
         $this->login()

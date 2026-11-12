@@ -15,7 +15,7 @@ class LoginWithGitlabTest extends TestCase
 {
     use WithFaker;
 
-    /** @test * */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_a_new_user_from_gitlab_user()
     {
         $this->mockSocialite();
@@ -47,7 +47,7 @@ class LoginWithGitlabTest extends TestCase
         return $this;
     }
 
-    /** @test * */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_logs_in_a_user_with_the_equivalent_gitlab_email()
     {
         $this->mockSocialite();
@@ -67,7 +67,7 @@ class LoginWithGitlabTest extends TestCase
         $this->assertAuthenticatedAs($user->first());
     }
 
-    /** @test * */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_is_forbidden_to_login_in_with_deleted_account()
     {
         $this->mockSocialite();

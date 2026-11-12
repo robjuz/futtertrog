@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class MealImportTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function only_admin_can_import_meals_from_providers()
     {
         $this->withExceptionHandling();

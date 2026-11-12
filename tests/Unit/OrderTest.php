@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_many_order_items()
     {
         /** @var \App\Models\Order $order */
@@ -21,7 +21,7 @@ class OrderTest extends TestCase
         $this->assertInstanceOf(Collection::class, $order->orderItems);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_knows_its_subtotal()
     {
         $meal1 = Meal::factory()->create(['price' => 1]);
@@ -44,9 +44,7 @@ class OrderTest extends TestCase
         $this->assertEquals(Money::parse(6), $order->subtotal);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_is_payed_when_payed_at_or_user_id_is_set(){
         $order1 = Order::create();
 

@@ -11,3 +11,8 @@ codecov.yml
 docker-compose.yml
 Dockerfile
 vendor
+
+.env
+.env.*
+!.env.example
+node_modules

@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 class MealOrderingTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_can_order_a_meal_for_himself()
     {
         /** @var Meal $meal */
@@ -31,7 +31,7 @@ class MealOrderingTest extends TestCase
         ])->assertSuccessful();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_cannot_order_a_meal_for_other_users()
     {
         /** @var Meal $meal */
@@ -50,7 +50,7 @@ class MealOrderingTest extends TestCase
         $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_cannot_order_a_meal_located_in_the_past()
     {
         /** @var Meal $meal */
@@ -64,7 +64,7 @@ class MealOrderingTest extends TestCase
             ->assertForbidden();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_order_a_meal_for_other_users()
     {
         /** @var Meal $meal */
@@ -87,7 +87,7 @@ class MealOrderingTest extends TestCase
         $this->assertTrue($user->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function guests_cannot_order_meals()
     {
         $this->withExceptionHandling();
@@ -96,7 +96,7 @@ class MealOrderingTest extends TestCase
         $this->postJson(route('order_items.store'))->assertUnauthorized();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_dispatches_an_event_when_an_order_was_reopened()
     {
         /** @var Meal $meal1 */
@@ -137,7 +137,7 @@ class MealOrderingTest extends TestCase
         });
     }
 
-    /**  @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_its_status()
     {
         /** @var Meal $meal1 */
@@ -173,7 +173,7 @@ class MealOrderingTest extends TestCase
         $this->assertEquals(Order::STATUS_OPEN, $order->status);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_provides_a_list_of_order_items()
     {
         $user = User::factory()->create();
@@ -187,7 +187,7 @@ class MealOrderingTest extends TestCase
             ->assertJsonFragment($orderItem->toArray());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_see_all_order_items()
     {
         $orderItem = OrderItem::factory()->create();
@@ -197,7 +197,7 @@ class MealOrderingTest extends TestCase
             ->assertJsonFragment($orderItem->toArray());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_see_order_items_from_other_users()
     {
         $user = User::factory()->create();
@@ -214,7 +214,7 @@ class MealOrderingTest extends TestCase
             ->assertJsonMissingExact(['user_id' => $orderItem2->user_id]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_delete_an_order_item()
     {
         $user = User::factory()->create();
@@ -237,7 +237,7 @@ class MealOrderingTest extends TestCase
         $this->assertDatabaseMissing('order_items', $orderItem->toArray());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_disallows_to_delete_an_order_item_in_the_past()
     {
         $user = User::factory()->create();
@@ -263,7 +263,7 @@ class MealOrderingTest extends TestCase
         $this->assertDatabaseHas('order_items', $orderItem->only(['order_id', 'user_id', 'meal_id', 'quantity']));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_a_delete_order_button_for_a_ordered_meal()
     {
         /** @var Meal $meal */
@@ -284,7 +284,7 @@ class MealOrderingTest extends TestCase
     }
 
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_a_delete_order_button_for_a_ordered_meal_variant()
     {
         /** @var Meal $meal */
@@ -310,7 +310,7 @@ class MealOrderingTest extends TestCase
             ->assertSee(__('Delete order'));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_only_allows_to_order_a_meal_variant_in_meal_with_variants()
     {
         /** @var Meal $meal */
@@ -340,7 +340,7 @@ class MealOrderingTest extends TestCase
         $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_see_only_meal_variants_in_order_item_create_form()
     {
         /** @var Meal $meal */
@@ -364,7 +364,7 @@ class MealOrderingTest extends TestCase
             });
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_see_only_meal_variants_in_order_item_edit_form()
     {
         /** @var User $user */

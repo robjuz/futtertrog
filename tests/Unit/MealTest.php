@@ -18,7 +18,7 @@ class MealTest extends TestCase
         $this->assertInstanceOf(Collection::class, $meal->orderItems);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function variant_name_consist_of_parent_name_and_variant_name()
     {
         /** @var Meal $meal */
@@ -30,7 +30,7 @@ class MealTest extends TestCase
         $this->assertTrue(Str::containsAll($variant->title, [$meal->title, $variant->title]));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function hated_takes_precedence_before_preferred()
     {
 
@@ -71,7 +71,7 @@ class MealTest extends TestCase
 
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_knows_it_is_ordered()
     {
 
@@ -86,7 +86,7 @@ class MealTest extends TestCase
         $this->assertTrue($meal->isOrdered($user));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_knows_its_variant_is_ordered()
     {
 

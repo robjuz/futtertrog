@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class SystemTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_knows_it_current_balance()
     {
         /** @var User $user */

@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class WeekNavigationTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_doesnt_show_the_next_week_link_when_no_order_possibilities_for_next_week_present()
     {
         $nextWeekMonday = Carbon::now()->addWeek()->startofWeek();
@@ -32,9 +32,7 @@ class WeekNavigationTest extends TestCase
             ->assertSee($nextWeekMonday->toDateString(), false);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_an_ordered_label(){
         /** @var Meal $meal */
         $meal = Meal::factory()->create(['date' => today()]);
@@ -57,9 +55,7 @@ class WeekNavigationTest extends TestCase
         $view->assertDontSee(__('Ordered'));
 
     }
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_an_notifications_disabled_icon(){
         $settings = new UserSettings();
         $settings->noOrderForNextWeekNotification = true;

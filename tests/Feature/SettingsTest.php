@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class SettingsTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_provides_a_list_of_users_settings()
     {
         $this->login();
@@ -16,7 +16,7 @@ class SettingsTest extends TestCase
         $this->getJson(route('settings.index'))->assertJson([]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_store_settings()
     {
         // $this->withExceptionHandling();

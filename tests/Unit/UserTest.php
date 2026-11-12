@@ -14,7 +14,7 @@ class UserTest extends TestCase
 {
 
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_many_deposits()
     {
         /** @var \App\Models\User $user */
@@ -23,7 +23,7 @@ class UserTest extends TestCase
         $this->assertInstanceOf(Collection::class, $user->deposits);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_many_order_items()
     {
         /** @var \App\Models\User $user */
@@ -32,7 +32,7 @@ class UserTest extends TestCase
         $this->assertInstanceOf(Collection::class, $user->orderItems);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_knows_its_current_balance()
     {
         /** @var \App\Models\User $user */
@@ -56,7 +56,7 @@ class UserTest extends TestCase
         $this->assertEquals(Money::parse(1410), $user->balance);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_be_marked_as_admin()
     {
         $user = User::factory()->create(['is_admin' => false]);
@@ -66,7 +66,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->fresh()->is_admin);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_cannot_delete_his_own_account()
     {
         /** @var User $user */

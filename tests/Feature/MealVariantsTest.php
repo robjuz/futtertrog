@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class MealVariantsTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function a_meal_can_have_variants()
     {
         /** @var Meal $meal */
@@ -23,7 +23,7 @@ class MealVariantsTest extends TestCase
         $this->assertCount(1, $meal->fresh()->variants);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function a_variant_knows_his_parent()
     {
         /** @var Meal $meal */

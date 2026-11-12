@@ -19,6 +19,10 @@ Apply the workflow configuration to both `master` and `1.x`: GitHub Actions read
 
 ## Installation
 
+Version 2 uses Laravel 13 and PHP 8.5. Docker uses Alpine 3.24 with PHP 8.5;
+CI and Composer target PHP 8.5 as well. Use the latest stable PHP 8.5 patch
+(currently 8.5.12).
+
 ### Using git
 
 * ```git clone https://github.com/robjuz/futtertrog.git```

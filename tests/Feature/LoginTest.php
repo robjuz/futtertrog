@@ -8,7 +8,7 @@ use Tests\TestCase;
 class LoginTest extends TestCase
 {
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_login_with_email_and_password()
     {
         User::factory()->create([
@@ -24,7 +24,7 @@ class LoginTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function authenticated_users_cannot_access_the_login_page()
     {
         $this->login()

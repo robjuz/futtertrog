@@ -8,7 +8,7 @@ use Tests\TestCase;
 class DisabledOrderNotificationToggleTest extends TestCase
 {
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_be_toggeled_for_a_specific_date()
     {
         $user = User::factory()->create();

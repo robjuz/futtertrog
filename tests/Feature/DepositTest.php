@@ -12,7 +12,7 @@ class DepositTest extends TestCase
 {
 
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function only_admin_can_create_a_deposit()
     {
         $this->withExceptionHandling();
@@ -22,7 +22,7 @@ class DepositTest extends TestCase
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function only_admin_can_delete_a_deposit()
     {
         $this->withExceptionHandling();
@@ -51,7 +51,7 @@ class DepositTest extends TestCase
         $this->assertEquals(10, $user->balance);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_create_a_negative_deposit()
     {
         $deposit =  Deposit::factory()->raw(['value' => -10]);
@@ -62,7 +62,7 @@ class DepositTest extends TestCase
         $this->assertDatabaseHas('deposits', $deposit);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_delete_a_deposit()
     {
         $user = User::factory()->create();
@@ -80,7 +80,7 @@ class DepositTest extends TestCase
         $this->assertEquals(Money::parse(0), $user->balance);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_make_a_transfer_from_one_user_to_other_user()
     {
         $user = User::factory()->create();
@@ -99,7 +99,7 @@ class DepositTest extends TestCase
         $this->assertEquals(Money::parse(1050), $otherUser->balance);
     }
 
-    /** @test  */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_the_description_in_edit_view()
     {
         /** @var Deposit $deposit */

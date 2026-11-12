@@ -11,7 +11,7 @@ use Tests\TestCase;
 class UserTest extends TestCase
 {
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function guests_are_not_allowed_to_manage_system_users()
     {
         $this->withExceptionHandling();
@@ -38,7 +38,7 @@ class UserTest extends TestCase
         $this->deleteJson(route('users.destroy', 1))->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function users_are_not_allowed_to_manage_system_users()
     {
         $this->withExceptionHandling();
@@ -56,7 +56,7 @@ class UserTest extends TestCase
         $this->delete(route('users.destroy', $user))->assertForbidden();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_see_a_list_of_system_users()
     {
         $user = User::factory()->create();
@@ -71,7 +71,7 @@ class UserTest extends TestCase
         $jsonResponse->assertJsonFragment($user->toArray());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_manage_users()
     {
         $data = User::factory()->raw([
@@ -122,7 +122,7 @@ class UserTest extends TestCase
         $this->deleteJson(route('users.destroy', $user))->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_see_users_order_history()
     {
         $user = User::factory()->create();
@@ -135,9 +135,7 @@ class UserTest extends TestCase
             ->assertSee($orderItem->meal->title);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_see_users_deposit_history()
     {
         $user = User::factory()->create();
@@ -150,7 +148,7 @@ class UserTest extends TestCase
             ->assertSee(99);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_see_users_current_balance()
     {
         $user = User::factory()->create();
@@ -163,7 +161,7 @@ class UserTest extends TestCase
             ->assertSee(20);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_cannot_delete_another_user()
     {
         $this->withExceptionHandling();
@@ -175,7 +173,7 @@ class UserTest extends TestCase
         $this->login()->deleteJson(route('users.destroy', $user))->assertForbidden();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_delete_a_user()
     {
         $this->withExceptionHandling();
@@ -191,7 +189,7 @@ class UserTest extends TestCase
 
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_restore_a_user()
     {
         $this->withExceptionHandling();

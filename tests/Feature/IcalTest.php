@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class IcalTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_export_users_order_history_to_ical()
     {
         /** @var User $user */
@@ -31,7 +31,7 @@ class IcalTest extends TestCase
             ->assertSee($orderItem->meal->title.' ('.$orderItem->quantity.')');
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_be_filtered_out_by_date_range()
     {
         $user = User::factory()->create();
@@ -79,9 +79,7 @@ class IcalTest extends TestCase
             ->assertDontSee($tomorrowMeal->title);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_show_order_without_quantity()
     {
         /** @var User $user */
