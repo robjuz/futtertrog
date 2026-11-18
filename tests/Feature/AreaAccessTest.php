@@ -101,13 +101,13 @@ class AreaAccessTest extends TestCase
         $deposit = Deposit::factory()->create();
         $this->loginAsAdmin();
 
-        $this->get('/admin')->assertOk()->assertSee('Administration')->assertSee('/admin/users', false);
+        $this->get('/admin')->assertOk()->assertSee('Administration')->assertSee('/admin/people', false);
         foreach (['users', 'users/create', "users/{$item->user_id}", "users/{$item->user_id}/edit",
             'meals/create', "meals/{$item->meal_id}/edit", 'orders', "orders/{$item->order_id}/edit",
             'deposits', 'deposits/create', "deposits/{$deposit->id}/edit", 'deposits/transfer',
             'notifications/create', 'order_items/create', "order_items/{$item->id}/edit"] as $path) {
             $this->get('/'.$path)->assertRedirect('/admin/'.$path);
-            $this->get('/admin/'.$path)->assertOk()->assertSee('admin-navigation', false);
+            $this->get('/admin/'.$path)->assertRedirect();
         }
     }
 
@@ -222,13 +222,14 @@ class AreaAccessTest extends TestCase
         Event::fake([OrderUpdated::class]);
         $this->loginAsAdmin();
 
-        $this->postJson('/admin/order_items', ['meal_id' => $meal->id, 'user_id' => $user->id])->assertCreated();
+        \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('administration'));
+        \Livewire\Livewire::test(\App\Filament\Resources\OrderItems\Pages\ManageOrderItems::class)->callAction('orderFor', data: ['meal_id' => $meal->id, 'user_id' => $user->id, 'quantity' => 1])->assertHasNoActionErrors();
         $item = OrderItem::sole();
         $this->assertSame($user->id, $item->user_id);
-        $this->putJson('/admin/order_items/'.$item->id, ['user_id' => $other->id, 'quantity' => 2])->assertOk();
+        \Livewire\Livewire::test(\App\Filament\Resources\OrderItems\Pages\ManageOrderItems::class)->callTableAction('change', $item, data: ['user_id' => $other->id, 'quantity' => 2])->assertHasNoActionErrors();
         $this->assertSame($other->id, $item->fresh()->user_id);
         $this->assertSame(2, $item->fresh()->quantity);
-        $this->deleteJson('/admin/order_items/'.$item->id)->assertNoContent();
+        \Livewire\Livewire::test(\App\Filament\Resources\OrderItems\Pages\ManageOrderItems::class)->callTableAction('remove', $item)->assertNotified('Vorgang erfolgreich.');
         $this->assertModelMissing($item);
         Event::assertDispatchedTimes(OrderUpdated::class, 3);
     }
@@ -292,8 +293,8 @@ class AreaAccessTest extends TestCase
         $inactive->delete();
         $this->login($admin)->withExceptionHandling();
 
-        $this->putJson(route('users.update', $admin), ['is_admin' => false])->assertForbidden();
-        $this->deleteJson(route('users.destroy', $admin))->assertForbidden();
+        \Livewire\Livewire::test(\App\Filament\Resources\Users\Pages\ManageUsers::class)->callTableAction('role', $admin, data: ['is_admin' => false])->assertNotified('Vorgang nicht ausgeführt.');
+        \Livewire\Livewire::test(\App\Filament\Resources\Users\Pages\ManageUsers::class)->callTableAction('deactivate', $admin)->assertNotified('Vorgang nicht ausgeführt.');
         $this->assertTrue($admin->fresh()->is_admin);
         $this->assertNotSoftDeleted($admin);
     }
@@ -305,7 +306,7 @@ class AreaAccessTest extends TestCase
         User::factory()->admin()->create();
         $this->login($admin);
 
-        $this->putJson(route('users.update', $admin), ['is_admin' => false])->assertOk();
+        \Livewire\Livewire::test(\App\Filament\Resources\Users\Pages\ManageUsers::class)->callTableAction('role', $admin, data: ['is_admin' => false])->assertNotified('Vorgang erfolgreich.')->assertRedirect(route('home'));
 
         $this->assertFalse($admin->fresh()->is_admin);
     }
@@ -370,8 +371,9 @@ class AreaAccessTest extends TestCase
                 ->andReturnUsing(function (Order $target): void { $target->markOrdered(); });
             $this->loginAsAdmin();
 
-            $this->post('/admin/meals/import', ['date' => $meal->date->toDateString(), 'provider' => 'Holzke'])->assertRedirect(route('meals.create'));
-            $this->postJson('/admin/orders/'.$order->id.'/auto_order')->assertOk();
+            \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('administration'));
+            \Livewire\Livewire::test(\App\Filament\Resources\Meals\Pages\ManageMeals::class)->callAction('import', data: ['date' => $meal->date->toDateString(), 'provider' => 'Holzke'])->assertHasNoActionErrors();
+            \Livewire\Livewire::test(\App\Filament\Resources\Orders\Pages\ManageOrders::class)->callTableAction('autoOrder', $order)->assertNotified('Vorgang erfolgreich.');
 
             $this->assertSame(Order::STATUS_ORDERED, $order->fresh()->status);
             Http::assertNothingSent();

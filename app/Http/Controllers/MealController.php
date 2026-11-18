@@ -4,31 +4,18 @@ namespace App\Http\Controllers;
 
 use OpenApi\Attributes as OA;
 
-use App\Events\NewOrderPossibility;
-use App\Http\Requests\MealStoreRequest;
-use App\Http\Requests\MealUpdateRequest;
 use App\Models\Meal;
 use App\Models\User;
 use App\Repositories\MealsRepository;
 use App\Repositories\OrdersRepository;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
 
-class MealController extends Controller implements HasMiddleware
+class MealController extends Controller
 {
-    public static function middleware()
-    {
-        return [
-            new Middleware('cast.float', only: ['store']),
-        ];
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -96,56 +83,6 @@ class MealController extends Controller implements HasMiddleware
         );
     }
 
-    public function adminIndex(): \Illuminate\Contracts\View\View
-    {
-        Gate::authorize('create', Meal::class);
-
-        $meals = Meal::with('variants')->latest('date')->paginate();
-
-        return view('admin.meals', compact('meals'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     *
-     * @throws AuthorizationException
-     */
-    public function create()
-    {
-//        abort(404);
-
-        Gate::authorize('create', Meal::class);
-
-        return view('meal.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param MealStoreRequest $request
-     * @return Response
-     */
-    public function store(MealStoreRequest $request)
-    {
-        $meal = Meal::create($request->validated());
-
-        if ($request->has('notify')) {
-            event(new NewOrderPossibility($meal->date));
-        }
-
-        if ($request->wantsJson()) {
-            return response()->json($meal, Response::HTTP_CREATED);
-        }
-
-        if ($request->has('saveAndNew')) {
-            return redirect()->route('meals.create')->with('success', __('Saved'));
-        }
-
-        return redirect()->route('admin.meals.index')->with('success', __('Saved'));
-    }
-
     /**
      * Display the specified resource.
      *
@@ -164,66 +101,6 @@ class MealController extends Controller implements HasMiddleware
         }
 
         return view('meal.show', compact('meal'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Meal $meal
-     * @return Response
-     *
-     * @throws AuthorizationException
-     */
-    public function edit(Meal $meal)
-    {
-        Gate::authorize('update', $meal);
-
-        return view('meal.edit', compact('meal'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param MealUpdateRequest $request
-     * @param Meal $meal
-     * @return Response
-     */
-    public function update(MealUpdateRequest $request, Meal $meal)
-    {
-        $meal->update($request->validated());
-
-        if ($request->wantsJson()) {
-            return response()->json($meal);
-        }
-
-        return redirect()->route('admin.meals.index')->with('success', __('Saved'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Request $request
-     * @param Meal $meal
-     * @return Response
-     *
-     * @throws AuthorizationException
-     * @throws Exception
-     */
-    public function destroy(Request $request, Meal $meal)
-    {
-        Gate::authorize('delete', $meal);
-
-        if ($meal->orderItems()->exists()) {
-            abort(Response::HTTP_BAD_REQUEST, trans('futtertrog.meal_was_ordered'));
-        }
-
-        $meal->delete();
-
-        if ($request->wantsJson()) {
-            return response()->json(null, Response::HTTP_NO_CONTENT);
-        }
-
-        return redirect()->route('meals.create')->with('success', __('Deleted'));
     }
 
     /**

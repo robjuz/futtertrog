@@ -1,21 +1,13 @@
 <?php
 
-use App\Http\Controllers\AdminOrderItemController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\AutoOrderController;
-use App\Http\Controllers\DepositsController;
-use App\Http\Controllers\DepositTransferController;
 use App\Http\Controllers\DisabledNotificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IcalController;
 use App\Http\Controllers\MealController;
-use App\Http\Controllers\MealImportController;
 use App\Http\Controllers\MyBalanceController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureActiveAccount;
 use App\Http\Middleware\RejectAdministrativeInput;
 use Illuminate\Http\Request;
@@ -59,23 +51,81 @@ Route::middleware(['auth:web', EnsureActiveAccount::class])->group(function (): 
     });
 
     Route::prefix('admin')->middleware('can:access-administration')->group(function (): void {
-        Route::view('/', 'admin.index')->name('admin.index');
-        Route::get('meals', [MealController::class, 'adminIndex'])->name('admin.meals.index');
-        Route::post('meals/import', MealImportController::class)->name('meals.import');
-        Route::resource('meals', MealController::class)->except(['index', 'show']);
-        Route::post('orders/{order}/auto_order', AutoOrderController::class)->name('orders.auto_order');
-        Route::resource('orders', OrderController::class)->only(['index', 'edit', 'update', 'destroy']);
-        Route::resource('order_items', AdminOrderItemController::class)->except('show')->names('admin.order_items');
-        Route::post('users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
-        Route::resource('users', UserController::class);
-        Route::get('deposits/transfer', [DepositTransferController::class, 'create'])->name('deposits.transfer.create');
-        Route::post('deposits/transfer', [DepositTransferController::class, 'store'])->name('deposits.transfer');
-        Route::resource('deposits', DepositsController::class)->except('show');
-        Route::get('notifications/create', [NotificationController::class, 'create'])->name('notifications.create');
-        Route::post('notifications', [NotificationController::class, 'store'])->name('notification.store');
+        Route::get('overview', fn () => redirect()->route('filament.administration.pages.dashboard'))->name('admin.index');
+        Route::get('panel', fn () => redirect()->route('filament.administration.pages.dashboard'));
+
+        $links = [
+            ['users', 'users.index', \App\Filament\Resources\Users\UserResource::class, null, null, 'viewAny'],
+            ['users/create', 'users.create', \App\Filament\Resources\Users\UserResource::class, 'create', null, 'create'],
+            ['users/{user}/edit', 'users.edit', \App\Filament\Resources\Users\UserResource::class, 'edit', \App\Models\User::class, 'update'],
+            ['meals/create', 'meals.create', \App\Filament\Resources\Meals\MealResource::class, 'add', null, 'create'],
+            ['meals', 'admin.meals.index', \App\Filament\Resources\Meals\MealResource::class, null, null, 'create'],
+            ['meals/{meal}/edit', 'meals.edit', \App\Filament\Resources\Meals\MealResource::class, 'change', \App\Models\Meal::class, 'update'],
+            ['orders', 'orders.index', \App\Filament\Resources\Orders\OrderResource::class, null, null, 'list'],
+            ['orders/{order}/edit', 'orders.edit', \App\Filament\Resources\Orders\OrderResource::class, 'change', \App\Models\Order::class, 'update'],
+            ['order_items', 'admin.order_items.index', \App\Filament\Resources\OrderItems\OrderItemResource::class, null, null, 'administerAny'],
+            ['order_items/create', 'admin.order_items.create', \App\Filament\Resources\OrderItems\OrderItemResource::class, 'orderFor', null, 'administerAny'],
+            ['order_items/{order_item}/edit', 'admin.order_items.edit', \App\Filament\Resources\OrderItems\OrderItemResource::class, 'change', \App\Models\OrderItem::class, 'administer'],
+            ['deposits', 'deposits.index', \App\Filament\Resources\Deposits\DepositResource::class, null, null, 'viewAny'],
+            ['deposits/create', 'deposits.create', \App\Filament\Resources\Deposits\DepositResource::class, 'book', null, 'create'],
+            ['deposits/transfer', 'deposits.transfer.create', \App\Filament\Resources\Deposits\DepositResource::class, 'transfer', null, 'create'],
+            ['deposits/{deposit}/edit', 'deposits.edit', \App\Filament\Resources\Deposits\DepositResource::class, 'change', \App\Models\Deposit::class, 'update'],
+        ];
+        foreach ($links as [$path, $name, $resource, $action, $model, $ability]) {
+            Route::get($path, function (Request $request) use ($resource, $action, $model, $ability) {
+                $record = $model ? $model::findOrFail(array_values($request->route()->parameters())[0]) : null;
+                \Illuminate\Support\Facades\Gate::authorize($ability, $record ?? $resource::getModel());
+                $parameters = [];
+                if ($action) {
+                    $parameters = $record ? ['tableAction' => $action, 'tableActionRecord' => $record->id] : ['action' => $action];
+                }
+                foreach (['provider' => 'provider', 'status' => 'status', 'user_id' => $resource === \App\Filament\Resources\Orders\OrderResource::class ? 'recipient' : 'user_id'] as $old => $filter) {
+                    if ($request->filled($old)) {
+                        $parameters['filters'][$filter]['value'] = $request->query($old);
+                    }
+                }
+                if ($request->filled('from') || $request->filled('to')) {
+                    $parameters['filters']['dates'] = ['from' => $request->query('from'), 'until' => $request->query('to')];
+                }
+                if ($request->filled('payed')) {
+                    $parameters['filters']['payed_at']['value'] = $request->boolean('payed') ? '1' : '0';
+                }
+
+                return redirect()->to($resource::getUrl('index', $parameters));
+            })->name($name);
+        }
+        Route::get('users/{user}', function (string $user) {
+            $record = \App\Models\User::findOrFail($user);
+            \Illuminate\Support\Facades\Gate::authorize('view', $record);
+
+            return redirect()->to(\App\Filament\Resources\Users\UserResource::getUrl('view', ['record' => $record]));
+        })->name('users.show');
+        Route::get('notifications/create', function () {
+            \Illuminate\Support\Facades\Gate::authorize('send-notifications');
+
+            return redirect()->to(\App\Filament\Pages\Notifications::getUrl(['action' => 'send']));
+        })->name('notifications.create');
+
+        // Explicit tombstones keep named callers resolvable without retaining write handlers.
+        foreach ([
+            ['POST', 'users', 'users.store'], ['PUT|PATCH', 'users/{user}', 'users.update'],
+            ['DELETE', 'users/{user}', 'users.destroy'], ['POST', 'users/{user}/restore', 'users.restore'],
+            ['POST', 'meals', 'meals.store'],
+            ['POST', 'meals/import', 'meals.import'],
+            ['PUT|PATCH', 'meals/{meal}', 'meals.update'], ['DELETE', 'meals/{meal}', 'meals.destroy'],
+            ['POST', 'orders/{order}/auto_order', 'orders.auto_order'],
+            ['PUT|PATCH', 'orders/{order}', 'orders.update'], ['DELETE', 'orders/{order}', 'orders.destroy'],
+            ['POST', 'order_items', 'admin.order_items.store'], ['PUT|PATCH', 'order_items/{order_item}', 'admin.order_items.update'],
+            ['DELETE', 'order_items/{order_item}', 'admin.order_items.destroy'],
+            ['POST', 'deposits', 'deposits.store'], ['POST', 'deposits/transfer', 'deposits.transfer'],
+            ['PUT|PATCH', 'deposits/{deposit}', 'deposits.update'], ['DELETE', 'deposits/{deposit}', 'deposits.destroy'],
+            ['POST', 'notifications', 'notification.store'],
+        ] as [$methods, $path, $name]) {
+            Route::match(explode('|', $methods), $path, fn () => abort(410, 'Dieser Schreibweg wurde durch das Verwaltungs-Panel ersetzt.'))->name($name);
+        }
     });
 
-    // Old bookmarks pass the same administrative boundary before redirecting.
+    // Old bookmarks cross the administrative boundary before reaching their protected target.
     Route::middleware('can:access-administration')->group(function (): void {
         foreach (['users', 'users/create', 'users/{user}', 'users/{user}/edit',
             'meals/create', 'meals/{meal}/edit', 'orders', 'orders/{order}/edit',

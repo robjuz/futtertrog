@@ -100,7 +100,10 @@ class DashboardTest extends TestCase
             ->assertDontSee(Money::parse(10));
 
          $this->loginAsAdmin()
-             ->get(route('admin.index'))
+             ->get(route('filament.administration.pages.dashboard'))
+             ->assertOk();
+
+         \Livewire\Livewire::test(\App\Filament\Widgets\AdministrationStats::class)
              ->assertSee(__('System balance'))
              ->assertSee(Money::parse(10));
     }

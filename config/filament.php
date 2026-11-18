@@ -2,7 +2,7 @@
 
 return [
 
-    'administration_path' => env('FILAMENT_ADMIN_PATH', 'admin/panel'),
+    'administration_path' => env('FILAMENT_ADMIN_PATH', 'admin'),
 
     /*
     |--------------------------------------------------------------------------

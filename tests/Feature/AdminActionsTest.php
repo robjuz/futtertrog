@@ -21,10 +21,23 @@ use PHPUnit\Framework\Attributes\TestWith;
 use RuntimeException;
 use App\Models\User;
 use PHPUnit\Framework\Attributes\Test;
+use App\Filament\Resources\Deposits\Pages\ManageDeposits;
+use App\Filament\Resources\OrderItems\Pages\ManageOrderItems;
+use App\Filament\Resources\Orders\Pages\ManageOrders;
+use App\Filament\Resources\Meals\Pages\ManageMeals;
+use App\Filament\Pages\Notifications;
+use Filament\Facades\Filament;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class AdminActionsTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+    }
+
     #[Test]
     public function replaying_a_booking_key_does_not_book_twice(): void
     {
@@ -32,8 +45,8 @@ class AdminActionsTest extends TestCase
         $this->loginAsAdmin();
         $data = ['user_id' => $user->id, 'value' => 1234, 'comment' => 'Booking'];
 
-        $this->withHeader('Idempotency-Key', 'booking-1')->postJson(route('deposits.store'), $data)->assertRedirect();
-        $this->postJson(route('deposits.store'), $data)->assertRedirect();
+        app(Bookings::class)->create(auth()->user(), $data, 'booking-1');
+        app(Bookings::class)->create(auth()->user(), $data);
 
         $this->assertDatabaseCount('deposits', 1);
         $this->assertSame(1234, Deposit::sole()->value);
@@ -47,9 +60,9 @@ class AdminActionsTest extends TestCase
         $this->login($admin);
         $this->freezeTime();
 
-        $this->postJson(route('deposits.store'), [
+        app(Bookings::class)->create($admin, [
             'user_id' => $user->id, 'value' => 1234, 'password' => 'secret', 'api_token' => 'secret',
-        ])->assertRedirect();
+        ]);
 
         $this->assertDatabaseHas('admin_activities', [
             'actor_id' => $admin->id, 'action' => 'deposit.created',
@@ -68,10 +81,10 @@ class AdminActionsTest extends TestCase
         $this->loginAsAdmin();
         $data = ['user_id' => $user->id, 'value' => 1050];
 
-        $this->postJson(route('deposits.store'), $data)->assertRedirect();
-        $this->postJson(route('deposits.store'), $data)->assertRedirect();
+        app(Bookings::class)->create(auth()->user(), $data);
+        app(Bookings::class)->create(auth()->user(), $data);
         $this->assertDatabaseCount('deposits', 1);
-        $this->withHeader('Idempotency-Key', 'new-booking')->postJson(route('deposits.store'), $data)->assertRedirect();
+        app(Bookings::class)->create(auth()->user(), $data, 'new-booking');
 
         $this->assertDatabaseCount('deposits', 2);
         $this->assertDatabaseCount('admin_activities', 2);
@@ -82,9 +95,14 @@ class AdminActionsTest extends TestCase
     {
         $user = User::factory()->create();
         $this->loginAsAdmin()->withExceptionHandling();
-        $this->withHeader('Idempotency-Key', 'booking')->postJson(route('deposits.store'), ['user_id' => $user->id, 'value' => 10])->assertRedirect();
+        app(Bookings::class)->create(auth()->user(), ['user_id' => $user->id, 'value' => 10], 'booking');
 
-        $this->postJson(route('deposits.store'), ['user_id' => $user->id, 'value' => 20])->assertConflict();
+        try {
+            app(Bookings::class)->create(auth()->user(), ['user_id' => $user->id, 'value' => 20], 'booking');
+            $this->fail('Changed data must not reuse a booking key.');
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
+            $this->assertSame(409, $exception->getStatusCode());
+        }
 
         $this->assertDatabaseCount('deposits', 1);
         $this->assertDatabaseCount('admin_activities', 1);
@@ -98,7 +116,7 @@ class AdminActionsTest extends TestCase
         $target = User::factory()->create();
         $data = ['source' => $source->id, 'target' => $target->id, 'value' => 10.5];
         $this->login($actor);
-        $this->withHeader('Idempotency-Key', 'transfer')->postJson(route('deposits.transfer'), $data)->assertRedirect();
+        app(Bookings::class)->transfer($actor, $data, 'transfer');
 
         $legs = app(Bookings::class)->transfer($actor, $data, 'transfer');
 
@@ -109,24 +127,24 @@ class AdminActionsTest extends TestCase
     }
 
     #[Test]
-    public function controller_and_direct_booking_actions_preserve_values_updates_and_deletion(): void
+    public function panel_and_direct_booking_actions_preserve_values_updates_and_deletion(): void
     {
         $actor = User::factory()->admin()->create();
         $user = User::factory()->create();
         $data = ['user_id' => $user->id, 'value' => -10.5, 'comment' => 'Adjustment'];
         $this->login($actor);
-        $this->withHeader('Idempotency-Key', 'controller')->postJson(route('deposits.store'), $data)->assertRedirect();
+        Livewire::test(ManageDeposits::class)->callAction('book', data: [...$data, 'value' => -1050])->assertHasNoActionErrors();
         $controllerDeposit = Deposit::sole();
 
         $directDeposit = app(Bookings::class)->create($actor, $data, 'direct');
         $this->assertSame(-1050, $directDeposit->value);
         $this->assertSame($controllerDeposit->value, $directDeposit->value);
         $data['value'] = 2250;
-        $this->putJson(route('deposits.update', $controllerDeposit), $data)->assertRedirect();
+        Livewire::test(ManageDeposits::class)->callTableAction('change', $controllerDeposit, data: $data)->assertHasNoActionErrors();
         $directDeposit = app(Bookings::class)->update($actor, $directDeposit, $data);
         $this->assertSame(2250, $directDeposit->value);
         $this->assertSame($controllerDeposit->fresh()->value, $directDeposit->value);
-        $this->deleteJson(route('deposits.destroy', $controllerDeposit))->assertRedirect();
+        Livewire::test(ManageDeposits::class)->callTableAction('remove', $controllerDeposit)->assertNotified('Vorgang erfolgreich.');
         app(Bookings::class)->delete($actor, $directDeposit);
 
         $this->assertDatabaseCount('deposits', 0);
@@ -134,7 +152,7 @@ class AdminActionsTest extends TestCase
     }
 
     #[Test]
-    public function controller_and_direct_order_actions_preserve_quantities_totals_status_and_events(): void
+    public function panel_and_direct_order_actions_preserve_quantities_totals_status_and_events(): void
     {
         $this->freezeTime();
         $actor = User::factory()->admin()->create();
@@ -143,23 +161,23 @@ class AdminActionsTest extends TestCase
         $meal = Meal::factory()->inPast()->create(['price' => 1234]);
         Event::fake([OrderUpdated::class]);
         $this->login($actor);
-        $this->postJson(route('admin.order_items.store'), ['meal_id' => $meal->id, 'user_id' => $first->id, 'quantity' => 2])->assertCreated();
+        Livewire::test(ManageOrderItems::class)->callAction('orderFor', data: ['meal_id' => $meal->id, 'user_id' => $first->id, 'quantity' => 2])->assertHasNoActionErrors();
         $controllerItem = OrderItem::sole();
 
         $directItem = app(OrderItems::class)->create($actor, ['meal_id' => $meal->id, 'user_id' => $second->id, 'quantity' => 2]);
         $this->assertSame('2468', $directItem->subtotal->getAmount());
         $this->assertEquals($controllerItem->subtotal, $directItem->subtotal);
-        $this->putJson(route('admin.order_items.update', $controllerItem), ['quantity' => 3])->assertOk();
+        Livewire::test(ManageOrderItems::class)->callTableAction('change', $controllerItem, data: ['quantity' => 3])->assertHasNoActionErrors();
         $directItem = app(OrderItems::class)->update($actor, $directItem, ['quantity' => 3]);
         $this->assertSame(3, $controllerItem->fresh()->quantity);
         $this->assertSame(3, $directItem->quantity);
         $this->assertEquals($controllerItem->fresh()->subtotal, $directItem->subtotal);
         $order = $directItem->order;
-        $this->putJson(route('orders.update', $order), ['status' => Order::STATUS_ORDERED, 'user_id' => $first->id])->assertOk();
+        Livewire::test(ManageOrders::class)->callTableAction('change', $order, data: ['status' => Order::STATUS_ORDERED, 'user_id' => $first->id])->assertHasNoActionErrors();
         $order = app(Orders::class)->update($actor, $order, ['status' => Order::STATUS_ORDERED, 'user_id' => $first->id]);
         $this->assertSame(Order::STATUS_ORDERED, $order->status);
         $this->assertSame($first->id, $order->user_id);
-        $this->deleteJson(route('admin.order_items.destroy', $controllerItem))->assertNoContent();
+        Livewire::test(ManageOrderItems::class)->callTableAction('remove', $controllerItem)->assertNotified('Vorgang erfolgreich.');
         app(OrderItems::class)->delete($actor, $directItem);
 
         $this->assertDatabaseCount('order_items', 0);
@@ -318,13 +336,14 @@ class AdminActionsTest extends TestCase
     }
 
     #[Test]
-    public function notification_actions_match_the_controller_without_logging_message_content(): void
+    public function notification_actions_match_the_panel_without_logging_message_content(): void
     {
         Notification::fake();
         $actor = User::factory()->admin()->create();
         $recipient = User::factory()->create();
         $data = ['user_id' => $recipient->id, 'subject' => 'Private subject', 'body' => 'Private body'];
-        $this->login($actor)->post(route('notification.store'), $data)->assertRedirect();
+        $this->login($actor);
+        Livewire::test(Notifications::class)->callAction('send', data: [...$data, 'user_id' => [$recipient->id]])->assertHasNoActionErrors();
 
         app(SendNotification::class)->execute($actor, $data);
 
@@ -335,7 +354,7 @@ class AdminActionsTest extends TestCase
     }
 
     #[Test]
-    public function imports_match_the_controller_and_only_record_allowed_summary_fields(): void
+    public function imports_match_the_panel_and_only_record_allowed_summary_fields(): void
     {
         Http::preventStrayRequests();
         config(['services.holzke.enabled' => true]);
@@ -344,7 +363,8 @@ class AdminActionsTest extends TestCase
         $provider = $this->partialMock(Holzke::class);
         $provider->shouldReceive('createMealsDataForDate')->twice()->withArgs(fn ($date): bool => $date->toDateString() === '2026-11-18')->andReturn(3);
         $provider->shouldReceive('notifyAboutNewOrderPossibilities')->twice();
-        $this->login($actor)->post(route('meals.import'), ['date' => '2026-11-18', 'provider' => 'Holzke', 'notify' => true])->assertRedirect();
+        $this->login($actor);
+        Livewire::test(ManageMeals::class)->callAction('import', data: ['date' => '2026-11-18', 'provider' => 'Holzke', 'notify' => true])->assertHasNoActionErrors();
 
         $this->assertSame(3, app(ImportMeals::class)->execute($actor, 'Holzke', '2026-11-18', true));
 
@@ -359,14 +379,14 @@ class AdminActionsTest extends TestCase
         $actor = User::factory()->admin()->create();
         $this->login($actor);
 
-        $this->postJson(route('users.store'), ['name' => 'New admin', 'email' => 'new-admin@example.com',
-            'is_admin' => true, 'password' => 'private-password', 'password_confirmation' => 'private-password'])->assertOk();
+        $user = app(Users::class)->create($actor, ['name' => 'New admin', 'email' => 'new-admin@example.com', 'is_admin' => true]);
 
         $activity = AdminActivity::sole();
         $this->assertSame('user.created', $activity->action);
         $this->assertSame($actor->id, $activity->actor_id);
         $this->assertSame(['is_admin' => true], $activity->changes['after']);
-        $this->assertStringNotContainsString('private-password', $activity->toJson());
+        $this->assertStringNotContainsString($user->password, $activity->toJson());
+        $this->assertStringNotContainsString($user->api_token, $activity->toJson());
     }
     #[Test]
     public function upserting_an_existing_order_item_records_the_previous_quantity_as_an_update(): void

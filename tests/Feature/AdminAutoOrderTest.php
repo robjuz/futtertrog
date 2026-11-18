@@ -44,15 +44,15 @@ class AdminAutoOrderTest extends TestCase
     }
 
     #[Test]
-    public function autoorder_matches_the_controller_and_a_successful_order_cannot_be_sent_twice(): void
+    public function autoorder_uses_the_shared_action_and_a_successful_order_cannot_be_sent_twice(): void
     {
         Http::preventStrayRequests();
         [$actor, $order, $provider] = $this->autoOrderFixture();
         $provider->shouldReceive('placeOrder')->once()->andReturnUsing(function (Order $target): void { $target->markOrdered(); });
         $this->login($actor);
-        $this->postJson(route('orders.auto_order', $order))->assertOk();
+        app(AutoOrder::class)->execute($actor, $order);
         $this->assertSame(Order::STATUS_ORDERED, $order->fresh()->status);
-        $this->withExceptionHandling()->postJson(route('orders.auto_order', $order))->assertBadRequest();
+        $this->assertRejected(400, fn () => app(AutoOrder::class)->execute($actor, $order));
 
         $this->assertSame('succeeded', AdminActivity::sole()->state);
         $this->assertSame(['status' => 'ordered'], AdminActivity::sole()->changes['after']);
@@ -71,7 +71,7 @@ class AdminAutoOrderTest extends TestCase
             'target_type' => Order::class, 'target_id' => $order->id, 'state' => $state]);
         $this->login($actor)->withExceptionHandling();
 
-        $this->postJson(route('orders.auto_order', $order))->assertConflict();
+        $this->assertRejected(409, fn () => app(AutoOrder::class)->execute($actor, $order));
 
         $this->assertSame(Order::STATUS_OPEN, $order->fresh()->status);
         $this->assertDatabaseCount('admin_activities', 1);
@@ -99,7 +99,7 @@ class AdminAutoOrderTest extends TestCase
         $this->assertSame('uncertain', AdminActivity::sole()->state);
         $this->assertSame([], AdminActivity::sole()->changes['after']);
         $this->assertStringNotContainsString('private-provider-token', AdminActivity::sole()->toJson());
-        $this->login($actor)->withExceptionHandling()->postJson(route('orders.auto_order', $order))->assertConflict();
+        $this->assertRejected(409, fn () => app(AutoOrder::class)->execute($actor, $order));
         Http::assertNothingSent();
     }
 
@@ -172,7 +172,7 @@ class AdminAutoOrderTest extends TestCase
         $provider->shouldReceive('placeOrder')->once()->andReturnNull();
         $this->login($actor)->withExceptionHandling();
 
-        $this->postJson(route('orders.auto_order', $order))->assertStatus(502);
+        $this->assertRejected(502, fn () => app(AutoOrder::class)->execute($actor, $order));
 
         $this->assertSame('uncertain', AdminActivity::sole()->state);
         $this->assertSame([], AdminActivity::sole()->changes['after']);
@@ -192,9 +192,19 @@ class AdminAutoOrderTest extends TestCase
         $this->assertSame(Order::STATUS_ORDERED, $order->fresh()->status);
         $this->assertSame('succeeded', AdminActivity::sole()->state);
         $this->assertNull(AdminActivity::sole()->actor_id);
-        $this->login($actor)->withExceptionHandling()->postJson(route('orders.auto_order', $order))->assertBadRequest();
+        $this->assertRejected(400, fn () => app(AutoOrder::class)->execute($actor, $order));
         $this->assertDatabaseCount('admin_activities', 1);
         Http::assertNothingSent();
+    }
+
+    private function assertRejected(int $status, \Closure $operation): void
+    {
+        try {
+            $operation();
+            $this->fail('The autoorder must be refused.');
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
+            $this->assertSame($status, $exception->getStatusCode());
+        }
     }
 
     /** @return array{User, Order, \Mockery\MockInterface} */

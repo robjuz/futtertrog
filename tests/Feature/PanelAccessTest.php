@@ -16,7 +16,7 @@ class PanelAccessTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $this->get('/admin/panel')->assertRedirect(route('login'));
+        $this->get('/admin')->assertRedirect(route('login'));
     }
 
     #[Test]
@@ -24,13 +24,14 @@ class PanelAccessTest extends TestCase
     {
         $this->login(User::factory()->admin()->create());
 
-        $this->get('/admin/panel')->assertOk()->assertSee('Administration')
+        $this->get('/admin')->assertOk()->assertSee('Administration')
             ->assertSee(Vite::asset('resources/css/admin.css'), false)
             ->assertDontSee(Vite::asset('resources/js/app.ts'), false);
         $this->get('/profile')->assertOk()->assertSee(Vite::asset('resources/js/app.ts'), false)
             ->assertDontSee(Vite::asset('resources/css/admin.css'), false)
             ->assertDontSee('/js/filament/', false);
-        $this->get('/admin/users')->assertOk()->assertSee('admin-navigation', false);
+        $this->get('/admin/users')->assertRedirect(\App\Filament\Resources\Users\UserResource::getUrl());
+        $this->get(\App\Filament\Resources\Users\UserResource::getUrl())->assertOk()->assertSee('Benutzer');
     }
 
     #[Test]
@@ -45,7 +46,7 @@ class PanelAccessTest extends TestCase
             User::whereKey($user->id)->delete();
         }
 
-        $this->get('/admin/panel')->assertForbidden();
+        $this->get('/admin')->assertForbidden();
     }
 
     #[Test]
@@ -118,7 +119,7 @@ class PanelAccessTest extends TestCase
 
     private function panelSnapshot(): string
     {
-        $html = $this->get('/admin/panel')->assertOk()->getContent();
+        $html = $this->get('/admin')->assertOk()->getContent();
         preg_match('/wire:snapshot="([^"]+)"/', $html, $match);
         $this->assertArrayHasKey(1, $match, 'The rendered panel must contain a signed Livewire snapshot.');
 

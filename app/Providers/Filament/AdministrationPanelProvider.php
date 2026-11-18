@@ -6,10 +6,11 @@ use App\Filament\Middleware\EnsurePanelAccess;
 use App\Filament\Widgets\AdministrationStats;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthenticateCredentialSession;
+use App\Http\Middleware\UserLocale;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
+use App\Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -40,10 +41,9 @@ class AdministrationPanelProvider extends PanelProvider
             ->colors(['primary' => Color::Amber])
             ->viteTheme('resources/css/admin.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->pages([Dashboard::class])
+            ->pages([Dashboard::class])->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->widgets([AdministrationStats::class])
             ->navigationItems([
-                NavigationItem::make('Bestehende Verwaltung')->url(fn (): string => route('admin.index')),
                 NavigationItem::make('Bestellen')->url(fn (): string => url('/meals')),
             ])
             ->middleware([
@@ -60,6 +60,7 @@ class AdministrationPanelProvider extends PanelProvider
                 Authenticate::class.':web',
                 AuthenticateCredentialSession::class,
                 EnsurePanelAccess::class,
+                UserLocale::class,
             ], isPersistent: true);
     }
 }
