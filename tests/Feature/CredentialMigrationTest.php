@@ -14,18 +14,18 @@ use Tests\TestCase;
 
 class CredentialMigrationTest extends TestCase
 {
+    private string $originalConnection;
+
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.connections.credential_fixture' => [
-            'driver' => 'sqlite', 'database' => ':memory:', 'prefix' => '', 'foreign_key_constraints' => true,
-        ]]);
+        $this->originalConnection = config('database.default');
+        $this->createFixtureDatabase('credential_fixture');
     }
 
     protected function tearDown(): void
     {
-        DB::purge('credential_fixture');
-        config(['database.default' => 'sqlite']);
+        config(['database.default' => $this->originalConnection]);
         parent::tearDown();
     }
 

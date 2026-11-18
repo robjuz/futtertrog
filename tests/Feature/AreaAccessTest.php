@@ -357,9 +357,7 @@ class AreaAccessTest extends TestCase
     public function admin_import_and_autoorder_only_invoke_faked_providers(): void
     {
         $originalConnection = config('database.default');
-        config(['database.connections.admin_autoorder_fixture' => array_merge(config('database.connections.sqlite'), [
-            'database' => ':memory:',
-        ])]);
+        $this->createFixtureDatabase('admin_autoorder_fixture');
         $this->artisan('migrate:fresh', ['--database' => 'admin_autoorder_fixture', '--force' => true, '--no-interaction' => true])->assertExitCode(0);
         config(['database.default' => 'admin_autoorder_fixture']);
         try {
@@ -385,7 +383,6 @@ class AreaAccessTest extends TestCase
             Http::assertNothingSent();
         } finally {
             config(['database.default' => $originalConnection]);
-            \Illuminate\Support\Facades\DB::purge('admin_autoorder_fixture');
         }
     }
 
