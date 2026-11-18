@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\CredentialChallenge;
 use App\Models\ExternalIdentity;
 use App\Models\User;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +19,7 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\User as OAuthUser;
 use Laravel\Socialite\Facades\Socialite;
@@ -64,6 +67,12 @@ class LoginController extends Controller implements HasMiddleware
             $external = Socialite::driver($provider)->user();
         } catch (InvalidStateException) {
             return $this->pendingResponse($request);
+        } catch (GuzzleException $exception) {
+            return $this->oauthFailureResponse($request, $provider, $exception);
+        }
+
+        if ($request->has('error')) {
+            return $this->oauthFailureResponse($request, $provider);
         }
 
         $subject = (string) $external->getId();
@@ -144,12 +153,25 @@ class LoginController extends Controller implements HasMiddleware
             : redirect()->intended($this->redirectTo);
     }
 
-    private function pendingResponse(Request $request): JsonResponse|RedirectResponse
+    private function oauthFailureResponse(Request $request, string $provider, ?GuzzleException $exception = null): JsonResponse|RedirectResponse
+    {
+        if ($exception && $request->input('error') !== 'access_denied') {
+            Log::warning('OAuth provider request failed.', [
+                'provider' => $provider,
+                'exception' => $exception::class,
+                'status' => $exception instanceof RequestException ? $exception->getResponse()?->getStatusCode() : null,
+            ]);
+        }
+
+        return $this->pendingResponse($request, __('auth.oauth_failed'));
+    }
+
+    private function pendingResponse(Request $request, string $message = CredentialChallenges::PUBLIC_MESSAGE): JsonResponse|RedirectResponse
     {
         return $request->wantsJson()
-            ? response()->json(['message' => CredentialChallenges::PUBLIC_MESSAGE])
+            ? response()->json(['message' => $message])
             : redirect()->route($request->user() ? 'profile.security' : 'login')
-                ->with('status', CredentialChallenges::PUBLIC_MESSAGE);
+                ->with('status', $message);
     }
 
     protected function loggedOut(Request $request): RedirectResponse

@@ -14,6 +14,7 @@ return [
     */
 
     'failed' => 'These credentials do not match our records.',
+    'oauth_failed' => 'Sign-in with the provider was cancelled or failed. Please try again.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];

@@ -12,5 +12,6 @@ return [
     |
     */
     'failed'   => 'Diese Kombination aus Zugangsdaten wurde nicht in unserer Datenbank gefunden.',
+    'oauth_failed' => 'Die Anmeldung beim Anbieter wurde abgebrochen oder ist fehlgeschlagen. Bitte versuchen Sie es erneut.',
     'throttle' => 'Zu viele Loginversuche. Versuchen Sie es bitte in :seconds Sekunden nochmal.',
 ];

@@ -7,10 +7,21 @@ use App\Mail\CredentialConfirmation;
 use App\Models\CredentialChallenge;
 use App\Models\ExternalIdentity;
 use App\Models\User;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request as ProviderRequest;
+use GuzzleHttp\Psr7\Response as ProviderResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\GitlabProvider;
 use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Two\User as OAuthUser;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -294,6 +305,155 @@ class CredentialChallengeTest extends TestCase
         $this->assertDatabaseCount('users', 0);
         $this->assertDatabaseCount('external_identities', 0);
         Mail::assertNothingSent();
+    }
+
+    private function deniedOauthProvider(): MockHandler
+    {
+        $handler = new MockHandler([new ProviderResponse(400, [], '{"error":"invalid_grant"}')]);
+        $client = new Client(['handler' => HandlerStack::create($handler)]);
+        Socialite::shouldReceive('driver')->once()->with('gitlab')->andReturnUsing(
+            fn (): GitlabProvider => (new GitlabProvider(request(), 'client', 'secret', '/callback'))->setHttpClient($client)
+        );
+        return $handler;
+    }
+
+    #[Test]
+    #[DataProvider('oauthFailureLanguages')]
+    public function denied_oauth_grant_returns_to_login_with_a_visible_message_and_no_changes(string $locale, string $message): void
+    {
+        Mail::fake();
+        Log::spy();
+        app()->setLocale($locale);
+        $handler = $this->deniedOauthProvider();
+
+        $this->withSession(['state' => 'valid-state'])
+            ->get('/login/oauth/gitlab/callback?error=access_denied&state=valid-state')
+            ->assertRedirect('/login')->assertSessionHas('status', $message)->assertSessionMissing('state');
+
+        $this->assertSame(0, $handler->count());
+        $this->assertGuest();
+        $this->assertDatabaseCount('users', 0);
+        $this->assertDatabaseCount('external_identities', 0);
+        $this->assertDatabaseCount('credential_challenges', 0);
+        Mail::assertNothingSent();
+        Log::shouldNotHaveReceived('warning');
+        $this->get('/login')->assertOk()->assertSeeText($message);
+    }
+
+    public static function oauthFailureLanguages(): array
+    {
+        return [
+            'German' => ['de', 'Die Anmeldung beim Anbieter wurde abgebrochen oder ist fehlgeschlagen. Bitte versuchen Sie es erneut.'],
+            'English' => ['en', 'Sign-in with the provider was cancelled or failed. Please try again.'],
+        ];
+    }
+
+    #[Test]
+    public function denied_oauth_grant_with_invalid_state_keeps_the_existing_state_response(): void
+    {
+        Mail::fake();
+        Log::spy();
+        $handler = $this->deniedOauthProvider();
+
+        $this->withSession(['state' => 'valid-state'])
+            ->get('/login/oauth/gitlab/callback?error=access_denied&state=wrong-state')
+            ->assertRedirect('/login')->assertSessionHas('status', CredentialChallenges::PUBLIC_MESSAGE);
+
+        $this->assertSame(1, $handler->count());
+        $this->assertGuest();
+        $this->assertDatabaseCount('users', 0);
+        $this->assertDatabaseCount('external_identities', 0);
+        $this->assertDatabaseCount('credential_challenges', 0);
+        Mail::assertNothingSent();
+        Log::shouldNotHaveReceived('warning');
+    }
+
+    #[Test]
+    public function oauth_error_response_cannot_create_an_account_even_if_user_retrieval_succeeds(): void
+    {
+        Mail::fake();
+        app()->setLocale('de');
+        $this->oauth('unused-subject', 'unused@example.com');
+
+        $this->get('/login/oauth/gitlab/callback?error=server_error')
+            ->assertRedirect('/login')
+            ->assertSessionHas('status', 'Die Anmeldung beim Anbieter wurde abgebrochen oder ist fehlgeschlagen. Bitte versuchen Sie es erneut.');
+
+        $this->assertGuest();
+        $this->assertDatabaseCount('users', 0);
+        $this->assertDatabaseCount('external_identities', 0);
+        $this->assertDatabaseCount('credential_challenges', 0);
+        Mail::assertNothingSent();
+    }
+
+    #[Test]
+    #[DataProvider('oauthProviderFailures')]
+    public function oauth_provider_failure_returns_to_security_with_visible_message_and_safe_logging(GuzzleException $exception, ?int $status): void
+    {
+        Mail::fake();
+        Log::spy();
+        $user = User::factory()->enabled()->create(['settings' => ['language' => 'de']]);
+        $attributes = $user->fresh()->getRawOriginal();
+        $sessionId = session()->getId();
+        $message = 'Die Anmeldung beim Anbieter wurde abgebrochen oder ist fehlgeschlagen. Bitte versuchen Sie es erneut.';
+        Socialite::shouldReceive('driver->user')->once()->andThrow($exception);
+
+        $this->actingAs($user)->withCookie(config('session.cookie'), $sessionId)
+            ->get('/login/oauth/gitlab/callback?code=secret-code')
+            ->assertRedirect('/profile/security')->assertSessionHas('status', $message);
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertSame($sessionId, session()->getId());
+        $this->assertSame($attributes, $user->fresh()->getRawOriginal());
+        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseCount('external_identities', 0);
+        $this->assertDatabaseCount('credential_challenges', 0);
+        Mail::assertNothingSent();
+        Log::shouldHaveReceived('warning')->once()->with('OAuth provider request failed.', [
+            'provider' => 'gitlab', 'exception' => $exception::class, 'status' => $status,
+        ]);
+        $this->get('/profile/security')->assertOk()->assertInertia(fn ($page) => $page
+            ->component('Profile/Security')->where('flash.status', $message));
+    }
+
+    #[Test]
+    #[DataProvider('oauthProviderFailures')]
+    public function oauth_provider_failure_returns_json_without_changing_the_authenticated_account(GuzzleException $exception, ?int $status): void
+    {
+        Mail::fake();
+        Log::spy();
+        $user = User::factory()->enabled()->create(['settings' => ['language' => 'en']]);
+        $attributes = $user->fresh()->getRawOriginal();
+        $sessionId = session()->getId();
+        Socialite::shouldReceive('driver->user')->once()->andThrow($exception);
+
+        $this->actingAs($user)->withCookie(config('session.cookie'), $sessionId)->withCredentials()
+            ->getJson('/login/oauth/gitlab/callback?code=secret-code')
+            ->assertOk()->assertExactJson(['message' => 'Sign-in with the provider was cancelled or failed. Please try again.'])
+            ->assertSessionMissing('status');
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertSame($sessionId, session()->getId());
+        $this->assertSame($attributes, $user->fresh()->getRawOriginal());
+        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseCount('external_identities', 0);
+        $this->assertDatabaseCount('credential_challenges', 0);
+        Mail::assertNothingSent();
+        Log::shouldHaveReceived('warning')->once()->with('OAuth provider request failed.', [
+            'provider' => 'gitlab', 'exception' => $exception::class, 'status' => $status,
+        ]);
+    }
+
+    public static function oauthProviderFailures(): array
+    {
+        $request = new ProviderRequest('POST', 'https://provider.example/token?code=secret-code', [
+            'Authorization' => 'Bearer secret-token',
+        ], 'client_secret=secret-client&email=private@example.com');
+        return [
+            'transport' => [new ConnectException('secret-token private@example.com', $request), null],
+            'HTTP 400' => [new ClientException('secret-code private@example.com', $request, new ProviderResponse(400, [], 'secret-response')), 400],
+            'HTTP 503' => [new ServerException('secret-token private@example.com', $request, new ProviderResponse(503, [], 'secret-response')), 503],
+        ];
     }
 
     #[Test]
