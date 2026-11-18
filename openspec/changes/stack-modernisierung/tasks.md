@@ -48,9 +48,9 @@ Eigentum: neue `app/Filament/Resources`, zugehörige Panelpages, Resource- und B
 Abhängigkeit: 4 integriert; wahrt E1-Phasenreihenfolge. Input: vorhandene Fachaktionen, Profil-UI und getestete Admintrennung. Output: vollständige Vue-Nutzeroberfläche und zuverlässige Auslieferung.
 Eigentum: Nutzerseiten/-komponenten unter `resources/js`, zugehörige Styles, `HomeController`/`MealController` und Self-Service-Datenaufbereitung, `Meal.php` für vorgeladene Bestelldaten, Nutzer-Blade-Root, PWA-Konfiguration und `public/serviceworker.js`, Nutzer-Browsertests. Lockfiles/Buildkonfiguration nur Integrator nach dokumentiertem Bedarf. Verboten: Adminresources, neue Fristen-/Geldregeln, Offlinebestellung. Szenarien: alle ordering-experience; Erhalt von profile-security / Eigenes Profil und area-access / Self-Service. Tests: MealOrdering/MealVariants/MealPreferences/WeekNavigation/Dashboard/Ical; Playwright Desktop/Mobil und gezielte Accessibilityprüfung.
 
-- [ ] 5.1 Tages-/Wochenauswahl, URL-Filter, Karten, Varianten, Menge und zusammenhängenden Bestellstatus implementieren; Query-Wiederholungen entfernen.
-- [ ] 5.2 Dashboard, eigene Bestellungen, Guthaben und Verläufe übernehmen; Fehler-, Lade- und Sitzungszustände testen.
-- [ ] 5.3 Versionierte Assets und Offlinehinweis integrieren; alte Service-Worker-Caches kontrolliert ablösen.
-- [ ] 5.4 Desktop-/Mobilabläufe, Tastatur/Fokus, Produktionsbuild und vollständige betroffene Regression ausführen; Rollback auf abgesicherte Oberfläche proben.
+- [x] 5.1 Tages-/Wochenauswahl, URL-Filter, Karten, Varianten, Menge und zusammenhängenden Bestellstatus implementieren; Query-Wiederholungen entfernen.
+- [x] 5.2 Dashboard, eigene Bestellungen, Guthaben und Verläufe übernehmen; Fehler-, Lade- und Sitzungszustände testen.
+- [x] 5.3 Versionierte Assets und Offlinehinweis integrieren; alte Service-Worker-Caches kontrolliert ablösen.
+- [x] 5.4 Desktop-/Mobilabläufe, Tastatur/Fokus, Produktionsbuild und vollständige betroffene Regression ausführen; Rollback auf abgesicherte Oberfläche proben.
 
 Abnahmebelege, Integrationsreihenfolge, Reviews, Freigabe und Archivierung führt die Hauptsitzung; sie sind keine zusätzlichen Produktpakete. Überschneidungen werden seriell 1 → 2 → 3 → 4 → 5 integriert. Die begrenzte Resource-Parallelisierung in Paket 4 bleibt möglich, sobald gemeinsame Verträge integriert sind.
