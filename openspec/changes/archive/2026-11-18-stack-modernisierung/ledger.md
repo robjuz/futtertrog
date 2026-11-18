@@ -167,10 +167,12 @@ Nachtrag 2026-11-18T21:15+01:00 (nach Archivierung, Codacy und Zusatzprüfung): 
 | ID | Schwere | Stelle | Problem | Bestätigung | Entscheidung | Status |
 |---|---|---|---|---|---|---|
 | Z1 | P1 | AutoOrder::reconcile, Order::autoOrder | Bestätigter Abgleich markierte zwischenzeitlich geänderten, ungesendeten Inhalt als bestellt | Orchestrator am Quelltext; Regressionstest vor Korrektur rot | Fix: Inhalts-Fingerabdruck je Versuch, bei Abweichung bleibt Bestellung offen, content_changed im Abgleichsprotokoll | behoben d209b53 |
-| Z2 | P2 | LoginController::handleOauthCallback | Abgelehnter Grant/Token- oder Transportfehler ohne eigenen Fehlerpfad (bestand bereits in Basis) | Paketquelle zitiert | Nutzerentscheidung offen | offen |
+| Z2 | P2 | LoginController::handleOauthCallback | Abgelehnter Grant/Token- oder Transportfehler ohne eigenen Fehlerpfad (bestand bereits in Basis) | Paketquelle zitiert; abgelehnter Grant endet als Guzzle-ClientException beim Tokenabruf | Nutzerentscheidung „mitkorrigieren“: Rückkehr zu Anmeldung/Profil mit Meldung (DE/EN), Warnprotokoll ohne Geheimnisse | behoben, siehe unten |
 | P2-Sammel | P2 | Vue-Seiten mit mehreren Wurzeln; view-user.blade.php ohne wire:key; doppelter Panel-Benachrichtigungstest | 3 Hinweise ohne belegte Verhaltenswirkung | – | Restrisiko, keine Aktion | notiert |
 
 Integrator-Lauf an d209b53 (Worktree bau/stack-modernisierung-autoorder): PHPUnit 745 bestanden (SQLite), Build grün, Playwright 34 bestanden (erster Lauf 4 rot wegen fehlender, gitignorter Filament-Assets im neuen Worktree; nach php artisan filament:assets grün). Gepusht für PR #123. Prüfbudget: diese Zusatzprüfung war die einzige; keine weitere Prüfung der Korrektur Z1.
+
+Nachtrag 2026-11-18T22:00+01:00: Z2 behoben (Umsetzer gpt-6.1-sol, Worktree bau/stack-modernisierung-oauth, Commit siehe Branch). Integrator-Lauf: PHPUnit 755 bestanden (SQLite), Build grün, Playwright 34 bestanden. Gepusht für PR #123. Keine unabhängige Prüfung dieser Korrektur.
 
 ## Integration und Ausführung
 
