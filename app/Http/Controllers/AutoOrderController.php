@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Admin\AutoOrder;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,10 +20,7 @@ class AutoOrderController extends Controller
 
         Gate::authorize('autoOrder', $order);
 
-        abort_unless($order->canBeAutoOrdered(), Response::HTTP_BAD_REQUEST, __('This order cannot be auto-ordered'));
-
-        $order->autoOrder();
-
+        app(AutoOrder::class)->execute($request->user(), $order);
 
         if ($request->wantsJson()) {
             return response()->json(null);

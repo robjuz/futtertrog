@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\MealProviderCast;
+use App\Actions\Admin\ActivityLogger;
 use App\IdeHelperOrder;
 use App\MealProviders\AbstractMealProvider;
 use App\OrderCollection;
@@ -10,6 +11,9 @@ use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Throwable;
 
 /**
  * App\Order.
@@ -206,13 +210,56 @@ class Order extends Model
         ]);
     }
 
-    public function autoOrder()
+    /** A committed reservation protects both scheduled and administrative provider calls. */
+    public function autoOrder(?User $actor = null): self
     {
-        if ($this->canBeUpdated()) {
-            $this->updateOrder();
-        } elseif ($this->canBeAutoOrdered()) {
-            $this->placeOrder();
+        $attempt = DB::transaction(function () use ($actor): ?AdminActivity {
+            $order = self::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            if ($actor !== null) {
+                $actor = ActivityLogger::authorize($actor);
+                Gate::forUser($actor)->authorize('autoOrder', $order);
+            }
+            $blocked = AdminActivity::where('action', 'order.auto_ordered')
+                ->where('target_type', self::class)->where('target_id', $order->id)
+                ->whereIn('state', ['running', 'uncertain'])->exists();
+            abort_if($blocked, 409, __('Provider result is pending or uncertain. Reconcile with the provider before retrying.'));
+            if (!$order->canBeAutoOrdered()) {
+                abort_if($actor !== null, 400, __('This order cannot be auto-ordered'));
+
+                return null;
+            }
+            if (DB::transactionLevel() !== 1) {
+                throw new \LogicException('Autoorder requires a committed reservation; do not wrap it in a transaction.');
+            }
+            $activity = ActivityLogger::record($actor, 'order.auto_ordered', $order, ['status' => $order->status]);
+            $activity->update(['state' => 'running']);
+
+            return $activity;
+        });
+        if ($attempt === null) {
+            return $this->refresh();
         }
+
+        try {
+            DB::transaction(function () use ($attempt): void {
+                $order = self::whereKey($this->id)->lockForUpdate()->firstOrFail();
+                if ($order->canBeUpdated()) {
+                    $order->updateOrder();
+                } else {
+                    $order->placeOrder();
+                }
+                abort_unless($order->fresh()->status === self::STATUS_ORDERED, 502, __('Provider result is uncertain.'));
+                $attempt->update([
+                    'state' => 'succeeded',
+                    'changes' => ActivityLogger::changes('order.auto_ordered', $attempt->getAttribute('changes')['before'], ['status' => $order->status]),
+                ]);
+            });
+        } catch (Throwable $exception) {
+            $attempt->update(['state' => 'uncertain']);
+            throw $exception;
+        }
+
+        return $this->refresh();
     }
 
     public function placeOrder() {

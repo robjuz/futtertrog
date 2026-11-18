@@ -349,24 +349,36 @@ class AreaAccessTest extends TestCase
     #[Test]
     public function admin_import_and_autoorder_only_invoke_faked_providers(): void
     {
-        $this->freezeTime();
-        Http::preventStrayRequests();
-        config(['services.holzke.enabled' => true]);
-        $this->app->register(MealProvidersServiceProvider::class, true);
-        $meal = Meal::factory()->inFuture()->create(['provider' => 'Holzke', 'external_id' => 'meal-1']);
-        $order = Order::factory()->create(['provider' => 'Holzke', 'status' => Order::STATUS_OPEN]);
-        OrderItem::factory()->create(['meal_id' => $meal->id, 'order_id' => $order->id]);
-        $provider = $this->partialMock(Holzke::class);
-        $provider->shouldReceive('createMealsDataForDate')->once()->withArgs(fn ($date) => $date->isSameDay($meal->date))->andReturn(1);
-        $provider->shouldReceive('placeOrder')->once()->withArgs(fn (Order $target) => $target->is($order))
-            ->andReturnUsing(function (Order $target): void { $target->markOrdered(); });
-        $this->loginAsAdmin();
+        $originalConnection = config('database.default');
+        config(['database.connections.admin_autoorder_fixture' => array_merge(config('database.connections.sqlite'), [
+            'database' => ':memory:',
+        ])]);
+        $this->artisan('migrate:fresh', ['--database' => 'admin_autoorder_fixture', '--force' => true, '--no-interaction' => true])->assertExitCode(0);
+        config(['database.default' => 'admin_autoorder_fixture']);
+        try {
+            $this->freezeTime();
+            Http::preventStrayRequests();
+            config(['services.holzke.enabled' => true]);
+            $this->app->register(MealProvidersServiceProvider::class, true);
+            $meal = Meal::factory()->inFuture()->create(['provider' => 'Holzke', 'external_id' => 'meal-1']);
+            $order = Order::factory()->create(['provider' => 'Holzke', 'status' => Order::STATUS_OPEN]);
+            OrderItem::factory()->create(['meal_id' => $meal->id, 'order_id' => $order->id]);
+            $provider = $this->partialMock(Holzke::class);
+            $provider->shouldReceive('getKey')->andReturn('Holzke');
+            $provider->shouldReceive('createMealsDataForDate')->once()->withArgs(fn ($date) => $date->isSameDay($meal->date))->andReturn(1);
+            $provider->shouldReceive('placeOrder')->once()->withArgs(fn (Order $target) => $target->is($order))
+                ->andReturnUsing(function (Order $target): void { $target->markOrdered(); });
+            $this->loginAsAdmin();
 
-        $this->post('/admin/meals/import', ['date' => $meal->date->toDateString(), 'provider' => 'Holzke'])->assertRedirect(route('meals.create'));
-        $this->postJson('/admin/orders/'.$order->id.'/auto_order')->assertOk();
+            $this->post('/admin/meals/import', ['date' => $meal->date->toDateString(), 'provider' => 'Holzke'])->assertRedirect(route('meals.create'));
+            $this->postJson('/admin/orders/'.$order->id.'/auto_order')->assertOk();
 
-        $this->assertSame(Order::STATUS_ORDERED, $order->fresh()->status);
-        Http::assertNothingSent();
+            $this->assertSame(Order::STATUS_ORDERED, $order->fresh()->status);
+            Http::assertNothingSent();
+        } finally {
+            config(['database.default' => $originalConnection]);
+            \Illuminate\Support\Facades\DB::purge('admin_autoorder_fixture');
+        }
     }
 
     #[Test]

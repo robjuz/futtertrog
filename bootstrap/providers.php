@@ -2,7 +2,8 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\MealProvidersServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
-    \SocialiteProviders\Manager\ServiceProvider::class
+    App\Providers\Filament\AdministrationPanelProvider::class,
+    App\Providers\MealProvidersServiceProvider::class,
+    SocialiteProviders\Manager\ServiceProvider::class,
 ];

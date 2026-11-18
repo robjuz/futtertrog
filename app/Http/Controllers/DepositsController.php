@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Admin\Bookings;
 use App\Http\Requests\DepositDestroyRequest;
 use App\Http\Requests\DepositRequest;
 use App\Models\Deposit;
@@ -59,7 +60,7 @@ class DepositsController extends Controller implements HasMiddleware
      */
     public function store(DepositRequest $request)
     {
-        Deposit::create($request->validated());
+        app(Bookings::class)->create($request->user(), $request->validated(), $request->header('Idempotency-Key'));
 
         return redirect()->route('deposits.index')->with('success', __('Success'));
     }
@@ -72,7 +73,7 @@ class DepositsController extends Controller implements HasMiddleware
      */
     public function update(DepositRequest $request, Deposit $deposit)
     {
-        $deposit->update($request->validated());
+        app(Bookings::class)->update($request->user(), $deposit, $request->validated());
 
         return redirect()->route('deposits.index')->with('success', __('Success'));
     }
@@ -88,7 +89,7 @@ class DepositsController extends Controller implements HasMiddleware
      */
     public function destroy(DepositDestroyRequest $request, Deposit $deposit)
     {
-        $deposit->delete();
+        app(Bookings::class)->delete($request->user(), $deposit);
 
         return back()->with('success', __('Success'));
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\OrderUpdated;
+use App\Actions\Admin\OrderItems;
 use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Models\User;
@@ -57,12 +57,7 @@ class AdminOrderItemController extends Controller
             'quantity' => ['sometimes', 'integer', 'min:1', 'max:10'],
             'meal_id' => ['required', 'exists:meals,id', new MealWithoutVariants()],
         ]);
-        $meal = Meal::findOrFail($data['meal_id']);
-        $recipient = User::findOrFail($data['user_id'] ?? $request->user()->id);
-        Gate::authorize('orderFor', [OrderItem::class, $meal, $recipient]);
-
-        $orderItem = $meal->order($recipient, $data['quantity'] ?? 1);
-        event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
+        $orderItem = app(OrderItems::class)->create($request->user(), $data);
 
         return $request->wantsJson()
             ? response()->json($orderItem, 201)
@@ -77,15 +72,7 @@ class AdminOrderItemController extends Controller
             'quantity' => ['sometimes', 'integer', 'min:0', 'max:10'],
             'meal_id' => ['sometimes', 'exists:meals,id', new MealWithoutVariants()],
         ]);
-        if (isset($data['user_id'])) {
-            Gate::authorize('orderFor', [OrderItem::class,
-                Meal::findOrFail($data['meal_id'] ?? $orderItem->meal_id), User::findOrFail($data['user_id'])]);
-        }
-
-        $orderItem->update($data);
-        $orderItem->unsetRelation('user')->unsetRelation('meal');
-        $orderItem->order->reopen();
-        event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
+        $orderItem = app(OrderItems::class)->update($request->user(), $orderItem, $data);
 
         return $request->wantsJson()
             ? response()->json($orderItem)
@@ -96,9 +83,7 @@ class AdminOrderItemController extends Controller
     {
         Gate::authorize('administer', $orderItem);
 
-        $orderItem->delete();
-        $orderItem->order->reopen();
-        event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
+        app(OrderItems::class)->delete($request->user(), $orderItem);
 
         return $request->wantsJson()
             ? response()->json(null, 204)

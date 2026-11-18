@@ -1,1 +1,4 @@
-/* Reserved for the separate Filament panel theme in package 3. Not a Vite input. */
+@import '../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../app/Filament/**/*';
+@source '../../vendor/filament/**/*.blade.php';
