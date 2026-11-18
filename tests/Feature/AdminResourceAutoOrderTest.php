@@ -15,15 +15,13 @@ use Tests\TestCase;
 
 class AdminResourceAutoOrderTest extends TestCase
 {
-    private string $fixturePath;
     private string $originalConnection;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->originalConnection = config('database.default');
-        $this->fixturePath = tempnam(sys_get_temp_dir(), 'panel-autoorder-');
-        config(['database.connections.panel_auto_order' => array_merge(config('database.connections.sqlite'), ['database' => $this->fixturePath])]);
+        $this->createFixtureDatabase('panel_auto_order');
         $this->artisan('migrate:fresh', ['--database' => 'panel_auto_order', '--force' => true, '--no-interaction' => true])->assertExitCode(0);
         config(['database.default' => 'panel_auto_order', 'services.holzke.enabled' => true]);
         $this->app->register(MealProvidersServiceProvider::class, true);
@@ -33,8 +31,6 @@ class AdminResourceAutoOrderTest extends TestCase
     protected function tearDown(): void
     {
         config(['database.default' => $this->originalConnection]);
-        DB::purge('panel_auto_order');
-        unlink($this->fixturePath);
         parent::tearDown();
     }
 

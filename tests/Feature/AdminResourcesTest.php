@@ -13,7 +13,7 @@ use App\MealProviders\Holzke;
 use App\Models\{AdminActivity, CredentialChallenge, Deposit, Meal, Order, OrderItem};
 use App\Notifications\CustomNotification;
 use App\Mail\CredentialConfirmation;
-use Illuminate\Support\Facades\{DB, Event, Http, Mail, Notification};
+use Illuminate\Support\Facades\{Event, Http, Mail, Notification};
 use PHPUnit\Framework\Attributes\TestWith;
 use RuntimeException;
 use App\Models\User;
@@ -120,14 +120,19 @@ class AdminResourcesTest extends TestCase
     {
         $this->loginAsAdmin();
         $recipient = User::factory()->create();
-        DB::statement("CREATE TRIGGER reject_panel_audit BEFORE INSERT ON admin_activities BEGIN SELECT RAISE(ABORT, 'audit unavailable'); END");
+        $auditAttempted = false;
+        Event::listen('eloquent.creating: '.AdminActivity::class, function () use (&$auditAttempted): void {
+            $auditAttempted = true;
+            $this->assertDatabaseCount('deposits', 1);
+            throw new RuntimeException('audit unavailable');
+        });
 
         Livewire::test(ManageDeposits::class)->callAction('book', data: ['user_id' => $recipient->id, 'value' => 1234])
             ->assertNotified('Vorgang nicht ausgeführt.');
 
+        $this->assertTrue($auditAttempted);
         $this->assertDatabaseCount('deposits', 0);
         $this->assertDatabaseCount('admin_activities', 0);
-        DB::statement('DROP TRIGGER reject_panel_audit');
     }
 
     #[Test]

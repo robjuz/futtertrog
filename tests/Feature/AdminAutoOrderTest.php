@@ -19,17 +19,13 @@ use Tests\TestCase;
 
 class AdminAutoOrderTest extends TestCase
 {
-    private string $fixturePath;
     private string $originalConnection;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->originalConnection = config('database.default');
-        $this->fixturePath = tempnam(sys_get_temp_dir(), 'admin-autoorder-');
-        $connection = array_merge(config('database.connections.sqlite'), ['database' => $this->fixturePath]);
-        config(['database.connections.auto_order_fixture' => $connection,
-            'database.connections.auto_order_observer' => $connection]);
+        $this->createFixtureDatabase('auto_order_fixture', ['auto_order_observer']);
         $this->artisan('migrate:fresh', ['--database' => 'auto_order_fixture', '--force' => true, '--no-interaction' => true])->assertExitCode(0);
         config(['database.default' => 'auto_order_fixture']);
     }
@@ -37,9 +33,6 @@ class AdminAutoOrderTest extends TestCase
     protected function tearDown(): void
     {
         config(['database.default' => $this->originalConnection]);
-        DB::purge('auto_order_observer');
-        DB::purge('auto_order_fixture');
-        unlink($this->fixturePath);
         parent::tearDown();
     }
 
@@ -144,7 +137,30 @@ class AdminAutoOrderTest extends TestCase
         Http::preventStrayRequests();
         [$actor, $order, $provider] = $this->autoOrderFixture();
         $calls = 0;
-        $provider->shouldReceive('placeOrder')->once()->andReturnUsing(function (Order $target) use ($order, &$calls): void {
+        $competingAttemptsRejected = false;
+        $this->assertNotSame(DB::connection()->getPdo(), DB::connection('auto_order_observer')->getPdo());
+        \Illuminate\Support\Facades\Event::listen('eloquent.created: '.AdminActivity::class, function (AdminActivity $attempt) use ($actor, $order, &$calls, &$competingAttemptsRejected): void {
+            if ($attempt->action !== 'order.auto_ordered') {
+                return;
+            }
+            DB::afterCommit(function () use ($actor, $order, &$calls, &$competingAttemptsRejected): void {
+                $this->assertSame(0, DB::transactionLevel());
+                $this->assertSame(0, $calls);
+                $this->onConnection('auto_order_observer', function () use ($actor, $order): void {
+                    $this->assertSame('running', AdminActivity::sole()->state);
+                    $otherOrder = Order::findOrFail($order->id);
+                    $otherActor = User::findOrFail($actor->id);
+                    $this->assertRejected(409, fn () => app(AutoOrder::class)->execute($otherActor, $otherOrder));
+                    $this->assertRejected(409, fn () => $otherOrder->autoOrder());
+                    $this->assertDatabaseCount('admin_activities', 1);
+                });
+                $this->assertSame(0, $calls);
+                $competingAttemptsRejected = true;
+            });
+        });
+        $provider->shouldNotReceive('updateOrder');
+        $provider->shouldReceive('placeOrder')->once()->andReturnUsing(function (Order $target) use ($order, &$calls, &$competingAttemptsRejected): void {
+            $this->assertTrue($competingAttemptsRejected);
             if (++$calls > 1) {
                 throw new RuntimeException('Duplicate provider invocation.');
             }
@@ -160,6 +176,7 @@ class AdminAutoOrderTest extends TestCase
 
         app(AutoOrder::class)->execute($actor, $order);
 
+        $this->assertSame(1, $calls);
         $this->assertSame('succeeded', DB::connection('auto_order_observer')->table('admin_activities')->value('state'));
         Http::assertNothingSent();
     }

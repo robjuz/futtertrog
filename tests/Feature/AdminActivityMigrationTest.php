@@ -17,7 +17,7 @@ class AdminActivityMigrationTest extends TestCase
     #[Test]
     public function the_additive_audit_migration_preserves_existing_accounts_orders_and_bookings(): void
     {
-        config(['database.connections.admin_migration_fixture' => array_merge(config('database.connections.sqlite'), ['database' => ':memory:'])]);
+        $this->createFixtureDatabase('admin_migration_fixture');
         $original = config('database.default');
         $migration = 'database/migrations/2026_11_18_103927_create_admin_activities_table.php';
         $baseline = array_values(array_filter(array_map(
@@ -50,7 +50,6 @@ class AdminActivityMigrationTest extends TestCase
             $this->assertSame(1, OrderItem::count());
         } finally {
             config(['database.default' => $original]);
-            DB::purge('admin_migration_fixture');
         }
     }
 
