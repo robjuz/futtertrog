@@ -2,215 +2,143 @@
 
 namespace App\Http\Controllers\Auth;
 
-use OpenApi\Attributes as OA;
-
+use App\Actions\Auth\CredentialChallenges;
 use App\Http\Controllers\Controller;
+use App\Models\CredentialChallenge;
+use App\Models\ExternalIdentity;
 use App\Models\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
+use Symfony\Component\HttpFoundation\RedirectResponse as OAuthRedirect;
 
-#[OA\Post(
-    path: "/api/login",
-    summary: "Sign in",
-    description: "Login by email, password",
-    operationId: "login",
-    requestBody: new OA\RequestBody(
-        required: true,
-        description: "Pass user credentials",
-        content: new OA\JsonContent(
-            title: "LoginRequest",
-            required: ["email", "password"],
-            properties: [new OA\Property(
-                property: "email",
-                type: "string",
-                format: "email",
-                example: "user1@mail.com"
-            ), new OA\Property(
-                property: "password",
-                type: "string",
-                format: "password",
-                example: "PassWord12345"
-            )]
-        )
-    ),
-    responses: [new OA\Response(
-        response: 200,
-        description: "Success",
-        content: new OA\JsonContent(
-            title: "LoginResponse",
-            properties: [new OA\Property(
-                property: "user",
-                type: "object",
-                ref: "#/components/schemas/User"
-            )]
-        )
-    ), new OA\Response(
-        response: 422,
-        description: "Validation error",
-        content: new OA\JsonContent(
-            title: "LoginValidationResponse",
-            properties: [new OA\Property(
-                property: "message",
-                type: "string",
-                example: "The given data was invalid."
-            ), new OA\Property(
-                property: "errors",
-                type: "object",
-                properties: [new OA\Property(
-                    property: "email",
-                    type: "array",
-                    items: new OA\Items(
-                        type: "string",
-                        example: ["The email field is required.", "The email must be a valid email address."]
-                    )
-                )]
-            )]
-        )
-    ), new OA\Response(
-        response: "default",
-        ref: "#/components/responses/Default"
-    )]
-)]
-#[OA\Post(
-    path: "/api/logout",
-    summary: "Logout",
-    description: "Logout user",
-    operationId: "logout",
-    security: [["bearer" => []]],
-    responses: [new OA\Response(
-        response: 200,
-        description: "Success"
-    ), new OA\Response(
-        response: 401,
-        description: "Returns when user is not authenticated",
-        content: new OA\JsonContent(
-            properties: [new OA\Property(
-                property: "message",
-                type: "string",
-                example: "Not authorized"
-            )]
-        )
-    )]
-)]
 class LoginController extends Controller implements HasMiddleware
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected string $redirectTo = '/';
 
     public static function middleware(): array
     {
-        return [
-            new Middleware('guest', except: ['logout']),
-        ];
+        return [new Middleware('guest', except: ['logout', 'redirectToOauth', 'handleOauthCallback'])];
     }
 
-    /**
-     * Obtain the user information from OAuth provider.
-     *
-     * @param Request $request
-     * @param $provider
-     * @return JsonResponse|RedirectResponse
-     */
-    public function handleOauthCallback(Request $request, $provider): JsonResponse|RedirectResponse
+    public function login(Request $request): JsonResponse|RedirectResponse
     {
-        $oauthProvider = Socialite::driver($provider);
+        $request->validate(['email' => ['required', 'email'], 'password' => ['required', 'string']]);
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+            return $this->sendLockoutResponse($request);
+        }
 
-        $oauthUser = $oauthProvider->user();
+        $user = User::where('email', $request->string('email')->toString())->first();
+        if ($user && $user->local_credential_status !== 'disabled' && Hash::check($request->input('password'), $user->password)) {
+            if ($user->local_credential_status === 'legacy') {
+                app(CredentialChallenges::class)->send($user, CredentialChallenge::LegacyPassword);
+                $this->incrementLoginAttempts($request);
+                return $this->pendingResponse($request);
+            }
+            Auth::login($user, $request->boolean('remember'));
+            return $this->sendLoginResponse($request);
+        }
 
-        /** @var User $user */
-        $user = User::withTrashed()->firstOrNew(
-            [
-                'email' => $oauthUser->getEmail(),
-            ],
-            [
-                'name' => $oauthUser->getName(),
-                'password' => Hash::make($oauthUser->getId()),
-            ]
-        );
+        $this->incrementLoginAttempts($request);
+        return $this->sendFailedLoginResponse($request);
+    }
 
-        abort_if($user->deleted_at !== null, Response::HTTP_UNAUTHORIZED);
+    public function handleOauthCallback(Request $request, string $provider, CredentialChallenges $challenges): JsonResponse|RedirectResponse
+    {
+        abort_unless(CredentialChallenges::providerAllowed($provider), 404);
+        try {
+            $external = Socialite::driver($provider)->user();
+        } catch (InvalidStateException) {
+            return $this->pendingResponse($request);
+        }
 
-        $user->save();
+        $subject = (string) $external->getId();
+        if ($subject === '' || strlen($subject) > 255) {
+            return $this->pendingResponse($request);
+        }
+        $identity = ExternalIdentity::where('provider', $provider)->where('subject', $subject)->first();
+        if ($identity) {
+            $user = $identity->user;
+            if (! $user || $user->trashed() || ($request->user() && $request->user()->id !== $user->id)) {
+                return $this->pendingResponse($request);
+            }
+            Auth::login($user, true);
+            return $this->sendLoginResponse($request);
+        }
 
+        if ($request->user()) {
+            $account = User::find($request->user()->id);
+            if (! $account) {
+                return $this->pendingResponse($request);
+            }
+            $challenges->send($account, CredentialChallenge::LinkIdentity, $provider, $subject);
+            return $this->pendingResponse($request);
+        }
+
+        $email = $external->getEmail();
+        if (! is_string($email) || ! filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 255) {
+            return $this->pendingResponse($request);
+        }
+        $user = User::withTrashed()->whereRaw('lower(email) = ?', [Str::lower($email)])->first();
+        if ($user) {
+            $challenges->send($user, CredentialChallenge::LinkIdentity, $provider, $subject);
+            return $this->pendingResponse($request);
+        }
+
+        try {
+            $user = DB::transaction(function () use ($external, $email, $provider, $subject): User {
+                $user = User::create([
+                    'email' => $email,
+                    'name' => Str::limit($external->getName() ?: $email, 255, ''),
+                    'password' => Hash::make(bin2hex(random_bytes(32))),
+                    'local_credential_status' => 'disabled',
+                ]);
+                $user->externalIdentities()->create(['provider' => $provider, 'subject' => $subject]);
+                return $user;
+            });
+        } catch (UniqueConstraintViolationException) {
+            return $this->pendingResponse($request);
+        }
         Auth::login($user, true);
-
         return $this->sendLoginResponse($request);
     }
 
-    /**
-     * Redirect the user to the Oauth provider authentication page.
-     *
-     * @param Request $request
-     * @param string $provider
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function redirectToOauth(string $provider): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function redirectToOauth(string $provider): OAuthRedirect
     {
+        abort_unless(CredentialChallenges::providerAllowed($provider), 404);
         return Socialite::driver($provider)->redirect();
     }
 
-    /**
-     * Send the response after the user was authenticated.
-     *
-     * @param Request $request
-     * @return RedirectResponse|JsonResponse
-     */
     protected function sendLoginResponse(Request $request): JsonResponse|RedirectResponse
     {
-        if ($request->wantsJson()) {
-            return $this->guard()->user();
-        }
-
         $request->session()->regenerate();
-
+        $request->session()->put('password_hash_web', Auth::guard('web')->hashPasswordForCookie(Auth::user()->password));
         $this->clearLoginAttempts($request);
 
-        if ($response = $this->authenticated($request, $this->guard()->user())) {
-            return $response;
-        }
-
-        return redirect()->intended($this->redirectPath());
+        return $request->wantsJson()
+            ? response()->json(['authenticated' => true])
+            : redirect()->intended($this->redirectTo);
     }
 
-    /**
-     * Validate the user login request.
-     *
-     * @param Request $request
-     * @return void
-     */
-    protected function validateLogin(Request $request): void
+    private function pendingResponse(Request $request): JsonResponse|RedirectResponse
     {
-        $request->validate(
-            [
-                $this->username() => 'required|string',
-                'password' => 'required',
-            ]
-        );
+        return $request->wantsJson()
+            ? response()->json(['message' => CredentialChallenges::PublicMessage])
+            : redirect()->route($request->user() ? 'profile.security' : 'login')
+                ->with('status', CredentialChallenges::PublicMessage);
     }
 
     protected function loggedOut(Request $request): RedirectResponse

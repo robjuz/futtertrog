@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Mail\CredentialConfirmation;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
@@ -48,8 +50,9 @@ class LoginWithGitlabTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function it_logs_in_a_user_with_the_equivalent_gitlab_email()
+    public function it_requires_confirmation_for_an_equivalent_gitlab_email()
     {
+        Mail::fake();
         $this->mockSocialite();
 
         $user = User::factory()->create(
@@ -64,12 +67,15 @@ class LoginWithGitlabTest extends TestCase
 
         $this->assertDatabaseCount('users', 1);
 
-        $this->assertAuthenticatedAs($user->first());
+        $this->assertGuest();
+        $this->assertDatabaseCount('external_identities', 0);
+        Mail::assertSent(CredentialConfirmation::class, fn ($mail) => $mail->hasTo($user->email));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_is_forbidden_to_login_in_with_deleted_account()
     {
+        Mail::fake();
         $this->mockSocialite();
 
         $user = User::factory()->create(
@@ -82,6 +88,8 @@ class LoginWithGitlabTest extends TestCase
 
         $this->withExceptionHandling()
             ->get(route('login.oauth-callback', 'gitlab'))
-            ->assertUnauthorized();
+            ->assertRedirect(route('login'));
+        $this->assertGuest();
+        Mail::assertNothingSent();
     }
 }

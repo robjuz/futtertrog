@@ -120,6 +120,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'api_token',
     ];
 
     protected static function boot()
@@ -128,7 +129,18 @@ class User extends Authenticatable
 
         static::creating(function (self $user) {
             $user->generateApiToken();
+            $user->local_credential_status ??= 'enabled';
         });
+    }
+
+    public function externalIdentities(): HasMany
+    {
+        return $this->hasMany(ExternalIdentity::class);
+    }
+
+    public function credentialChallenges(): HasMany
+    {
+        return $this->hasMany(CredentialChallenge::class);
     }
 
     public function deposits()

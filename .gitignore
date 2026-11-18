@@ -23,3 +23,5 @@ yarn-error.log
 .phpunit.result.cache
 docker-compose.override.yml
 docker-compose.override.yaml
+
+/public/build

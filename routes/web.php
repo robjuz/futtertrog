@@ -26,6 +26,13 @@ Auth::routes(['register' => false]);
 Route::get('login/oauth/{provider}', [LoginController::class, 'redirectToOauth'])->name('login.oauth');
 Route::get('login/oauth/{provider}/callback', [LoginController::class, 'handleOauthCallback'])->name('login.oauth-callback');
 
+Route::middleware(['throttle:10,1', RejectAdministrativeInput::class])->group(function (): void {
+    Route::get('credentials/{user}/{purpose}/{token}', [\App\Http\Controllers\Auth\CredentialChallengeController::class, 'show'])
+        ->whereNumber('user')->name('credentials.show');
+    Route::post('credentials/{user}/{purpose}/{token}', [\App\Http\Controllers\Auth\CredentialChallengeController::class, 'confirm'])
+        ->whereNumber('user')->name('credentials.confirm');
+});
+
 Route::get('meals/ical', IcalController::class)
     ->middleware(['auth:web,api', EnsureActiveAccount::class, RejectAdministrativeInput::class])->name('meals.ical');
 
@@ -36,6 +43,16 @@ Route::middleware(['auth:web', EnsureActiveAccount::class])->group(function (): 
         Route::get('my/orders', [OrderItemController::class, 'index'])->name('my.orders');
         Route::get('my/balance', MyBalanceController::class)->name('my.balance');
         Route::resource('order_items', OrderItemController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::prefix('profile')->middleware(\App\Http\Middleware\HandleInertiaRequests::class)->group(function (): void {
+            Route::get('/', [\App\Http\Controllers\ProfileController::class, 'account'])->name('profile.account');
+            Route::patch('/', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+            Route::get('security', [\App\Http\Controllers\ProfileController::class, 'security'])->name('profile.security');
+            Route::put('password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password');
+            Route::post('password/confirmation', [\App\Http\Controllers\Auth\CredentialChallengeController::class, 'send'])
+                ->middleware('throttle:10,1')->name('profile.password.confirmation');
+            Route::get('preferences', [\App\Http\Controllers\ProfileController::class, 'preferences'])->name('profile.preferences');
+            Route::patch('preferences', [\App\Http\Controllers\ProfileController::class, 'updatePreferences'])->name('profile.preferences.update');
+        });
         Route::resource('settings', SettingsController::class)->only(['index', 'store']);
         Route::post('notifications/disable', [DisabledNotificationController::class, 'store'])->name('notification.disable');
         Route::delete('notifications/disable', [DisabledNotificationController::class, 'destroy']);
