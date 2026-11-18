@@ -25,6 +25,82 @@ class MealOrderGroupTest extends TestCase
     }
 
     #[Test]
+    #[TestWith([false, 1])]
+    #[TestWith([true, 1])]
+    #[TestWith([false, 8])]
+    #[TestWith([true, 8])]
+    public function self_service_returns_403_for_expired_target_meals_in_the_same_or_another_week(bool $admin, int $days): void
+    {
+        $this->travelTo(\Illuminate\Support\Carbon::parse('2026-11-18 12:00:00'));
+        $user = User::factory()->create(['is_admin' => $admin]);
+        $meal = Meal::factory()->create(['provider' => 'Internal', 'date' => today()->addDays($days)]);
+        $item = $meal->order($user);
+        $expired = Meal::factory()->create(['provider' => 'Internal', 'date' => today()]);
+        $item->order->markOrdered();
+        $before = $item->fresh()->getAttributes();
+        $orderCount = \App\Models\Order::count();
+        Event::fake([OrderUpdated::class]);
+
+        $this->login($user)->withExceptionHandling()
+            ->putJson(route('order_items.update', $item), ['meal_id' => $expired->id, 'quantity' => 3])
+            ->assertForbidden();
+
+        $this->assertSame($before, $item->fresh()->getAttributes());
+        $this->assertSame($orderCount, \App\Models\Order::count());
+        $this->assertSame('ordered', $item->order->fresh()->status);
+        $this->assertDatabaseCount('admin_activities', 0);
+        Event::assertNotDispatched(OrderUpdated::class);
+    }
+
+    #[Test]
+    public function admin_deadline_exception_keeps_expired_meal_changes_in_the_same_group(): void
+    {
+        $this->travelTo(\Illuminate\Support\Carbon::parse('2026-11-18 12:00:00'));
+        $admin = User::factory()->admin()->create();
+        $meal = Meal::factory()->create(['provider' => 'Internal', 'date' => '2026-11-19']);
+        $item = $meal->order($admin);
+        $expired = Meal::factory()->create(['provider' => 'Internal', 'date' => '2026-11-18']);
+        $orderId = $item->order_id;
+        Event::fake([OrderUpdated::class]);
+
+        app(OrderItems::class)->update($admin, $item, ['meal_id' => $expired->id, 'quantity' => 3]);
+
+        $this->assertSame($expired->id, $item->fresh()->meal_id);
+        $this->assertSame(3, $item->fresh()->quantity);
+        $this->assertSame($orderId, $item->fresh()->order_id);
+        $this->assertSame('open', $item->order->fresh()->status);
+        $this->assertDatabaseCount('admin_activities', 1);
+        Event::assertDispatchedTimes(OrderUpdated::class, 1);
+    }
+
+    #[Test]
+    public function admin_returns_validation_errors_for_expired_meals_outside_the_group_without_changes(): void
+    {
+        $this->travelTo(\Illuminate\Support\Carbon::parse('2026-11-18 12:00:00'));
+        $admin = User::factory()->admin()->create();
+        $meal = Meal::factory()->create(['provider' => 'Internal', 'date' => '2026-11-26']);
+        $item = $meal->order($admin);
+        $expired = Meal::factory()->create(['provider' => 'Internal', 'date' => '2026-11-18']);
+        $item->order->markOrdered();
+        $before = $item->fresh()->getAttributes();
+        $orderCount = \App\Models\Order::count();
+        Event::fake([OrderUpdated::class]);
+
+        try {
+            app(OrderItems::class)->update($admin, $item, ['meal_id' => $expired->id, 'quantity' => 3]);
+            $this->fail('An administrative deadline exception must not allow a cross-group change.');
+        } catch (ValidationException $exception) {
+            $this->assertSame(['meal_id' => [__('The meal must belong to the same collective order.')]], $exception->errors());
+        }
+
+        $this->assertSame($before, $item->fresh()->getAttributes());
+        $this->assertSame($orderCount, \App\Models\Order::count());
+        $this->assertSame('ordered', $item->order->fresh()->status);
+        $this->assertDatabaseCount('admin_activities', 0);
+        Event::assertNotDispatched(OrderUpdated::class);
+    }
+
+    #[Test]
     #[TestWith(['Internal', 'Holzke', 0, 'admin'])]
     #[TestWith(['Internal', 'Holzke', 0, 'self'])]
     #[TestWith(['Holzke', 'Gourmetta', 0, 'admin'])]

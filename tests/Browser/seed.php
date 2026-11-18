@@ -17,7 +17,7 @@ Artisan::call('migrate:fresh', ['--force' => true, '--no-interaction' => true]);
 User::factory()->admin()->enabled()->create(['name' => 'Panel Admin', 'email' => 'panel-admin@example.test', 'password' => Hash::make('browser-secret-123')]);
 $user = User::factory()->enabled()->create(['name' => 'Panel Empfänger', 'email' => 'panel-user@example.test', 'password' => Hash::make('browser-secret-123')]);
 User::factory()->admin()->enabled()->create(['name' => 'Gesperrter Admin', 'email' => 'panel-disabled@example.test', 'deleted_at' => now()]);
-$meal = Meal::factory()->inFuture()->create(['title' => 'Browsergericht', 'price' => 1234]);
+$meal = Meal::factory()->create(['title' => 'Browsergericht', 'price' => 1234, 'date' => today()->addDays(7)]);
 $order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
 OrderItem::factory()->create(['meal_id' => $meal->id, 'user_id' => $user->id, 'order_id' => $order->id, 'quantity' => 2]);
 Deposit::factory()->create(['user_id' => $user->id, 'value' => 2000, 'comment' => 'Browser-Startguthaben']);

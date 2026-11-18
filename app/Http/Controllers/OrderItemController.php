@@ -140,12 +140,13 @@ class OrderItemController extends Controller
         $data = $request->validate(
             [
                 'quantity' => 'sometimes|integer|min:0|max:10',
-                'meal_id' => ['sometimes', 'exists:meals,id', new MealWithoutVariants(), new MealInOrderGroup($orderItem->order)],
+                'meal_id' => ['sometimes', 'exists:meals,id', new MealWithoutVariants()],
             ]
         );
 
         if (isset($data['meal_id'])) {
             Gate::authorize('create', [OrderItem::class, Meal::findOrFail($data['meal_id'])->date]);
+            $request->validate(['meal_id' => [new MealInOrderGroup($orderItem->order)]]);
         }
 
         $orderItem->update($data);
