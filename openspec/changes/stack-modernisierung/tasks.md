@@ -9,10 +9,10 @@ Die Pakete werden innerhalb eines Changes bearbeitet. Für alle gelten: eigener 
 Abhängigkeit: keine. Input: bestehende Routen/Policies und Recherchebefunde. Output: abgesicherte Nutzer-/Adminwege mit vorläufigen Blade-Adminansichten.
 Eigentum: `routes/web.php`, `app/Http`, `app/Policies`, `app/Providers/AuthServiceProvider.php`, betroffene `resources/views`, `tests/Feature`, `tests/Unit`. Verboten: Auth-Credentialmigration, Filament, Lockfiles. Szenarien: alle in area-access. Tests: Auth/User/Order/MealOrdering/Deposit/Notifications sowie neue direkte Negativfälle.
 
-- [ ] 1.1 Tatsächlich registrierte Routen und bestehende Befugnisse inventarisieren; kontrollierte Ausgangstests dokumentieren.
-- [ ] 1.2 Adminroute/-layout und explizite Fähigkeiten einführen; fehlende Lese-/Schreibprüfungen und globale Adminfreigaben ersetzen.
-- [ ] 1.3 Self-Service auf Sitzungsidentität und normale Fristen begrenzen; Stellvertretung/Sonderrechte in Adminaktionen verlagern.
-- [ ] 1.4 Altrouten absichern, GET-Abmeldung entfernen, Navigationsmischung auflösen und direkte HTTP-Regressionsfälle ausführen.
+- [x] 1.1 Tatsächlich registrierte Routen und bestehende Befugnisse inventarisieren; kontrollierte Ausgangstests dokumentieren.
+- [x] 1.2 Adminroute/-layout und explizite Fähigkeiten einführen; fehlende Lese-/Schreibprüfungen und globale Adminfreigaben ersetzen.
+- [x] 1.3 Self-Service auf Sitzungsidentität und normale Fristen begrenzen; Stellvertretung/Sonderrechte in Adminaktionen verlagern.
+- [x] 1.4 Altrouten absichern, GET-Abmeldung entfernen, Navigationsmischung auflösen und direkte HTTP-Regressionsfälle ausführen.
 
 ## 2. Profil, Anmeldemethoden und Frontendbasis
 

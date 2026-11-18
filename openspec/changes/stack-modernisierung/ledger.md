@@ -46,13 +46,13 @@ Produktanforderungen stehen ausschließlich in den Delta-Spezifikationen; folgen
 | --- | --- | --- | --- | --- |
 
 
-| area-access / Servergrenze / Direkte Zugriffe | PHPUnit HTTP | 1 | unproven | keine Implementierung |
-| area-access / Servergrenze / Administrator | PHPUnit HTTP | 1 | unproven | keine Implementierung |
-| area-access / Self-Service / Eigene Bestellung | PHPUnit HTTP | 1 | unproven | keine Implementierung |
-| area-access / Self-Service / Manipulation und Fristen | PHPUnit HTTP | 1 | unproven | keine Implementierung |
-| area-access / Self-Service / Adminsonderaktion | PHPUnit HTTP | 1 | unproven | keine Implementierung |
-| area-access / Bereichswechsel / Navigation und Links | PHPUnit HTTP | 1 | unproven | keine Implementierung |
-| area-access / Bereichswechsel / Abmelden | PHPUnit HTTP | 1 | unproven | keine Implementierung |
+| area-access / Servergrenze / Direkte Zugriffe | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
+| area-access / Servergrenze / Administrator | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
+| area-access / Self-Service / Eigene Bestellung | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
+| area-access / Self-Service / Manipulation und Fristen | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
+| area-access / Self-Service / Adminsonderaktion | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
+| area-access / Bereichswechsel / Navigation und Links | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
+| area-access / Bereichswechsel / Abmelden | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
 | profile-security / Eigenes Profil / Daten und Einstellungen | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
 | profile-security / Eigenes Profil / Feldgrenzen | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
 | profile-security / Passwortänderung / Erfolgreiche Änderung | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
@@ -116,6 +116,8 @@ Modus: Claude-Orchestrator, Umsetzer über codex-subagent; Recording inaktiv (ke
 | --- | --- | --- | --- | --- |
 | 2026-11-18T09:46+01:00 | Orchestrator | Host | – | Preflight bestanden für b4ebd5b; Besitz beansprucht; approval.md einzige Abweichung |
 | 2026-11-18T09:52+01:00 | Orchestrator | Host | – | Bootstrap Featureworktree; Ausgangstests 142 bestanden, 515 Zusicherungen, SQLite :memory: |
+| 2026-11-18T10:15+01:00 | Umsetzer Paket 1 | gpt-6.1-sol | high | Worktree wt-stack-modernisierung-1, Basis 435ad0a; 58 Dateien in Paketgrenze; Commit cc1b49e; Bericht scratchpad/codex/paket-1-*.txt |
+| 2026-11-18T10:20+01:00 | Orchestrator | Host | – | Paket 1 integriert, Merge 57b996a; Diff geprüft; volle Suite 308 bestanden am Paketstand |
 
 ## Cleanup
 
