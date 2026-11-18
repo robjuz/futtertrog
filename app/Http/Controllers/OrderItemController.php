@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Rules\MealWithoutVariants;
+use App\Rules\MealInOrderGroup;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -145,6 +146,7 @@ class OrderItemController extends Controller
 
         if (isset($data['meal_id'])) {
             Gate::authorize('create', [OrderItem::class, Meal::findOrFail($data['meal_id'])->date]);
+            $request->validate(['meal_id' => [new MealInOrderGroup($orderItem->order)]]);
         }
 
         $orderItem->update($data);

@@ -7,6 +7,7 @@ use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Models\User;
 use App\Rules\MealWithoutVariants;
+use App\Rules\MealInOrderGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -49,7 +50,7 @@ class OrderItems
             $data = Validator::make($data, [
                 'user_id' => ['sometimes', 'required', 'exists:users,id'],
                 'quantity' => ['sometimes', 'integer', 'min:0', 'max:10'],
-                'meal_id' => ['sometimes', 'exists:meals,id', new MealWithoutVariants()],
+                'meal_id' => ['sometimes', 'exists:meals,id', new MealWithoutVariants(), new MealInOrderGroup($item->order)],
             ])->validate();
             if (isset($data['user_id'])) {
                 Gate::forUser($actor)->authorize('orderFor', [OrderItem::class,

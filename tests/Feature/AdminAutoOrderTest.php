@@ -197,6 +197,152 @@ class AdminAutoOrderTest extends TestCase
         Http::assertNothingSent();
     }
 
+    #[Test]
+    #[TestWith(['confirmed', 'succeeded', 'ordered'])]
+    #[TestWith(['not_received', 'failed', 'open'])]
+    public function reconciliation_records_the_actor_and_original_attempt_and_controls_retry(string $outcome, string $state, string $status): void
+    {
+        Http::preventStrayRequests();
+        [$actor, $order, $provider] = $this->autoOrderFixture();
+        $attempt = AdminActivity::factory()->create(['actor_id' => null, 'action' => 'order.auto_ordered',
+            'target_type' => Order::class, 'target_id' => $order->id, 'state' => 'uncertain',
+            'changes' => ['before' => ['status' => 'open'], 'after' => []]]);
+        $before = $attempt->getAttributes();
+        $this->assertRejected(409, fn () => $order->autoOrder());
+
+        app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, $outcome);
+
+        $this->assertSame($state, $attempt->fresh()->state);
+        $this->assertSame($before['actor_id'], $attempt->fresh()->actor_id);
+        $this->assertSame($before['changes'], $attempt->fresh()->getRawOriginal('changes'));
+        $this->assertSame($status, $order->fresh()->status);
+        $resolution = AdminActivity::where('action', 'order.auto_order_reconciled')->sole();
+        $this->assertSame($actor->id, $resolution->actor_id);
+        $this->assertSame((string) $order->id, $resolution->target_id);
+        $this->assertSame($attempt->id, $resolution->changes['attempt_id']);
+        $this->assertSame($outcome, $resolution->changes['outcome']);
+        $this->assertSame('uncertain', $resolution->changes['before']['state']);
+        $this->assertSame($state, $resolution->changes['after']['state']);
+        $this->assertRejected(409, fn () => app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, $outcome));
+        if ($outcome === 'not_received') {
+            $provider->shouldReceive('placeOrder')->once()->andReturnUsing(fn (Order $target) => $target->markOrdered());
+            app(AutoOrder::class)->execute($actor, $order);
+        } else {
+            $provider->shouldNotReceive('placeOrder', 'updateOrder');
+        }
+        $this->assertRejected(400, fn () => app(AutoOrder::class)->execute($actor, $order));
+        $order->fresh()->autoOrder();
+        Http::assertNothingSent();
+    }
+
+    #[Test]
+    public function a_running_attempt_requires_thirty_minutes_and_explicit_reconciliation(): void
+    {
+        [$actor, $order, $provider] = $this->autoOrderFixture();
+        $provider->shouldNotReceive('placeOrder', 'updateOrder');
+        $this->freezeTime();
+        $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
+            'target_id' => $order->id, 'state' => 'running']);
+        $this->travel(29)->minutes();
+        $this->assertRejected(409, fn () => app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, 'not_received'));
+        $this->travel(1)->minutes();
+        $this->assertRejected(409, fn () => $order->autoOrder());
+        app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, 'not_received');
+        $this->assertSame('failed', $attempt->fresh()->state);
+        $this->assertDatabaseCount('admin_activities', 2);
+    }
+
+    #[Test]
+    #[TestWith(['guest'])]
+    #[TestWith(['user'])]
+    #[TestWith(['disabled_admin'])]
+    public function reconciliation_rejects_unauthorized_actors_without_changes(string $role): void
+    {
+        [$admin, $order, $provider] = $this->autoOrderFixture();
+        $provider->shouldNotReceive('placeOrder', 'updateOrder');
+        $actor = match ($role) {
+            'guest' => null,
+            'user' => User::factory()->create(),
+            default => User::factory()->admin()->create(['deleted_at' => now()]),
+        };
+        $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
+            'target_id' => $order->id, 'state' => 'uncertain']);
+        try {
+            app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, 'confirmed');
+            $this->fail('Reconciliation requires an active administrator.');
+        } catch (\Illuminate\Auth\Access\AuthorizationException $exception) {
+            $this->assertSame(403, $exception->status() ?? 403);
+        }
+        $this->assertSame('uncertain', $attempt->fresh()->state);
+        $this->assertSame('open', $order->fresh()->status);
+        $this->assertDatabaseCount('admin_activities', 1);
+    }
+
+    #[Test]
+    public function reconciliation_rejects_unknown_outcomes_and_attempts_of_other_orders(): void
+    {
+        [$actor, $order, $provider] = $this->autoOrderFixture();
+        $provider->shouldNotReceive('placeOrder', 'updateOrder');
+        $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
+            'target_id' => $order->id, 'state' => 'uncertain']);
+        try {
+            app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, 'retry');
+            $this->fail('Only the two explicit provider results are valid.');
+        } catch (\Illuminate\Validation\ValidationException $exception) {
+            $this->assertArrayHasKey('outcome', $exception->errors());
+        }
+        $this->assertRejected(409, fn () => app(AutoOrder::class)->reconcile($actor, Order::factory()->create(), $attempt->id, 'confirmed'));
+        $this->assertSame('uncertain', $attempt->fresh()->state);
+        $this->assertDatabaseCount('admin_activities', 1);
+    }
+
+    #[Test]
+    public function a_worker_delayed_after_reservation_cannot_send_a_reconciled_attempt_or_restore_uncertainty(): void
+    {
+        Http::preventStrayRequests();
+        [$actor, $order, $provider] = $this->autoOrderFixture();
+        $provider->shouldNotReceive('placeOrder', 'updateOrder');
+        \Illuminate\Support\Facades\Event::listen('eloquent.created: '.AdminActivity::class, function (AdminActivity $attempt) use ($actor, $order): void {
+            if ($attempt->action !== 'order.auto_ordered') {
+                return;
+            }
+            DB::afterCommit(function () use ($attempt, $actor, $order): void {
+                $attempt->update(['created_at' => now()->subMinutes(31)]);
+                app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, 'not_received');
+            });
+        });
+
+        $this->assertRejected(409, fn () => app(AutoOrder::class)->execute($actor, $order));
+
+        $this->assertSame('failed', AdminActivity::where('action', 'order.auto_ordered')->sole()->state);
+        $this->assertDatabaseCount('admin_activities', 2);
+        $this->assertSame('open', $order->fresh()->status);
+        Http::assertNothingSent();
+    }
+
+    #[Test]
+    public function a_failed_reconciliation_log_rolls_back_both_the_attempt_and_order_status(): void
+    {
+        [$actor, $order, $provider] = $this->autoOrderFixture();
+        $provider->shouldNotReceive('placeOrder', 'updateOrder');
+        $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
+            'target_id' => $order->id, 'state' => 'uncertain']);
+        \Illuminate\Support\Facades\Event::listen('eloquent.creating: '.AdminActivity::class, function (AdminActivity $activity): void {
+            if ($activity->action === 'order.auto_order_reconciled') {
+                throw new RuntimeException('Audit storage failed.');
+            }
+        });
+        try {
+            app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, 'confirmed');
+            $this->fail('A failed audit write must roll back reconciliation.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Audit storage failed.', $exception->getMessage());
+        }
+        $this->assertSame('uncertain', $attempt->fresh()->state);
+        $this->assertSame('open', $order->fresh()->status);
+        $this->assertDatabaseCount('admin_activities', 1);
+    }
+
     private function assertRejected(int $status, \Closure $operation): void
     {
         try {

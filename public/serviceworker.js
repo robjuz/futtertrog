@@ -15,7 +15,19 @@ self.addEventListener('fetch', event => {
     event.respondWith(fetch(event.request).catch(() => new Response(`<!doctype html>
 <html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Offline · Futtertrog</title><style>body{font:1.1rem/1.6 system-ui,sans-serif;max-width:40rem;margin:10vh auto;padding:1.5rem;color:#1c1917;background:#fafaf9}a{color:#115e59}</style>
-<main><h1>Sie sind offline</h1><p>Diese Seite benötigt eine Verbindung. Bestellungen werden nicht gesendet oder vorgemerkt. Es liegt keine neue Serverbestätigung vor.</p><a href="${url.pathname}">Erneut versuchen</a></main></html>`,
+<main><h1 id="offline-heading">Sie sind offline</h1><p id="offline-message">Diese Seite benötigt eine Verbindung. Bestellungen werden nicht gesendet oder vorgemerkt. Es liegt keine neue Serverbestätigung vor.</p><a id="offline-retry" href="${url.pathname}">Erneut versuchen</a></main>
+<script>
+try {
+    const copy = JSON.parse(localStorage.getItem('futtertrog:offline-copy'));
+    if (copy) {
+        document.documentElement.lang = copy.locale;
+        document.title = copy.title;
+        document.getElementById('offline-heading').textContent = copy.heading;
+        document.getElementById('offline-message').textContent = copy.message;
+        document.getElementById('offline-retry').textContent = copy.retry;
+    }
+} catch {}
+</script></html>`,
         { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } }
     )));
 });

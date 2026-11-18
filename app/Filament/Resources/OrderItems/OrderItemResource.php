@@ -27,9 +27,9 @@ class OrderItemResource extends AdminResource
         return parent::getEloquentQuery()->with(['meal.parent.parent', 'order', 'user' => fn (mixed $q): mixed => $q->withTrashed()]);
     }
 
-    public static function fields(int $minimum = 1): array
+    public static function fields(int $minimum = 1, ?OrderItem $item = null): array
     {
-        return [Fields::meal(), Fields::user()->required(), TextInput::make('quantity')->label('Menge')->required()->integer()->minValue($minimum)->maxValue(10)->default(1)];
+        return [Fields::meal($item?->order), Fields::user()->required(), TextInput::make('quantity')->label('Menge')->required()->integer()->minValue($minimum)->maxValue(10)->default(1)];
     }
 
     public static function headerActions(): array
@@ -58,7 +58,7 @@ class OrderItemResource extends AdminResource
         ])->recordActions([
             PanelAction::make('change')->label('Sonderänderung')->authorize(fn (OrderItem $record): bool => Gate::allows('administer', $record))
                 ->fillForm(fn (OrderItem $record): array => ['meal_id' => $record->meal_id, 'user_id' => $record->user_id, 'quantity' => $record->quantity])
-                ->schema(static::fields(0))->action(fn (array $data, OrderItem $record, Action $action) => PanelAction::run($action, fn () => app(OrderItems::class)->update(auth()->user(), $record, $data))),
+                ->schema(fn (OrderItem $record): array => static::fields(0, $record))->action(fn (array $data, OrderItem $record, Action $action) => PanelAction::run($action, fn () => app(OrderItems::class)->update(auth()->user(), $record, $data))),
             PanelAction::make('remove')->label('Stornieren')->color('danger')->authorize(fn (OrderItem $record): bool => Gate::allows('administer', $record))
                 ->action(fn (OrderItem $record, Action $action) => PanelAction::run($action, fn () => app(OrderItems::class)->delete(auth()->user(), $record))),
         ]);

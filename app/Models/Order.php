@@ -210,6 +210,12 @@ class Order extends Model
         ]);
     }
 
+    public function pendingAutoOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AdminActivity::class, 'target_id')->where('target_type', self::class)
+            ->where('action', 'order.auto_ordered')->whereIn('state', ['running', 'uncertain']);
+    }
+
     /** A committed reservation protects both scheduled and administrative provider calls. */
     public function autoOrder(?User $actor = null): self
     {
@@ -219,9 +225,7 @@ class Order extends Model
                 $actor = ActivityLogger::authorize($actor);
                 Gate::forUser($actor)->authorize('autoOrder', $order);
             }
-            $blocked = AdminActivity::where('action', 'order.auto_ordered')
-                ->where('target_type', self::class)->where('target_id', $order->id)
-                ->whereIn('state', ['running', 'uncertain'])->exists();
+            $blocked = $order->pendingAutoOrders()->exists();
             abort_if($blocked, 409, __('Provider result is pending or uncertain. Reconcile with the provider before retrying.'));
             if (!$order->canBeAutoOrdered()) {
                 abort_if($actor !== null, 400, __('This order cannot be auto-ordered'));
@@ -243,6 +247,8 @@ class Order extends Model
         try {
             DB::transaction(function () use ($attempt): void {
                 $order = self::whereKey($this->id)->lockForUpdate()->firstOrFail();
+                abort_unless($attempt->fresh()->state === 'running', 409,
+                    __('Provider attempt has already been reconciled.'));
                 if ($order->canBeUpdated()) {
                     $order->updateOrder();
                 } else {
@@ -255,7 +261,7 @@ class Order extends Model
                 ]);
             });
         } catch (Throwable $exception) {
-            $attempt->update(['state' => 'uncertain']);
+            AdminActivity::whereKey($attempt->id)->where('state', 'running')->update(['state' => 'uncertain']);
             throw $exception;
         }
 
