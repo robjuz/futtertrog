@@ -127,6 +127,18 @@ Modus: Claude-Orchestrator, Umsetzer über codex-subagent; Recording inaktiv (ke
 | 2026-11-18T12:30+01:00 | Orchestrator | Host | – | Paket 4 integriert, Merge 0de3711; Suite 691, Build, Playwright 4 bestanden am Paketstand; Panel unter /admin |
 | 2026-11-18T13:00+01:00 | Umsetzer Paket 5 | gpt-6.1-sol | high | Worktree wt-stack-modernisierung-5, Basis 05cd342; 48 Dateien in Paketgrenze; Commit adf2f7e; Bericht scratchpad/codex/paket-5-*.txt |
 | 2026-11-18T13:10+01:00 | Orchestrator | Host | – | Paket 5 integriert, Merge b47340a; Suite 702, Build, Playwright 30 bestanden am Paketstand; zuvor versehentlich committete Testdatenbank mit 05cd342 entfernt |
+| 2026-11-18T13:20+01:00 | Abschlussprüfung A (1/1) | gpt-6.1-sol | high | Read-only an 6733240; 0 P0, 3 P1, 3 P2; A-Budget verbraucht 1/1, verbleibend 0; Bericht scratchpad/codex/abschluss-a-*.json |
+| 2026-11-18T13:25+01:00 | Orchestrator | Host | – | F1–F3 am Quelltext bestätigt; Korrekturlauf in wt-stack-modernisierung-fix auf bau/stack-modernisierung-fix beauftragt, keine Folgeprüfung |
+
+## Finding Ledger
+
+| ID | Schwere | Stelle | Befund | Verifikation | Entscheidung | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| F1 | P1 | Admin-/Self-Service-Änderung von Bestellpositionen | Gerichtwechsel über Anbieter/Zeitraum hinweg lässt Position in alter Sammelbestellung | Quelltext bestätigt; Verhalten bestand bereits auf master | Fix: Wechsel nur innerhalb der Bestellgruppe | offen |
+| F2 | P1 | Autoorder-Reservierung | Kein unterstützter Abgleich für running/uncertain | Quelltext bestätigt | Fix: autorisierte, protokollierte Klärung | offen |
+| F3 | P1 | Vue-Nutzeroberfläche | Feste deutsche Texte, Spracheinstellung wirkungslos | Quelltext bestätigt | Fix: Übersetzungsanbindung | offen |
+| F4 | P2 | CSRF nach Passwortänderung | Veraltetes Meta-Token möglich; unbestätigt | nicht reproduziert | Mitbeheben im Korrekturlauf | offen |
+| P2-Sammel | P2 | Order-Modell/AdminActivity-Kopplung; überholte Planaussagen in tasks.md/ledger.md | 2 Hinweise ohne Verhaltenswirkung | – | Restrisiko, keine Aktion | notiert |
 
 ## Cleanup
 
