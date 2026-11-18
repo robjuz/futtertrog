@@ -39,9 +39,9 @@ Eigentum: Filament-Panelprovider, notwendige `app/Actions`, Policies, Adminroute
 Abhängigkeit: 3 integriert. Input: getestete Panel-/Actionbasis. Output: vollständige Adminabläufe, alte Verwaltungsansichten ersetzt.
 Eigentum: neue `app/Filament/Resources`, zugehörige Panelpages, Resource- und Browsertests. Während Parallelisierung nach Resource-Dateien aufteilen: Benutzer; Gerichte/Importe; Bestellungen/Finanzen/Mitteilungen. Rootdateien, Migrationen und gemeinsame Actions bleiben dem Integrator vorbehalten. Verboten: fachliche Regeln in Resources duplizieren, direkte Anbieteraufrufe in Tests. Szenarien: alle finance-admin und Bereichsgrenze aus area-access. Tests: Panelzugang, vorhandene fachliche Suiten, Browser-Smoke der Verwaltungsabläufe.
 
-- [ ] 4.1 Benutzerpflege einschließlich Wiederherstellung und letztem Administrator sowie Angebote/Varianten/Importe anbinden.
-- [ ] 4.2 Sammelbestellungen, zulässige Sonderaktionen, Einzahlungen/Überträge und Mitteilungen anbinden; Ergebnis und Fehler anzeigen.
-- [ ] 4.3 Suche, Filter, Pagination und Bestätigungen fertigstellen; bisherige Verwaltungsseiten erst nach Funktionsparität abschalten.
+- [x] 4.1 Benutzerpflege einschließlich Wiederherstellung und letztem Administrator sowie Angebote/Varianten/Importe anbinden.
+- [x] 4.2 Sammelbestellungen, zulässige Sonderaktionen, Einzahlungen/Überträge und Mitteilungen anbinden; Ergebnis und Fehler anzeigen.
+- [x] 4.3 Suche, Filter, Pagination und Bestätigungen fertigstellen; bisherige Verwaltungsseiten erst nach Funktionsparität abschalten.
 
 ## 5. Nutzeroberfläche und PWA
 
