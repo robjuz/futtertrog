@@ -29,13 +29,13 @@ Route::get('meals/ical', IcalController::class)
     ->middleware(['auth:web,api', EnsureActiveAccount::class, RejectAdministrativeInput::class])->name('meals.ical');
 
 Route::middleware(['auth:web', EnsureActiveAccount::class])->group(function (): void {
-    Route::middleware(RejectAdministrativeInput::class)->group(function (): void {
+    Route::middleware([RejectAdministrativeInput::class, \App\Http\Middleware\HandleInertiaRequests::class])->group(function (): void {
         Route::get('/', HomeController::class)->name('home');
         Route::resource('meals', MealController::class)->only(['index', 'show'])->whereNumber('meal');
         Route::get('my/orders', [OrderItemController::class, 'index'])->name('my.orders');
         Route::get('my/balance', MyBalanceController::class)->name('my.balance');
         Route::resource('order_items', OrderItemController::class)->only(['index', 'store', 'update', 'destroy']);
-        Route::prefix('profile')->middleware(\App\Http\Middleware\HandleInertiaRequests::class)->group(function (): void {
+        Route::prefix('profile')->group(function (): void {
             Route::get('/', [\App\Http\Controllers\ProfileController::class, 'account'])->name('profile.account');
             Route::patch('/', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
             Route::get('security', [\App\Http\Controllers\ProfileController::class, 'security'])->name('profile.security');

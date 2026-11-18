@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 
 export default defineConfig({
     testDir: './tests/Browser',
-    outputDir: './tests/Browser/results',
+    outputDir: './test-results',
     fullyParallel: false,
     workers: 1,
     timeout: 60_000,
@@ -13,7 +13,7 @@ export default defineConfig({
         trace: 'retain-on-failure',
         launchOptions: {
             executablePath: process.env.PLAYWRIGHT_CHROME ?? (existsSync('/usr/bin/google-chrome') ? '/usr/bin/google-chrome' : `${process.env.HOME}/.cache/ms-playwright/chromium-1187/chrome-linux/chrome`),
-            args: ['--no-sandbox'],
+            args: ['--no-sandbox', '--disable-background-networking', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'],
         },
     },
     projects: [

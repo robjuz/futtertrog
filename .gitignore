@@ -29,3 +29,8 @@ docker-compose.override.yaml
 /public/css/filament
 /public/js/filament
 /public/fonts/filament
+
+/storage/*.sqlite
+/test-results
+/playwright-report
+/tests/Browser/results
