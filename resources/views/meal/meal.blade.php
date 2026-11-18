@@ -3,15 +3,8 @@
 >
     <div class="meal__header">
         <h4 class="meal__name">
-            @can('update', $meal)
-                <small class="meal__provider-name">{{ $meal->provider }}</small>
-                <a class="meal__edit-link" href="{{ route('meals.edit', $meal) }}">
-                    {{ $meal->title }}
-                </a>
-            @else
-                <small class="meal_provider-name">{{ $meal->provider }}</small>
-                {{ $meal->title }}
-            @endcan
+            <small class="meal_provider-name">{{ $meal->provider }}</small>
+            {{ $meal->title }}
         </h4>
 
         <div class="meal__header-infos">
@@ -73,7 +66,6 @@
     @else
         <form action="{{ route('order_items.store') }}" method="post" class="meal-form">
             @csrf
-            <input type="hidden" name="user_id" value="{{ auth()->id() }}"/>
             @if($meal->variants->isEmpty())
                 <input type="hidden" name="meal_id" value="{{ $meal->id }}"/>
             @else
@@ -89,7 +81,7 @@
                     @endforeach
                 </fieldset>
             @endif
-            @can('create', [\App\Models\OrderItem::class, $meal->date_from])
+            @can('create', [\App\Models\OrderItem::class, $meal->date])
                 <label for="amount-{{ $meal->id }}" class="sr-only">{{ __('Amount') }}</label>
                 <input type="number" name="quantity" min="1" value="1" id="amount-{{ $meal->id }}">
                 <button type="submit">{{ __('Place order') }} </button>

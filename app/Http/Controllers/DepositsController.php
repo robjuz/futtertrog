@@ -7,6 +7,7 @@ use App\Http\Requests\DepositRequest;
 use App\Models\Deposit;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -21,6 +22,8 @@ class DepositsController extends Controller implements HasMiddleware
 
     public function index(Request $request)
     {
+        Gate::authorize('viewAny', Deposit::class);
+
         $deposits = Deposit::with(['user' => function ($q) {
             $q->withTrashed();
         }])->latest()->paginate();
@@ -34,6 +37,7 @@ class DepositsController extends Controller implements HasMiddleware
 
     public function create()
     {
+        Gate::authorize('create', Deposit::class);
         $users = User::orderBy('name')->get();
 
         return view('deposit.create', compact('users'));
@@ -41,6 +45,7 @@ class DepositsController extends Controller implements HasMiddleware
 
     public function edit(Deposit $deposit)
     {
+        Gate::authorize('update', $deposit);
         $users = User::orderBy('name')->withTrashed()->get();
 
         return view('deposit.edit', compact('users', 'deposit'));

@@ -43,7 +43,7 @@ class MealTest extends TestCase
             ->assertViewIs('meal.create');
 
         $this->post(route('meals.store'), $meal)
-            ->assertRedirect(route('meals.index'));
+            ->assertRedirect(route('admin.meals.index'));
 
         $this->postJson(route('meals.store'), $meal)
             ->assertSuccessful();
@@ -82,7 +82,7 @@ class MealTest extends TestCase
             ->assertViewIs('meal.edit');
 
         $this->put(route('meals.update', $meal), $attributes)
-            ->assertRedirect(route('meals.index'));
+            ->assertRedirect(route('admin.meals.index'));
 
         $this->putJson(route('meals.update', $meal), $attributes)
             ->assertJsonFragment([
@@ -177,7 +177,7 @@ class MealTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function guests_and_users_are_not_allowed_to_see_meal_details()
+    public function guests_are_denied_meal_details_and_users_can_read_them()
     {
         $meal = Meal::factory()->create();
 
@@ -188,7 +188,7 @@ class MealTest extends TestCase
 
         $this->login()
             ->get(route('meals.show', $meal))
-            ->assertForbidden();
+            ->assertOk()->assertSee($meal->title);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

@@ -11,9 +11,11 @@ class DepositRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return $this->user()->is_admin;
+        return $this->route('deposit')
+            ? $this->user()->can('update', $this->route('deposit'))
+            : $this->user()->can('create', \App\Models\Deposit::class);
     }
 
     /**

@@ -12,7 +12,7 @@ class NotificationController extends Controller
 {
     public function create()
     {
-        Gate::authorize('create', CustomNotification::class);
+        Gate::authorize('send-notifications');
 
         $users = User::orderBy('name')->get();
 
@@ -21,7 +21,7 @@ class NotificationController extends Controller
 
     public function store(Request $request)
     {
-        Gate::authorize('create', CustomNotification::class);
+        Gate::authorize('send-notifications');
 
         $request->validate(
             [

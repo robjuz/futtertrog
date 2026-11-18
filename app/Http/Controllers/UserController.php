@@ -8,6 +8,7 @@ use App\Models\Deposit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
@@ -135,13 +136,20 @@ class UserController extends Controller
     {
         Gate::authorize('update', $user);
 
-        $user->fill($request->validated());
+        DB::transaction(function () use ($request, $user): void {
+            User::where('is_admin', true)->orderBy('id')->lockForUpdate()->get();
+            $user->refresh();
+            if ($request->has('is_admin') && !$request->boolean('is_admin')) {
+                Gate::authorize('demote', $user);
+            }
+            $user->fill($request->validated());
 
-        if ($request->has('password') && ! is_null($request->input('password'))) {
-            $user->password = Hash::make($request->input('password'));
-        }
+            if ($request->has('password') && !is_null($request->input('password'))) {
+                $user->password = Hash::make($request->input('password'));
+            }
 
-        $user->save();
+            $user->save();
+        });
 
         if ($request->wantsJson()) {
             return response()->json($user);
@@ -162,9 +170,12 @@ class UserController extends Controller
      */
     public function destroy(Request $request, User $user)
     {
-        Gate::authorize('delete', $user);
-
-        $user->delete();
+        DB::transaction(function () use ($user): void {
+            User::where('is_admin', true)->orderBy('id')->lockForUpdate()->get();
+            $user->refresh();
+            Gate::authorize('delete', $user);
+            $user->delete();
+        });
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
@@ -173,11 +184,11 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
-    public function restore(Request $request, $user)
+    public function restore(Request $request, string $user): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
     {
-        User::withTrashed()->findOrFail($user)->restore();
-
+        $user = User::withTrashed()->findOrFail($user);
         Gate::authorize('restore', $user);
+        $user->restore();
 
         if ($request->wantsJson()) {
             return response()->json($user);

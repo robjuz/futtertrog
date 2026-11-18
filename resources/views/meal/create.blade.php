@@ -1,5 +1,5 @@
 @inject('providers', 'mealProviders')
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <h1>{{ __('New meal') }}</h1>
