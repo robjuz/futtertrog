@@ -3,7 +3,7 @@
 FROM composer:2 AS frontend-vendor
 WORKDIR /build
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
+RUN composer install --no-dev --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs --no-autoloader
 
 FROM node:24-alpine AS frontend
 WORKDIR /build
