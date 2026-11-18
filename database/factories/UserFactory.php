@@ -30,12 +30,31 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('secret'),
             'remember_token' => Str::random(10),
             'is_admin' => 0,
+            'local_credential_status' => 'enabled',
         ];
     }
 
     /**
      * Indicate that the model's email address should be unverified.
      */
+    public function legacy(): static
+    {
+        return $this->state(fn (array $attributes) => ['local_credential_status' => 'legacy']);
+    }
+
+    public function enabled(): static
+    {
+        return $this->state(fn (array $attributes) => ['local_credential_status' => 'enabled']);
+    }
+
+    public function disabled(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'local_credential_status' => 'disabled',
+            'password' => Hash::make(Str::random(64)),
+        ]);
+    }
+
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [

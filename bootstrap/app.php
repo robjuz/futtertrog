@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\UserLocale::class,
+            \App\Http\Middleware\AuthenticateCredentialSession::class,
         ]);
 
     })

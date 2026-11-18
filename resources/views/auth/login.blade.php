@@ -6,6 +6,10 @@
         <h1>{{ __('Login') }}</h1>
     </header>
 
+    @if (session('status'))
+        <p role="status">{{ session('status') }}</p>
+    @endif
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -43,21 +47,11 @@
     </form>
 
 
-    @if (config('services.gitlab.client_id') or config('services.authentic.client_id'))
-        <div class="or-login-with"><span>{{ __('or') }}</span></div>
-
-            @if (config('services.gitlab.client_id'))
-                <a href="{{ route('login.oauth', 'gitlab') }}" class="login-with-oauth">
-                    @svg('brands/gitlab', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
-                    {{ __('Login with GitLab') }}
-                </a>
-            @endif
-
-            @if (config('services.gitlab.client_id'))
-                <a href="{{ route('login.oauth', 'authentik') }}" class="login-with-oauth">
-                    @svg('solid/key', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
-                    {{ __('Login with Authentik') }}
-                </a>
-            @endif
-    @endif
+    @foreach (config('services.oauth_providers', []) as $provider)
+        @if (config("services.$provider.client_id"))
+            <a href="{{ route('login.oauth', $provider) }}" class="login-with-oauth">
+                {{ __('Login') }} · {{ ucfirst($provider) }}
+            </a>
+        @endif
+    @endforeach
 @endsection

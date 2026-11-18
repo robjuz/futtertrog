@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+@source '../js';
+
+@layer base {
+  :root { font-family: ui-sans-serif, system-ui, sans-serif; color-scheme: light; }
+  label { @apply mb-2 block text-sm font-medium; }
+  input:not([type='checkbox']), textarea, select {
+    @apply block w-full rounded-md border border-stone-400 bg-white px-3 py-2.5 text-base text-stone-950;
+  }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    @apply outline-2 outline-offset-2 outline-teal-700;
+  }
+}
+@layer components {
+  .profile-card { @apply rounded-xl border border-stone-200 bg-white p-5 shadow-sm sm:p-8; }
+  .field-error { @apply mt-2 text-sm text-red-800; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

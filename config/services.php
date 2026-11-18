@@ -35,6 +35,8 @@ return [
         ],
     ],
 
+    'oauth_providers' => ['gitlab', 'authentik'],
+
     'gitlab' => [
         'host' => env('GITLAB_URL'),
         'client_id' => env('GITLAB_CLIENT_ID'),

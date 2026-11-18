@@ -89,9 +89,9 @@
                 <li><a href="{{ route('my.orders') }}">{{ __('My orders') }}</a></li>
                 <li><a href="{{ route('my.balance') }}">{{ __('My balance') }}</a></li>
                 <li>
-                    <a href="{{ route('settings.index') }}#main" {{ request()->routeIs('settings.index') ? 'aria-current="page"' : '' }}>
+                    <a href="{{ route('profile.account') }}#profile-content" {{ request()->routeIs('profile.*') ? 'aria-current="page"' : '' }}>
                         @svg('solid/cogs', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
-                        {{ __('Settings') }}
+                        {{ __('Profile') }}
                     </a>
                 </li>
                 @can('access-administration')

@@ -25,3 +25,6 @@ boost.json
 .env.*
 !.env.example
 node_modules
+
+public/build
+public/hot

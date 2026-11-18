@@ -19,6 +19,7 @@
         "eluceo/ical": "^2.5",
         "guzzlehttp/guzzle": "^8.0",
         "imangazaliev/didom": "^2.0",
+        "inertiajs/inertia-laravel": "^3.7",
         "ixudra/curl": "^6.16",
         "laravel/framework": "^13.0",
         "laravel/socialite": "^5.0",
