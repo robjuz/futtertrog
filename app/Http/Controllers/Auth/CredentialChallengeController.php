@@ -18,7 +18,7 @@ class CredentialChallengeController extends Controller
         $this->ensureAccount($request, $user);
         $challenges->find($user, $purpose, $token);
 
-        return view('auth.credential-confirm', ['needsPassword' => $purpose !== CredentialChallenge::LinkIdentity]);
+        return view('auth.credential-confirm', ['needsPassword' => $purpose !== CredentialChallenge::LINK_IDENTITY]);
     }
 
     public function confirm(Request $request, int $user, string $purpose, string $token, CredentialChallenges $challenges, LocalPassword $passwords): RedirectResponse
@@ -26,7 +26,7 @@ class CredentialChallengeController extends Controller
         $this->ensureAccount($request, $user);
         $challenges->find($user, $purpose, $token);
         $data = $request->validate([
-            'password' => $purpose === CredentialChallenge::LinkIdentity ? ['missing'] : LocalPassword::rules(),
+            'password' => $purpose === CredentialChallenge::LINK_IDENTITY ? ['missing'] : LocalPassword::rules(),
             'user_id' => ['missing'], 'is_admin' => ['missing'], 'id' => ['missing'],
         ]);
         $account = $challenges->consume($user, $purpose, $token, $data['password'] ?? null);
@@ -38,16 +38,16 @@ class CredentialChallengeController extends Controller
     public function send(Request $request, CredentialChallenges $challenges): RedirectResponse
     {
         if ($request->user()->local_credential_status !== 'enabled') {
-            $challenges->send($request->user(), CredentialChallenge::SetPassword);
+            $challenges->send($request->user(), CredentialChallenge::SET_PASSWORD);
         }
 
-        return back()->with('success', CredentialChallenges::PublicMessage);
+        return back()->with('success', CredentialChallenges::PUBLIC_MESSAGE);
     }
 
     private function ensureAccount(Request $request, int $userId): void
     {
         if ($request->user() && $request->user()->id !== $userId) {
-            throw ValidationException::withMessages(['confirmation' => CredentialChallenges::InvalidMessage]);
+            throw ValidationException::withMessages(['confirmation' => CredentialChallenges::INVALID_MESSAGE]);
         }
     }
 }

@@ -10,10 +10,10 @@ class CredentialChallenge extends Model
 {
     use HasFactory;
 
-    public const SetPassword = 'set-password';
-    public const LegacyPassword = 'legacy-password';
-    public const ResetPassword = 'reset-password';
-    public const LinkIdentity = 'link-identity';
+    public const SET_PASSWORD = 'set-password';
+    public const LEGACY_PASSWORD = 'legacy-password';
+    public const RESET_PASSWORD = 'reset-password';
+    public const LINK_IDENTITY = 'link-identity';
 
     protected $guarded = [];
 

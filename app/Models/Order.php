@@ -249,11 +249,7 @@ class Order extends Model
                 $order = self::whereKey($this->id)->lockForUpdate()->firstOrFail();
                 abort_unless($attempt->fresh()->state === 'running', 409,
                     __('Provider attempt has already been reconciled.'));
-                if ($order->canBeUpdated()) {
-                    $order->updateOrder();
-                } else {
-                    $order->placeOrder();
-                }
+                $order->sendToProvider();
                 abort_unless($order->fresh()->status === self::STATUS_ORDERED, 502, __('Provider result is uncertain.'));
                 $attempt->update([
                     'state' => 'succeeded',
@@ -266,6 +262,17 @@ class Order extends Model
         }
 
         return $this->refresh();
+    }
+
+    private function sendToProvider(): void
+    {
+        if ($this->canBeUpdated()) {
+            $this->updateOrder();
+
+            return;
+        }
+
+        $this->placeOrder();
     }
 
     public function placeOrder() {

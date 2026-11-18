@@ -26,11 +26,11 @@ class ForgotPasswordController extends Controller implements HasMiddleware
         $request->validate(['email' => ['required', 'email']]);
         $user = User::where('email', $request->input('email'))->first();
         if ($user) {
-            $challenges->send($user, CredentialChallenge::ResetPassword);
+            $challenges->send($user, CredentialChallenge::RESET_PASSWORD);
         }
 
         return $request->wantsJson()
-            ? response()->json(['message' => CredentialChallenges::PublicMessage])
-            : back()->with('status', CredentialChallenges::PublicMessage);
+            ? response()->json(['message' => CredentialChallenges::PUBLIC_MESSAGE])
+            : back()->with('status', CredentialChallenges::PUBLIC_MESSAGE);
     }
 }

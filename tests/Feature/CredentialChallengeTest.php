@@ -57,7 +57,7 @@ class CredentialChallengeTest extends TestCase
         $this->assertGuest();
         $this->assertSame('legacy', $user->fresh()->local_credential_status);
         $this->assertTrue(Hash::check('secret', $user->fresh()->password));
-        $url = $this->mailedUrl($user, CredentialChallenge::LegacyPassword);
+        $url = $this->mailedUrl($user, CredentialChallenge::LEGACY_PASSWORD);
         $token = basename($url);
         $challenge = CredentialChallenge::sole();
         $this->assertSame(hash('sha256', $token), $challenge->token_hash);
@@ -95,7 +95,7 @@ class CredentialChallengeTest extends TestCase
         $user = User::factory()->disabled()->create();
         ExternalIdentity::factory()->for($user)->create(['subject' => 'existing-subject']);
         $this->actingAs($user)->post('/profile/password/confirmation')->assertRedirect();
-        $url = $this->mailedUrl($user, CredentialChallenge::SetPassword);
+        $url = $this->mailedUrl($user, CredentialChallenge::SET_PASSWORD);
         $this->assertSame('disabled', $user->fresh()->local_credential_status);
         $this->post($url, $this->password())->assertRedirect('/profile/security');
         $this->assertSame('enabled', $user->fresh()->local_credential_status);
@@ -119,7 +119,7 @@ class CredentialChallengeTest extends TestCase
         $this->get('/login/oauth/gitlab/callback')->assertRedirect('/login');
         $this->assertGuest();
         $this->assertDatabaseCount('external_identities', 0);
-        $this->post($this->mailedUrl($user, CredentialChallenge::LinkIdentity))->assertRedirect('/profile/security');
+        $this->post($this->mailedUrl($user, CredentialChallenge::LINK_IDENTITY))->assertRedirect('/profile/security');
         $this->assertAuthenticatedAs($user);
         $this->assertSame($user->password, $user->fresh()->password);
         $this->assertSame('legacy', $user->fresh()->local_credential_status);
@@ -151,7 +151,7 @@ class CredentialChallengeTest extends TestCase
         $this->oauth('additional-subject', 'provider-address@example.com');
         $this->get('/login/oauth/gitlab/callback')->assertRedirect('/profile/security');
         $this->assertDatabaseCount('external_identities', 0);
-        $this->post($this->mailedUrl($owner, CredentialChallenge::LinkIdentity))->assertRedirect('/profile/security');
+        $this->post($this->mailedUrl($owner, CredentialChallenge::LINK_IDENTITY))->assertRedirect('/profile/security');
         $this->assertDatabaseHas('external_identities', ['user_id' => $owner->id, 'subject' => 'additional-subject']);
         $this->assertSame('enabled', $owner->fresh()->local_credential_status);
         $this->assertSame($owner->password, $owner->fresh()->password);
@@ -258,7 +258,7 @@ class CredentialChallengeTest extends TestCase
         $user = User::factory()->legacy()->create();
         CredentialChallenge::factory()->for($user)->create(['token_hash' => hash('sha256', 'legacy-proof')]);
         CredentialChallenge::factory()->for($user)->create([
-            'purpose' => CredentialChallenge::ResetPassword, 'token_hash' => hash('sha256', 'reset-proof'),
+            'purpose' => CredentialChallenge::RESET_PASSWORD, 'token_hash' => hash('sha256', 'reset-proof'),
         ]);
         $this->postJson("/credentials/$user->id/reset-password/legacy-proof", $this->password())->assertUnprocessable();
         $this->postJson("/credentials/$user->id/legacy-password/reset-proof", $this->password())->assertUnprocessable();
@@ -350,7 +350,7 @@ class CredentialChallengeTest extends TestCase
         $this->freezeTime();
         $user = User::factory()->create(['local_credential_status' => $state]);
         $this->post('/password/email', ['email' => $user->email])->assertRedirect();
-        $url = $this->mailedUrl($user, CredentialChallenge::ResetPassword);
+        $url = $this->mailedUrl($user, CredentialChallenge::RESET_PASSWORD);
         $this->get($url)->assertOk();
         $this->postJson($url, ['password' => 'short', 'password_confirmation' => 'short'])->assertUnprocessable();
         $this->assertSame($user->password, $user->fresh()->password);

@@ -196,7 +196,7 @@ class AdminResourcesTest extends TestCase
         $page = Livewire::test(ManageUsers::class)->callTableAction('passwordLink', $target)->assertNotified('Vorgang erfolgreich.');
 
         Mail::assertSent(CredentialConfirmation::class);
-        $this->assertDatabaseHas('credential_challenges', ['user_id' => $target->id, 'purpose' => CredentialChallenge::ResetPassword]);
+        $this->assertDatabaseHas('credential_challenges', ['user_id' => $target->id, 'purpose' => CredentialChallenge::RESET_PASSWORD]);
         $this->assertSame($hash, $target->fresh()->password);
         $this->assertStringNotContainsString('token_hash', $page->html());
         $this->assertStringNotContainsString($hash, $page->html());

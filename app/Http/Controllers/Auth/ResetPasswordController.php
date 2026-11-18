@@ -30,7 +30,7 @@ class ResetPasswordController extends Controller implements HasMiddleware
             'password' => LocalPassword::rules(), 'user_id' => ['missing'], 'is_admin' => ['missing'],
         ]);
         $userId = User::where('email', $data['email'])->value('id') ?? 0;
-        $user = $challenges->consume($userId, CredentialChallenge::ResetPassword, $data['token'], $data['password']);
+        $user = $challenges->consume($userId, CredentialChallenge::RESET_PASSWORD, $data['token'], $data['password']);
         $passwords->keepCurrentSession($request, $user);
 
         return redirect()->route('profile.security')->with('success', __('profile.Passwort eingerichtet.'));

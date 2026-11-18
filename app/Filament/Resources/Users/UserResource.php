@@ -81,11 +81,11 @@ class UserResource extends AdminResource
                 ->action(fn (User $record, Action $action) => PanelAction::run($action, fn () => app(Users::class)->restore(auth()->user(), $record))),
             PanelAction::make('passwordLink')->label('Passwortbestätigung senden')->visible(fn (User $record): bool => !$record->trashed())
                 ->authorize(fn (User $record): bool => Gate::allows('update', $record))
-                ->modalDescription(CredentialChallenges::PublicMessage)
+                ->modalDescription(CredentialChallenges::PUBLIC_MESSAGE)
                 ->action(fn (User $record, Action $action) => PanelAction::run($action, function () use ($record): void {
                     $actor = User::withTrashed()->findOrFail(auth()->id());
                     Gate::forUser($actor)->authorize('update', $record);
-                    app(CredentialChallenges::class)->send(User::findOrFail($record->id), CredentialChallenge::ResetPassword);
+                    app(CredentialChallenges::class)->send(User::findOrFail($record->id), CredentialChallenge::RESET_PASSWORD);
                 })),
         ]);
     }
