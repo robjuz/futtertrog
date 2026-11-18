@@ -20,7 +20,7 @@ class ActivityLogger
         'order_item.deleted' => ['order_id', 'user_id', 'meal_id', 'quantity'],
         'order.updated' => ['status', 'payed_at', 'user_id'],
         'order.deleted' => ['status', 'payed_at', 'user_id'],
-        'order.auto_ordered' => ['status'],
+        'order.auto_ordered' => ['status', 'content_fingerprint'],
         'user.created' => ['is_admin'],
         'user.updated' => ['is_admin', 'deleted_at', 'name', 'email'],
         'user.deactivated' => ['is_admin', 'deleted_at'],

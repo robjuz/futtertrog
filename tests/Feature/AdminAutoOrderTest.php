@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Actions\Admin\AutoOrder;
+use App\Actions\Admin\OrderItems;
 use App\MealProviders\Holzke;
 use App\Models\AdminActivity;
 use App\Models\Meal;
@@ -215,6 +216,54 @@ class AdminAutoOrderTest extends TestCase
     }
 
     #[Test]
+    public function confirming_an_older_content_version_keeps_the_order_open_and_allows_a_new_attempt(): void
+    {
+        Http::preventStrayRequests();
+        [$actor, $order, $provider] = $this->autoOrderFixture();
+        $provider->shouldReceive('placeOrder')->once()->andThrow(new RuntimeException('Provider result unknown.'));
+        try {
+            $order->autoOrder();
+            $this->fail('An unclear provider result must propagate.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Provider result unknown.', $exception->getMessage());
+        }
+        $attempt = AdminActivity::where('action', 'order.auto_ordered')->sole();
+        $this->assertSame('uncertain', $attempt->state);
+        $this->assertSame($order->contentFingerprint(), $attempt->changes['before']['content_fingerprint']);
+        $item = $order->orderItems()->sole();
+        app(OrderItems::class)->update($actor, $item, ['quantity' => $item->quantity + 1]);
+
+        app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, 'confirmed');
+
+        $this->assertSame('succeeded', $attempt->fresh()->state);
+        $this->assertSame(Order::STATUS_OPEN, $order->fresh()->status);
+        $this->assertTrue(AdminActivity::where('action', 'order.auto_order_reconciled')->sole()->changes['content_changed']);
+        $provider->shouldReceive('placeOrder')->once()->andReturnUsing(fn (Order $target) => $target->markOrdered());
+        $order->autoOrder();
+        $this->assertSame(Order::STATUS_ORDERED, $order->fresh()->status);
+        $this->assertSame(['succeeded', 'succeeded'], AdminActivity::where('action', 'order.auto_ordered')->orderBy('id')->pluck('state')->all());
+        Http::assertNothingSent();
+    }
+
+    #[Test]
+    public function confirming_a_legacy_attempt_without_a_content_fingerprint_keeps_the_order_open(): void
+    {
+        Http::preventStrayRequests();
+        [$actor, $order, $provider] = $this->autoOrderFixture();
+        $provider->shouldNotReceive('placeOrder', 'updateOrder');
+        $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
+            'target_id' => $order->id, 'state' => 'uncertain',
+            'changes' => ['before' => ['status' => 'open'], 'after' => []]]);
+
+        app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, 'confirmed');
+
+        $this->assertSame('succeeded', $attempt->fresh()->state);
+        $this->assertSame(Order::STATUS_OPEN, $order->fresh()->status);
+        $this->assertTrue(AdminActivity::where('action', 'order.auto_order_reconciled')->sole()->changes['content_changed']);
+        Http::assertNothingSent();
+    }
+
+    #[Test]
     #[TestWith(['confirmed', 'succeeded', 'ordered'])]
     #[TestWith(['not_received', 'failed', 'open'])]
     public function reconciliation_records_the_actor_and_original_attempt_and_controls_retry(string $outcome, string $state, string $status): void
@@ -223,7 +272,7 @@ class AdminAutoOrderTest extends TestCase
         [$actor, $order, $provider] = $this->autoOrderFixture();
         $attempt = AdminActivity::factory()->create(['actor_id' => null, 'action' => 'order.auto_ordered',
             'target_type' => Order::class, 'target_id' => $order->id, 'state' => 'uncertain',
-            'changes' => ['before' => ['status' => 'open'], 'after' => []]]);
+            'changes' => ['before' => ['status' => 'open', 'content_fingerprint' => $order->contentFingerprint()], 'after' => []]]);
         $before = $attempt->getAttributes();
         $this->assertRejected(409, fn () => $order->autoOrder());
 
@@ -238,6 +287,11 @@ class AdminAutoOrderTest extends TestCase
         $this->assertSame((string) $order->id, $resolution->target_id);
         $this->assertSame($attempt->id, $resolution->changes['attempt_id']);
         $this->assertSame($outcome, $resolution->changes['outcome']);
+        if ($outcome === 'confirmed') {
+            $this->assertFalse($resolution->changes['content_changed']);
+        } else {
+            $this->assertArrayNotHasKey('content_changed', $resolution->changes);
+        }
         $this->assertSame('uncertain', $resolution->changes['before']['state']);
         $this->assertSame($state, $resolution->changes['after']['state']);
         $this->assertRejected(409, fn () => app(AutoOrder::class)->reconcile($actor, $order, $attempt->id, $outcome));
@@ -343,7 +397,8 @@ class AdminAutoOrderTest extends TestCase
         [$actor, $order, $provider] = $this->autoOrderFixture();
         $provider->shouldNotReceive('placeOrder', 'updateOrder');
         $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
-            'target_id' => $order->id, 'state' => 'uncertain']);
+            'target_id' => $order->id, 'state' => 'uncertain',
+            'changes' => ['before' => ['status' => 'open', 'content_fingerprint' => $order->contentFingerprint()], 'after' => []]]);
         \Illuminate\Support\Facades\Event::listen('eloquent.creating: '.AdminActivity::class, function (AdminActivity $activity): void {
             if ($activity->action === 'order.auto_order_reconciled') {
                 throw new RuntimeException('Audit storage failed.');

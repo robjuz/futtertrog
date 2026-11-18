@@ -44,6 +44,6 @@ class PanelAction extends Action
             Notification::make()->danger()->title('Vorgang nicht ausgeführt.')->body($message)->send();
             $action->halt();
         }
-        Notification::make()->success()->title('Vorgang erfolgreich.')->send();
+        Notification::make()->success()->title($action->getSuccessNotificationTitle() ?? 'Vorgang erfolgreich.')->send();
     }
 }

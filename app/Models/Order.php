@@ -216,6 +216,19 @@ class Order extends Model
             ->where('action', 'order.auto_ordered')->whereIn('state', ['running', 'uncertain']);
     }
 
+    public function contentFingerprint(): string
+    {
+        $items = $this->orderItems()->orderBy('id')->get(['id', 'meal_id', 'user_id', 'quantity'])
+            ->map(fn (OrderItem $item): array => [
+                'id' => (int) $item->id,
+                'meal_id' => $item->meal_id,
+                'user_id' => $item->user_id,
+                'quantity' => $item->quantity,
+            ])->all();
+
+        return hash('sha256', json_encode($items, JSON_THROW_ON_ERROR));
+    }
+
     /** A committed reservation protects both scheduled and administrative provider calls. */
     public function autoOrder(?User $actor = null): self
     {
@@ -235,7 +248,10 @@ class Order extends Model
             if (DB::transactionLevel() !== 1) {
                 throw new \LogicException('Autoorder requires a committed reservation; do not wrap it in a transaction.');
             }
-            $activity = ActivityLogger::record($actor, 'order.auto_ordered', $order, ['status' => $order->status]);
+            $activity = ActivityLogger::record($actor, 'order.auto_ordered', $order, [
+                'status' => $order->status,
+                'content_fingerprint' => $order->contentFingerprint(),
+            ]);
             $activity->update(['state' => 'running']);
 
             return $activity;

@@ -43,7 +43,10 @@ class AutoOrder
                 __('A running attempt can only be reconciled after 30 minutes.'));
             $before = ['state' => $attempt->state, 'status' => $order->status];
             if ($outcome === 'confirmed') {
-                $order->markOrdered();
+                $contentChanged = ($attempt->changes['before']['content_fingerprint'] ?? null) !== $order->contentFingerprint();
+                if (! $contentChanged) {
+                    $order->markOrdered();
+                }
             }
             $attempt->update(['state' => $outcome === 'confirmed' ? 'succeeded' : 'failed']);
             AdminActivity::create([
@@ -54,6 +57,7 @@ class AutoOrder
                 'changes' => [
                     'attempt_id' => $attempt->id,
                     'outcome' => $outcome,
+                    ...($outcome === 'confirmed' ? ['content_changed' => $contentChanged] : []),
                     'before' => $before,
                     'after' => ['state' => $attempt->state, 'status' => $order->status],
                 ],

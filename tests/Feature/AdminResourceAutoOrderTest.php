@@ -53,7 +53,8 @@ class AdminResourceAutoOrderTest extends TestCase
         $order = $this->order();
         $clear = $this->order();
         $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
-            'target_id' => $order->id, 'state' => 'uncertain']);
+            'target_id' => $order->id, 'state' => 'uncertain',
+            'changes' => ['before' => ['status' => 'open', 'content_fingerprint' => $order->contentFingerprint()], 'after' => []]]);
         $this->partialMock(Holzke::class)->shouldNotReceive('placeOrder', 'updateOrder');
         $page = Livewire::test(ManageOrders::class)->filterTable('auto_order_pending')
             ->assertCanSeeTableRecords([$order])->assertCanNotSeeTableRecords([$clear])
@@ -63,6 +64,29 @@ class AdminResourceAutoOrderTest extends TestCase
         $this->assertSame($status, $order->fresh()->status);
         $this->assertSame(auth()->id(), AdminActivity::where('action', 'order.auto_order_reconciled')->sole()->actor_id);
         $page->assertCanNotSeeTableRecords([$order]);
+        Http::assertNothingSent();
+    }
+
+    #[Test]
+    public function confirming_changed_content_in_the_panel_explains_why_the_order_remains_open(): void
+    {
+        Http::preventStrayRequests();
+        $this->loginAsAdmin();
+        $order = $this->order();
+        $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
+            'target_id' => $order->id, 'state' => 'uncertain',
+            'changes' => ['before' => ['status' => 'open', 'content_fingerprint' => $order->contentFingerprint()], 'after' => []]]);
+        $item = $order->orderItems()->sole();
+        $item->update(['quantity' => $item->quantity + 1]);
+        $this->partialMock(Holzke::class)->shouldNotReceive('placeOrder', 'updateOrder');
+
+        Livewire::test(ManageOrders::class)
+            ->callTableAction('reconcileAutoOrder', $order, data: ['attempt_id' => $attempt->id, 'outcome' => 'confirmed'])
+            ->assertHasNoActionErrors()
+            ->assertNotified('Eingang bestätigt; die Bestellung wurde seither geändert und bleibt offen.');
+
+        $this->assertSame(Order::STATUS_OPEN, $order->fresh()->status);
+        $this->assertSame('succeeded', $attempt->fresh()->state);
         Http::assertNothingSent();
     }
 

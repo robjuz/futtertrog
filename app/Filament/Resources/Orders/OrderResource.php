@@ -79,7 +79,12 @@ class OrderResource extends AdminResource
                     ])->helperText('Bestätigt schließt die Sammelbestellung ab. Nicht angekommen erlaubt einen neuen, ausdrücklich gestarteten Versuch.'),
                 ])
                 ->action(fn (array $data, Order $record, Action $action) => PanelAction::run($action,
-                    fn () => app(AutoOrder::class)->reconcile(auth()->user(), $record, (int) $data['attempt_id'], $data['outcome']))),
+                    function () use ($data, $record, $action): void {
+                        $order = app(AutoOrder::class)->reconcile(auth()->user(), $record, (int) $data['attempt_id'], $data['outcome']);
+                        if ($data['outcome'] === 'confirmed' && $order->status === Order::STATUS_OPEN) {
+                            $action->successNotificationTitle('Eingang bestätigt; die Bestellung wurde seither geändert und bleibt offen.');
+                        }
+                    })),
             PanelAction::make('remove')->label('Löschen')->color('danger')->authorize(fn (Order $record): bool => Gate::allows('delete', $record))
                 ->action(fn (Order $record, Action $action) => PanelAction::run($action, fn () => app(Orders::class)->delete(auth()->user(), $record))),
         ]);
