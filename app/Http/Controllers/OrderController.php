@@ -72,6 +72,8 @@ class OrderController extends Controller
 
     public function edit(Order $order)
     {
+        Gate::authorize('view', $order);
+
         $order
             ->loadMin('meals', 'date')
             ->loadMax('meals', 'date')

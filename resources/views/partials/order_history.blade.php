@@ -2,7 +2,7 @@
     {{ __('Order history') }}
 </h2>
 
-@if(request()->routeIs('home') AND $orders->count())
+@if((request()->routeIs('home') || request()->routeIs('my.orders')) AND $orders->count())
     <a href="{{ route('meals.ical') }}">{{ __('Download as iCal') }}</a>
 @endif
 
@@ -15,7 +15,7 @@
                 <th class="collapsible">Bestellt</th>
                 <th>Bestellt für</th>
                 <th class="money collapsible">Preis</th>
-                @if(auth()->user()->is_admin AND !request()->routeIs('home'))
+                @if(request()->is('admin/*') && auth()->user()->can('administerAny', \App\Models\OrderItem::class))
                     <th>Aktionen</th>
                 @endif
             </tr>
@@ -47,9 +47,9 @@
                     {{ $orderItem->meal->price }}
                 </td>
 
-                @if(auth()->user()->is_admin AND !request()->routeIs('home'))
+                @if(request()->is('admin/*') && auth()->user()->can('administerAny', \App\Models\OrderItem::class))
                     <td>
-                        <form action="{{ route('order_items.destroy', $orderItem) }}" method="post">
+                        <form action="{{ route('admin.order_items.destroy', $orderItem) }}" method="post">
                             @csrf
                             @method('delete')
 

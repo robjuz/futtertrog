@@ -15,7 +15,8 @@ class OrderPolicyTest extends TestCase
         $this->loginAsAdmin();
 
         $this->assertTrue(auth()->user()->can('list', Order::class));
-        $this->assertTrue(auth()->user()->can('create', Order::class));
+        $this->assertFalse(auth()->user()->can('create', Order::class));
+        $this->assertTrue(auth()->user()->can('autoOrder', $order));
 
         $this->assertTrue(auth()->user()->can('view', $order));
         $this->assertTrue(auth()->user()->can('update', $order));
@@ -32,6 +33,7 @@ class OrderPolicyTest extends TestCase
 
         $this->assertTrue(auth()->user()->cannot('list', Order::class));
         $this->assertTrue(auth()->user()->cannot('create', Order::class));
+        $this->assertTrue(auth()->user()->cannot('autoOrder', $order));
         $this->assertTrue(auth()->user()->cannot('view', $order));
         $this->assertTrue(auth()->user()->cannot('update', $order));
         $this->assertTrue(auth()->user()->cannot('delete', $order));

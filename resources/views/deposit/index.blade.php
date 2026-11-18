@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 
@@ -13,7 +13,7 @@
         </a>
 
         <a
-            href="{{ route('deposits.transfer' )}}"
+            href="{{ route('deposits.transfer.create' )}}"
             {{ request()->routeIs('deposits.transfer') ? ' aria-current="page"' : '' }}
         >
             {{ __('New money transfer') }}

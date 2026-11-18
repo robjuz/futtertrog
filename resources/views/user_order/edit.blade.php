@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <h1>
@@ -6,7 +6,7 @@
         {{ $orderItem->date->format(__('futtertrog.date_format')) }}
     </h1>
 
-    <form action="{{ route('order_items.update', $orderItem) }}" method="post">
+    <form action="{{ route('admin.order_items.update', $orderItem) }}" method="post">
         @csrf
         @method('put')
 

@@ -186,5 +186,12 @@
   "System settings": "Systemeinstellungen",
   "Redirect to next day without orders": "Weiterleiten zum erstem Tag ohne Bestellungen",
   "Create manually": "Manuell erstellen",
-  "Import meals": "Importieren"
+  "Import meals": "Importieren",
+  "Administration": "Administration",
+  "My orders": "Meine Bestellungen",
+  "My balance": "Mein Guthaben",
+  "Manage meals": "Essen verwalten",
+  "Back to ordering": "Zurück zum Bestellen",
+  "Send notification": "Mitteilung versenden",
+  "Transfer": "Übertrag"
 }

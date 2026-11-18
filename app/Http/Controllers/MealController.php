@@ -96,6 +96,15 @@ class MealController extends Controller implements HasMiddleware
         );
     }
 
+    public function adminIndex(): \Illuminate\Contracts\View\View
+    {
+        Gate::authorize('create', Meal::class);
+
+        $meals = Meal::with('variants')->latest('date')->paginate();
+
+        return view('admin.meals', compact('meals'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -134,7 +143,7 @@ class MealController extends Controller implements HasMiddleware
             return redirect()->route('meals.create')->with('success', __('Saved'));
         }
 
-        return redirect()->route('meals.index')->with('success', __('Saved'));
+        return redirect()->route('admin.meals.index')->with('success', __('Saved'));
     }
 
     /**
@@ -187,7 +196,7 @@ class MealController extends Controller implements HasMiddleware
             return response()->json($meal);
         }
 
-        return redirect()->route('meals.index')->with('success', __('Saved'));
+        return redirect()->route('admin.meals.index')->with('success', __('Saved'));
     }
 
     /**

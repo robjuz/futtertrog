@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <h1>{{ __('Order index') }}</h1>
 
     <nav class="sub-menu">
-        <a href="{{ route('order_items.create') }}"> {{ __('Create order') }}</a>
+        <a href="{{ route('admin.order_items.create') }}"> {{ __('Create order') }}</a>
     </nav>
 
     <section>

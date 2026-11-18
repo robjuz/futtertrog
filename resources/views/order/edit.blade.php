@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="pot">
@@ -11,8 +11,8 @@
                 <span>{{ $order->getFormattedDate() }}</span>
             </h1>
 
-            @can('create', \App\Models\OrderItem::class)
-                <a href="{{ route('order_items.create') }}">
+            @can('administerAny', \App\Models\OrderItem::class)
+                <a href="{{ route('admin.order_items.create') }}">
                     @svg('solid/plus', ['role="presentation"', 'aria-hidden="true"', 'focusable="false"'])
                     {{ __('Create order') }}
                 </a>
@@ -97,12 +97,12 @@
                                     <div>{{ $orderItem->user->name }} &times; {{ $orderItem->quantity }}</div>
 
                                     <div class="order-item__actions">
-                                        <a href="{{route('order_items.edit', $orderItem)}}">
+                                        <a href="{{route('admin.order_items.edit', $orderItem)}}">
                                             @svg('solid/pen', ['role="presentation"', 'aria-hidden="true"',
                                             'focusable="false"'])
                                             <span class="sr-only">{{ __('Edit') }}</span>
                                         </a>
-                                        <form method="post" action="{{ route('order_items.destroy', $orderItem) }}">
+                                        <form method="post" action="{{ route('admin.order_items.destroy', $orderItem) }}">
                                             @csrf()
                                             @method('delete')
                                             <button type="submit">

@@ -4,63 +4,26 @@ namespace App\Policies;
 
 use App\Models\Meal;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MealPolicy
 {
-    use HandlesAuthorization;
-
-    public function before(User $user, $ability)
+    public function view(User $user, Meal $meal): bool
     {
-        if ($user->is_admin) {
-            return true;
-        }
+        return !$user->trashed();
     }
 
-    /**
-     * Determine whether the user can view the meal.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Meal  $meal
-     * @return mixed
-     */
-    public function view(User $user, Meal $meal)
+    public function create(User $user): bool
     {
-        //
+        return $user->can('access-administration');
     }
 
-    /**
-     * Determine whether the user can create meals.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function create(User $user)
+    public function update(User $user, Meal $meal): bool
     {
-        //
+        return $user->can('access-administration');
     }
 
-    /**
-     * Determine whether the user can update the meal.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Meal  $meal
-     * @return mixed
-     */
-    public function update(User $user, Meal $meal)
+    public function delete(User $user, Meal $meal): bool
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can delete the meal.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Meal  $meal
-     * @return mixed
-     */
-    public function delete(User $user, Meal $meal)
-    {
-        //
+        return $user->can('access-administration');
     }
 }

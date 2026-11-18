@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class DepositTransferController extends Controller implements HasMiddleware
 {
@@ -20,6 +21,7 @@ class DepositTransferController extends Controller implements HasMiddleware
 
     public function create()
     {
+        Gate::authorize('create', Deposit::class);
         $users = User::orderBy('name')->get();
 
         return view('deposit-transfer.create', compact('users'));
@@ -39,6 +41,8 @@ class DepositTransferController extends Controller implements HasMiddleware
             'value' => 'required|numeric',
             'comment' => 'nullable|string',
         ]);
+
+        Gate::authorize('transfer', [Deposit::class, User::findOrFail($request->source), User::findOrFail($request->target)]);
 
         DB::transaction(function () use ($request) {
             Deposit::create([

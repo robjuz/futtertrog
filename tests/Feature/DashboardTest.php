@@ -100,7 +100,7 @@ class DashboardTest extends TestCase
             ->assertDontSee(Money::parse(10));
 
          $this->loginAsAdmin()
-             ->get(route('home'))
+             ->get(route('admin.index'))
              ->assertSee(__('System balance'))
              ->assertSee(Money::parse(10));
     }

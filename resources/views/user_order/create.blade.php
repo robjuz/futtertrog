@@ -1,7 +1,7 @@
 @extends('user_order.wrapper')
 
 @section('wrapper-content')
-    <form action="{{ route('order_items.store') }}" method="post">
+    <form action="{{ route('admin.order_items.store') }}" method="post">
         @csrf
 
         <x-user-select></x-user-select>

@@ -12,9 +12,9 @@ class UserStoreRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return $this->user()->is_admin;
+        return $this->user()->can('create', \App\Models\User::class);
     }
 
     /**

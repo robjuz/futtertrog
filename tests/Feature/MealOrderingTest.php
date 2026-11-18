@@ -40,14 +40,14 @@ class MealOrderingTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $this->login()
+        $this->login()->withExceptionHandling()
             ->post(route('order_items.store'), [
                 'user_id' => $user->id,
                 'meal_id' => $meal->id
-            ]);
+            ])->assertSessionHasErrors('user_id');
 
         $this->assertFalse($user->orderItems()->where('meal_id', $meal->id)->exists());
-        $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+        $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -78,7 +78,7 @@ class MealOrderingTest extends TestCase
         $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
 
         $this->loginAsAdmin()
-            ->post(route('order_items.store'), [
+            ->post(route('admin.order_items.store'), [
                 'user_id' => $user->id,
                 'meal_id' => $meal->id
             ]);
@@ -124,7 +124,6 @@ class MealOrderingTest extends TestCase
         $this->login($user);
 
         $this->post(route('order_items.store'), [
-            'user_id' => $user->id,
             'meal_id' => $meal2->id
         ]);
 
@@ -193,7 +192,7 @@ class MealOrderingTest extends TestCase
         $orderItem = OrderItem::factory()->create();
 
         $this->loginAsAdmin()
-            ->get(route('order_items.index'))
+            ->get(route('admin.order_items.index'))
             ->assertJsonFragment($orderItem->toArray());
     }
 
@@ -209,7 +208,7 @@ class MealOrderingTest extends TestCase
         $orderItem->load('meal');
 
         $this->loginAsAdmin()
-            ->get(route('order_items.index', ['user_id' => $user->id]))
+            ->get(route('admin.order_items.index', ['user_id' => $user->id]))
             ->assertJsonFragment($orderItem->toArray())
             ->assertJsonMissingExact(['user_id' => $orderItem2->user_id]);
     }
@@ -356,7 +355,7 @@ class MealOrderingTest extends TestCase
 
         $this->loginAsAdmin();
 
-        $this->get(route('order_items.create', [
+        $this->get(route('admin.order_items.create', [
             'date' => $meal->date->toDateString(),
         ]))
             ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
@@ -384,7 +383,7 @@ class MealOrderingTest extends TestCase
         $orderItem = $user->order($variant);
         $this->loginAsAdmin();
 
-        $this->get(route('order_items.edit', $orderItem))
+        $this->get(route('admin.order_items.edit', $orderItem))
             ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
                 return $meals->contains($variant) && !$meals->contains($meal);
             });
