@@ -19,11 +19,11 @@ Eigentum: `routes/web.php`, `app/Http`, `app/Policies`, `app/Providers/AuthServi
 Abhängigkeit: 1 integriert. Input: E3 und design.md / Profile and authentication. Output: Profil einschließlich getesteter Bestandsüberführung und gemeinsamer Vue-Basis.
 Eigentum: `app/Models/User.php`, neue Identitäts-/Challengekomponenten in `app`, `app/Http/Controllers/Auth`, Profilcontroller/-requests, Auth-/Profilrouten, `config/auth.php`, `config/services.php`, `database/migrations`, Factories, neue `resources/js`/CSS-Einstiege, Profil-Blade-Root, `composer.json`, `composer.lock`, `package.json`, `package-lock.json`, Vite-/TypeScriptkonfiguration, `Dockerfile`, `.github/workflows`, Auth-/Profiltests. Gemeinsame Rootdateien/Migrationen ausschließlich Paket-2-Integrator. Verboten: Anbieterfachlogik, Adminresources und Bestellseiten-Redesign. Szenarien: alle profile-security; ordering-experience / Auslieferung und Bereichsgrenzen bei Navigation. Tests: Login/LoginWithGitlab/PasswordReset/Settings/User plus neue Identitäts-, Challenge- und Profilszenarien; Produktionsbuild.
 
-- [ ] 2.1 Additive Datenmodelle und Bestandsfixtures für legacy/enabled/disabled sowie externe Identitäten und einmalige Challenges erstellen.
-- [ ] 2.2 Authcallback, lokale Altanmeldung, bestätigte Verknüpfung und erstes Passwortsetzen gemäß E3 implementieren; Deaktivierung/Kollisionen/Tokenzweck testen.
-- [ ] 2.3 Profilrequests, Passwortänderung/-reset und Sitzungsinvalidierung ohne Rollenfelder integrieren.
-- [ ] 2.4 Vue/Inertia/Vite/Tailwind mit getrennten Einstiegen, Lockfiles, CI-/Docker-Build und Profilseiten einführen; bestehende Einstellungen übernehmen.
-- [ ] 2.5 Frische Installation und additive Migration mit Fixtures, zwei Browserkontexten und Mail-Fakes nachweisen.
+- [x] 2.1 Additive Datenmodelle und Bestandsfixtures für legacy/enabled/disabled sowie externe Identitäten und einmalige Challenges erstellen.
+- [x] 2.2 Authcallback, lokale Altanmeldung, bestätigte Verknüpfung und erstes Passwortsetzen gemäß E3 implementieren; Deaktivierung/Kollisionen/Tokenzweck testen.
+- [x] 2.3 Profilrequests, Passwortänderung/-reset und Sitzungsinvalidierung ohne Rollenfelder integrieren.
+- [x] 2.4 Vue/Inertia/Vite/Tailwind mit getrennten Einstiegen, Lockfiles, CI-/Docker-Build und Profilseiten einführen; bestehende Einstellungen übernehmen.
+- [x] 2.5 Frische Installation und additive Migration mit Fixtures, zwei Browserkontexten und Mail-Fakes nachweisen.
 
 ## 3. Adminbasis und gemeinsame Fachaktionen
 

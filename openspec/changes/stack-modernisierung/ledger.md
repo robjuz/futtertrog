@@ -53,16 +53,16 @@ Produktanforderungen stehen ausschließlich in den Delta-Spezifikationen; folgen
 | area-access / Self-Service / Adminsonderaktion | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
 | area-access / Bereichswechsel / Navigation und Links | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
 | area-access / Bereichswechsel / Abmelden | PHPUnit HTTP | 1 | unproven | Paket 1 cc1b49e: AreaAccessTest/AreaAccessPolicyTest; Suite 308 bestanden (Umsetzer rot 21 → grün; Integrator-Lauf 2026-11-18, SQLite) |
-| profile-security / Eigenes Profil / Daten und Einstellungen | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Eigenes Profil / Feldgrenzen | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Passwortänderung / Erfolgreiche Änderung | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Passwortänderung / Ungültige Änderung | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Anmeldemethoden / Zusätzliches Passwort | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Anmeldemethoden / Externe Zuordnung | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Anmeldemethoden / Ungültiger Nachweis | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Bestandsübergang / Lokaler Bestand | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Bestandsübergang / Externer Bestand | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
-| profile-security / Bestandsübergang / Sperre und fehlende Bestätigung | PHPUnit Auth/Browser | 2 | unproven | keine Implementierung |
+| profile-security / Eigenes Profil / Daten und Einstellungen | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Eigenes Profil / Feldgrenzen | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Passwortänderung / Erfolgreiche Änderung | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Passwortänderung / Ungültige Änderung | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Anmeldemethoden / Zusätzliches Passwort | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Anmeldemethoden / Externe Zuordnung | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Anmeldemethoden / Ungültiger Nachweis | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Bestandsübergang / Lokaler Bestand | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Bestandsübergang / Externer Bestand | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
+| profile-security / Bestandsübergang / Sperre und fehlende Bestätigung | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
 | finance-admin / Verwaltung / Benutzer und Angebote | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
 | finance-admin / Verwaltung / Bestellungen und Finanzen | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
 | finance-admin / Gemeinsame Fachlogik / Gleiche Ergebnisse | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
@@ -118,6 +118,8 @@ Modus: Claude-Orchestrator, Umsetzer über codex-subagent; Recording inaktiv (ke
 | 2026-11-18T09:52+01:00 | Orchestrator | Host | – | Bootstrap Featureworktree; Ausgangstests 142 bestanden, 515 Zusicherungen, SQLite :memory: |
 | 2026-11-18T10:15+01:00 | Umsetzer Paket 1 | gpt-6.1-sol | high | Worktree wt-stack-modernisierung-1, Basis 435ad0a; 58 Dateien in Paketgrenze; Commit cc1b49e; Bericht scratchpad/codex/paket-1-*.txt |
 | 2026-11-18T10:20+01:00 | Orchestrator | Host | – | Paket 1 integriert, Merge 57b996a; Diff geprüft; volle Suite 308 bestanden am Paketstand |
+| 2026-11-18T10:40+01:00 | Umsetzer Paket 2 | gpt-6.1-sol | high | Worktree wt-stack-modernisierung-2, Basis 4630705; 61 Dateien in Paketgrenze; Commit 412e675; Bericht scratchpad/codex/paket-2-*.txt |
+| 2026-11-18T10:45+01:00 | Orchestrator | Host | – | Paket 2 integriert, Merge bea07e9; Diff geprüft; Suite 375 bestanden, Build aus leerem Verzeichnis grün; Dockerbuild/CI unbewiesen; npm audit 8 hoch (dev, picomatch) |
 
 ## Cleanup
 
