@@ -247,7 +247,13 @@ class AreaAccessTest extends TestCase
         $this->login($admin);
 
         foreach (['/', '/my/orders', '/my/balance', '/meals?date='.$own->date->toDateString(), '/settings'] as $url) {
-            $this->get($url)->assertOk()->assertSee('href="'.url('/admin').'"', false)
+            $response = $this->get($url)->assertOk();
+            if ($url === '/settings') {
+                $response->assertSee('href="'.url('/admin').'"', false);
+            } else {
+                $response->assertInertia(fn ($page) => $page->where('navigation.admin', '/admin/overview'));
+            }
+            $response
                 ->assertDontSee('name="user_id"', false)->assertDontSee('name="is_admin"', false)
                 ->assertDontSee('href="'.url('/admin/meals/'.$own->meal_id.'/edit').'"', false)
                 ->assertDontSee('admin-navigation', false)->assertDontSee($foreign->meal->title)

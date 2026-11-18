@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use OpenApi\Attributes as OA;
 
 use App\Events\OrderUpdated;
+use App\Http\Resources\OrderingData;
+use App\Http\Resources\OwnOrderResource;
+use Inertia\Inertia;
 use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Rules\MealWithoutVariants;
@@ -40,17 +43,20 @@ class OrderItemController extends Controller
             )
         )]
     )]
-    public function index(Request $request): View|JsonResponse
+    public function index(Request $request): View|JsonResponse|\Inertia\Response
     {
         Gate::authorize('list', OrderItem::class);
 
-        $orders = $request->user()->orderItems()->with('meal')->latest()->paginate();
+        $orders = $request->user()->orderItems()->with(['meal.parent', 'order'])->latest()->paginate();
 
         if ($request->routeIs('my.orders')) {
+            if (!config('user-interface.blade')) {
+                return Inertia::render('My/Orders', ['orders' => OrderingData::orders($orders, $request), 'calendarUrl' => route('meals.ical', absolute: false)]);
+            }
             return view('my.orders', compact('orders'));
         }
 
-        return response()->json($orders);
+        return response()->json(OrderingData::orders($orders, $request));
     }
 
     /**
@@ -115,7 +121,7 @@ class OrderItemController extends Controller
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
-            return response()->json($orderItem, Response::HTTP_CREATED);
+            return response()->json((new OwnOrderResource($orderItem->load(['meal.parent', 'order'])))->resolve($request), Response::HTTP_CREATED);
         }
 
         if ($request->ajax()) {
@@ -148,7 +154,7 @@ class OrderItemController extends Controller
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
-            return response()->json($orderItem, Response::HTTP_OK);
+            return response()->json((new OwnOrderResource($orderItem->load(['meal.parent', 'order'])))->resolve($request), Response::HTTP_OK);
         }
 
         if ($request->ajax()) {

@@ -193,7 +193,14 @@ class MealOrderingTest extends TestCase
 
         $this->login($user)
             ->get(route('order_items.index'))
-            ->assertJsonFragment($orderItem->toArray());
+            ->assertJsonPath('items.0.id', $orderItem->id)
+            ->assertJsonPath('items.0.title', $orderItem->meal->title)
+            ->assertJsonPath('items.0.quantity', $orderItem->quantity)
+            ->assertJsonPath('items.0.date', $orderItem->date->toDateString())
+            ->assertJsonPath('items.0.price', (string) $orderItem->meal->price)
+            ->assertJsonPath('items.0.subtotal', (string) $orderItem->subtotal)
+            ->assertJsonMissingPath('items.0.user')
+            ->assertJsonMissingPath('items.0.order');
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -276,6 +283,7 @@ class MealOrderingTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_a_delete_order_button_for_a_ordered_meal()
     {
+        config(['user-interface.blade' => true]);
         /** @var Meal $meal */
         $meal = Meal::factory()->inFuture()->create();
 
@@ -297,6 +305,7 @@ class MealOrderingTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_a_delete_order_button_for_a_ordered_meal_variant()
     {
+        config(['user-interface.blade' => true]);
         /** @var Meal $meal */
         $meal = Meal::factory()->inFuture()->create();
 

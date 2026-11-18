@@ -10,7 +10,9 @@ class ScrollIntoView extends HTMLElement {
 
     scrollIntoView() {
         const halfWindow = window.innerWidth / 2;
+        if (!this.current) return;
         const currentElementWidth = this.current.getBoundingClientRect().width;
+        if (!this.current) return;
         this.current.parentElement.scrollLeft += this.current.getBoundingClientRect().left - halfWindow + currentElementWidth / 2;
     }
 
@@ -69,29 +71,43 @@ if (customElements && customElements.define) {
 
 /* disable submit button on form submit */
 document.addEventListener('submit', function (e) {
-    e.target.querySelector('[type="submit"]').disabled = true;
+    if (!e.target.matches('.meal-form')) {
+        const submit = e.target.querySelector('[type="submit"]');
+        if (submit) submit.disabled = true;
+    }
 });
 
 
 async function handleMealFormSubmit(form) {
     const wrapper = form.closest('.meal')
 
-    let response = await fetch(form.getAttribute('action'), {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            "X-CSRF-TOKEN": window.Futtertrog.csrf,
-            "X-Requested-With": "XMLHttpRequest",
-        },
-        body: new FormData(form)
-    });
-
-    const tmp = document.createElement('div');
-    tmp.innerHTML = await response.text();
-    const meal = tmp.querySelector('.meal');
-
-    wrapper.innerHTML = meal.innerHTML;
-    wrapper.classList = meal.classList;
+    const button = form.querySelector('[type="submit"]');
+    const error = document.getElementById('action-error');
+    button.disabled = true;
+    error.hidden = true;
+    try {
+        if (!navigator.onLine) throw new Error('Sie sind offline. Es wurde nichts gesendet.');
+        const response = await fetch(form.getAttribute('action'), {
+            method: 'POST', credentials: 'same-origin', redirect: 'error',
+            headers: { 'X-CSRF-TOKEN': window.Futtertrog.csrf, 'X-Requested-With': 'XMLHttpRequest' },
+            body: new FormData(form)
+        });
+        if ([401, 419].includes(response.status)) throw new Error('Sitzung abgelaufen. Bitte im Profil erneut anmelden und dann wiederholen.');
+        if (response.status === 403) throw new Error('Bestellfrist abgelaufen oder Änderung nicht erlaubt.');
+        if (!response.ok) throw new Error('Keine Bestätigung erhalten. Bitte Auswahl prüfen und erneut versuchen.');
+        const tmp = document.createElement('div');
+        tmp.innerHTML = await response.text();
+        const meal = tmp.querySelector('.meal');
+        if (!meal) throw new Error('Keine Bestätigung erhalten. Bitte die Übersicht prüfen.');
+        wrapper.innerHTML = meal.innerHTML;
+        wrapper.className = meal.className;
+    } catch (failure) {
+        error.textContent = failure instanceof TypeError ? 'Keine Serverbestätigung erhalten. Bitte die Übersicht vor einer Wiederholung prüfen.' : failure.message;
+        error.hidden = false;
+        error.focus();
+    } finally {
+        button.disabled = false;
+    }
 
 }
 
@@ -115,3 +131,15 @@ var handleFormSubmit = function (e) {
 };
 
 document.addEventListener('submit', handleFormSubmit);
+
+function updateOfflineStatus() {
+    const status = document.getElementById('offline-status');
+    if (status) status.hidden = navigator.onLine;
+}
+window.addEventListener('online', updateOfflineStatus);
+window.addEventListener('offline', updateOfflineStatus);
+window.addEventListener('futtertrog:update', function () {
+    const dialog = document.getElementById('newVersionDialog');
+    if (dialog) dialog.style.display = 'block';
+});
+updateOfflineStatus();

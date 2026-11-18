@@ -21,3 +21,21 @@ $meal = Meal::factory()->inFuture()->create(['title' => 'Browsergericht', 'price
 $order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
 OrderItem::factory()->create(['meal_id' => $meal->id, 'user_id' => $user->id, 'order_id' => $order->id, 'quantity' => 2]);
 Deposit::factory()->create(['user_id' => $user->id, 'value' => 2000, 'comment' => 'Browser-Startguthaben']);
+
+if (!in_array('--ordering', $argv, true)) {
+    exit(0);
+}
+
+$orderingUser = User::factory()->enabled()->create(['settings' => ['language' => 'de'], 'name' => 'Bestellperson', 'email' => 'ui-user@example.test', 'password' => Hash::make('browser-secret-123')]);
+$date = today()->addDays(7);
+$pasta = Meal::factory()->create(['title' => 'Browser-Pasta', 'price' => 600, 'date' => $date, 'description' => 'Frisch gekocht, mit zwei Varianten.']);
+Meal::factory()->create(['title' => 'Klein', 'parent_id' => $pasta->id, 'date' => $date, 'price' => 600]);
+Meal::factory()->create(['title' => 'Groß', 'parent_id' => $pasta->id, 'date' => $date, 'price' => 900]);
+for ($i = 1; $i <= 11; $i++) {
+    Meal::factory()->create(['title' => 'Tagesgericht '.$i, 'date' => $date, 'price' => 750]);
+}
+$existing = Meal::factory()->create(['title' => 'Eigene Vorbestellung', 'date' => $date, 'price' => 875]);
+OrderItem::factory()->create(['user_id' => $orderingUser->id, 'meal_id' => $existing->id, 'order_id' => $order->id, 'quantity' => 2]);
+$todayMeal = Meal::factory()->create(['title' => 'Heutiges Essen', 'date' => today(), 'price' => 500]);
+OrderItem::factory()->create(['user_id' => $orderingUser->id, 'meal_id' => $todayMeal->id, 'order_id' => $order->id, 'quantity' => 1]);
+Deposit::factory()->create(['user_id' => $orderingUser->id, 'value' => 3000, 'comment' => 'Eigenes Startguthaben']);

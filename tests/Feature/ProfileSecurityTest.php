@@ -172,7 +172,10 @@ class ProfileSecurityTest extends TestCase
             ->assertDontSee($user->password, false)->assertDontSee($user->remember_token, false)
             ->assertDontSee($challenge->token_hash, false)->assertDontSee('js/app.js', false)
             ->assertDontSee('css/app.css', false);
+        $this->get('/meals')->assertInertia(fn ($page) => $page->component('Meals/Index'));
+        config(['user-interface.blade' => true]);
         $this->get('/meals')->assertOk()->assertDontSee('/build/assets/', false);
+        config(['user-interface.blade' => false]);
         $this->get('/admin')->assertOk()
             ->assertSee(\Illuminate\Support\Facades\Vite::asset('resources/css/admin.css'), false)
             ->assertDontSee(\Illuminate\Support\Facades\Vite::asset('resources/js/app.ts'), false);

@@ -233,9 +233,11 @@ class MealTest extends TestCase
             ->assertJson([
                 [
                     'title' => $meal->title,
-                    'variants' => [
+                    'choices' => [
                         [
-                            'title' => $variant->title
+                            'id' => $variant->id,
+                            'title' => $variant->variant_title,
+                            'price' => (string) $variant->price
                         ]
                     ]
                 ]
@@ -255,7 +257,15 @@ class MealTest extends TestCase
             ->assertSee($meal->title);
 
         $this->getJson(route('meals.show', $meal))
-            ->assertJsonFragment($meal->toArray());
+            ->assertJsonPath('id', $meal->id)
+            ->assertJsonPath('title', $meal->title)
+            ->assertJsonPath('choices.0.id', $meal->id)
+            ->assertJsonPath('choices.0.price', (string) $meal->price)
+            ->assertJsonPath('date', $meal->date->toDateString())
+            ->assertJsonPath('provider', (string) $meal->provider)
+            ->assertJsonPath('description', strip_tags($meal->description))
+            ->assertJsonMissingPath('created_at')
+            ->assertJsonMissingPath('orderItems');
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

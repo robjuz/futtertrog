@@ -20,34 +20,8 @@
         ]) !!};
     </script>
 
-    @if(app()->environment('staging', 'production'))
-        @laravelPWA
-        <script>
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/serviceworker.js').then(function (reg) {
-                    listenForWaitingServiceWorker(reg, promptUserToRefresh);
-                });
+    @include('partials.pwa')
 
-                function listenForWaitingServiceWorker(reg, callback) {
-                    function awaitStateChange() {
-                        reg.installing.addEventListener('statechange', function () {
-                            if (this.state === 'installed') callback(reg);
-                        });
-                    }
-
-                    if (!reg) return;
-                    if (reg.waiting) return callback(reg);
-                    if (reg.installing) awaitStateChange();
-                    reg.addEventListener('updatefound', awaitStateChange);
-                }
-
-                function promptUserToRefresh() {
-                    document.getElementById('newVersionDialog').style.setProperty('display', 'block');
-                }
-
-            }
-        </script>
-    @endif
 </head>
 <body id="{{ Route::currentRouteName() }}">
 @if (session('success'))
@@ -109,6 +83,8 @@
 
 @endauth
 
+<p id="offline-status" role="alert" hidden>Sie sind offline. Bestellungen werden nicht gesendet oder vorgemerkt.</p>
+<p id="action-error" role="alert" tabindex="-1" hidden></p>
 @yield('before')
 
 <main id="main" class="@stack('main-classes')" <?php /* keep this id for skip link */ ?>>
