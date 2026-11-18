@@ -30,9 +30,9 @@ Eigentum: `app/Models/User.php`, neue Identitäts-/Challengekomponenten in `app`
 Abhängigkeit: 2 integriert. Input: abgesicherte Adminwege und vorhandene Fachlogik. Output: Filamentbasis, wiederverwendete Fachaktionen, Protokollierung.
 Eigentum: Filament-Panelprovider, notwendige `app/Actions`, Policies, Adminrouten/-controller, `app/Models/AdminActivity.php`, neue Protokollmigration, Filament-Theme, Composer-/npm-Lockfiles und Rootkonfiguration, Adminaktionstests. Alle Rootdateien und Migrationen ausschließlich Paket-3-Integrator. Verboten: Profil-/Identitätsverhalten ändern, Bestell-UI. Szenarien: finance-admin / Gemeinsame Fachlogik, Änderungsprotokoll sowie area-access / Servergrenze. Tests: bestehende Order/Deposit/MealImport und fokussierte Action-/Panelzugangstests.
 
-- [ ] 3.1 Filament 5/Livewire 4 auflösen und Panel mit bestehender Sitzung und explizitem Zugang integrieren.
-- [ ] 3.2 Nur mehrfach benötigte Fachübergänge extrahieren; Autorisierung, Transaktionen und Doppelausführung prüfen.
-- [ ] 3.3 Administrative Änderungen mit ausgeschlossenen Geheimnissen protokollieren; Integrationsschnittstellen für Resources festhalten.
+- [x] 3.1 Filament 5/Livewire 4 auflösen und Panel mit bestehender Sitzung und explizitem Zugang integrieren.
+- [x] 3.2 Nur mehrfach benötigte Fachübergänge extrahieren; Autorisierung, Transaktionen und Doppelausführung prüfen.
+- [x] 3.3 Administrative Änderungen mit ausgeschlossenen Geheimnissen protokollieren; Integrationsschnittstellen für Resources festhalten.
 
 ## 4. Verwaltungsoberflächen
 

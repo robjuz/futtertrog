@@ -65,10 +65,10 @@ Produktanforderungen stehen ausschließlich in den Delta-Spezifikationen; folgen
 | profile-security / Bestandsübergang / Sperre und fehlende Bestätigung | PHPUnit Auth/Browser | 2 | unproven | Paket 2 412e675: ProfileSecurity/CredentialChallenge/CredentialMigration/ProfileSessionTest; Suite 375 bestanden, sauberer npm-Build (Integrator-Lauf 2026-11-18, SQLite); Browser nicht ausgeführt |
 | finance-admin / Verwaltung / Benutzer und Angebote | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
 | finance-admin / Verwaltung / Bestellungen und Finanzen | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
-| finance-admin / Gemeinsame Fachlogik / Gleiche Ergebnisse | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
-| finance-admin / Gemeinsame Fachlogik / Wiederholung | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
-| finance-admin / Änderungsprotokoll / Nachvollziehbarkeit | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
-| finance-admin / Änderungsprotokoll / Fehlschlag | PHPUnit Panel/Browser | 3/4 | unproven | keine Implementierung |
+| finance-admin / Gemeinsame Fachlogik / Gleiche Ergebnisse | PHPUnit Panel/Browser | 3/4 | unproven | Paket 3 481361d: AdminActions/AdminAutoOrder/PanelAccess/AdminActivityMigrationTest; Suite 461 bestanden, sauberer Build (Integrator-Lauf 2026-11-18, SQLite); Oberflächen folgen in Paket 4 |
+| finance-admin / Gemeinsame Fachlogik / Wiederholung | PHPUnit Panel/Browser | 3/4 | unproven | Paket 3 481361d: AdminActions/AdminAutoOrder/PanelAccess/AdminActivityMigrationTest; Suite 461 bestanden, sauberer Build (Integrator-Lauf 2026-11-18, SQLite); Oberflächen folgen in Paket 4 |
+| finance-admin / Änderungsprotokoll / Nachvollziehbarkeit | PHPUnit Panel/Browser | 3/4 | unproven | Paket 3 481361d: AdminActions/AdminAutoOrder/PanelAccess/AdminActivityMigrationTest; Suite 461 bestanden, sauberer Build (Integrator-Lauf 2026-11-18, SQLite); Oberflächen folgen in Paket 4 |
+| finance-admin / Änderungsprotokoll / Fehlschlag | PHPUnit Panel/Browser | 3/4 | unproven | Paket 3 481361d: AdminActions/AdminAutoOrder/PanelAccess/AdminActivityMigrationTest; Suite 461 bestanden, sauberer Build (Integrator-Lauf 2026-11-18, SQLite); Oberflächen folgen in Paket 4 |
 | ordering-experience / Bestellablauf / Navigation und Auswahl | Playwright/Build/Fixtures/Tastatur | 5 | unproven | keine Implementierung |
 | ordering-experience / Bestellablauf / Übersicht und Storno | Playwright/Build/Fixtures/Tastatur | 5 | unproven | keine Implementierung |
 | ordering-experience / Robuste Rückmeldung / Fehler und Wiederholung | Playwright/Build/Fixtures/Tastatur | 5 | unproven | keine Implementierung |
@@ -120,6 +120,8 @@ Modus: Claude-Orchestrator, Umsetzer über codex-subagent; Recording inaktiv (ke
 | 2026-11-18T10:20+01:00 | Orchestrator | Host | – | Paket 1 integriert, Merge 57b996a; Diff geprüft; volle Suite 308 bestanden am Paketstand |
 | 2026-11-18T10:40+01:00 | Umsetzer Paket 2 | gpt-6.1-sol | high | Worktree wt-stack-modernisierung-2, Basis 4630705; 61 Dateien in Paketgrenze; Commit 412e675; Bericht scratchpad/codex/paket-2-*.txt |
 | 2026-11-18T10:45+01:00 | Orchestrator | Host | – | Paket 2 integriert, Merge bea07e9; Diff geprüft; Suite 375 bestanden, Build aus leerem Verzeichnis grün; Dockerbuild/CI unbewiesen; npm audit 8 hoch (dev, picomatch) |
+| 2026-11-18T11:10+01:00 | Umsetzer Paket 3 | gpt-6.1-sol | high | Worktree wt-stack-modernisierung-3, Basis 789704f; 39 Dateien; Commit 481361d; Panel vorläufig /admin/panel; Bericht scratchpad/codex/paket-3-*.txt |
+| 2026-11-18T11:15+01:00 | Orchestrator | Host | – | Paket 3 integriert, Merge 52178c7; Suite 461 bestanden, Build grün; offen: Dedup ohne Schlüssel 5 min, Order-Modell ruft ActivityLogger, MariaDB-Konkurrenz unbewiesen |
 
 ## Cleanup
 
