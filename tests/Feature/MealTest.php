@@ -34,7 +34,7 @@ class MealTest extends TestCase
         $this->loginAsAdmin();
         Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->get(route('meals.create'))->assertOk()->assertViewIs('meal.create');
+        $this->get(route('meals.create'))->assertRedirect(\App\Filament\Resources\Meals\MealResource::getUrl(parameters: ['action' => 'add']));
         Livewire::test(ManageMeals::class)->callAction('add', data: $meal)->assertHasNoActionErrors()->assertNotified('Vorgang erfolgreich.');
 
         $this->assertDatabaseHas('meals', $meal);

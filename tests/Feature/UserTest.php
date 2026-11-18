@@ -7,6 +7,9 @@ use App\Models\OrderItem;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Tests\TestCase;
+use App\Filament\Resources\Users\{UserResource, Pages\ManageUsers, Pages\ViewUser};
+use Filament\Facades\Filament;
+use Livewire\Livewire;
 
 class UserTest extends TestCase
 {
@@ -61,65 +64,33 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->loginAsAdmin($user);
+        $this->loginAsAdmin();
 
-        $response = $this->get(route('users.index'));
-        $jsonResponse = $this->getJson(route('users.index'));
-
-        $response->assertSee($user->name);
-
-        $jsonResponse->assertJsonFragment($user->toArray());
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+        $this->get(route('users.index'))->assertRedirect(UserResource::getUrl());
+        Livewire::test(ManageUsers::class)->assertCanSeeTableRecords([$user])->assertSee($user->name);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_manage_users()
     {
-        $data = User::factory()->raw([
-            'name' => 'Example1',
-            'is_admin' => true,
-            'password' => 'secret',
-            'password_confirmation' => 'secret',
-        ]);
-
-        $data2 = User::factory()->raw([
-            'name' => 'Example2',
-            'is_admin' => true,
-            'password' => 'secret',
-            'password_confirmation' => 'secret',
-        ]);
-
         $this->loginAsAdmin();
-
-        $this->get(route('users.create'))->assertViewIs('user.create');
-
-        $this->post(route('users.store'), $data)->assertRedirect();
-        $this->postJson(route('users.store'), $data2)->assertJsonFragment([ 'name' => 'Example2',]);
-
-        $this->assertDatabaseHas('users', [
-            'name' => $data['name'],
-            'is_admin' => true
-        ]);
-
-        $user = User::factory()->create(['is_admin' => true]);
-
-        $this->get(route('users.edit', $user))->assertSee($user->name);
-
-        $this->get(route('users.show', $user))->assertSee($user->name);
-        $this->getJson(route('users.show', $user))->assertJsonFragment([ 'name' => $user->name,]);
-
-        $this->put(route('users.update', $user), ['name' => 'John'])->assertRedirect();
-        $this->putJson(route('users.update', $user), ['name' => 'John'])->assertJsonFragment(['name' => 'John']);
-
-        $this->assertDatabaseHas('users', [
-            'name' => 'John',
-            'is_admin' => true
-        ]);
-
-        $this->delete(route('users.destroy', $user))->assertRedirect();
-        $this->assertNull(User::find($user->id));
-
-        $user = User::factory()->create(['is_admin' => true]);
-        $this->deleteJson(route('users.destroy', $user))->assertStatus(Response::HTTP_NO_CONTENT);
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+        $this->get(route('users.create'))->assertRedirect(UserResource::getUrl(parameters: ['action' => 'create']));
+        $page = Livewire::test(ManageUsers::class);
+        foreach (['Example1', 'Example2'] as $name) {
+            $page->callAction('create', data: ['name' => $name, 'email' => strtolower($name).'@example.test', 'is_admin' => true])
+                ->assertHasNoActionErrors()->assertNotified('Vorgang erfolgreich.');
+        }
+        $user = User::whereName('Example1')->sole();
+        $this->assertTrue($user->is_admin);
+        $this->assertSame('disabled', $user->local_credential_status);
+        $this->get(route('users.edit', $user))->assertRedirect(UserResource::getUrl(parameters: ['tableAction' => 'edit', 'tableActionRecord' => $user->id]));
+        $this->get(route('users.show', $user))->assertRedirect(UserResource::getUrl('view', ['record' => $user]));
+        $page->callTableAction('edit', $user, data: ['name' => 'John', 'email' => $user->email])->assertHasNoActionErrors();
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => 'John', 'is_admin' => true]);
+        $page->callTableAction('deactivate', $user)->assertNotified('Vorgang erfolgreich.');
+        $this->assertSoftDeleted($user);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -130,9 +101,9 @@ class UserTest extends TestCase
         $orderItem = OrderItem::factory()->make();
         $user->orderItems()->save($orderItem);
 
-        $this->loginAsAdmin()
-            ->get(route('users.show', $user))
-            ->assertSee($orderItem->meal->title);
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+        Livewire::test(ViewUser::class, ['record' => $user->id])->assertOk()->assertSee($orderItem->meal->title);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -143,9 +114,9 @@ class UserTest extends TestCase
         $deposit =  Deposit::factory()->make(['value' => 9900]);
         $user->deposits()->save($deposit);
 
-        $this->loginAsAdmin()
-            ->get(route('users.show', $user))
-            ->assertSee(99);
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+        Livewire::test(ViewUser::class, ['record' => $user->id])->assertOk()->assertSee((string) \Cknow\Money\Money::EUR(9900));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -156,9 +127,9 @@ class UserTest extends TestCase
         $deposits = Deposit::factory()->count(2)->make(['value' => 10]);
         $user->deposits()->saveMany($deposits);
 
-        $this->loginAsAdmin()
-            ->get(route('users.show', $user))
-            ->assertSee(20);
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+        Livewire::test(ViewUser::class, ['record' => $user->id])->assertOk()->assertSee((string) \Cknow\Money\Money::EUR(20));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -180,13 +151,10 @@ class UserTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->loginAsAdmin()->delete(route('users.destroy', $user))->assertRedirect(route('users.index'));
-        $this->assertFalse(User::all()->contains($user));
-
-        $user = User::factory()->create();
-        $this->loginAsAdmin()->deleteJson(route('users.destroy', $user))->assertSuccessful();
-        $this->assertFalse(User::all()->contains($user));
-
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+        Livewire::test(ManageUsers::class)->callTableAction('deactivate', $user)->assertNotified('Vorgang erfolgreich.');
+        $this->assertSoftDeleted($user);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -200,7 +168,9 @@ class UserTest extends TestCase
         // no admin user is not allowed to restore users
         $this->login()->post(route('users.restore', $user))->assertForbidden();
 
-        $this->loginAsAdmin()->postJson(route('users.restore', $user))->assertSuccessful();
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+        Livewire::test(ManageUsers::class)->filterTable('trashed', '0')->callTableAction('restore', $user)->assertNotified('Vorgang erfolgreich.');
 
         $this->assertTrue(User::all()->contains($user));
     }

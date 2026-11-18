@@ -379,14 +379,14 @@ class AdminActionsTest extends TestCase
         $actor = User::factory()->admin()->create();
         $this->login($actor);
 
-        $this->postJson(route('users.store'), ['name' => 'New admin', 'email' => 'new-admin@example.com',
-            'is_admin' => true, 'password' => 'private-password', 'password_confirmation' => 'private-password'])->assertOk();
+        $user = app(Users::class)->create($actor, ['name' => 'New admin', 'email' => 'new-admin@example.com', 'is_admin' => true]);
 
         $activity = AdminActivity::sole();
         $this->assertSame('user.created', $activity->action);
         $this->assertSame($actor->id, $activity->actor_id);
         $this->assertSame(['is_admin' => true], $activity->changes['after']);
-        $this->assertStringNotContainsString('private-password', $activity->toJson());
+        $this->assertStringNotContainsString($user->password, $activity->toJson());
+        $this->assertStringNotContainsString($user->api_token, $activity->toJson());
     }
     #[Test]
     public function upserting_an_existing_order_item_records_the_previous_quantity_as_an_update(): void

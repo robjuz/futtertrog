@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Filament\Pages\Notifications;
-use App\Filament\Resources\{Deposits\DepositResource, Meals\MealResource, OrderItems\OrderItemResource, Orders\OrderResource};
+use App\Filament\Resources\{Deposits\DepositResource, Meals\MealResource, OrderItems\OrderItemResource, Orders\OrderResource, Users\UserResource};
 use App\Models\{Deposit, Meal, OrderItem, User};
 use Illuminate\Support\Facades\{Mail, Notification};
 use PHPUnit\Framework\Attributes\{DataProvider, Test};
@@ -18,6 +18,11 @@ class AdminLegacyLinksTest extends TestCase
         $item = OrderItem::factory()->create();
         $deposit = Deposit::factory()->create();
         $targets = [
+            ['users.index', [], UserResource::getUrl()],
+            ['users.create', [], UserResource::getUrl(parameters: ['action' => 'create'])],
+            ['users.edit', [$item->user_id], UserResource::getUrl(parameters: ['tableAction' => 'edit', 'tableActionRecord' => $item->user_id])],
+            ['users.show', [$item->user_id], UserResource::getUrl('view', ['record' => $item->user_id])],
+            ['meals.create', [], MealResource::getUrl(parameters: ['action' => 'add'])],
             ['admin.meals.index', [], MealResource::getUrl()],
             ['meals.edit', [$item->meal_id], MealResource::getUrl(parameters: ['tableAction' => 'change', 'tableActionRecord' => $item->meal_id])],
             ['orders.index', [], OrderResource::getUrl()],
@@ -34,6 +39,7 @@ class AdminLegacyLinksTest extends TestCase
 
         foreach ($targets as [$name, $parameters, $target]) {
             $this->get(route($name, $parameters))->assertRedirect($target);
+            $this->getJson(route($name, $parameters))->assertRedirect($target);
             $this->get($target)->assertOk();
         }
         $this->get('/admin/panel')->assertRedirect(route('filament.administration.pages.dashboard'));
@@ -45,7 +51,7 @@ class AdminLegacyLinksTest extends TestCase
 
     public static function closedWrites(): iterable
     {
-        foreach ([['POST', 'meals/import'], ['PUT', 'meals/1'], ['PATCH', 'meals/1'], ['DELETE', 'meals/1'],
+        foreach ([['POST', 'users'], ['PUT', 'users/1'], ['PATCH', 'users/1'], ['DELETE', 'users/1'], ['POST', 'users/1/restore'], ['POST', 'meals'], ['POST', 'meals/import'], ['PUT', 'meals/1'], ['PATCH', 'meals/1'], ['DELETE', 'meals/1'],
             ['POST', 'orders/1/auto_order'], ['PUT', 'orders/1'], ['DELETE', 'orders/1'],
             ['POST', 'order_items'], ['PUT', 'order_items/1'], ['DELETE', 'order_items/1'],
             ['POST', 'deposits'], ['POST', 'deposits/transfer'], ['PUT', 'deposits/1'], ['DELETE', 'deposits/1'], ['POST', 'notifications']] as [$method, $path]) {

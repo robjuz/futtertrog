@@ -30,7 +30,8 @@ class PanelAccessTest extends TestCase
         $this->get('/profile')->assertOk()->assertSee(Vite::asset('resources/js/app.ts'), false)
             ->assertDontSee(Vite::asset('resources/css/admin.css'), false)
             ->assertDontSee('/js/filament/', false);
-        $this->get('/admin/users')->assertOk()->assertSee('admin-navigation', false);
+        $this->get('/admin/users')->assertRedirect(\App\Filament\Resources\Users\UserResource::getUrl());
+        $this->get(\App\Filament\Resources\Users\UserResource::getUrl())->assertOk()->assertSee('Benutzer');
     }
 
     #[Test]

@@ -22,10 +22,11 @@ class ActivityLogger
         'order.deleted' => ['status', 'payed_at', 'user_id'],
         'order.auto_ordered' => ['status'],
         'user.created' => ['is_admin'],
-        'user.updated' => ['is_admin', 'deleted_at'],
+        'user.updated' => ['is_admin', 'deleted_at', 'name', 'email'],
         'user.deactivated' => ['is_admin', 'deleted_at'],
         'user.restored' => ['is_admin', 'deleted_at'],
         'meals.imported' => ['provider', 'date', 'count'],
+        'meal.created' => ['title', 'description', 'price', 'date', 'provider', 'parent_id', 'can_be_ordered_until'],
         'notification.sent' => ['recipient_ids'],
     ];
 

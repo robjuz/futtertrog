@@ -44,7 +44,6 @@ class AdministrationPanelProvider extends PanelProvider
             ->pages([Dashboard::class])->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->widgets([AdministrationStats::class])
             ->navigationItems([
-                NavigationItem::make('Benutzer-Bestandsverwaltung')->url(fn (): string => route('users.index')),
                 NavigationItem::make('Bestellen')->url(fn (): string => url('/meals')),
             ])
             ->middleware([

@@ -369,7 +369,7 @@ class AdminResourcesTest extends TestCase
     }
 
     #[Test]
-    public function manual_meal_notifications_keep_the_authorized_legacy_path_until_an_admin_action_exists(): void
+    public function manual_meal_notifications_use_the_shared_action_from_the_panel(): void
     {
         $this->loginAsAdmin();
         $preferences = new \App\UserSettings();
@@ -378,10 +378,9 @@ class AdminResourcesTest extends TestCase
         $other = User::factory()->create();
         Notification::fake();
 
-        $this->get(route('meals.create'))->assertOk()->assertSee('notify');
-        $this->post(route('meals.store'), [
+        Livewire::test(ManageMeals::class)->callAction('add', data: [
             'title' => 'Neues Gericht', 'price' => 1234, 'date' => today()->addDay()->toDateString(), 'notify' => true,
-        ])->assertRedirect(route('admin.meals.index'));
+        ])->assertHasNoActionErrors()->assertNotified('Vorgang erfolgreich.');
 
         Notification::assertSentTo($recipient, \App\Notifications\NewOrderPossibility::class);
         Notification::assertNotSentTo($other, \App\Notifications\NewOrderPossibility::class);

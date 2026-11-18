@@ -7,7 +7,7 @@ use App\Filament\Resources\Deposits\Pages\ManageDeposits;
 use App\Filament\Resources\Meals\Pages\ManageMeals;
 use App\Filament\Resources\Orders\Pages\ManageOrders;
 use App\Filament\Resources\OrderItems\Pages\ManageOrderItems;
-use App\Filament\Resources\Users\Pages\ManageUsers;
+use App\Filament\Resources\Users\Pages\{ManageUsers, ViewUser};
 use App\Models\{Deposit, Meal, OrderItem, User};
 use Illuminate\Support\Facades\{Http, Mail, Notification};
 use Filament\Facades\Filament;
@@ -19,7 +19,7 @@ class AdminResourceAccessTest extends TestCase
 {
     public static function pagesAndIdentities(): iterable
     {
-        foreach ([ManageDeposits::class, ManageMeals::class, ManageOrders::class, ManageOrderItems::class, ManageUsers::class, Notifications::class, Dashboard::class] as $page) {
+        foreach ([ManageDeposits::class, ManageMeals::class, ManageOrders::class, ManageOrderItems::class, ManageUsers::class, ViewUser::class, Notifications::class, Dashboard::class] as $page) {
             foreach (['guest', 'user', 'disabled-admin'] as $identity) {
                 yield "$page $identity" => [$page, $identity];
             }
@@ -40,13 +40,14 @@ class AdminResourceAccessTest extends TestCase
         }
         $this->withExceptionHandling();
 
-        Livewire::test($page)->assertForbidden();
+        Livewire::test($page, $page === ViewUser::class ? ['record' => User::factory()->create()->id] : [])->assertForbidden();
 
         $this->assertDatabaseCount('admin_activities', 0);
     }
 
     public static function actionPages(): iterable
     {
+        yield 'user creation' => [ManageUsers::class, 'create'];
         yield 'booking' => [ManageDeposits::class, 'book'];
         yield 'transfer' => [ManageDeposits::class, 'transfer'];
         yield 'meal' => [ManageMeals::class, 'add'];
@@ -82,6 +83,7 @@ class AdminResourceAccessTest extends TestCase
             [ManageMeals::class, 'change', 'meal'], [ManageMeals::class, 'remove', 'meal'],
             [ManageOrders::class, 'change', 'order'], [ManageOrders::class, 'remove', 'order'], [ManageOrders::class, 'autoOrder', 'order'],
             [ManageOrderItems::class, 'orderFor', 'header'], [ManageOrderItems::class, 'change', 'item'], [ManageOrderItems::class, 'remove', 'item'],
+            [ManageUsers::class, 'create', 'header'], [ManageUsers::class, 'edit', 'user'],
             [ManageUsers::class, 'role', 'user'], [ManageUsers::class, 'deactivate', 'user'],
             [ManageUsers::class, 'restore', 'disabled'], [ManageUsers::class, 'passwordLink', 'user'],
             [Notifications::class, 'send', 'header'],

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use OpenApi\Attributes as OA;
 
-use App\Events\NewOrderPossibility;
-use App\Http\Requests\MealStoreRequest;
 use App\Models\Meal;
 use App\Models\User;
 use App\Repositories\MealsRepository;
@@ -16,41 +14,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
 
-class MealController extends Controller implements \Illuminate\Routing\Controllers\HasMiddleware
+class MealController extends Controller
 {
-    public static function middleware(): array
-    {
-        return [new \Illuminate\Routing\Controllers\Middleware('cast.float', only: ['store'])];
-    }
-
-    public function create()
-    {
-//        abort(404);
-
-        Gate::authorize('create', Meal::class);
-
-        return view('meal.create');
-    }
-
-    public function store(MealStoreRequest $request)
-    {
-        $meal = Meal::create($request->validated());
-
-        if ($request->has('notify')) {
-            event(new NewOrderPossibility($meal->date));
-        }
-
-        if ($request->wantsJson()) {
-            return response()->json($meal, Response::HTTP_CREATED);
-        }
-
-        if ($request->has('saveAndNew')) {
-            return redirect()->route('meals.create')->with('success', __('Saved'));
-        }
-
-        return redirect()->route('admin.meals.index')->with('success', __('Saved'));
-    }
-
     /**
      * Display a listing of the resource.
      *

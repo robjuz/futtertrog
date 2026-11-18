@@ -38,6 +38,26 @@ test('admin manages users, meals, orders, finances and messages with confirmatio
     await expect(page.getByText('Offene Sammelbestellungen')).toBeVisible();
 
     await page.goto('/admin/people');
+    await page.getByRole('button', { name: 'Benutzer anlegen', exact: true }).click();
+    let userDialog = page.getByRole('alertdialog').last();
+    await expect(userDialog.locator('input[type="password"]')).toHaveCount(0);
+    await expect(userDialog.getByText(/Das Konto startet ohne lokales Passwort/)).toBeVisible();
+    await userDialog.getByLabel('Name').fill(`Browserperson ${test.info().project.name}`);
+    await userDialog.getByLabel('E-Mail').fill(`browser-${test.info().project.name}@example.test`);
+    await confirm(page);
+    await page.getByRole('link', { name: 'Passwortbestätigung senden', exact: true }).click();
+    await confirm(page);
+    const newRow = page.locator('tr').filter({ hasText: `browser-${test.info().project.name}@example.test` });
+    await expect(newRow).toBeVisible();
+    await newRow.getByRole('button', { name: 'Name / E-Mail ändern', exact: true }).click();
+    userDialog = page.getByRole('alertdialog').last();
+    await expect(userDialog.locator('input[type="password"]')).toHaveCount(0);
+    await userDialog.getByLabel('Name').fill(`Browserperson geändert ${test.info().project.name}`);
+    await confirm(page);
+    await newRow.getByRole('link', { name: 'Guthaben / Verlauf', exact: true }).click();
+    await expect(page.getByText('Konto und Guthaben', { exact: true })).toBeVisible();
+    await expect(page.getByText('Keine Bestellungen vorhanden.', { exact: true })).toBeVisible();
+    await page.goto('/admin/people');
     await page.getByRole('searchbox').fill('Panel Empfänger');
     const row = page.locator('tr').filter({ hasText: 'panel-user@example.test' });
     await expect(row).toBeVisible();
@@ -60,6 +80,7 @@ test('admin manages users, meals, orders, finances and messages with confirmatio
     await dialog.getByLabel('Titel / Variantenname').fill(`Browserangebot ${test.info().project.name}`);
     await dialog.getByLabel('Preis in Cent').fill('1234');
     await dialog.getByLabel('Datum').fill('2026-11-20');
+    await dialog.getByRole('switch', { name: 'Benutzer benachrichtigen' }).click();
     await confirm(page);
     await expect(page.getByText(`Browserangebot ${test.info().project.name}`, { exact: true })).toBeVisible();
 

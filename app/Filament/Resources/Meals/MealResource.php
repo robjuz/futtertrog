@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Meals;
 
-use App\Actions\Admin\ImportMeals;
+use App\Actions\Admin\{ImportMeals, Meals};
 use App\Filament\Resources\{AdminResource, Fields, PanelAction};
 use App\Filament\Resources\Meals\Pages\ManageMeals;
 use App\Models\Meal;
@@ -47,17 +47,9 @@ class MealResource extends AdminResource
     public static function headerActions(): array
     {
         return [
-            Action::make('legacyNotifyCreate')->label('Anlegen mit Benachrichtigung (bestehende Verwaltung)')
-                ->authorize(fn (): bool => Gate::allows('create', Meal::class))->url(fn (): string => route('meals.create')),
             PanelAction::make('add')->label('Gericht / Variante anlegen')->authorize(fn (): bool => Gate::allows('create', Meal::class))
-                ->schema(static::fields())
-                ->action(fn (array $data, Action $action) => PanelAction::run($action, function () use ($data): void {
-                    DB::transaction(function () use ($data): void {
-                        static::authorizeWrite('create');
-                        static::validateParent($data);
-                        Meal::create($data);
-                    });
-                })),
+                ->schema([...static::fields(), Toggle::make('notify')->label('Benutzer benachrichtigen')->default(false)])
+                ->action(fn (array $data, Action $action) => PanelAction::run($action, fn () => app(Meals::class)->create(auth()->user(), $data, $data['notify'] ?? false))),
             PanelAction::make('import')->label('Gerichte importieren')->authorize(fn (): bool => Gate::allows('create', Meal::class))
                 ->schema([Select::make('provider')->label('Anbieter')->options(app('mealProviders'))->required(), DatePicker::make('date')->label('Datum')->required(), Toggle::make('notify')->label('Benutzer benachrichtigen')->default(false)])
                 ->action(fn (array $data, Action $action) => PanelAction::run($action, fn () => app(ImportMeals::class)->execute(auth()->user(), $data['provider'], $data['date'], $data['notify'] ?? false))),

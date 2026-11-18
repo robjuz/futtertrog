@@ -107,11 +107,7 @@ class AreaAccessTest extends TestCase
             'deposits', 'deposits/create', "deposits/{$deposit->id}/edit", 'deposits/transfer',
             'notifications/create', 'order_items/create', "order_items/{$item->id}/edit"] as $path) {
             $this->get('/'.$path)->assertRedirect('/admin/'.$path);
-            if (str_starts_with($path, 'users') || $path === 'meals/create') {
-                $this->get('/admin/'.$path)->assertOk()->assertSee('admin-navigation', false);
-            } else {
-                $this->get('/admin/'.$path)->assertRedirect();
-            }
+            $this->get('/admin/'.$path)->assertRedirect();
         }
     }
 
@@ -297,8 +293,8 @@ class AreaAccessTest extends TestCase
         $inactive->delete();
         $this->login($admin)->withExceptionHandling();
 
-        $this->putJson(route('users.update', $admin), ['is_admin' => false])->assertForbidden();
-        $this->deleteJson(route('users.destroy', $admin))->assertForbidden();
+        \Livewire\Livewire::test(\App\Filament\Resources\Users\Pages\ManageUsers::class)->callTableAction('role', $admin, data: ['is_admin' => false])->assertNotified('Vorgang nicht ausgeführt.');
+        \Livewire\Livewire::test(\App\Filament\Resources\Users\Pages\ManageUsers::class)->callTableAction('deactivate', $admin)->assertNotified('Vorgang nicht ausgeführt.');
         $this->assertTrue($admin->fresh()->is_admin);
         $this->assertNotSoftDeleted($admin);
     }
@@ -310,7 +306,7 @@ class AreaAccessTest extends TestCase
         User::factory()->admin()->create();
         $this->login($admin);
 
-        $this->putJson(route('users.update', $admin), ['is_admin' => false])->assertOk();
+        \Livewire\Livewire::test(\App\Filament\Resources\Users\Pages\ManageUsers::class)->callTableAction('role', $admin, data: ['is_admin' => false])->assertNotified('Vorgang erfolgreich.')->assertRedirect(route('home'));
 
         $this->assertFalse($admin->fresh()->is_admin);
     }

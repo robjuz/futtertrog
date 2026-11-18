@@ -8,7 +8,6 @@ use App\Http\Controllers\MealController;
 use App\Http\Controllers\MyBalanceController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureActiveAccount;
 use App\Http\Middleware\RejectAdministrativeInput;
 use Illuminate\Http\Request;
@@ -52,15 +51,14 @@ Route::middleware(['auth:web', EnsureActiveAccount::class])->group(function (): 
     });
 
     Route::prefix('admin')->middleware('can:access-administration')->group(function (): void {
-        // User creation and profile maintenance remain until the missing Admin actions exist.
-        Route::post('users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
-        Route::resource('users', UserController::class);
-        Route::resource('meals', MealController::class)->only(['create', 'store']);
-
         Route::get('overview', fn () => redirect()->route('filament.administration.pages.dashboard'))->name('admin.index');
         Route::get('panel', fn () => redirect()->route('filament.administration.pages.dashboard'));
 
         $links = [
+            ['users', 'users.index', \App\Filament\Resources\Users\UserResource::class, null, null, 'viewAny'],
+            ['users/create', 'users.create', \App\Filament\Resources\Users\UserResource::class, 'create', null, 'create'],
+            ['users/{user}/edit', 'users.edit', \App\Filament\Resources\Users\UserResource::class, 'edit', \App\Models\User::class, 'update'],
+            ['meals/create', 'meals.create', \App\Filament\Resources\Meals\MealResource::class, 'add', null, 'create'],
             ['meals', 'admin.meals.index', \App\Filament\Resources\Meals\MealResource::class, null, null, 'create'],
             ['meals/{meal}/edit', 'meals.edit', \App\Filament\Resources\Meals\MealResource::class, 'change', \App\Models\Meal::class, 'update'],
             ['orders', 'orders.index', \App\Filament\Resources\Orders\OrderResource::class, null, null, 'list'],
@@ -96,6 +94,12 @@ Route::middleware(['auth:web', EnsureActiveAccount::class])->group(function (): 
                 return redirect()->to($resource::getUrl('index', $parameters));
             })->name($name);
         }
+        Route::get('users/{user}', function (string $user) {
+            $record = \App\Models\User::findOrFail($user);
+            \Illuminate\Support\Facades\Gate::authorize('view', $record);
+
+            return redirect()->to(\App\Filament\Resources\Users\UserResource::getUrl('view', ['record' => $record]));
+        })->name('users.show');
         Route::get('notifications/create', function () {
             \Illuminate\Support\Facades\Gate::authorize('send-notifications');
 
@@ -104,6 +108,9 @@ Route::middleware(['auth:web', EnsureActiveAccount::class])->group(function (): 
 
         // Explicit tombstones keep named callers resolvable without retaining write handlers.
         foreach ([
+            ['POST', 'users', 'users.store'], ['PUT|PATCH', 'users/{user}', 'users.update'],
+            ['DELETE', 'users/{user}', 'users.destroy'], ['POST', 'users/{user}/restore', 'users.restore'],
+            ['POST', 'meals', 'meals.store'],
             ['POST', 'meals/import', 'meals.import'],
             ['PUT|PATCH', 'meals/{meal}', 'meals.update'], ['DELETE', 'meals/{meal}', 'meals.destroy'],
             ['POST', 'orders/{order}/auto_order', 'orders.auto_order'],
