@@ -1,4 +1,3 @@
-@inject('providers', 'mealProviders')
 @extends('layouts.admin')
 
 @section('content')
@@ -56,37 +55,7 @@
         <button type="submit">{{ __('Create') }}</button>
     </form>
 
-    <form action="{{ route('meals.import') }}" method="post">
-        <h2>{{ __('Import meals') }}</h2>
-        @csrf
-
-        <label for="import_provider">
-            <span>{{ __('Provider') }}</span>
-            @error('provider')
-            <span>{{ $message }}</span>
-            @enderror
-        </label>
-        <select id="import_provider" name="provider" required>
-            @foreach($providers as $provider => $name)
-                <option value="{{ $provider }}">{{ $name }}</option>
-            @endforeach
-        </select>
-
-        <label for="date">
-            <span>{{ __('Date') }}</span>
-            @error('date')
-            <span>{{ $message }}</span>
-            @enderror
-        </label>
-        <input id="date" type="date" name="date" required value="{{ old('date') }}">
-
-        <input id="import_notify" name="notify" type="checkbox"
-            {{ old('notify') ? 'checked' : '' }}>
-
-        <label for="import_notify">
-            {{ __('Notify users') }}
-        </label>
-
-        <button type="submit">{{ __('Create') }}</button>
-    </form>
+    <p>
+        <a href="{{ \App\Filament\Resources\Meals\MealResource::getUrl(parameters: ['action' => 'import']) }}">Gerichte im Verwaltungs-Panel importieren</a>
+    </p>
 @endsection()

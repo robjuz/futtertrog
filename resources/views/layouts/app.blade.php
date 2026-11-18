@@ -95,7 +95,7 @@
                     </a>
                 </li>
                 @can('access-administration')
-                    <li><a href="{{ route('admin.index') }}">{{ __('Administration') }}</a></li>
+                    <li><a href="{{ route('filament.administration.pages.dashboard') }}">{{ __('Administration') }}</a></li>
                 @endcan
                 <li>
                     <form action="{{ route('logout') }}" method="post">

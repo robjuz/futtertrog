@@ -166,14 +166,16 @@ class ProfileSecurityTest extends TestCase
         $challenge = \App\Models\CredentialChallenge::factory()->for($user)->create();
         $this->actingAs($user)->get('/profile/security')->assertInertia(fn ($page) => $page
             ->component('Profile/Security')->where('identities', [['provider' => 'gitlab']])
-            ->where('localCredentialStatus', 'enabled')->where('navigation.admin', '/admin')
+            ->where('localCredentialStatus', 'enabled')->where('navigation.admin', '/admin/overview')
             ->missing('user')->missing('auth.user'))
             ->assertDontSee('private-subject', false)->assertDontSee($user->api_token, false)
             ->assertDontSee($user->password, false)->assertDontSee($user->remember_token, false)
             ->assertDontSee($challenge->token_hash, false)->assertDontSee('js/app.js', false)
             ->assertDontSee('css/app.css', false);
         $this->get('/meals')->assertOk()->assertDontSee('/build/assets/', false);
-        $this->get('/admin')->assertOk()->assertDontSee('/build/assets/', false);
+        $this->get('/admin')->assertOk()
+            ->assertSee(\Illuminate\Support\Facades\Vite::asset('resources/css/admin.css'), false)
+            ->assertDontSee(\Illuminate\Support\Facades\Vite::asset('resources/js/app.ts'), false);
         $normal = User::factory()->create();
         $this->actingAs($normal)->withSession(['password_hash_web' => $normal->password])
             ->get('/profile')->assertInertia(fn ($page) => $page->where('navigation.admin', null));

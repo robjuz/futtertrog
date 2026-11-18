@@ -9,6 +9,10 @@ use App\Models\User;
 use Cknow\Money\Money;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use App\Filament\Resources\Orders\Pages\ManageOrders;
+use App\Filament\Resources\OrderItems\Pages\ManageOrderItems;
+use Filament\Facades\Filament;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -35,112 +39,64 @@ class OrderTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_provides_a_list_of_not_empty_orders()
     {
-        /** @var \Illuminate\Support\Collection|\App\Models\Order[] $orders */
         $orders = Order::factory()->count(5)->create();
-
-        $orders->each(function($order) {
-            /** @var OrderItem $orderItem */
-            $orderItem = OrderItem::factory()->make();
-
-            /** @var Meal $meal */
-            $meal = Meal::factory()->create();
-
-            $orderItem->meal()->associate($meal);
-
-            $order->orderItems()->save($orderItem);
-        });
-
-        $this->loginAsAdmin();
-
-        $response = $this->get(route('orders.index'));
-        $jsonResponse = $this->getJson(route('orders.index'));
-
-
         foreach ($orders as $order) {
-            $response->assertSee($order->provider);
-            $response->assertSee($order->subtotal);
+            OrderItem::factory()->create(['order_id' => $order->id]);
+        }
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-            $jsonResponse->assertJsonFragment([
-                'provider' => $order->provider->getName(),
-                'subtotal' => $order->subtotal
-            ]);
+        $page = Livewire::test(ManageOrders::class)->assertCanSeeTableRecords($orders);
+        foreach ($orders as $order) {
+            $page->assertSee((string) $order->provider)->assertSee((string) $order->subtotal);
         }
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_dont_shows_empty_orders()
     {
-        /** @var \Illuminate\Support\Collection|\App\Models\Order[] $orders */
         $orders = Order::factory()->count(5)->create();
-
         $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $response = $this->get(route('orders.index'));
-        $jsonResponse = $this->getJson(route('orders.index'));
-
-
-        foreach ($orders as $order) {
-            $response->assertDontSee($order->subtotal);
-
-            $jsonResponse->assertJsonMissing([
-                'provider' => $order->provider,
-                'subtotal' => $order->subtotal
-            ]);
-        }
+        Livewire::test(ManageOrders::class)->assertCanNotSeeTableRecords($orders)->assertCountTableRecords(0);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_provides_a_sum_of_order_items_prices()
     {
-        $meal = Meal::factory()->create([
-            'date' => today(),
-            'price' => 111
-        ]);
+        $meal = Meal::factory()->create(['date' => today(), 'price' => 111]);
+        OrderItem::factory()->create(['meal_id' => $meal->id, 'quantity' => 2]);
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        OrderItem::factory()->create([
-            'meal_id' => $meal->id,
-            'quantity' => 2
-        ]);
-
-        $this->loginAsAdmin()
-            ->get(route('orders.index'))
-            ->assertSee(money(222));
+        Livewire::test(ManageOrders::class)->assertSee((string) money(222));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_update_order_status()
     {
-        /** @var \App\Models\Order $order */
-        $order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
-        $this->loginAsAdmin()
-            ->put(route('orders.update', $order), ['status' => Order::STATUS_ORDERED])
-            ->assertRedirect();
-        $this->assertEquals(Order::STATUS_ORDERED, $order->fresh()->status);
+        $item = OrderItem::factory()->create();
+        $order = $item->order;
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
-        $this->loginAsAdmin()
-            ->putJson(route('orders.update', $order), ['status' => Order::STATUS_ORDERED])
-            ->assertSuccessful()
-            ->assertJson($order->fresh()->toArray());
-        $this->assertEquals(Order::STATUS_ORDERED, $order->fresh()->status);
+        Livewire::test(ManageOrders::class)->callTableAction('change', $order, data: ['status' => Order::STATUS_ORDERED])->assertHasNoActionErrors();
+
+        $this->assertSame(Order::STATUS_ORDERED, $order->fresh()->status);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_delete_a_order()
     {
-        /** @var \App\Models\Order $order */
-        $order = Order::factory()->create();
-        $this->loginAsAdmin()
-            ->delete(route('orders.destroy', $order))
-            ->assertRedirect();
-        $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
+        $item = OrderItem::factory()->create();
+        $order = $item->order;
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        /** @var \App\Models\Order $order */
-        $order = Order::factory()->create();
-        $this->loginAsAdmin()
-            ->deleteJson(route('orders.destroy', $order))
-            ->assertStatus(Response::HTTP_NO_CONTENT);
-        $this->assertDatabaseMissing('orders', $order->setAppends([])->toArray());
+        Livewire::test(ManageOrders::class)->callTableAction('remove', $order)->assertNotified('Vorgang erfolgreich.');
+
+        $this->assertModelMissing($order);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -160,51 +116,35 @@ class OrderTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_order_details()
     {
-        Carbon::setTestNow(now()->startOfWeek()->addDays(2));
-
-        /** @var User $user1 */
+        $this->travelTo(now()->startOfWeek()->addDays(2));
         $user1 = User::factory()->create();
-        /** @var User $user2 */
-        $user2 = User::factory()->create();
-
-        $user2->delete();
-
-
+        $user2 = User::factory()->create(['deleted_at' => now()]);
         $meal1 = Meal::factory()->create(['date' => now()->subDay()]);
         $meal2 = Meal::factory()->create(['date' => now()->addDay()]);
-
         $user1->order($meal1);
         $user1->order($meal2);
         $user2->order($meal1);
         $user2->order($meal2);
-
         $order = Order::first();
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->loginAsAdmin()
-            ->get(route('orders.edit', $order))
-            ->assertSee($meal1->date->isoFormat('L'))
-            ->assertSee($meal2->date->isoFormat('L'))
-            ->assertSee($meal1->title)
-            ->assertSee($meal2->title)
-            ->assertSee($user1->username)
-            ->assertSee($user2->username);
-
+        Livewire::test(ManageOrderItems::class)->filterTable('order_id', $order->id)
+            ->assertSee($meal1->date->format('d.m.Y'))->assertSee($meal2->date->format('d.m.Y'))
+            ->assertSee($meal1->title)->assertSee($meal2->title)->assertSee($user1->name)->assertSee($user2->name);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_mark_an_order_as_payed_by_a_user(){
         $user1 = User::factory()->create();
-
         $meal1 = Meal::factory()->create(['date' => now()->subDay()]);
-
         $user1->order($meal1);
-
         $this->assertEquals($meal1->price, $user1->balance->absolute());
-
         $order = Order::first();
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->loginAsAdmin()
-            ->put(route('orders.update', $order), ['user_id' => $user1->id]);
+        Livewire::test(ManageOrders::class)->callTableAction('change', $order, data: ['user_id' => $user1->id])->assertHasNoActionErrors();
 
         $this->assertEquals(Money::parse(0), $user1->fresh()->balance);
     }

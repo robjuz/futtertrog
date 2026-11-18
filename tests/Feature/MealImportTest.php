@@ -4,6 +4,9 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Filament\Resources\Meals\Pages\ManageMeals;
+use Filament\Facades\Filament;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class MealImportTest extends TestCase
@@ -18,8 +21,8 @@ class MealImportTest extends TestCase
             ->postJson(route('meals.import'))
             ->assertForbidden();
 
-        $this->loginAsAdmin()
-            ->postJson(route('meals.import'))
-            ->assertUnprocessable();
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+        Livewire::test(ManageMeals::class)->callAction('import', data: [])->assertHasActionErrors(['provider', 'date']);
     }
 }

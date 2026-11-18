@@ -3,7 +3,7 @@
 @section('navigation')
     <nav id="main-navbar" class="admin-navigation" data-button="{{ __('Menu') }}" aria-label="{{ __('Administration') }}">
         <ul>
-            <li><a href="{{ route('admin.index') }}">{{ __('Administration') }}</a></li>
+            <li><a href="{{ route('filament.administration.pages.dashboard') }}">{{ __('Administration') }}</a></li>
             <li><a href="{{ route('users.index') }}">{{ __('Manage users') }}</a></li>
             <li><a href="{{ route('admin.meals.index') }}">{{ __('Manage meals') }}</a></li>
             <li><a href="{{ route('meals.create') }}">{{ __('New meal') }}</a></li>
