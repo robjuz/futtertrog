@@ -16,13 +16,15 @@ class OrderItemPolicyTest extends TestCase
         $this->loginAsAdmin();
 
         $this->assertTrue(auth()->user()->can('list', OrderItem::class));
+        $this->assertTrue(auth()->user()->can('administerAny', OrderItem::class));
+        $this->assertTrue(auth()->user()->can('administer', $orderItem));
         $this->assertTrue(auth()->user()->can('create', [OrderItem::class, today()->addDay()]));
-        $this->assertTrue(auth()->user()->can('create', [OrderItem::class, today()]));
-        $this->assertTrue(auth()->user()->can('create', [OrderItem::class, today()->subDay()]));
+        $this->assertFalse(auth()->user()->can('create', [OrderItem::class, today()]));
+        $this->assertFalse(auth()->user()->can('create', [OrderItem::class, today()->subDay()]));
 
-        $this->assertTrue(auth()->user()->can('view', $orderItem));
-        $this->assertTrue(auth()->user()->can('update', $orderItem));
-        $this->assertTrue(auth()->user()->can('delete', $orderItem));
+        $this->assertFalse(auth()->user()->can('view', $orderItem));
+        $this->assertFalse(auth()->user()->can('update', $orderItem));
+        $this->assertFalse(auth()->user()->can('delete', $orderItem));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

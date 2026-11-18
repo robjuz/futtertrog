@@ -14,6 +14,10 @@ use Cknow\Money\Money;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
+use App\Filament\Resources\Meals\Pages\ManageMeals;
+use App\Filament\Pages\Notifications;
+use Filament\Facades\Filament;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class MealTest extends TestCase
@@ -21,32 +25,17 @@ class MealTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function only_admin_can_create_a_meal()
     {
-
         $meal = Meal::factory()->raw();
-
         $this->login()->withExceptionHandling();
-
-        $this->get(route('meals.create'))
-            ->assertForbidden();
-
-        $this->post(route('meals.store'), $meal)
-            ->assertForbidden();
-
-        $this->postJson(route('meals.store'), $meal)
-            ->assertForbidden();
-
+        $this->get(route('meals.create'))->assertForbidden();
+        $this->post(route('meals.store'), $meal)->assertForbidden();
+        $this->postJson(route('meals.store'), $meal)->assertForbidden();
         $this->assertDatabaseMissing('meals', $meal);
-
         $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->get(route('meals.create'))
-            ->assertViewIs('meal.create');
-
-        $this->post(route('meals.store'), $meal)
-            ->assertRedirect(route('meals.index'));
-
-        $this->postJson(route('meals.store'), $meal)
-            ->assertSuccessful();
+        $this->get(route('meals.create'))->assertRedirect(\App\Filament\Resources\Meals\MealResource::getUrl(parameters: ['action' => 'add']));
+        Livewire::test(ManageMeals::class)->callAction('add', data: $meal)->assertHasNoActionErrors()->assertNotified('Vorgang erfolgreich.');
 
         $this->assertDatabaseHas('meals', $meal);
     }
@@ -55,76 +44,44 @@ class MealTest extends TestCase
     public function only_admin_can_update_a_meal()
     {
         $meal = Meal::factory()->create();
-
-        $attributes = [
-            'title' => 'Changed title',
-            'description' => 'Changed description',
-            'price' => 100
-        ];
-
-
+        $attributes = ['title' => 'Changed title', 'description' => 'Changed description', 'price' => 100];
         $this->login()->withExceptionHandling();
-
-        $this->get(route('meals.edit', $meal))
-            ->assertForbidden();
-
-        $this->put(route('meals.update', $meal), $attributes)
-            ->assertForbidden();
-
-        $this->putJson(route('meals.update', $meal), $attributes)
-            ->assertForbidden();
-
+        $this->get(route('meals.edit', $meal))->assertForbidden();
+        $this->put(route('meals.update', $meal), $attributes)->assertForbidden();
+        $this->putJson(route('meals.update', $meal), $attributes)->assertForbidden();
         $this->assertDatabaseMissing('meals', $attributes);
-
         $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->get(route('meals.edit', $meal))
-            ->assertViewIs('meal.edit');
+        Livewire::test(ManageMeals::class)->callTableAction('change', $meal, data: $attributes)->assertHasNoActionErrors()->assertNotified('Vorgang erfolgreich.');
 
-        $this->put(route('meals.update', $meal), $attributes)
-            ->assertRedirect(route('meals.index'));
-
-        $this->putJson(route('meals.update', $meal), $attributes)
-            ->assertJsonFragment([
-                'title' => 'Changed title',
-                'description' => 'Changed description',
-                'price' => Money::parse(100)
-            ]);
-
-        $this->assertDatabaseHas('meals', [
-            'title' => 'Changed title',
-            'description' => 'Changed description',
-            'price' => Money::parse(100)->getAmount()
-        ]);
+        $this->assertSame('100', $meal->fresh()->price->getAmount());
+        $this->assertDatabaseHas('meals', $attributes);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_delete_a_meal()
     {
         $meal = Meal::factory()->create();
-
         $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
+        Livewire::test(ManageMeals::class)->callTableAction('remove', $meal)->assertNotified('Vorgang erfolgreich.');
 
-        $this->delete(route('meals.destroy', $meal))
-            ->assertRedirect(route('meals.create'));
-        $this->assertDatabaseMissing('meals', $meal->only('title'));
-
-        $meal = Meal::factory()->create();
-        $this->deleteJson(route('meals.destroy', $meal))
-            ->assertSuccessful();
-        $this->assertDatabaseMissing('meals', $meal->only('title'));
+        $this->assertModelMissing($meal);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_create_a_meal_and_stay_on_the_create_page()
     {
         $meal = Meal::factory()->raw();
-
         $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->post(route('meals.store'), $meal + ['saveAndNew' => 'saveAndNew'])
-            ->assertRedirect(route('meals.create'));
+        $page = Livewire::test(ManageMeals::class)->callAction('add', data: $meal)->assertHasNoActionErrors()->assertNoRedirect();
+        $page->callAction('add', data: [...$meal, 'title' => 'Next meal'])->assertHasNoActionErrors()->assertNoRedirect();
+
+        $this->assertDatabaseCount('meals', 2);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -177,7 +134,7 @@ class MealTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function guests_and_users_are_not_allowed_to_see_meal_details()
+    public function guests_are_denied_meal_details_and_users_can_read_them()
     {
         $meal = Meal::factory()->create();
 
@@ -188,7 +145,7 @@ class MealTest extends TestCase
 
         $this->login()
             ->get(route('meals.show', $meal))
-            ->assertForbidden();
+            ->assertOk()->assertSee($meal->title);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -276,9 +233,11 @@ class MealTest extends TestCase
             ->assertJson([
                 [
                     'title' => $meal->title,
-                    'variants' => [
+                    'choices' => [
                         [
-                            'title' => $variant->title
+                            'id' => $variant->id,
+                            'title' => $variant->variant_title,
+                            'price' => (string) $variant->price
                         ]
                     ]
                 ]
@@ -298,20 +257,28 @@ class MealTest extends TestCase
             ->assertSee($meal->title);
 
         $this->getJson(route('meals.show', $meal))
-            ->assertJsonFragment($meal->toArray());
+            ->assertJsonPath('id', $meal->id)
+            ->assertJsonPath('title', $meal->title)
+            ->assertJsonPath('choices.0.id', $meal->id)
+            ->assertJsonPath('choices.0.price', (string) $meal->price)
+            ->assertJsonPath('date', $meal->date->toDateString())
+            ->assertJsonPath('provider', (string) $meal->provider)
+            ->assertJsonPath('description', strip_tags($meal->description))
+            ->assertJsonMissingPath('created_at')
+            ->assertJsonMissingPath('orderItems');
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_throws_an_exception_when_trying_to_delete_on_ordered_meal()
     {
-        //$this->withExceptionHandling();
-
         $meal = Meal::factory()->create();
-
         $meal->orderItems()->save(OrderItem::factory()->make());
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
-        $this->loginAsAdmin()->delete(route('meals.destroy', $meal));
+        Livewire::test(ManageMeals::class)->callTableAction('remove', $meal)->assertNotified('Vorgang nicht ausgeführt.');
+
+        $this->assertModelExists($meal);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

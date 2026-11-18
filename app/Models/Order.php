@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\MealProviderCast;
+use App\Actions\Admin\ActivityLogger;
 use App\IdeHelperOrder;
 use App\MealProviders\AbstractMealProvider;
 use App\OrderCollection;
@@ -10,6 +11,9 @@ use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Throwable;
 
 /**
  * App\Order.
@@ -206,13 +210,85 @@ class Order extends Model
         ]);
     }
 
-    public function autoOrder()
+    public function pendingAutoOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AdminActivity::class, 'target_id')->where('target_type', self::class)
+            ->where('action', 'order.auto_ordered')->whereIn('state', ['running', 'uncertain']);
+    }
+
+    public function contentFingerprint(): string
+    {
+        $items = $this->orderItems()->orderBy('id')->get(['id', 'meal_id', 'user_id', 'quantity'])
+            ->map(fn (OrderItem $item): array => [
+                'id' => (int) $item->id,
+                'meal_id' => $item->meal_id,
+                'user_id' => $item->user_id,
+                'quantity' => $item->quantity,
+            ])->all();
+
+        return hash('sha256', json_encode($items, JSON_THROW_ON_ERROR));
+    }
+
+    /** A committed reservation protects both scheduled and administrative provider calls. */
+    public function autoOrder(?User $actor = null): self
+    {
+        $attempt = DB::transaction(function () use ($actor): ?AdminActivity {
+            $order = self::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            if ($actor !== null) {
+                $actor = ActivityLogger::authorize($actor);
+                Gate::forUser($actor)->authorize('autoOrder', $order);
+            }
+            $blocked = $order->pendingAutoOrders()->exists();
+            abort_if($blocked, 409, __('Provider result is pending or uncertain. Reconcile with the provider before retrying.'));
+            if (!$order->canBeAutoOrdered()) {
+                abort_if($actor !== null, 400, __('This order cannot be auto-ordered'));
+
+                return null;
+            }
+            if (DB::transactionLevel() !== 1) {
+                throw new \LogicException('Autoorder requires a committed reservation; do not wrap it in a transaction.');
+            }
+            $activity = ActivityLogger::record($actor, 'order.auto_ordered', $order, [
+                'status' => $order->status,
+                'content_fingerprint' => $order->contentFingerprint(),
+            ]);
+            $activity->update(['state' => 'running']);
+
+            return $activity;
+        });
+        if ($attempt === null) {
+            return $this->refresh();
+        }
+
+        try {
+            DB::transaction(function () use ($attempt): void {
+                $order = self::whereKey($this->id)->lockForUpdate()->firstOrFail();
+                abort_unless($attempt->fresh()->state === 'running', 409,
+                    __('Provider attempt has already been reconciled.'));
+                $order->sendToProvider();
+                abort_unless($order->fresh()->status === self::STATUS_ORDERED, 502, __('Provider result is uncertain.'));
+                $attempt->update([
+                    'state' => 'succeeded',
+                    'changes' => ActivityLogger::changes('order.auto_ordered', $attempt->getAttribute('changes')['before'], ['status' => $order->status]),
+                ]);
+            });
+        } catch (Throwable $exception) {
+            AdminActivity::whereKey($attempt->id)->where('state', 'running')->update(['state' => 'uncertain']);
+            throw $exception;
+        }
+
+        return $this->refresh();
+    }
+
+    private function sendToProvider(): void
     {
         if ($this->canBeUpdated()) {
             $this->updateOrder();
-        } elseif ($this->canBeAutoOrdered()) {
-            $this->placeOrder();
+
+            return;
         }
+
+        $this->placeOrder();
     }
 
     public function placeOrder() {

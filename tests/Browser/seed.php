@@ -1,0 +1,41 @@
+<?php
+
+use App\Models\{Deposit, Meal, Order, OrderItem, User};
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
+
+require __DIR__.'/../../vendor/autoload.php';
+$app = require __DIR__.'/../../bootstrap/app.php';
+$app->make(Kernel::class)->bootstrap();
+$database = config('database.connections.sqlite.database');
+if (!$app->environment('testing') || $database !== storage_path('panel-browser.sqlite') || config('mail.default') !== 'array') {
+    throw new RuntimeException('Browser fixtures require the isolated worktree database and array mailer.');
+}
+touch($database);
+Artisan::call('migrate:fresh', ['--force' => true, '--no-interaction' => true]);
+User::factory()->admin()->enabled()->create(['name' => 'Panel Admin', 'email' => 'panel-admin@example.test', 'password' => Hash::make('browser-secret-123')]);
+$user = User::factory()->enabled()->create(['name' => 'Panel Empfänger', 'email' => 'panel-user@example.test', 'password' => Hash::make('browser-secret-123')]);
+User::factory()->admin()->enabled()->create(['name' => 'Gesperrter Admin', 'email' => 'panel-disabled@example.test', 'deleted_at' => now()]);
+$meal = Meal::factory()->create(['title' => 'Browsergericht', 'price' => 1234, 'date' => today()->addDays(7)]);
+$order = Order::factory()->create(['status' => Order::STATUS_OPEN]);
+OrderItem::factory()->create(['meal_id' => $meal->id, 'user_id' => $user->id, 'order_id' => $order->id, 'quantity' => 2]);
+Deposit::factory()->create(['user_id' => $user->id, 'value' => 2000, 'comment' => 'Browser-Startguthaben']);
+
+if (!in_array('--ordering', $argv, true)) {
+    exit(0);
+}
+
+$orderingUser = User::factory()->enabled()->create(['settings' => ['language' => in_array('--english', $argv, true) ? 'en' : 'de'], 'is_admin' => in_array('--english', $argv, true), 'name' => 'Bestellperson', 'email' => 'ui-user@example.test', 'password' => Hash::make('browser-secret-123')]);
+$date = today()->addDays(7);
+$pasta = Meal::factory()->create(['title' => 'Browser-Pasta', 'price' => 600, 'date' => $date, 'description' => 'Frisch gekocht, mit zwei Varianten.']);
+Meal::factory()->create(['title' => 'Klein', 'parent_id' => $pasta->id, 'date' => $date, 'price' => 600]);
+Meal::factory()->create(['title' => 'Groß', 'parent_id' => $pasta->id, 'date' => $date, 'price' => 900]);
+for ($i = 1; $i <= 11; $i++) {
+    Meal::factory()->create(['title' => 'Tagesgericht '.$i, 'date' => $date, 'price' => 750]);
+}
+$existing = Meal::factory()->create(['title' => 'Eigene Vorbestellung', 'date' => $date, 'price' => 875]);
+OrderItem::factory()->create(['user_id' => $orderingUser->id, 'meal_id' => $existing->id, 'order_id' => $order->id, 'quantity' => 2]);
+$todayMeal = Meal::factory()->create(['title' => 'Heutiges Essen', 'date' => today(), 'price' => 500]);
+OrderItem::factory()->create(['user_id' => $orderingUser->id, 'meal_id' => $todayMeal->id, 'order_id' => $order->id, 'quantity' => 1]);
+Deposit::factory()->create(['user_id' => $orderingUser->id, 'value' => 3000, 'comment' => 'Eigenes Startguthaben']);

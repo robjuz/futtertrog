@@ -173,7 +173,6 @@ class NotificationsTest extends TestCase
 
         $this->actingAs($admin)
             ->postJson(route('order_items.store'), [
-                'user_id' => $admin->id,
                 'quantity' => 1,
                 'meal_id' => $meal->id,
             ]);
@@ -257,7 +256,6 @@ class NotificationsTest extends TestCase
         $user = User::factory()->create();
         $this->login($user);
         $this->post(route('order_items.store'), [
-            'user_id' => $user->id,
             'meal_id' => $meal->id
         ]);
 
@@ -285,7 +283,6 @@ class NotificationsTest extends TestCase
         $this->login($user2);
         $this->post(route('order_items.store'), [
             'date' => $meal->date_from,
-            'user_id' => $user2->id,
             'meal_id' => $meal->id
         ]);
 
@@ -326,7 +323,6 @@ class NotificationsTest extends TestCase
         $user = User::factory()->create();
         $this->login($user);
         $this->post(route('order_items.store'), [
-            'user_id' => $user->id,
             'meal_id' => $meal->id
         ]);
 
@@ -354,7 +350,6 @@ class NotificationsTest extends TestCase
         $this->login($user2);
         $this->post(route('order_items.store'), [
             'date' => $meal->date_from,
-            'user_id' => $user2->id,
             'meal_id' => $meal->id
         ]);
 

@@ -4,36 +4,23 @@ namespace App\Http\Controllers;
 
 use OpenApi\Attributes as OA;
 
-use App\Events\NewOrderPossibility;
-use App\Http\Requests\MealStoreRequest;
-use App\Http\Requests\MealUpdateRequest;
+use App\Http\Resources\MealOptionResource;
+use Inertia\Inertia;
 use App\Models\Meal;
 use App\Models\User;
 use App\Repositories\MealsRepository;
-use App\Repositories\OrdersRepository;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
 
-class MealController extends Controller implements HasMiddleware
+class MealController extends Controller
 {
-    public static function middleware()
-    {
-        return [
-            new Middleware('cast.float', only: ['store']),
-        ];
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param OrdersRepository $orders
      * @param MealsRepository $meals
      * @return Response
      */
@@ -64,77 +51,63 @@ class MealController extends Controller implements HasMiddleware
             )
         )]
     )]
-    public function index(Request $request, OrdersRepository $orders, MealsRepository $meals)
+    public function index(Request $request, MealsRepository $meals): \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Inertia\Response
     {
         /** @var User $user */
         $user = $request->user();
+
+        $request->validate(['date' => 'sometimes|date_format:Y-m-d', 'provider' => 'nullable|string|max:100']);
 
         if ($this->shouldRedirectToOtherDate($request)) {
             /** @var Meal $meal */
             $meal = Meal::where('date', '>', today())->orderBy('date')->first();
 
-            return redirect()->route('meals.index', ['date' => $meal->date->toDateString()]);
+            return redirect()->route('meals.index', ['date' => $meal->date->toDateString(), 'provider' => $request->query('provider')]);
         }
 
         $requestedDate = Carbon::parse($request->query('date', today()));
         $todayMeals = Meal::forDate($requestedDate)
             ->whereNull('parent_id')
-            ->byProvider($request->provider)
-            ->with(['variants'])
+            ->when($request->provider === 'Internal', fn ($query) => $query->where(fn ($query) => $query->whereNull('provider')->orWhere('provider', 'Internal')), fn ($query) => $query->byProvider($request->provider))
+            ->with(['parent', 'variants.parent', 'orderItems' => fn ($query) => $query->where('user_id', $user->id), 'orderItems.order', 'variants.orderItems' => fn ($query) => $query->where('user_id', $user->id), 'variants.orderItems.order'])
             ->get()
             ->sortByPreferences();
 
-        if ($request->wantsJson()) {
-            return response()->json($todayMeals);
+        $cards = $todayMeals->map(fn (Meal $meal): array => (new MealOptionResource($meal))->resolve($request))->values();
+
+        if ($request->wantsJson() && !$request->header('X-Inertia')) {
+            return response()->json($cards);
         }
 
-        $todayMeals->load('orderItems.order');
+        if (!config('user-interface.blade')) {
+            $week = $requestedDate->copy()->startOfWeek();
+            $orderedDates = $user->orderItems()->positive()->with('meal')
+                ->whereHas('meal', fn ($query) => $query->whereBetween('date', [$week, $week->copy()->endOfWeek()]))
+                ->get()->map(fn ($item): string => $item->meal->date->toDateString());
+            $disabledDates = $user->disabledNotifications()->whereBetween('date', [$week, $week->copy()->endOfWeek()])->get()->map(fn ($notification): string => $notification->date->toDateString());
+
+            return Inertia::render('Meals/Index', [
+                'meals' => $cards,
+                'date' => $requestedDate->toDateString(),
+                'provider' => $request->query('provider', ''),
+                'providers' => collect(['Internal' => 'Internal', ...app('mealProviders')])->map(fn (string $name, string $key): array => ['id' => $key, 'name' => $name])->values(),
+                'days' => collect(range(0, 6))->map(function (int $day) use ($week, $orderedDates, $disabledDates): array {
+                    $date = $week->copy()->addDays($day);
+                    return ['date' => $date->toDateString(), 'label' => $date->translatedFormat('D d.m.'),
+                        'ordered' => $orderedDates->contains($date->toDateString()),
+                        'notificationDisabled' => $disabledDates->contains($date->toDateString())];
+                }),
+                'previousWeek' => $week->copy()->subWeek()->toDateString(),
+                'nextWeek' => Meal::where('date', '>=', $week->copy()->addWeek())->exists() ? $week->copy()->addWeek()->toDateString() : null,
+                'notificationDisabled' => $user->disabledNotifications()->whereDate('date', $requestedDate)->exists(),
+                'notificationUrl' => route('notification.disable', absolute: false),
+            ]);
+        }
 
         return view(
             'meal.index',
             compact('todayMeals', 'requestedDate')
         );
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     *
-     * @throws AuthorizationException
-     */
-    public function create()
-    {
-//        abort(404);
-
-        Gate::authorize('create', Meal::class);
-
-        return view('meal.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param MealStoreRequest $request
-     * @return Response
-     */
-    public function store(MealStoreRequest $request)
-    {
-        $meal = Meal::create($request->validated());
-
-        if ($request->has('notify')) {
-            event(new NewOrderPossibility($meal->date));
-        }
-
-        if ($request->wantsJson()) {
-            return response()->json($meal, Response::HTTP_CREATED);
-        }
-
-        if ($request->has('saveAndNew')) {
-            return redirect()->route('meals.create')->with('success', __('Saved'));
-        }
-
-        return redirect()->route('meals.index')->with('success', __('Saved'));
     }
 
     /**
@@ -146,75 +119,21 @@ class MealController extends Controller implements HasMiddleware
      *
      * @throws AuthorizationException
      */
-    public function show(Request $request, Meal $meal)
+    public function show(Request $request, Meal $meal): \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|\Inertia\Response
     {
         Gate::authorize('view', $meal);
 
-        if ($request->wantsJson()) {
-            return response()->json($meal);
+        $displayMeal = $meal->parent ?? $meal;
+        $displayMeal->load(['parent', 'variants.parent', 'orderItems.order', 'variants.orderItems.order']);
+        $card = (new MealOptionResource($displayMeal))->resolve($request);
+        if ($request->wantsJson() && !$request->header('X-Inertia')) {
+            return response()->json($card);
+        }
+        if (!config('user-interface.blade')) {
+            return Inertia::render('Meals/Show', ['meal' => $card]);
         }
 
         return view('meal.show', compact('meal'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Meal $meal
-     * @return Response
-     *
-     * @throws AuthorizationException
-     */
-    public function edit(Meal $meal)
-    {
-        Gate::authorize('update', $meal);
-
-        return view('meal.edit', compact('meal'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param MealUpdateRequest $request
-     * @param Meal $meal
-     * @return Response
-     */
-    public function update(MealUpdateRequest $request, Meal $meal)
-    {
-        $meal->update($request->validated());
-
-        if ($request->wantsJson()) {
-            return response()->json($meal);
-        }
-
-        return redirect()->route('meals.index')->with('success', __('Saved'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Request $request
-     * @param Meal $meal
-     * @return Response
-     *
-     * @throws AuthorizationException
-     * @throws Exception
-     */
-    public function destroy(Request $request, Meal $meal)
-    {
-        Gate::authorize('delete', $meal);
-
-        if ($meal->orderItems()->exists()) {
-            abort(Response::HTTP_BAD_REQUEST, trans('futtertrog.meal_was_ordered'));
-        }
-
-        $meal->delete();
-
-        if ($request->wantsJson()) {
-            return response()->json(null, Response::HTTP_NO_CONTENT);
-        }
-
-        return redirect()->route('meals.create')->with('success', __('Deleted'));
     }
 
     /**

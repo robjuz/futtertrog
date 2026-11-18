@@ -9,7 +9,8 @@
     "mcp": true,
     "nightwatch": false,
     "packages": [
-        "barryvdh/laravel-debugbar"
+        "barryvdh/laravel-debugbar",
+        "filament/filament"
     ],
     "sail": false,
     "skills": [
@@ -17,6 +18,10 @@
         "laravel-best-practices",
         "testing-best-practices",
         "socialite-development",
+        "livewire-development",
+        "inertia-vue-development",
+        "tailwindcss-development",
+        "filament-development",
         "debug-using-debugbar"
     ]
 }

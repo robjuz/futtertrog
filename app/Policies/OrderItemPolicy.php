@@ -2,72 +2,50 @@
 
 namespace App\Policies;
 
+use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Carbon;
 
 class OrderItemPolicy
 {
-    use HandlesAuthorization;
-
-    public function before(User $user, $ability)
+    public function list(User $user): bool
     {
-        if ($user->is_admin) {
-            return true;
-        }
+        return !$user->trashed();
     }
 
-    public function list(User $user)
+    public function view(User $user, OrderItem $orderItem): bool
     {
-        return true;
+        return !$user->trashed() && $orderItem->user_id === $user->id;
     }
 
-    /**
-     * Determine whether the user can view the order.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\OrderItem  $orderItem
-     * @return mixed
-     */
-    public function view(User $user, OrderItem $orderItem)
+    public function create(User $user, Carbon|string $date): bool
     {
-        return $orderItem->user->is($user);
+        return !$user->trashed() && Carbon::parse($date)->isAfter(today());
     }
 
-    /**
-     * Determine whether the user can create orders.
-     *
-     * @param  \App\Models\User  $user
-     * @param  $date
-     * @return mixed
-     */
-    public function create(User $user, $date)
+    public function update(User $user, OrderItem $orderItem): bool
     {
-        return Carbon::parse($date)->isAfter(today());
+        return $this->view($user, $orderItem) && $orderItem->date->isAfter(today());
     }
 
-    /**
-     * Determine whether the user can update the order.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\OrderItem  $orderItem
-     * @return mixed
-     */
-    public function update(User $user, OrderItem $orderItem)
+    public function delete(User $user, OrderItem $orderItem): bool
     {
-        return $orderItem->user->is($user) && $orderItem->meal->date->isAfter(today());
+        return $this->update($user, $orderItem);
     }
 
-    /**
-     * Determine whether the user can delete the order.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\OrderItem  $orderItem
-     * @return mixed
-     */
-    public function delete(User $user, OrderItem $orderItem)
+    public function administerAny(User $user): bool
     {
-        return $orderItem->user->is($user) && $orderItem->date->isAfter(today());
+        return $user->can('access-administration');
+    }
+
+    public function administer(User $user, OrderItem $orderItem): bool
+    {
+        return $user->can('access-administration');
+    }
+
+    public function orderFor(User $user, Meal $meal, User $recipient): bool
+    {
+        return $user->can('access-administration') && !$recipient->trashed();
     }
 }

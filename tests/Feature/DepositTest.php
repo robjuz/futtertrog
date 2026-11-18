@@ -6,6 +6,9 @@ use App\Models\Deposit;
 use App\Models\User;
 use Cknow\Money\Money;
 use Illuminate\Http\Response;
+use App\Filament\Resources\Deposits\Pages\ManageDeposits;
+use Filament\Facades\Filament;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class DepositTest extends TestCase
@@ -34,30 +37,27 @@ class DepositTest extends TestCase
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    /** #test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_create_a_new_deposit()
     {
         $user = User::factory()->create();
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $deposit =  Deposit::factory()->raw([
-            'user_id' => $user->id,
-            'value' => 10,
-        ]);
+        Livewire::test(ManageDeposits::class)->callAction('book', data: ['user_id' => $user->id, 'value' => 10])->assertHasNoActionErrors();
 
-        $this->loginAsAdmin()
-            ->post(route('deposits.store'), $deposit);
-
-        $this->assertDatabaseHas('deposits', $deposit);
-        $this->assertEquals(10, $user->balance);
+        $this->assertDatabaseHas('deposits', ['user_id' => $user->id, 'value' => 10]);
+        $this->assertEquals(Money::parse(10), $user->fresh()->balance);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function admin_can_create_a_negative_deposit()
     {
-        $deposit =  Deposit::factory()->raw(['value' => -10]);
+        $deposit = Deposit::factory()->raw(['value' => -10]);
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->loginAsAdmin()
-            ->postJson(route('deposits.store'), $deposit);
+        Livewire::test(ManageDeposits::class)->callAction('book', data: $deposit)->assertHasNoActionErrors();
 
         $this->assertDatabaseHas('deposits', $deposit);
     }
@@ -66,49 +66,37 @@ class DepositTest extends TestCase
     public function admin_can_delete_a_deposit()
     {
         $user = User::factory()->create();
+        $deposit = Deposit::factory()->create(['user_id' => $user->id, 'value' => 10]);
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $deposit =  Deposit::factory()->create([
-            'user_id' => $user->id,
-            'value' => 10,
-        ]);
+        Livewire::test(ManageDeposits::class)->callTableAction('remove', $deposit)->assertNotified('Vorgang erfolgreich.');
 
-        $this->loginAsAdmin()
-            ->delete(route('deposits.destroy', $deposit));
-
-        $this->assertDatabaseMissing('deposits', $deposit->toArray());
-
-        $this->assertEquals(Money::parse(0), $user->balance);
+        $this->assertModelMissing($deposit);
+        $this->assertEquals(Money::parse(0), $user->fresh()->balance);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_to_make_a_transfer_from_one_user_to_other_user()
     {
         $user = User::factory()->create();
-
         $otherUser = User::factory()->create();
+        $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-        $this->loginAsAdmin()
-        ->postJson(route('deposits.transfer'), [
-            'source' => $user->id,
-            'target' => $otherUser->id,
-            'value' => 10.5,
-            'comment' => 'transfer'
-        ]);
+        Livewire::test(ManageDeposits::class)->callAction('transfer', data: ['source' => $user->id, 'target' => $otherUser->id, 'value' => 1050, 'comment' => 'transfer'])->assertHasNoActionErrors();
 
-        $this->assertEquals(Money::parse(-1050), $user->balance);
-        $this->assertEquals(Money::parse(1050), $otherUser->balance);
+        $this->assertEquals(Money::parse(-1050), $user->fresh()->balance);
+        $this->assertEquals(Money::parse(1050), $otherUser->fresh()->balance);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_the_description_in_edit_view()
     {
-        /** @var Deposit $deposit */
-        $deposit =  Deposit::factory()->create(['comment' => 'test description']);
-
+        $deposit = Deposit::factory()->create(['comment' => 'test description']);
         $this->loginAsAdmin();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
 
-            $this->get(route('deposits.edit', $deposit))
-            ->assertSeeText('test description');
-
+        Livewire::test(ManageDeposits::class)->mountTableAction('change', $deposit)->assertTableActionDataSet(['comment' => 'test description']);
     }
 }

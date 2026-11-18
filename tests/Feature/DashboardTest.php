@@ -20,7 +20,7 @@ class DashboardTest extends TestCase
             'value' => 10
         ]);
 
-        $this->actingAs($user)->get(route('home'))->assertSee(money(10));
+        $this->actingAs($user)->get(route('home'))->assertInertia(fn ($page) => $page->component('Dashboard')->where('balance', (string) money(10)));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -69,7 +69,7 @@ class DashboardTest extends TestCase
 
         $this->login($user)
             ->get(route('home'))
-            ->assertSee(money($deposit->value));
+            ->assertInertia(fn ($page) => $page->component('Dashboard')->where('deposits.items.0.value', (string) money($deposit->value)));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -83,7 +83,7 @@ class DashboardTest extends TestCase
 
         $this->login($user)
             ->get(route('home'))
-            ->assertDontSee(money($deposit->value));
+            ->assertInertia(fn ($page) => $page->component('Dashboard')->has('deposits.items', 0));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -100,7 +100,10 @@ class DashboardTest extends TestCase
             ->assertDontSee(Money::parse(10));
 
          $this->loginAsAdmin()
-             ->get(route('home'))
+             ->get(route('filament.administration.pages.dashboard'))
+             ->assertOk();
+
+         \Livewire\Livewire::test(\App\Filament\Widgets\AdministrationStats::class)
              ->assertSee(__('System balance'))
              ->assertSee(Money::parse(10));
     }

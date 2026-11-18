@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderingData;
+use App\Http\Resources\OwnOrderResource;
 use App\Models\Deposit;
 use App\Models\User;
-use Cknow\Money\Money;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class HomeController extends Controller
 {
@@ -15,7 +19,7 @@ class HomeController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): View|Response
     {
 
         /** @var User $user */
@@ -23,17 +27,17 @@ class HomeController extends Controller
 
         $balance = $user->balance;
 
-        $todayOrders = $user->orderHistory()->today()->get();
+        $todayOrders = $user->orderHistory()->with('meal.parent')->today()->get();
 
         $ordersHistory = $user
-            ->orderHistory()
+            ->orderHistory()->with('meal.parent')
             ->simplePaginate(5, ['*'], 'meals_page')
             ->fragment('order-history')
             ->appends('deposits_page', $request->deposits_page)
             ->appends('future_meals_page', $request->future_meals_page);
 
         $futureOrders = $user
-            ->futureOrders()
+            ->futureOrders()->with(['order', 'meal.parent'])
             ->simplePaginate(5, ['*'], 'future_meals_page')
             ->fragment('future-meals')
             ->appends('meals_page', $request->meals_page)
@@ -46,8 +50,16 @@ class HomeController extends Controller
             ->appends('meals_page', $request->meals_page)
             ->appends('future_meals_page', $request->future_meals_page);
 
-        $test = Money::EUR(100);
+        if (!config('user-interface.blade')) {
+            return Inertia::render('Dashboard', [
+                'balance' => (string) $balance,
+                'todayOrders' => $todayOrders->map(fn ($item): array => (new OwnOrderResource($item))->resolve($request))->all(),
+                'futureOrders' => OrderingData::orders($futureOrders, $request),
+                'ordersHistory' => OrderingData::orders($ordersHistory, $request),
+                'deposits' => OrderingData::deposits($deposits),
+            ]);
+        }
 
-        return view('home', compact('balance', 'ordersHistory', 'todayOrders', 'futureOrders', 'deposits', 'user', 'test'));
+        return view('home', compact('balance', 'ordersHistory', 'todayOrders', 'futureOrders', 'deposits', 'user'));
     }
 }

@@ -3,16 +3,25 @@
 namespace Tests\Feature;
 
 use App\Events\OrderUpdated;
+use App\Filament\Resources\OrderItems\Pages\ManageOrderItems;
 use App\Models\Meal;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Select;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class MealOrderingTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Filament::setCurrentPanel(Filament::getPanel('administration'));
+    }
+
     #[\PHPUnit\Framework\Attributes\Test]
     public function user_can_order_a_meal_for_himself()
     {
@@ -40,14 +49,14 @@ class MealOrderingTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $this->login()
+        $this->login()->withExceptionHandling()
             ->post(route('order_items.store'), [
                 'user_id' => $user->id,
                 'meal_id' => $meal->id
-            ]);
+            ])->assertSessionHasErrors('user_id');
 
         $this->assertFalse($user->orderItems()->where('meal_id', $meal->id)->exists());
-        $this->assertTrue(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
+        $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -77,11 +86,12 @@ class MealOrderingTest extends TestCase
 
         $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
 
-        $this->loginAsAdmin()
-            ->post(route('order_items.store'), [
+        Livewire::test(ManageOrderItems::class)
+            ->callAction('orderFor', data: [
                 'user_id' => $user->id,
-                'meal_id' => $meal->id
-            ]);
+                'meal_id' => $meal->id,
+                'quantity' => 1,
+            ])->assertHasNoActionErrors()->assertNotified('Vorgang erfolgreich.');
 
         $this->assertFalse(auth()->user()->orderItems()->where('meal_id', $meal->id)->exists());
         $this->assertTrue($user->orderItems()->where('meal_id', $meal->id)->exists());
@@ -124,7 +134,6 @@ class MealOrderingTest extends TestCase
         $this->login($user);
 
         $this->post(route('order_items.store'), [
-            'user_id' => $user->id,
             'meal_id' => $meal2->id
         ]);
 
@@ -184,7 +193,14 @@ class MealOrderingTest extends TestCase
 
         $this->login($user)
             ->get(route('order_items.index'))
-            ->assertJsonFragment($orderItem->toArray());
+            ->assertJsonPath('items.0.id', $orderItem->id)
+            ->assertJsonPath('items.0.title', $orderItem->meal->title)
+            ->assertJsonPath('items.0.quantity', $orderItem->quantity)
+            ->assertJsonPath('items.0.date', $orderItem->date->toDateString())
+            ->assertJsonPath('items.0.price', (string) $orderItem->meal->price)
+            ->assertJsonPath('items.0.subtotal', (string) $orderItem->subtotal)
+            ->assertJsonMissingPath('items.0.user')
+            ->assertJsonMissingPath('items.0.order');
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -192,9 +208,9 @@ class MealOrderingTest extends TestCase
     {
         $orderItem = OrderItem::factory()->create();
 
-        $this->loginAsAdmin()
-            ->get(route('order_items.index'))
-            ->assertJsonFragment($orderItem->toArray());
+        $this->loginAsAdmin();
+
+        Livewire::test(ManageOrderItems::class)->assertCanSeeTableRecords([$orderItem]);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -208,10 +224,11 @@ class MealOrderingTest extends TestCase
 
         $orderItem->load('meal');
 
-        $this->loginAsAdmin()
-            ->get(route('order_items.index', ['user_id' => $user->id]))
-            ->assertJsonFragment($orderItem->toArray())
-            ->assertJsonMissingExact(['user_id' => $orderItem2->user_id]);
+        $this->loginAsAdmin();
+
+        Livewire::test(ManageOrderItems::class)->filterTable('user_id', $user->id)
+            ->assertCanSeeTableRecords([$orderItem])
+            ->assertCanNotSeeTableRecords([$orderItem2]);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -266,6 +283,7 @@ class MealOrderingTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_a_delete_order_button_for_a_ordered_meal()
     {
+        config(['user-interface.blade' => true]);
         /** @var Meal $meal */
         $meal = Meal::factory()->inFuture()->create();
 
@@ -287,6 +305,7 @@ class MealOrderingTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_a_delete_order_button_for_a_ordered_meal_variant()
     {
+        config(['user-interface.blade' => true]);
         /** @var Meal $meal */
         $meal = Meal::factory()->inFuture()->create();
 
@@ -356,11 +375,11 @@ class MealOrderingTest extends TestCase
 
         $this->loginAsAdmin();
 
-        $this->get(route('order_items.create', [
-            'date' => $meal->date->toDateString(),
-        ]))
-            ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
-                return $meals->contains($variant) && !$meals->contains($meal);
+        Livewire::test(ManageOrderItems::class)->mountAction('orderFor')
+            ->assertFormFieldExists('meal_id', function (Select $field) use ($meal, $variant): bool {
+                $options = $field->getOptions();
+
+                return array_key_exists($variant->id, $options) && !array_key_exists($meal->id, $options);
             });
     }
 
@@ -384,9 +403,11 @@ class MealOrderingTest extends TestCase
         $orderItem = $user->order($variant);
         $this->loginAsAdmin();
 
-        $this->get(route('order_items.edit', $orderItem))
-            ->assertViewHas('meals', function (Collection $meals) use ($meal, $variant) {
-                return $meals->contains($variant) && !$meals->contains($meal);
+        Livewire::test(ManageOrderItems::class)->mountTableAction('change', $orderItem)
+            ->assertFormFieldExists('meal_id', function (Select $field) use ($meal, $variant): bool {
+                $options = $field->getOptions();
+
+                return array_key_exists($variant->id, $options) && !array_key_exists($meal->id, $options);
             });
     }
 }

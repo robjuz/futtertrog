@@ -23,3 +23,14 @@ yarn-error.log
 .phpunit.result.cache
 docker-compose.override.yml
 docker-compose.override.yaml
+
+/public/build
+
+/public/css/filament
+/public/js/filament
+/public/fonts/filament
+
+/storage/*.sqlite
+/test-results
+/playwright-report
+/tests/Browser/results

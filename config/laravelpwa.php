@@ -4,9 +4,9 @@ return [
     'manifest' => [
         'name' => 'Futtertrog',
         'short_name' => 'Futtertrog',
-        'start_url' => '/dashboard',
+        'start_url' => '/',
         'background_color' => '#f8fafc',
-        'theme_color' => '#0177da',
+        'theme_color' => '#115e59',
         'display' => 'standalone',
         'orientation'=> 'any',
         'status_bar' => 'black',

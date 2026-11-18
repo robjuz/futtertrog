@@ -224,6 +224,13 @@ class Meal extends Model
 
     public function orderItem(User $user = null): ?OrderItem
     {
+        $userId = $user?->id ?? auth()->id();
+        if ($this->relationLoaded('variants') && $this->relationLoaded('orderItems')
+            && $this->variants->every(fn (Meal $variant): bool => $variant->relationLoaded('orderItems'))) {
+            return collect([$this])->concat($this->variants)->flatMap(fn (Meal $meal) => $meal->orderItems)
+                ->first(fn (OrderItem $item): bool => $item->user_id === $userId && $item->quantity > 0);
+        }
+
         return OrderItem::query()
             ->whereIn('meal_id', $this->variants()->pluck('id')->merge($this->id))
             ->where('user_id', $user ? $user->id : auth()->id())

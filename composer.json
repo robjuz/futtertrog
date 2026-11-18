@@ -17,13 +17,16 @@
         "cknow/laravel-money": "^8.0",
         "darkaonline/l5-swagger": "^11.0",
         "eluceo/ical": "^2.5",
+        "filament/filament": "^5.11",
         "guzzlehttp/guzzle": "^8.0",
         "imangazaliev/didom": "^2.0",
+        "inertiajs/inertia-laravel": "^3.7",
         "ixudra/curl": "^6.16",
         "laravel/framework": "^13.0",
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^3.0",
         "laravel/ui": "^4.0",
+        "livewire/livewire": "^4.4.8",
         "sentry/sentry-laravel": "^4.9",
         "silviolleite/laravelpwa": "^2.0",
         "socialiteproviders/authentik": "^5.2"
@@ -75,7 +78,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:assets --no-interaction"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",

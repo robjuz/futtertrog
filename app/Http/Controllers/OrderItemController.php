@@ -5,21 +5,20 @@ namespace App\Http\Controllers;
 use OpenApi\Attributes as OA;
 
 use App\Events\OrderUpdated;
+use App\Http\Resources\OrderingData;
+use App\Http\Resources\OwnOrderResource;
+use Inertia\Inertia;
 use App\Models\Meal;
 use App\Models\OrderItem;
-use App\Models\User;
 use App\Rules\MealWithoutVariants;
+use App\Rules\MealInOrderGroup;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 
 class OrderItemController extends Controller
 {
@@ -45,70 +44,20 @@ class OrderItemController extends Controller
             )
         )]
     )]
-    public function index(Request $request)
+    public function index(Request $request): View|JsonResponse|\Inertia\Response
     {
         Gate::authorize('list', OrderItem::class);
 
-        /** @var User $user */
-        $user = $request->user();
-        if ($user->is_admin) {
-            $query = OrderItem::with(['meal', 'user'])
-                ->when(
-                    $request->has('user_id'),
-                    function (Builder $query) use ($request) {
-                        $query->where('user_id', $request->query('user_id'));
-                    }
-                );
-        } else {
-            $query = $user->orderItems()->with(['meal']);
+        $orders = $request->user()->orderItems()->with(['meal.parent', 'order'])->latest()->paginate();
+
+        if ($request->routeIs('my.orders')) {
+            if (!config('user-interface.blade')) {
+                return Inertia::render('My/Orders', ['orders' => OrderingData::orders($orders, $request), 'calendarUrl' => route('meals.ical', absolute: false)]);
+            }
+            return view('my.orders', compact('orders'));
         }
 
-        return response()->json($query->paginate());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @param Request $request
-     * @return Response
-     *
-     * @throws AuthorizationException
-     */
-    public function create(Request $request)
-    {
-        Gate::authorize('create', OrderItem::class);
-
-        if ($date = $request->query('date')) {
-            $meals = Meal::forDate(Carbon::parse($date))->doesntHave('variants')->get();
-
-            $users = User::orderBy('name')->get();
-
-            return view('user_order.create', compact('meals', 'users'));
-        }
-
-        return view('user_order.select_date');
-    }
-
-    /**
-     * Show the form for editing a new resource.
-     *
-     * @param Request $request
-     * @param OrderItem $orderItem
-     * @return Response
-     *
-     * @throws AuthorizationException
-     */
-    public function edit(OrderItem $orderItem)
-    {
-        Gate::authorize('edit', $orderItem);
-
-        $meals = Meal::forDate($orderItem->date)
-            ->doesntHave('variants')
-            ->get();
-
-        $users = User::orderBy('name')->get();
-
-        return view('user_order.edit', compact('orderItem', 'meals', 'users'));
+        return response()->json(OrderingData::orders($orders, $request));
     }
 
     /**
@@ -155,8 +104,7 @@ class OrderItemController extends Controller
     {
         $request->validate(
             [
-                'user_id' => 'sometimes|exists:users,id',
-                'quantity' => 'sometimes|numeric|min:1,max:10',
+                'quantity' => 'sometimes|integer|min:1|max:10',
                 'meal_id' => ['required', 'exists:meals,id', new MealWithoutVariants()],
             ]
         );
@@ -166,23 +114,15 @@ class OrderItemController extends Controller
 
         Gate::authorize('create', [OrderItem::class, $meal->date]);
 
-        /** @var User $user */
-        $userId = Auth::id();
-
-        //admin can create orders for other users;
-        if (Auth::user()->is_admin and $request->has('user_id')) {
-            $userId = $request->input('user_id');
-        }
-
         $orderItem = $meal->order(
-            $userId,
+            $request->user()->id,
             $request->input('quantity', 1)
         );
 
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
-            return response()->json($orderItem, Response::HTTP_CREATED);
+            return response()->json((new OwnOrderResource($orderItem->load(['meal.parent', 'order'])))->resolve($request), Response::HTTP_CREATED);
         }
 
         if ($request->ajax()) {
@@ -195,21 +135,28 @@ class OrderItemController extends Controller
 
     public function update(Request $request, OrderItem $orderItem): View|JsonResponse|RedirectResponse
     {
+        Gate::authorize('update', $orderItem);
+
         $data = $request->validate(
             [
-                'user_id' => Rule::when(Auth::user()->is_admin, 'sometimes|exists:users,id'),
-                'quantity' => 'sometimes|numeric|min:0,max:10',
-                'meal_id' => 'sometimes|exists:meals,id',
+                'quantity' => 'sometimes|integer|min:0|max:10',
+                'meal_id' => ['sometimes', 'exists:meals,id', new MealWithoutVariants()],
             ]
         );
 
+        if (isset($data['meal_id'])) {
+            Gate::authorize('create', [OrderItem::class, Meal::findOrFail($data['meal_id'])->date]);
+            $request->validate(['meal_id' => [new MealInOrderGroup($orderItem->order)]]);
+        }
+
         $orderItem->update($data);
+        $orderItem->unsetRelation('meal');
         $orderItem->order->reopen();
 
         event(new OrderUpdated($orderItem->order, $orderItem->user, $orderItem));
 
         if ($request->wantsJson()) {
-            return response()->json($orderItem, Response::HTTP_OK);
+            return response()->json((new OwnOrderResource($orderItem->load(['meal.parent', 'order'])))->resolve($request), Response::HTTP_OK);
         }
 
         if ($request->ajax()) {
@@ -218,7 +165,7 @@ class OrderItemController extends Controller
             return view('meal.meal', compact('meal'));
         }
 
-        return redirect()->route('orders.edit', $orderItem->order)->with('success', __('Success'));
+        return redirect()->route('my.orders')->with('success', __('Success'));
     }
 
     /**
