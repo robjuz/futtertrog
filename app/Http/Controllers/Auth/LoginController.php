@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Contracts\User as OAuthUser;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Symfony\Component\HttpFoundation\RedirectResponse as OAuthRedirect;
@@ -44,7 +45,7 @@ class LoginController extends Controller implements HasMiddleware
         $user = User::where('email', $request->string('email')->toString())->first();
         if ($user && $user->local_credential_status !== 'disabled' && Hash::check($request->input('password'), $user->password)) {
             if ($user->local_credential_status === 'legacy') {
-                app(CredentialChallenges::class)->send($user, CredentialChallenge::LegacyPassword);
+                app(CredentialChallenges::class)->send($user, CredentialChallenge::LEGACY_PASSWORD);
                 $this->incrementLoginAttempts($request);
                 return $this->pendingResponse($request);
             }
@@ -71,12 +72,7 @@ class LoginController extends Controller implements HasMiddleware
         }
         $identity = ExternalIdentity::where('provider', $provider)->where('subject', $subject)->first();
         if ($identity) {
-            $user = $identity->user;
-            if (! $user || $user->trashed() || ($request->user() && $request->user()->id !== $user->id)) {
-                return $this->pendingResponse($request);
-            }
-            Auth::login($user, true);
-            return $this->sendLoginResponse($request);
+            return $this->loginWithIdentity($request, $identity);
         }
 
         if ($request->user()) {
@@ -84,17 +80,32 @@ class LoginController extends Controller implements HasMiddleware
             if (! $account) {
                 return $this->pendingResponse($request);
             }
-            $challenges->send($account, CredentialChallenge::LinkIdentity, $provider, $subject);
+            $challenges->send($account, CredentialChallenge::LINK_IDENTITY, $provider, $subject);
             return $this->pendingResponse($request);
         }
 
+        return $this->loginUnlinkedIdentity($request, $external, $provider, $subject, $challenges);
+    }
+
+    private function loginWithIdentity(Request $request, ExternalIdentity $identity): JsonResponse|RedirectResponse
+    {
+        $user = $identity->user;
+        if (! $user || $user->trashed() || ($request->user() && $request->user()->id !== $user->id)) {
+            return $this->pendingResponse($request);
+        }
+        Auth::login($user, true);
+        return $this->sendLoginResponse($request);
+    }
+
+    private function loginUnlinkedIdentity(Request $request, OAuthUser $external, string $provider, string $subject, CredentialChallenges $challenges): JsonResponse|RedirectResponse
+    {
         $email = $external->getEmail();
         if (! is_string($email) || ! filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 255) {
             return $this->pendingResponse($request);
         }
         $user = User::withTrashed()->whereRaw('lower(email) = ?', [Str::lower($email)])->first();
         if ($user) {
-            $challenges->send($user, CredentialChallenge::LinkIdentity, $provider, $subject);
+            $challenges->send($user, CredentialChallenge::LINK_IDENTITY, $provider, $subject);
             return $this->pendingResponse($request);
         }
 
@@ -136,9 +147,9 @@ class LoginController extends Controller implements HasMiddleware
     private function pendingResponse(Request $request): JsonResponse|RedirectResponse
     {
         return $request->wantsJson()
-            ? response()->json(['message' => CredentialChallenges::PublicMessage])
+            ? response()->json(['message' => CredentialChallenges::PUBLIC_MESSAGE])
             : redirect()->route($request->user() ? 'profile.security' : 'login')
-                ->with('status', CredentialChallenges::PublicMessage);
+                ->with('status', CredentialChallenges::PUBLIC_MESSAGE);
     }
 
     protected function loggedOut(Request $request): RedirectResponse

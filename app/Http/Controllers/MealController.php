@@ -9,7 +9,6 @@ use Inertia\Inertia;
 use App\Models\Meal;
 use App\Models\User;
 use App\Repositories\MealsRepository;
-use App\Repositories\OrdersRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -22,7 +21,6 @@ class MealController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param OrdersRepository $orders
      * @param MealsRepository $meals
      * @return Response
      */
@@ -53,7 +51,7 @@ class MealController extends Controller
             )
         )]
     )]
-    public function index(Request $request, OrdersRepository $orders, MealsRepository $meals): \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Inertia\Response
+    public function index(Request $request, MealsRepository $meals): \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Inertia\Response
     {
         /** @var User $user */
         $user = $request->user();

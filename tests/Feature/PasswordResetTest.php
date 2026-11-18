@@ -18,7 +18,7 @@ class PasswordResetTest extends TestCase
         $user = User::factory()->create(['email' => 'john@example.com']);
         $this->post(route('password.email'), ['email' => $user->email])->assertRedirect();
         Mail::assertSent(CredentialConfirmation::class, fn ($mail) => $mail->hasTo($user->email)
-            && $mail->purpose === CredentialChallenge::ResetPassword);
+            && $mail->purpose === CredentialChallenge::RESET_PASSWORD);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

@@ -14,7 +14,7 @@ class CredentialChallengeFactory extends Factory
     {
         return [
             'user_id' => User::factory()->legacy(),
-            'purpose' => CredentialChallenge::LegacyPassword,
+            'purpose' => CredentialChallenge::LEGACY_PASSWORD,
             'token_hash' => hash('sha256', Str::random(64)),
             'expires_at' => now()->addMinutes(15),
         ];
@@ -33,7 +33,7 @@ class CredentialChallengeFactory extends Factory
     public function linking(): static
     {
         return $this->state(fn (array $attributes) => [
-            'purpose' => CredentialChallenge::LinkIdentity,
+            'purpose' => CredentialChallenge::LINK_IDENTITY,
             'pending_provider' => 'gitlab',
             'pending_subject' => fake()->uuid(),
         ]);
