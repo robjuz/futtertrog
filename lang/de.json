@@ -193,5 +193,8 @@
   "Manage meals": "Essen verwalten",
   "Back to ordering": "Zurück zum Bestellen",
   "Send notification": "Mitteilung versenden",
-  "Transfer": "Übertrag"
+  "Transfer": "Übertrag",
+  "This booking key was already used for different data.": "Dieser Buchungsschlüssel wurde bereits für andere Daten verwendet.",
+  "Provider result is pending or uncertain. Reconcile with the provider before retrying.": "Das Anbieterergebnis steht aus oder ist unklar. Vor einem erneuten Versuch muss der Stand beim Anbieter abgeglichen werden.",
+  "Provider result is uncertain.": "Das Anbieterergebnis ist unklar."
 }

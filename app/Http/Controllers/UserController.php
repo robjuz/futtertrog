@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Admin\ActivityLogger;
+use App\Actions\Admin\Users;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Deposit;
@@ -64,10 +66,16 @@ class UserController extends Controller
     {
         Gate::authorize('create', User::class);
 
-        $user = User::make($request->validated());
-        $user->password = Hash::make($request->input('password'));
+        $user = DB::transaction(function () use ($request): User {
+            $user = User::make($request->validated());
+            $user->password = Hash::make($request->input('password'));
+            $user->save();
+            ActivityLogger::record($request->user(), 'user.created', $user, after: [
+                'is_admin' => $user->is_admin,
+            ]);
 
-        $user->save();
+            return $user;
+        });
 
         if ($request->wantsJson()) {
             return response()->json($user);
@@ -137,12 +145,11 @@ class UserController extends Controller
         Gate::authorize('update', $user);
 
         DB::transaction(function () use ($request, $user): void {
-            User::where('is_admin', true)->orderBy('id')->lockForUpdate()->get();
-            $user->refresh();
-            if ($request->has('is_admin') && !$request->boolean('is_admin')) {
-                Gate::authorize('demote', $user);
+            if ($request->has('is_admin')) {
+                app(Users::class)->changeRole($request->user(), $user, $request->boolean('is_admin'));
             }
-            $user->fill($request->validated());
+            $user->refresh();
+            $user->fill($request->safe()->except('is_admin'));
 
             if ($request->has('password') && !is_null($request->input('password'))) {
                 $user->password = Hash::make($request->input('password'));
@@ -170,12 +177,7 @@ class UserController extends Controller
      */
     public function destroy(Request $request, User $user)
     {
-        DB::transaction(function () use ($user): void {
-            User::where('is_admin', true)->orderBy('id')->lockForUpdate()->get();
-            $user->refresh();
-            Gate::authorize('delete', $user);
-            $user->delete();
-        });
+        app(Users::class)->deactivate($request->user(), $user);
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
@@ -188,7 +190,7 @@ class UserController extends Controller
     {
         $user = User::withTrashed()->findOrFail($user);
         Gate::authorize('restore', $user);
-        $user->restore();
+        $user = app(Users::class)->restore($request->user(), $user);
 
         if ($request->wantsJson()) {
             return response()->json($user);

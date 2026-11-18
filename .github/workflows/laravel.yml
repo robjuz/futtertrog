@@ -28,6 +28,8 @@ jobs:
       run: npm ci && npm run build
     - name: Generate key
       run: php artisan key:generate
+    - name: Publish Filament assets
+      run: php artisan filament:assets --no-interaction
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Admin\Bookings;
 use App\Models\Deposit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class DepositTransferController extends Controller implements HasMiddleware
@@ -44,19 +44,9 @@ class DepositTransferController extends Controller implements HasMiddleware
 
         Gate::authorize('transfer', [Deposit::class, User::findOrFail($request->source), User::findOrFail($request->target)]);
 
-        DB::transaction(function () use ($request) {
-            Deposit::create([
-                'user_id' => $request->source,
-                'value' => (-1) * $request->value,
-                'comment' => $request->comment,
-            ]);
-
-            Deposit::create([
-                'user_id' => $request->target,
-                'value' =>  $request->value,
-                'comment' => $request->comment,
-            ]);
-        });
+        app(Bookings::class)->transfer(
+            $request->user(), $request->only(['source', 'target', 'value', 'comment']), $request->header('Idempotency-Key')
+        );
 
         return back()->with('success', __('Success'));
     }

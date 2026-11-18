@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\MealProviders\AbstractMealProvider;
+use App\Actions\Admin\ImportMeals;
 use App\Models\Meal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
@@ -21,16 +20,9 @@ class MealImportController extends Controller
             'provider' => ['required', Rule::in(array_keys(app('mealProviders')))],
         ]);
 
-        $date = Carbon::parse($request->date);
-
-        /** @var AbstractMealProvider $mealProvider */
-        $mealProvider = app()->make($request->provider);
-
-        $mealProvider->createMealsDataForDate($date);
-
-        if ($request->has('notify')) {
-            $mealProvider->notifyAboutNewOrderPossibilities();
-        }
+        app(ImportMeals::class)->execute(
+            $request->user(), $request->input('provider'), $request->input('date'), $request->has('notify')
+        );
 
         return redirect()->route('meals.create')->with('success', __('Saved'));
     }

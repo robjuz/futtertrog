@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Admin\SendNotification;
 use App\Models\User;
-use App\Notifications\CustomNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Notification;
 
 class NotificationController extends Controller
 {
@@ -31,9 +30,8 @@ class NotificationController extends Controller
             ]
         );
 
-        Notification::send(
-            User::findMany($request->input('user_id')),
-            new CustomNotification($request->input('subject'), $request->input('body'))
+        app(SendNotification::class)->execute(
+            $request->user(), $request->only(['user_id', 'subject', 'body'])
         );
 
         return redirect()->route('notifications.create')->with('success', __('Notification send'));

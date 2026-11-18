@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Admin\Orders;
 use App\Models\Order;
 use App\Models\User;
 use App\Repositories\OrdersRepository;
@@ -100,7 +101,8 @@ class OrderController extends Controller
     {
         Gate::authorize('update', $order);
 
-        $order->update(
+        $order = app(Orders::class)->update(
+            $request->user(), $order,
             $request->validate(
                 [
                     'status' => ['sometimes', 'string', Rule::in(Order::$statuses)],
@@ -131,7 +133,7 @@ class OrderController extends Controller
     {
         Gate::authorize('delete', $order);
 
-        $order->delete();
+        app(Orders::class)->delete($request->user(), $order);
 
         if ($request->wantsJson()) {
             return response(null, Response::HTTP_NO_CONTENT);
