@@ -26,7 +26,7 @@ if (!in_array('--ordering', $argv, true)) {
     exit(0);
 }
 
-$orderingUser = User::factory()->enabled()->create(['settings' => ['language' => 'de'], 'name' => 'Bestellperson', 'email' => 'ui-user@example.test', 'password' => Hash::make('browser-secret-123')]);
+$orderingUser = User::factory()->enabled()->create(['settings' => ['language' => in_array('--english', $argv, true) ? 'en' : 'de'], 'is_admin' => in_array('--english', $argv, true), 'name' => 'Bestellperson', 'email' => 'ui-user@example.test', 'password' => Hash::make('browser-secret-123')]);
 $date = today()->addDays(7);
 $pasta = Meal::factory()->create(['title' => 'Browser-Pasta', 'price' => 600, 'date' => $date, 'description' => 'Frisch gekocht, mit zwei Varianten.']);
 Meal::factory()->create(['title' => 'Klein', 'parent_id' => $pasta->id, 'date' => $date, 'price' => 600]);

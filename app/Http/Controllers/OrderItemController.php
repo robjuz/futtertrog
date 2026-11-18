@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use App\Models\Meal;
 use App\Models\OrderItem;
 use App\Rules\MealWithoutVariants;
+use App\Rules\MealInOrderGroup;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -139,7 +140,7 @@ class OrderItemController extends Controller
         $data = $request->validate(
             [
                 'quantity' => 'sometimes|integer|min:0|max:10',
-                'meal_id' => ['sometimes', 'exists:meals,id', new MealWithoutVariants()],
+                'meal_id' => ['sometimes', 'exists:meals,id', new MealWithoutVariants(), new MealInOrderGroup($orderItem->order)],
             ]
         );
 

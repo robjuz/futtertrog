@@ -196,5 +196,8 @@
   "Transfer": "Übertrag",
   "This booking key was already used for different data.": "Dieser Buchungsschlüssel wurde bereits für andere Daten verwendet.",
   "Provider result is pending or uncertain. Reconcile with the provider before retrying.": "Das Anbieterergebnis steht aus oder ist unklar. Vor einem erneuten Versuch muss der Stand beim Anbieter abgeglichen werden.",
-  "Provider result is uncertain.": "Das Anbieterergebnis ist unklar."
+  "Provider result is uncertain.": "Das Anbieterergebnis ist unklar.",
+  "The meal must belong to the same collective order.": "Das Gericht muss zur selben Sammelbestellung gehören.",
+  "A running attempt can only be reconciled after 30 minutes.": "Ein laufender Versuch kann erst nach 30 Minuten abgeglichen werden.",
+  "Provider attempt has already been reconciled.": "Der Anbieterversuch wurde bereits abgeglichen."
 }

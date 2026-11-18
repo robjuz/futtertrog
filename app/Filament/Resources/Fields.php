@@ -3,6 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Models\Meal;
+use App\Models\Order;
+use App\Rules\MealInOrderGroup;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
@@ -27,16 +29,17 @@ class Fields
             ->exists('users', 'id');
     }
 
-    public static function meal(): Select
+    public static function meal(?Order $order = null): Select
     {
-        $query = fn (): Builder => Meal::doesntHave('variants')->with('parent.parent')->latest('date');
+        $query = fn (): Builder => ($order ? MealInOrderGroup::meals($order) : Meal::query())
+            ->doesntHave('variants')->with('parent.parent')->latest('date');
         $labels = fn (Builder $query): array => $query->limit(50)->get()->mapWithKeys(fn (Meal $meal): array => [$meal->id => $meal->date->format('d.m.Y').' · '.$meal->title])->all();
 
         return Select::make('meal_id')->label('Gericht / Variante')->searchable()->required()
             ->options(fn (): array => $labels($query()))
             ->getSearchResultsUsing(fn (string $search): array => $labels($query()->where(fn (Builder $q): Builder => $q->where('title', 'like', "%{$search}%")->orWhereHas('parent', fn (Builder $q): Builder => $q->where('title', 'like', "%{$search}%")))))
-            ->getOptionLabelUsing(function ($value): ?string {
-                $meal = Meal::with('parent.parent')->find($value);
+            ->getOptionLabelUsing(function ($value) use ($query): ?string {
+                $meal = $query()->find($value);
 
                 return $meal ? $meal->date->format('d.m.Y').' · '.$meal->title : null;
             });

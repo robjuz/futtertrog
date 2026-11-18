@@ -28,7 +28,8 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'translations' => __('profile'),
+            'translations' => [...__('profile'), ...__('ordering')],
+            'locale' => app()->getLocale(),
             'navigation' => [
                 'inertia' => !config('user-interface.blade'),
                 'meals' => route('meals.index', absolute: false),

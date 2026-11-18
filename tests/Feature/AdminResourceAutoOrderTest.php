@@ -48,6 +48,29 @@ class AdminResourceAutoOrderTest extends TestCase
     }
 
     #[Test]
+    #[TestWith(['confirmed', 'ordered'])]
+    #[TestWith(['not_received', 'open'])]
+    public function panel_filters_uncleared_orders_and_reconciles_the_selected_attempt(string $outcome, string $status): void
+    {
+        Http::preventStrayRequests();
+        $this->loginAsAdmin();
+        $order = $this->order();
+        $clear = $this->order();
+        $attempt = AdminActivity::factory()->create(['action' => 'order.auto_ordered', 'target_type' => Order::class,
+            'target_id' => $order->id, 'state' => 'uncertain']);
+        $this->partialMock(Holzke::class)->shouldNotReceive('placeOrder', 'updateOrder');
+        $page = Livewire::test(ManageOrders::class)->filterTable('auto_order_pending')
+            ->assertCanSeeTableRecords([$order])->assertCanNotSeeTableRecords([$clear])
+            ->assertSee('Abgleich erforderlich');
+        $page->callTableAction('reconcileAutoOrder', $order, data: ['attempt_id' => $attempt->id, 'outcome' => $outcome])
+            ->assertHasNoActionErrors()->assertNotified('Vorgang erfolgreich.');
+        $this->assertSame($status, $order->fresh()->status);
+        $this->assertSame(auth()->id(), AdminActivity::where('action', 'order.auto_order_reconciled')->sole()->actor_id);
+        $page->assertCanNotSeeTableRecords([$order]);
+        Http::assertNothingSent();
+    }
+
+    #[Test]
     public function panel_autoorder_commits_its_reservation_and_never_repeats_a_confirmed_order(): void
     {
         Http::preventStrayRequests();
